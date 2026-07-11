@@ -1,0 +1,11 @@
+{
+  "id": "ship_trophy_room",
+  "name": "Ship Trophy Room",
+  "author": "Codex",
+  "utility": "false",
+  "version": "1.0.0",
+  "description": "Adds a buildable Trophy Room structure to player colonies. It unlocks dedicated ship storage and slowly generates story points from curated display vessels.",
+  "gameVersion": "0.98a",
+  "jars": ["jars/ShipTrophyRoom.jar"],
+  "modPlugin": "shiptrophy.ShipTrophyRoomModPlugin"
+}
