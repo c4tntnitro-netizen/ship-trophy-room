@@ -36,4 +36,10 @@ From this folder:
 .\build.ps1
 ```
 
-Then copy or symlink this folder into `Starsector\mods`, enable **Ship Trophy Room**, and start/load a campaign.
+To make a clean install folder that excludes Git metadata and build scratch:
+
+```powershell
+.\package.ps1
+```
+
+Then copy `dist\ShipTrophyRoom` into `Starsector\mods`, enable **Ship Trophy Room**, and start/load a campaign.
