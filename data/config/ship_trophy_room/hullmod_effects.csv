@@ -1,0 +1,4 @@
+hullModId,descParam0,descParam1,descParam2,descParam3,descParam4,descParam5,descParam6,descParam7,descParam8,descParam9,armorFlat,hullFlat,maxSpeedPercent,maneuverPercent,fluxCapacityPercent,fluxDissipationPercent,ballisticRangeFlat,energyRangeFlat,missileRangeFlat,ballisticDamagePercent,energyDamagePercent,missileDamagePercent,ballisticFluxCostPercent,energyFluxCostPercent,missileFluxCostPercent,shieldDamageTakenPercent,shieldUpkeepPercent,fighterRefitTimePercent,crewLossPercent,sensorProfileFlat,sensorStrengthFlat
+ship_trophy_kol_benediction,5%,5%,,,,,,,,,,,,,,,,,,,5,,,,,-5,,,,,
+ship_trophy_uaf_resonance,5%,10%,,,,,,,,,,,,,5,5,,,,,,,,,,,,-10,,,
+ship_trophy_iron_shell_drill,75,50,,,,,,,,,75,,,,,,50,,,,,,,,,,,,,,

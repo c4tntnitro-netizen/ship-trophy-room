@@ -19,6 +19,9 @@ New-Item -ItemType Directory -Force -Path $resolvedModRoot | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "mod_info.json") -Destination $resolvedModRoot
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "README.md") -Destination $resolvedModRoot
+if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "docs")) {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "docs") -Destination $resolvedModRoot -Recurse
+}
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "data") -Destination $resolvedModRoot -Recurse
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "graphics") -Destination $resolvedModRoot -Recurse
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "jars") -Destination $resolvedModRoot -Recurse

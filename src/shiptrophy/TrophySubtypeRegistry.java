@@ -48,6 +48,15 @@ public class TrophySubtypeRegistry {
         return doctrine == null ? null : getSubtype(doctrine.id);
     }
 
+    public static TrophySubtypeSpec getSubtypeForHullMod(String hullModId) {
+        loadIfNeeded();
+        if (hullModId == null || hullModId.length() <= 0) return null;
+        for (TrophySubtypeSpec spec : SUBTYPES.values()) {
+            if (hullModId.equals(spec.hullModId)) return spec;
+        }
+        return null;
+    }
+
     private static void loadIfNeeded() {
         if (loaded) return;
         loaded = true;

@@ -44,6 +44,8 @@ Optional example integrations are included:
 - **United Aurora Trophy Resonance**: active only with `uaf`; flux capacity/dissipation +5%, fighter refit time -10%.
 - **Iron Shell Trophy Parade Drill**: active only with `timid_xiv`; +75 armor, +50 ballistic weapon range.
 
+For a plain-language walkthrough of adding your own subtype and special trophy hullmod, see `docs/creating_trophy_hullmods.md`.
+
 ## Unique showcase unlocks
 
 - **Gaze**: unlocked by showcasing the Ziggurat anywhere in the Trophy Room network. Reduces OP costs of fitted Omega weapons by 2 each.
