@@ -12,4 +12,5 @@ public class ShipTrophyRoomIds {
     public static final String MEMORY_NETWORK_COLLECTION_DP = "$ship_trophy_room_network_collection_dp";
     public static final String MEMORY_NETWORK_ROOM_COUNT = "$ship_trophy_room_network_room_count";
     public static final String MEMORY_NETWORK_DOCTRINE_DP = "$ship_trophy_room_network_doctrine_dp";
+    public static final String MEMORY_NETWORK_SUBTYPE_DP = "$ship_trophy_room_network_subtype_dp";
 }

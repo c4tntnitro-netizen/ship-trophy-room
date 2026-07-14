@@ -16,7 +16,11 @@ New-Item -ItemType Directory -Force -Path $classes | Out-Null
 New-Item -ItemType Directory -Force -Path $jarDir | Out-Null
 
 $sources = Get-ChildItem -Recurse -Path (Join-Path $PSScriptRoot "src") -Filter "*.java" | ForEach-Object { $_.FullName }
-& $javac --release 8 -classpath (Join-Path $core "starfarer.api.jar") -d $classes @sources
+$classpath = @(
+    (Join-Path $core "starfarer.api.jar"),
+    (Join-Path $core "json.jar")
+) -join [System.IO.Path]::PathSeparator
+& $javac --release 8 -classpath $classpath -d $classes @sources
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $jar cf $jarPath -C $classes .
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

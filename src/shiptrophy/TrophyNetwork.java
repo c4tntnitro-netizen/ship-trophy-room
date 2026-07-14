@@ -1,6 +1,5 @@
 package shiptrophy;
 
-import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -71,11 +70,21 @@ public class TrophyNetwork {
     }
 
     public static boolean isDoctrineUnlocked(TrophyDoctrine doctrine) {
-        return getDoctrineDp(doctrine) >= DOCTRINE_UNLOCK_DP;
+        TrophySubtypeSpec spec = TrophySubtypeRegistry.getSubtype(doctrine);
+        return spec != null && getSubtypeDp(spec.id) >= spec.unlockDp;
     }
 
     public static float getDoctrineDp(TrophyDoctrine doctrine) {
-        return computeNetworkStats().getDoctrineDp(doctrine);
+        return doctrine == null ? 0f : getSubtypeDp(doctrine.id);
+    }
+
+    public static boolean isSubtypeUnlocked(String subtypeId) {
+        TrophySubtypeSpec spec = TrophySubtypeRegistry.getSubtype(subtypeId);
+        return spec != null && spec.isActive() && getSubtypeDp(spec.id) >= spec.unlockDp;
+    }
+
+    public static float getSubtypeDp(String subtypeId) {
+        return computeNetworkStats().getSubtypeDp(subtypeId);
     }
 
     public static boolean isZigguratShowcased() {
@@ -95,13 +104,22 @@ public class TrophyNetwork {
         FactionAPI player = Global.getSector().getPlayerFaction();
         if (player == null) return;
 
-        for (TrophyDoctrine doctrine : TrophyDoctrine.values()) {
-            boolean unlocked = stats.getDoctrineDp(doctrine) >= DOCTRINE_UNLOCK_DP;
-            setKnownHullMod(player, doctrine.hullModId, unlocked);
+        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getAllSubtypes()) {
+            if (!subtype.hasHullModUnlock() || !hullModExists(subtype.hullModId)) continue;
+            boolean unlocked = subtype.isActive() && stats.getSubtypeDp(subtype.id) >= subtype.unlockDp;
+            setKnownHullMod(player, subtype.hullModId, unlocked);
         }
 
         setKnownHullMod(player, Gaze.HULLMOD_ID, hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID));
         setKnownHullMod(player, Contempt.HULLMOD_ID, hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID));
+    }
+
+    private static boolean hullModExists(String hullModId) {
+        try {
+            return hullModId != null && hullModId.length() > 0 && Global.getSettings().getHullModSpec(hullModId) != null;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private static void setKnownHullMod(FactionAPI player, String hullModId, boolean unlocked) {
@@ -137,12 +155,16 @@ public class TrophyNetwork {
         if (member == null || member.getVariant() == null) return;
         ShipVariantAPI variant = member.getVariant();
 
-        boolean lpCounts = stats.getDoctrineDp(TrophyDoctrine.LP) >= DOCTRINE_UNLOCK_DP
+        TrophySubtypeSpec lp = TrophySubtypeRegistry.getSubtype(TrophyDoctrine.LP);
+        boolean lpCounts = lp != null
+                && stats.getSubtypeDp(lp.id) >= lp.unlockDp
                 && variant.hasHullMod(TrophyDoctrine.LP.hullModId)
                 && !variant.hasHullMod(HullMods.UNSTABLE_INJECTOR);
         setMarker(variant, LuddicPathZeal.DMOD_MARKER, lpCounts);
 
-        boolean lgCounts = stats.getDoctrineDp(TrophyDoctrine.LG) >= DOCTRINE_UNLOCK_DP
+        TrophySubtypeSpec lg = TrophySubtypeRegistry.getSubtype(TrophyDoctrine.LG);
+        boolean lgCounts = lg != null
+                && stats.getSubtypeDp(lg.id) >= lg.unlockDp
                 && variant.hasHullMod(TrophyDoctrine.LG.hullModId)
                 && !variant.hasHullMod(LionGuardPageantry.ENERGY_BOLT_COHERER)
                 && !variant.hasHullMod(LionGuardPageantry.MODULAR_BOLT_COHERER);
@@ -186,6 +208,19 @@ public class TrophyNetwork {
     }
 
     public static boolean isMatchingInstallStyle(ShipAPI ship, TrophyDoctrine doctrine) {
+        return isMatchingInstallStyle(ship, TrophySubtypeRegistry.getSubtype(doctrine));
+    }
+
+    public static boolean isMatchingInstallStyle(ShipAPI ship, TrophySubtypeSpec subtype) {
+        if (subtype == null) return true;
+        return subtype.matchesInstallStyle(ship);
+    }
+
+    public static boolean isMatchingInstallStyle(ShipAPI ship, String subtypeId) {
+        return isMatchingInstallStyle(ship, TrophySubtypeRegistry.getSubtype(subtypeId));
+    }
+
+    private static boolean isMatchingInstallStyleLegacy(ShipAPI ship, TrophyDoctrine doctrine) {
         if (ship == null) return true;
         String style = lower(ship.getHullStyleId());
         if ("low-tech".equals(doctrine.installStyle)) return "low_tech".equals(style) || "low-tech".equals(style);
@@ -197,29 +232,11 @@ public class TrophyNetwork {
     public static TrophyDoctrine getDoctrine(FleetMemberAPI member) {
         if (member == null || member.getHullSpec() == null) return null;
 
-        String hullId = lower(member.getHullId());
-        String manufacturer = lower(member.getHullSpec().getManufacturer());
-        String hullName = lower(member.getHullSpec().getHullNameWithDashClass());
-
-        if (containsAny(manufacturer, "xiv", "14th", "fourteenth")
-                || containsAny(hullId, "_xiv", "xiv_")
-                || containsAny(hullName, "(xiv)", "xiv")) {
-            return TrophyDoctrine.XIV;
-        }
-        if (containsAny(manufacturer, "luddic path")
-                || containsAny(hullId, "luddic_path", "pather")
-                || containsAny(hullName, "(lp)", "luddic path")) {
-            return TrophyDoctrine.LP;
-        }
-        if (containsAny(manufacturer, "lion's guard", "lions guard")
-                || containsAny(hullId, "_lg", "lg_", "executor")
-                || containsAny(hullName, "(lg)", "lion", "executor")) {
-            return TrophyDoctrine.LG;
-        }
-        if (containsAny(manufacturer, "tri-tachyon", "tritachyon", "high tech", "high-tech")
-                || containsAny(hullId, "tritachyon", "_tt", "tt_")
-                || containsAny(hullName, "(tt)", "tri-tachyon")) {
-            return TrophyDoctrine.TT;
+        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
+            if (!subtype.matches(member)) continue;
+            for (TrophyDoctrine doctrine : TrophyDoctrine.values()) {
+                if (doctrine.id.equals(subtype.id)) return doctrine;
+            }
         }
         return null;
     }
@@ -240,14 +257,6 @@ public class TrophyNetwork {
         return false;
     }
 
-    private static boolean containsAny(String text, String... parts) {
-        if (text == null) return false;
-        for (String part : parts) {
-            if (text.contains(part)) return true;
-        }
-        return false;
-    }
-
     private static String lower(String value) {
         return safe(value).toLowerCase();
     }
@@ -262,15 +271,14 @@ public class TrophyNetwork {
         public Set<String> uniqueHullIds = new LinkedHashSet<String>();
         public Map<String, Float> uniqueHullDp = new LinkedHashMap<String, Float>();
         public Map<ShipAPI.HullSize, Integer> hullSizeCounts = new LinkedHashMap<ShipAPI.HullSize, Integer>();
-        public Map<TrophyDoctrine, Float> doctrineDp = new EnumMap<TrophyDoctrine, Float>(TrophyDoctrine.class);
-        public Map<TrophyDoctrine, Set<String>> doctrineHullIds = new EnumMap<TrophyDoctrine, Set<String>>(TrophyDoctrine.class);
-        public Map<TrophyDoctrine, Map<String, Float>> doctrineHullDp = new EnumMap<TrophyDoctrine, Map<String, Float>>(TrophyDoctrine.class);
+        public Map<String, Float> subtypeDp = new LinkedHashMap<String, Float>();
+        public Map<String, Float> doctrineDp = subtypeDp;
+        public Map<String, Set<String>> subtypeHullIds = new LinkedHashMap<String, Set<String>>();
+        public Map<String, Map<String, Float>> subtypeHullDp = new LinkedHashMap<String, Map<String, Float>>();
 
         public CollectionStats() {
-            for (TrophyDoctrine doctrine : TrophyDoctrine.values()) {
-                doctrineDp.put(doctrine, 0f);
-                doctrineHullIds.put(doctrine, new LinkedHashSet<String>());
-                doctrineHullDp.put(doctrine, new LinkedHashMap<String, Float>());
+            for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
+                ensureSubtype(subtype.id);
             }
         }
 
@@ -289,14 +297,15 @@ public class TrophyNetwork {
                 uniqueDeploymentPoints += dp;
             }
 
-            TrophyDoctrine doctrine = getDoctrine(member);
-            if (doctrine == null) return;
-
-            Set<String> doctrineHulls = doctrineHullIds.get(doctrine);
-            if (doctrineHulls.add(member.getHullId())) {
-                float dp = Math.max(0f, member.getUnmodifiedDeploymentPointsCost());
-                doctrineHullDp.get(doctrine).put(member.getHullId(), dp);
-                doctrineDp.put(doctrine, getDoctrineDp(doctrine) + dp);
+            for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
+                if (!subtype.matches(member)) continue;
+                ensureSubtype(subtype.id);
+                Set<String> subtypeHulls = subtypeHullIds.get(subtype.id);
+                if (subtypeHulls.add(member.getHullId())) {
+                    float dp = Math.max(0f, member.getUnmodifiedDeploymentPointsCost());
+                    subtypeHullDp.get(subtype.id).put(member.getHullId(), dp);
+                    subtypeDp.put(subtype.id, getSubtypeDp(subtype.id) + dp);
+                }
             }
         }
 
@@ -316,21 +325,34 @@ public class TrophyNetwork {
                 }
             }
 
-            for (TrophyDoctrine doctrine : TrophyDoctrine.values()) {
-                for (String hullId : other.doctrineHullIds.get(doctrine)) {
-                    if (doctrineHullIds.get(doctrine).add(hullId)) {
-                        Float dp = other.doctrineHullDp.get(doctrine).get(hullId);
+            for (Map.Entry<String, Set<String>> entry : other.subtypeHullIds.entrySet()) {
+                String subtypeId = entry.getKey();
+                ensureSubtype(subtypeId);
+                for (String hullId : entry.getValue()) {
+                    if (subtypeHullIds.get(subtypeId).add(hullId)) {
+                        Float dp = other.subtypeHullDp.get(subtypeId).get(hullId);
                         if (dp == null) dp = 0f;
-                        doctrineHullDp.get(doctrine).put(hullId, dp);
-                        doctrineDp.put(doctrine, getDoctrineDp(doctrine) + dp);
+                        subtypeHullDp.get(subtypeId).put(hullId, dp);
+                        subtypeDp.put(subtypeId, getSubtypeDp(subtypeId) + dp);
                     }
                 }
             }
         }
 
         public float getDoctrineDp(TrophyDoctrine doctrine) {
-            Float value = doctrineDp.get(doctrine);
+            return doctrine == null ? 0f : getSubtypeDp(doctrine.id);
+        }
+
+        public float getSubtypeDp(String subtypeId) {
+            Float value = subtypeDp.get(subtypeId);
             return value == null ? 0f : value;
+        }
+
+        private void ensureSubtype(String subtypeId) {
+            if (subtypeId == null || subtypeId.length() <= 0) return;
+            if (!subtypeDp.containsKey(subtypeId)) subtypeDp.put(subtypeId, 0f);
+            if (!subtypeHullIds.containsKey(subtypeId)) subtypeHullIds.put(subtypeId, new LinkedHashSet<String>());
+            if (!subtypeHullDp.containsKey(subtypeId)) subtypeHullDp.put(subtypeId, new LinkedHashMap<String, Float>());
         }
 
         public int getHullSizeCount(ShipAPI.HullSize size) {

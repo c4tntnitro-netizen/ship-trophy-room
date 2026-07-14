@@ -23,6 +23,27 @@ Showcasing 60 unique DP worth of a doctrine's ships across the Trophy Room netwo
 - **Lion's Guard Trophy Pageantry**: unlocked by Lion's Guard ships; installable on midline ships. Acts like Energy Bolt Coherer: +100 energy projectile range, -100 beam range, +25% crew casualties. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations, and it is incompatible with Energy Bolt Coherer.
 - **Tri-Tachyon Trophy Legacy**: unlocked by Tri-Tachyon/high-tech ships; installable on high-tech ships. Reduces sensor profile by 15 and adds 200 hull integrity. Incompatible with Insulated Engine Assembly.
 
+## Data-driven subtypes
+
+Subtype tracking is configured in `data/config/ship_trophy_room/subtypes.csv`. Other mods can integrate by shipping a merged CSV at the same path with one row per subtype. Matching ships add their unique DP to that subtype, and the listed hullmod unlocks when the threshold is reached.
+
+Important columns:
+
+- `id`: stable subtype id.
+- `displayName` / `showcaseName`: UI text.
+- `hullModId`: optional hullmod to teach the player.
+- `requiredModId`: optional mod id gate; the row is inactive unless that mod is enabled.
+- `unlockDp`: DP needed to unlock the hullmod.
+- `installStyle`: `low-tech`, `midline`, `high-tech`, or `any`.
+- `hullIdContains`, `baseHullIdContains`, `manufacturerContains`, `hullNameContains`: pipe-separated case-insensitive match text.
+- `hullTagMatches`, `variantTagMatches`: pipe-separated exact tag matches.
+
+Optional example integrations are included:
+
+- **Knights of Ludd Trophy Benediction**: active only with `knights_of_ludd`; energy weapon damage +5%, shield damage taken -5%.
+- **United Aurora Trophy Resonance**: active only with `uaf`; flux capacity/dissipation +5%, fighter refit time -10%.
+- **Iron Shell Trophy Parade Drill**: active only with `timid_xiv`; +75 armor, +50 ballistic weapon range.
+
 ## Unique showcase unlocks
 
 - **Gaze**: unlocked by showcasing the Ziggurat anywhere in the Trophy Room network. Reduces OP costs of fitted Omega weapons by 2 each.

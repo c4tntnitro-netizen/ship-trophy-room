@@ -16,6 +16,7 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
 
     private void ensureScript() {
         if (Global.getSector() == null) return;
+        TrophySubtypeRegistry.reload();
         Global.getSector().removeScriptsOfClass(StoryPointGeneratorScript.class);
         Global.getSector().addScript(new StoryPointGeneratorScript());
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();

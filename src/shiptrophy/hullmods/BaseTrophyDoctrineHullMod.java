@@ -11,9 +11,15 @@ import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.TrophyDoctrine;
 import shiptrophy.TrophyNetwork;
+import shiptrophy.TrophySubtypeRegistry;
+import shiptrophy.TrophySubtypeSpec;
 
 public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
-    protected abstract TrophyDoctrine getDoctrine();
+    protected TrophyDoctrine getDoctrine() { return null; }
+    protected String getSubtypeId() {
+        TrophyDoctrine doctrine = getDoctrine();
+        return doctrine == null ? "" : doctrine.id;
+    }
     protected String getDModCalculationNote() { return null; }
 
     @Override
@@ -29,14 +35,19 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (!isUnlocked()) {
-            return "Requires " + Math.round(TrophyNetwork.DOCTRINE_UNLOCK_DP) + " DP worth of "
-                    + getDoctrine().showcaseName + " ships in the Trophy Room network";
+            TrophySubtypeSpec subtype = getSubtype();
+            String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
+            float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
+            return "Requires " + Math.round(unlockDp) + " DP worth of "
+                    + showcaseName + " ships in the Trophy Room network";
         }
         if (!matchesStyle(ship)) {
-            return "Can only be installed on " + getDoctrine().installStyle + " ships";
+            TrophySubtypeSpec subtype = getSubtype();
+            String style = subtype == null ? "matching" : subtype.installStyle;
+            return "Can only be installed on " + style + " ships";
         }
         if (!hasNoOtherDoctrine(ship)) {
-            return "Only one Trophy doctrine hullmod may be installed";
+            return "Only one Trophy subtype hullmod may be installed";
         }
         return null;
     }
@@ -53,9 +64,12 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        float current = TrophyNetwork.getDoctrineDp(getDoctrine());
+        TrophySubtypeSpec subtype = getSubtype();
+        String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
+        float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
+        float current = TrophyNetwork.getSubtypeDp(getSubtypeId());
         tooltip.addPara("Trophy network showcase: %s / %s DP worth of %s ships.",
-                opad, h, "" + Math.round(current), "" + Math.round(TrophyNetwork.DOCTRINE_UNLOCK_DP), getDoctrine().showcaseName);
+                opad, h, "" + Math.round(current), "" + Math.round(unlockDp), showcaseName);
         String dmodNote = getDModCalculationNote();
         if (dmodNote != null) {
             tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");
@@ -63,19 +77,24 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
     }
 
     protected boolean isUnlocked() {
-        return TrophyNetwork.isDoctrineUnlocked(getDoctrine());
+        return TrophyNetwork.isSubtypeUnlocked(getSubtypeId());
     }
 
     protected boolean matchesStyle(ShipAPI ship) {
-        return TrophyNetwork.isMatchingInstallStyle(ship, getDoctrine());
+        return TrophyNetwork.isMatchingInstallStyle(ship, getSubtypeId());
     }
 
     protected boolean hasNoOtherDoctrine(ShipAPI ship) {
         if (ship == null || ship.getVariant() == null) return true;
-        for (TrophyDoctrine doctrine : TrophyDoctrine.values()) {
-            if (doctrine != getDoctrine() && ship.getVariant().hasHullMod(doctrine.hullModId)) return false;
+        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getAllSubtypes()) {
+            if (subtype.id.equals(getSubtypeId())) continue;
+            if (subtype.hasHullModUnlock() && ship.getVariant().hasHullMod(subtype.hullModId)) return false;
         }
         return true;
+    }
+
+    protected TrophySubtypeSpec getSubtype() {
+        return TrophySubtypeRegistry.getSubtype(getSubtypeId());
     }
 
     protected void addHiddenMarker(MutableShipStatsAPI stats, String markerId) {

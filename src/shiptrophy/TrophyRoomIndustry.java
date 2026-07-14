@@ -80,13 +80,7 @@ public class TrophyRoomIndustry extends BaseIndustry {
             tooltip.addPara("Types hosted: %s.", opad, h, stats.getHullSizeSummary());
             tooltip.addPara("Network collection: %s functional rooms, %s curated rooms, %s unique hull types, %s unique deployment points.",
                     opad, h, "" + network.functionalRooms, "" + network.improvedRooms, "" + network.uniqueHullIds.size(), "" + Math.round(network.uniqueDeploymentPoints));
-            tooltip.addPara("Doctrine showcase DP: XIV %s, LP %s, LG %s, TT %s. Each doctrine unlocks at %s DP.",
-                    opad, h,
-                    "" + Math.round(network.getDoctrineDp(TrophyDoctrine.XIV)),
-                    "" + Math.round(network.getDoctrineDp(TrophyDoctrine.LP)),
-                    "" + Math.round(network.getDoctrineDp(TrophyDoctrine.LG)),
-                    "" + Math.round(network.getDoctrineDp(TrophyDoctrine.TT)),
-                    "" + Math.round(TrophyNetwork.DOCTRINE_UNLOCK_DP));
+            tooltip.addPara("Subtype showcase DP: " + getSubtypeSummary(network) + ".", opad);
             tooltip.addPara("Unique showcases: Ziggurat %s Gaze; Onslaught Mk.I %s Contempt.",
                     opad, h,
                     TrophyNetwork.hasShowcasedHull(network, Gaze.REQUIRED_BASE_HULL_ID) ? "unlocks" : "does not unlock",
@@ -113,5 +107,20 @@ public class TrophyRoomIndustry extends BaseIndustry {
 
     public static boolean isFunctionalTrophyRoom(Industry industry) {
         return industry != null && !industry.isBuilding() && industry.isFunctional();
+    }
+
+    private String getSubtypeSummary(TrophyNetwork.NetworkStats network) {
+        StringBuilder result = new StringBuilder();
+        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
+            if (!subtype.hasHullModUnlock()) continue;
+            if (result.length() > 0) result.append("; ");
+            result.append(subtype.displayName)
+                    .append(" ")
+                    .append(Math.round(network.getSubtypeDp(subtype.id)))
+                    .append("/")
+                    .append(Math.round(subtype.unlockDp));
+        }
+        if (result.length() <= 0) return "none active";
+        return result.toString();
     }
 }

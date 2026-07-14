@@ -58,6 +58,7 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
         Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_NETWORK_UNIQUE_HULL_COUNT, stats.uniqueHullIds.size());
         Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_NETWORK_COLLECTION_DP, stats.uniqueDeploymentPoints);
         Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_NETWORK_ROOM_COUNT, stats.functionalRooms);
-        Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_NETWORK_DOCTRINE_DP, stats.doctrineDp);
+        Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_NETWORK_DOCTRINE_DP, stats.subtypeDp);
+        Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_NETWORK_SUBTYPE_DP, stats.subtypeDp);
     }
 }
