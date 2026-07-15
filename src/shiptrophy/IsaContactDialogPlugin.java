@@ -6,76 +6,44 @@ import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.BaseBarEvent;
+import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.hullmods.Contempt;
 import shiptrophy.hullmods.Gaze;
 
-public class IsaBarEvent extends BaseBarEvent {
-    private static final String INTRO = "ship_trophy_intro";
-    private static final String ACCEPT = "ship_trophy_accept";
-    private static final String LEDGER = "ship_trophy_ledger";
-    private static final String MASTERWORK = "ship_trophy_masterwork";
-    private static final String UNIQUES = "ship_trophy_uniques";
-    private static final String SUBTYPES = "ship_trophy_subtypes";
-    private static final String BACK = "ship_trophy_back";
-    private static final String LEAVE = "ship_trophy_leave";
-    private static final String SUBTYPE_PREFIX = "ship_trophy_subtype:";
+public class IsaContactDialogPlugin implements InteractionDialogPlugin {
+    private static final String MASTERWORK = "ship_trophy_contact_masterwork";
+    private static final String UNIQUES = "ship_trophy_contact_uniques";
+    private static final String SUBTYPES = "ship_trophy_contact_subtypes";
+    private static final String BACK = "ship_trophy_contact_back";
+    private static final String LEAVE = "ship_trophy_contact_leave";
+    private static final String SUBTYPE_PREFIX = "ship_trophy_contact_subtype:";
 
-    @Override
-    public String getBarEventId() {
-        return IsaBarEventCreator.ID;
+    private final InteractionDialogPlugin originalPlugin;
+    private final Map<String, MemoryAPI> memoryMap;
+    private InteractionDialogAPI dialog;
+    private TextPanelAPI text;
+    private OptionPanelAPI options;
+
+    public IsaContactDialogPlugin(InteractionDialogPlugin originalPlugin, Map<String, MemoryAPI> memoryMap) {
+        this.originalPlugin = originalPlugin;
+        this.memoryMap = memoryMap;
     }
 
     @Override
-    public boolean isAlwaysShow() {
-        return true;
-    }
-
-    @Override
-    public boolean shouldShowAtMarket(MarketAPI market) {
-        MarketAPI home = IsaTrophyManager.findHomeMarket();
-        return !IsaTrophyManager.isIntroduced()
-                && home != null && market != null && home.getId().equals(market.getId());
-    }
-
-    @Override
-    public boolean shouldRemoveEvent() {
-        return done;
-    }
-
-    @Override
-    public void addPromptAndOption(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-        MarketAPI home = IsaTrophyManager.findHomeMarket();
-        if (!shouldShowAtMarket(home)) return;
-
-        String marketName = home == null ? "the colony" : home.getName();
-        TextPanelAPI text = dialog.getTextPanel();
-        if (IsaTrophyManager.isIntroduced()) {
-            text.addPara("Isa is at a dockside table, boots hooked around a chair leg, arguing quietly with a pair of salvagers over a rotating hull schematic from the Trophy Room network.");
-            dialog.getOptionPanel().addOption("Talk to Isa about the Trophy Room ledgers.", this);
-        } else {
-            text.addPara("A lean, orange-haired spacer with a salvage rig still dusted in machine soot watches the traffic from " + marketName + "'s docks. Her crew has staked out a bar table under a spread of projected hull sections.");
-            dialog.getOptionPanel().addOption("Approach the salvager watching the Trophy Room traffic.", this);
-        }
-    }
-
-    @Override
-    public void init(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-        super.init(dialog, memoryMap);
-        showIsa();
-        if (IsaTrophyManager.isIntroduced()) {
-            showMainMenu();
-        } else {
-            showIntro();
-        }
+    public void init(InteractionDialogAPI dialog) {
+        this.dialog = dialog;
+        this.text = dialog.getTextPanel();
+        this.options = dialog.getOptionPanel();
+        showMainMenu();
     }
 
     @Override
@@ -83,46 +51,19 @@ public class IsaBarEvent extends BaseBarEvent {
         if (optionData == null) return;
         String option = optionData.toString();
 
-        if (ACCEPT.equals(option)) {
-            acceptIntro();
-        } else if (LEDGER.equals(option) || BACK.equals(option)) {
-            showMainMenu();
-        } else if (MASTERWORK.equals(option)) {
+        if (MASTERWORK.equals(option)) {
             showMasterwork();
         } else if (UNIQUES.equals(option)) {
             showUniques();
         } else if (SUBTYPES.equals(option)) {
             showSubtypes();
+        } else if (BACK.equals(option)) {
+            showMainMenu();
         } else if (option.startsWith(SUBTYPE_PREFIX)) {
             showSubtype(option.substring(SUBTYPE_PREFIX.length()));
         } else if (LEAVE.equals(option)) {
-            done = true;
+            close();
         }
-    }
-
-    private void showIntro() {
-        text.clear();
-        showIsa();
-        text.addPara("\"Isa,\" she says, offering a hand with a few old burn scars across the knuckles. \"Small team, old habits. We pull ships out of places where they were meant to stay buried, then make them worth looking at again.\"");
-        text.addPara("\"Your colony's got ambition. More importantly, it has a Trophy Room. That's rare enough that my crew and I are willing to set up here, if you'll have us.\"");
-        text.addPara("She nods toward the docks. \"Keep the displays fed. I'll keep the ledgers readable, the refit notes indexed, and the really strange ideas from getting lost in the machinery.\"");
-
-        options.clearOptions();
-        options.addOption("\"Welcome aboard.\"", ACCEPT);
-        options.addOption("Leave her to her crew.", LEAVE);
-    }
-
-    private void acceptIntro() {
-        MarketAPI home = IsaTrophyManager.findHomeMarket();
-        IsaTrophyManager.setIntroduced(true);
-        IsaTrophyManager.ensureContact(home, text);
-        if (Global.getSoundPlayer() != null) {
-            Global.getSoundPlayer().playUISound("ui_contact_developed", 1f, 1f);
-        }
-        text.addPara("Isa gives a brisk nod. \"Good. I'll have a bench set up off the docks by morning. Ask around for Isa if you want a read on the collection.\"");
-        text.addPara("Isa is now listed as a contact at " + (home == null ? "your colony" : home.getName()) + ".");
-        options.clearOptions();
-        options.addOption("Return to the bar.", LEAVE);
     }
 
     private void showMainMenu() {
@@ -136,15 +77,12 @@ public class IsaBarEvent extends BaseBarEvent {
         text.addPara("Isa has the Trophy Room network up on a battered slate: %s functional rooms, %s unique hull types, %s unique deployment points.",
                 Misc.getHighlightColor(), "" + stats.functionalRooms, "" + stats.uniqueHullIds.size(), "" + Math.round(stats.uniqueDeploymentPoints));
         text.addPara("\"The trick is not owning ships,\" she says. \"It's owning examples. Hulls with enough history that they teach the rest of the dockyard something.\"");
-        showMainMenuOptions();
-    }
 
-    private void showMainMenuOptions() {
         options.clearOptions();
         options.addOption("Review Isa's five-hull showcase.", MASTERWORK);
         options.addOption("Ask about one-of-a-kind trophy hullmods.", UNIQUES);
         options.addOption("Ask about doctrine and subtype trophy programs.", SUBTYPES);
-        options.addOption("Leave.", LEAVE);
+        options.addOption("Cut the comm link.", LEAVE);
     }
 
     private void showMasterwork() {
@@ -218,7 +156,7 @@ public class IsaBarEvent extends BaseBarEvent {
             options.addOption(subtype.displayName + " (" + current + "/" + needed + " DP)", SUBTYPE_PREFIX + subtype.id);
         }
         options.addOption("Back.", BACK);
-        options.addOption("Leave.", LEAVE);
+        options.addOption("Cut the comm link.", LEAVE);
     }
 
     private void showSubtype(String subtypeId) {
@@ -281,13 +219,42 @@ public class IsaBarEvent extends BaseBarEvent {
     private void showBackOptions() {
         options.clearOptions();
         options.addOption("Back.", BACK);
-        options.addOption("Leave.", LEAVE);
+        options.addOption("Cut the comm link.", LEAVE);
     }
 
     private void showIsa() {
-        PersonAPI isa = IsaTrophyManager.getOrCreateIsa(IsaTrophyManager.findHomeMarket());
+        MarketAPI home = IsaTrophyManager.findHomeMarket();
+        PersonAPI isa = IsaTrophyManager.getOrCreateIsa(home);
         if (dialog != null && isa != null) {
             dialog.getVisualPanel().showPersonInfo(isa);
         }
+    }
+
+    private void close() {
+        if (dialog == null) return;
+        if (originalPlugin != null) dialog.setPlugin(originalPlugin);
+        dialog.dismiss();
+    }
+
+    @Override
+    public void optionMousedOver(String optionText, Object optionData) {
+    }
+
+    @Override
+    public void advance(float amount) {
+    }
+
+    @Override
+    public void backFromEngagement(EngagementResultAPI battleResult) {
+    }
+
+    @Override
+    public Object getContext() {
+        return null;
+    }
+
+    @Override
+    public Map<String, MemoryAPI> getMemoryMap() {
+        return memoryMap;
     }
 }

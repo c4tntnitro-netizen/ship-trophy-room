@@ -25,7 +25,8 @@ import com.fs.starfarer.api.loading.HullModSpecAPI;
 
 public class IsaTrophyManager {
     public static final String PERSON_ID = "ship_trophy_isa";
-    public static final String PORTRAIT = "graphics/portraits/ship_trophy_isa.png";
+    public static final String PORTRAIT_ID = "ship_trophy_isa";
+    public static final String PORTRAIT_PATH = "graphics/portraits/ship_trophy_isa.png";
     public static final String PROVENANCE_HULLMOD_ID = "ship_trophy_isa_provenance";
 
     private static final ShowcaseRequirement[] MASTERWORK_REQUIREMENTS = new ShowcaseRequirement[] {
@@ -104,20 +105,33 @@ public class IsaTrophyManager {
             person.setPostId(Ranks.POST_NANOFORGE_ENGINEER);
             person.setPersonality(Personalities.STEADY);
             person.setImportance(PersonImportance.LOW);
-            person.setPortraitSprite(PORTRAIT);
             person.addTag(Tags.CONTACT_SCIENCE);
             person.addTag(Tags.CONTACT_TRADE);
             Global.getSector().getImportantPeople().addPerson(person);
         }
+        person.setPortraitSprite(getIsaPortraitSprite());
 
         if (market != null) {
-            person.setMarket(market);
-            if (!marketHasPerson(market, person)) market.addPerson(person);
-            if (market.getCommDirectory() != null && market.getCommDirectory().getEntryForPerson(PERSON_ID) == null) {
-                market.getCommDirectory().addPerson(person);
+            if (isIntroduced()) {
+                person.setMarket(market);
+                if (!marketHasPerson(market, person)) market.addPerson(person);
+                if (market.getCommDirectory() != null && market.getCommDirectory().getEntryForPerson(PERSON_ID) == null) {
+                    market.getCommDirectory().addPerson(person);
+                }
+            } else {
+                removeFromMarketAndComms(market, person);
             }
         }
         return person;
+    }
+
+    public static String getIsaPortraitSprite() {
+        if (Global.getSettings() == null) return PORTRAIT_PATH;
+        try {
+            return Global.getSettings().getSpriteName("characters", PORTRAIT_ID);
+        } catch (Exception ex) {
+            return PORTRAIT_PATH;
+        }
     }
 
     public static void ensureContact(MarketAPI market, TextPanelAPI text) {
@@ -248,6 +262,14 @@ public class IsaTrophyManager {
             if (existing != null && PERSON_ID.equals(existing.getId())) return true;
         }
         return false;
+    }
+
+    private static void removeFromMarketAndComms(MarketAPI market, PersonAPI person) {
+        if (market == null || person == null) return;
+        if (marketHasPerson(market, person)) market.removePerson(person);
+        if (market.getCommDirectory() != null && market.getCommDirectory().getEntryForPerson(PERSON_ID) != null) {
+            market.getCommDirectory().removePerson(person);
+        }
     }
 
     public static class ShowcaseRequirement {

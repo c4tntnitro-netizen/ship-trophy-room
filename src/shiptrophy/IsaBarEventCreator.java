@@ -25,4 +25,14 @@ public class IsaBarEventCreator extends BaseBarEventCreator {
     public boolean isPriority() {
         return true;
     }
+
+    @Override
+    public float getBarEventAcceptedTimeoutDuration() {
+        return 1f;
+    }
+
+    @Override
+    public float getBarEventTimeoutDuration() {
+        return 1f;
+    }
 }

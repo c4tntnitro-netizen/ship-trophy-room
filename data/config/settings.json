@@ -1,0 +1,10 @@
+{
+    "ruleCommandPackages":[
+        "shiptrophy",
+    ],
+    "graphics":{
+        "characters":{
+            "ship_trophy_isa":"graphics/portraits/ship_trophy_isa.png",
+        },
+    },
+}

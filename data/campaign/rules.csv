@@ -1,0 +1,3 @@
+id,trigger,conditions,script,text,options,notes
+shipTrophyIsaContactOption,PopulateOptions,$id == ship_trophy_isa,,,"40:ship_trophy_isa_open:Talk about the Trophy Room ledgers.",Adds Isa's Trophy Room contact dialogue option.
+shipTrophyIsaContactOpen,DialogOptionSelected,$option == ship_trophy_isa_open,IsaContactRulesCMD,,,
