@@ -14,10 +14,10 @@ Keep these pieces intact while editing:
 
 - `=== knot_names ===`
 - The preview entry line: `-> isa_bar_prompt`
-- `# hook:` tags
-- `# subtype:` tags
+- `// hook:` comments
+- `// subtype:` comments
 - Dynamic placeholders such as `{market_name}`, `{current_dp}`, `{unlock_dp}`, `{hullmod_name}`, and `{remaining_dp}`
-- `[SYSTEM: ...]` and `[STATUS: ...]` lines, unless you want their UI wording changed too
+- `SYSTEM:` and `STATUS:` lines, unless you want their UI wording changed too
 
 When you are done, ask Codex to import `dialogue/isa.ink` back into the mod. The current targets are:
 
