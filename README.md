@@ -6,6 +6,7 @@ Adds a player-colony structure called **Trophy Room**.
 - Stores ships as normal mothballed storage vessels.
 - Generates story points passively while functional.
 - All functional Trophy Rooms are networked.
+- Adds **Isa**, a salvager and ship-modder contact who appears in the dockside bar after the first functional Trophy Room is built.
 - Base network rate is 1 story point per 180 days per functional Trophy Room.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
@@ -22,6 +23,9 @@ Showcasing 60 unique DP worth of a doctrine's ships across the Trophy Room netwo
 - **Path Trophy Zeal**: unlocked by Luddic Path ships; installable on low-tech ships. Same speed/range/fighter replacement tradeoff as Unstable Injector, increases crew casualties by 30%, and is incompatible with Unstable Injector. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations.
 - **Lion's Guard Trophy Pageantry**: unlocked by Lion's Guard ships; installable on midline ships. Acts like Energy Bolt Coherer: +100 energy projectile range, -100 beam range, +25% crew casualties. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations, and it is incompatible with Energy Bolt Coherer.
 - **Tri-Tachyon Trophy Legacy**: unlocked by Tri-Tachyon/high-tech ships; installable on high-tech ships. Reduces sensor profile by 15 and adds 200 hull integrity. Incompatible with Insulated Engine Assembly.
+- **Isa's Trophy Provenance**: unlocked through Isa's five-capital showcase: Onslaught XIV, Paragon, Invictus, Conquest, and Executor. Doubles positive S-mod bonus effects from built-in hullmods; S-mod penalties are not doubled.
+
+Only one Trophy Room hullmod can be installed on a ship at a time.
 
 ## Data-driven subtypes
 

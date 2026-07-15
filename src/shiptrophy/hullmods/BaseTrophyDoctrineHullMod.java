@@ -24,7 +24,7 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return isUnlocked() && matchesStyle(ship) && hasNoOtherDoctrine(ship);
+        return isUnlocked() && matchesStyle(ship) && hasNoOtherTrophyHullMod(ship);
     }
 
     @Override
@@ -46,8 +46,9 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
             String style = subtype == null ? "matching" : subtype.installStyle;
             return "Can only be installed on " + style + " ships";
         }
-        if (!hasNoOtherDoctrine(ship)) {
-            return "Only one Trophy subtype hullmod may be installed";
+        if (!hasNoOtherTrophyHullMod(ship)) {
+            String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getCurrentHullModId());
+            return other == null ? "Only one Trophy Room hullmod may be installed" : "Incompatible with " + other;
         }
         return null;
     }
@@ -74,6 +75,7 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         if (dmodNote != null) {
             tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");
         }
+        tooltip.addPara("Only one Trophy Room hullmod may be installed on a ship.", opad, h, "one Trophy Room hullmod");
     }
 
     protected boolean isUnlocked() {
@@ -84,13 +86,13 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         return TrophyNetwork.isMatchingInstallStyle(ship, getSubtypeId());
     }
 
-    protected boolean hasNoOtherDoctrine(ShipAPI ship) {
-        if (ship == null || ship.getVariant() == null) return true;
-        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getAllSubtypes()) {
-            if (subtype.id.equals(getSubtypeId())) continue;
-            if (subtype.hasHullModUnlock() && ship.getVariant().hasHullMod(subtype.hullModId)) return false;
-        }
-        return true;
+    protected boolean hasNoOtherTrophyHullMod(ShipAPI ship) {
+        return !TrophyHullModUtil.hasOtherTrophyHullMod(ship, getCurrentHullModId());
+    }
+
+    protected String getCurrentHullModId() {
+        TrophySubtypeSpec subtype = getSubtype();
+        return subtype == null ? "" : subtype.hullModId;
     }
 
     protected TrophySubtypeSpec getSubtype() {

@@ -18,7 +18,7 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return isUnlocked();
+        return isUnlocked() && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, getHullModId());
     }
 
     @Override
@@ -31,6 +31,8 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
         if (!isUnlocked()) {
             return "Requires the " + getRequiredShowcaseName() + " in the Trophy Room network";
         }
+        String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getHullModId());
+        if (other != null) return "Incompatible with " + other;
         return null;
     }
 
@@ -56,5 +58,6 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
             tooltip.addPara("Current fitted-weapon OP discount: %s.",
                     opad, h, "" + getCurrentDiscount(variant));
         }
+        tooltip.addPara("Only one Trophy Room hullmod may be installed on a ship.", opad, h, "one Trophy Room hullmod");
     }
 }

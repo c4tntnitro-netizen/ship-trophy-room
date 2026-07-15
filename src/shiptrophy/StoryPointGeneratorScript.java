@@ -31,6 +31,7 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);
         TrophyNetwork.refreshPlayerHullmodUnlocks(stats);
+        IsaTrophyManager.refreshIsaHullmod();
 
         if (dailyProduction <= 0f) return;
         progress += dailyProduction * interval.getIntervalDuration();

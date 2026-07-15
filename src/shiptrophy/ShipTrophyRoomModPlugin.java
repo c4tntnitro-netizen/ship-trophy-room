@@ -22,9 +22,12 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         ConfigurableTrophyHullMod.reload();
         Global.getSector().removeScriptsOfClass(StoryPointGeneratorScript.class);
         Global.getSector().addScript(new StoryPointGeneratorScript());
+        Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);
+        Global.getSector().addScript(new IsaTrophyScript());
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);
         TrophyNetwork.refreshPlayerHullmodUnlocks(stats);
+        IsaTrophyManager.refreshIsaHullmod();
     }
 }
