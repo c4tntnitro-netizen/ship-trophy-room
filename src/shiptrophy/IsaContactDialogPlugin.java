@@ -74,7 +74,7 @@ public class IsaContactDialogPlugin implements InteractionDialogPlugin {
         TrophyNetwork.refreshPlayerHullmodUnlocks(stats);
         IsaTrophyManager.refreshIsaHullmod();
 
-        text.addPara("Isa has the Trophy Room network up on a battered slate: %s functional rooms, %s unique hull types, %s unique deployment points.",
+        text.addPara("Isa has the Triumph Hall network up on a battered slate: %s functional rooms, %s unique hull types, %s unique deployment points.",
                 Misc.getHighlightColor(), "" + stats.functionalRooms, "" + stats.uniqueHullIds.size(), "" + Math.round(stats.uniqueDeploymentPoints));
         text.addPara("\"The trick is not owning ships,\" she says. \"It's owning examples. Hulls with enough history that they teach the rest of the dockyard something.\"");
 

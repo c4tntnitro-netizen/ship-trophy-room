@@ -20,6 +20,12 @@ import shiptrophy.hullmods.Gaze;
 
 public class IsaBarEvent extends BaseBarEvent {
     private static final String INTRO = "ship_trophy_intro";
+    private static final String INTRO_GREETING = "ship_trophy_intro_greeting";
+    private static final String INTRO_LUDD = "ship_trophy_intro_ludd";
+    private static final String INTRO_RESPECT = "ship_trophy_intro_respect";
+    private static final String INTRO_EXPLANATION = "ship_trophy_intro_explanation";
+    private static final String INTRO_EXPLANATION_2 = "ship_trophy_intro_explanation_2";
+    private static final String INTRO_EXPLANATION_3 = "ship_trophy_intro_explanation_3";
     private static final String ACCEPT = "ship_trophy_accept";
     private static final String LEDGER = "ship_trophy_ledger";
     private static final String MASTERWORK = "ship_trophy_masterwork";
@@ -59,10 +65,10 @@ public class IsaBarEvent extends BaseBarEvent {
         String marketName = home == null ? "the colony" : home.getName();
         TextPanelAPI text = dialog.getTextPanel();
         if (IsaTrophyManager.isIntroduced()) {
-            text.addPara("Isa is at a dockside table, boots hooked around a chair leg, arguing quietly with a pair of salvagers over a rotating hull schematic from the Trophy Room network.");
-            dialog.getOptionPanel().addOption("Talk to Isa about the Trophy Room ledgers.", this);
+            text.addPara("Isa is at a dockside table, boots hooked around a chair leg, arguing quietly with a pair of salvagers over a rotating hull schematic from the Triumph Hall network.");
+            dialog.getOptionPanel().addOption("Talk to Isa about the Triumph Hall ledgers.", this);
         } else {
-            text.addPara("A lean, orange-haired spacer with a salvage rig still dusted in machine soot watches the traffic from " + marketName + "'s docks. Her crew has staked out a bar table under a spread of projected hull sections.");
+            text.addPara("A lean, red-haired spacer with her overalls still dusted in machine oil and soot watches the traffic from the dockside bar at " + marketName + ". Her crew has staked out a bar table under a spread of projected hull sections. Her eyes glint as she sees hull after hull move in and out of the designated display berth.");
             dialog.getOptionPanel().addOption("Approach the salvager watching the Trophy Room traffic.", this);
         }
     }
@@ -83,7 +89,21 @@ public class IsaBarEvent extends BaseBarEvent {
         if (optionData == null) return;
         String option = optionData.toString();
 
-        if (ACCEPT.equals(option)) {
+        if (INTRO.equals(option)) {
+            showIntro();
+        } else if (INTRO_GREETING.equals(option)) {
+            showIntroGreeting();
+        } else if (INTRO_LUDD.equals(option)) {
+            showIntroLudd();
+        } else if (INTRO_RESPECT.equals(option)) {
+            showIntroRespect();
+        } else if (INTRO_EXPLANATION.equals(option)) {
+            showIntroExplanation();
+        } else if (INTRO_EXPLANATION_2.equals(option)) {
+            showIntroExplanation2();
+        } else if (INTRO_EXPLANATION_3.equals(option)) {
+            showIntroExplanation3();
+        } else if (ACCEPT.equals(option)) {
             acceptIntro();
         } else if (LEDGER.equals(option) || BACK.equals(option)) {
             showMainMenu();
@@ -103,12 +123,76 @@ public class IsaBarEvent extends BaseBarEvent {
     private void showIntro() {
         text.clear();
         showIsa();
-        text.addPara("\"Isa,\" she says, offering a hand with a few old burn scars across the knuckles. \"Small team, old habits. We pull ships out of places where they were meant to stay buried, then make them worth looking at again.\"");
-        text.addPara("\"Your colony's got ambition. More importantly, it has a Trophy Room. That's rare enough that my crew and I are willing to set up here, if you'll have us.\"");
-        text.addPara("She nods toward the docks. \"Keep the displays fed. I'll keep the ledgers readable, the refit notes indexed, and the really strange ideas from getting lost in the machinery.\"");
+
+        text.addPara("Her crew whispers as you approach and hurriedly clean up the blueprints. The spacer, however, turns and beams at you.");
+        text.addPara("She sticks out a daintier hand than you were expecting.");
+        text.addPara("\"Call me Isa. Chief nanoforge architect of Angel Ship Architectures.\"");
 
         options.clearOptions();
-        options.addOption("\"Welcome aboard.\"", ACCEPT);
+        options.addOption("\"" + getPlayerTitle() + " " + getPlayerName() + ".\" Welcome to " + getMarketName() + ", ma'am and gentlemen.", INTRO_GREETING);
+        options.addOption("\"Ludd's peace be on you.\"", INTRO_LUDD);
+        options.addOption("\"So you've heard of me. Nice to know someone on this rock respects me.\"", INTRO_RESPECT);
+        options.addOption("Leave her to her crew.", LEAVE);
+    }
+
+    private void showIntroGreeting() {
+        text.clear();
+        showIsa();
+
+        text.addPara("Isa does an exaggerated curtsy.");
+        text.addPara("\"Ma'am!\" she repeats. \"Hear that?\" She calls over her shoulder, to the genial cheers of her men. \"We're respectable citizens now!\"");
+        text.addPara("Isa straightens and gives your entourage an appraising look. Her gaze passes over the uniforms, the sidearms, and finally the power-armored marines at your back. You swear you can see her smile widen.");
+        showIntroExplanation();
+    }
+
+    private void showIntroLudd() {
+        text.clear();
+        showIsa();
+
+        text.addPara("Isa places one hand over her heart and gives an exaggerated bow.");
+        text.addPara("\"And on you, " + getPlayerTitle() + ". May your reactors run cool, your seals hold pressure, and every unexploded missile stay that way until someone else finds it. Aaaaa-men.\"");
+        text.addPara("She smiles.");
+        text.addPara("\"Every spacer finds religion eventually. Usually right after the life-support alarms start.\"");
+        showIntroExplanation();
+    }
+
+    private void showIntroRespect() {
+        text.clear();
+        showIsa();
+
+        text.addPara("Isa glances at the power-armored bodyguards flanking you. She points.");
+        text.addPara("\"Respect costs extra,\" one of your oldest marines says.");
+        text.addPara("\"" + getPlayerPronoun() + " doesn't even tip.\" The other huffs.");
+        text.addPara("\"Uh huh...\"");
+        showIntroExplanation();
+    }
+
+    private void showIntroExplanation() {
+        text.addPara("\"I'll cut to the chase, " + getPlayerTitle() + ".\" Isa looks up. \"I saw your vanity project out there. All those amazing ships with hundreds of cycles of history... I want you to hire us to research those ship frames.\"");
+        text.addPara("Isa looks out to the window wall that makes up the bar. For the first time, her eyes steady and her gaze turns far away. Another ship is floating in from dock, being towed into your museum. \"Incredible...\"");
+
+        options.clearOptions();
+        options.addOption("We've got ship engineers already.", INTRO_EXPLANATION_2);
+        options.addOption("Leave her to her crew.", LEAVE);
+    }
+
+    private void showIntroExplanation2() {
+        text.clear();
+        showIsa();
+        text.addPara("\"Not like us you don't.\" Isa grins. \"We'll work on commish. Just bring my team enough examples of those specialized hullframes, and I can work our magicks on modularizing the upgrades.\"");
+
+        options.clearOptions();
+        options.addOption("Holy Ludd. You can really do that?", INTRO_EXPLANATION_3);
+        options.addOption("Leave her to her crew.", LEAVE);
+    }
+
+    private void showIntroExplanation3() {
+        text.clear();
+        showIsa();
+        text.addPara("\"My team is the best in the sector. I'm the best in the entire Domain.\" Isa raises her fist and pulls you with her other hand into a bump. \"I promise you that.\"");
+
+        options.clearOptions();
+        options.addOption("Then welcome aboard.", ACCEPT);
         options.addOption("Leave her to her crew.", LEAVE);
     }
 
@@ -119,7 +203,7 @@ public class IsaBarEvent extends BaseBarEvent {
         if (Global.getSoundPlayer() != null) {
             Global.getSoundPlayer().playUISound("ui_contact_developed", 1f, 1f);
         }
-        text.addPara("Isa gives a brisk nod. \"Good. I'll have a bench set up off the docks by morning. Ask around for Isa if you want a read on the collection.\"");
+        text.addPara("Isa gives a brisk nod. \"Good. I'll rent an office 'round here by today. Ask around for Isa Leicester if you want a read on the collection.\"");
         text.addPara("Isa is now listed as a contact at " + (home == null ? "your colony" : home.getName()) + ".");
         options.clearOptions();
         options.addOption("Return to the bar.", LEAVE);
@@ -133,7 +217,7 @@ public class IsaBarEvent extends BaseBarEvent {
         TrophyNetwork.refreshPlayerHullmodUnlocks(stats);
         IsaTrophyManager.refreshIsaHullmod();
 
-        text.addPara("Isa has the Trophy Room network up on a battered slate: %s functional rooms, %s unique hull types, %s unique deployment points.",
+        text.addPara("Isa has the Triumph Hall network up on a battered slate: %s functional rooms, %s unique hull types, %s unique deployment points.",
                 Misc.getHighlightColor(), "" + stats.functionalRooms, "" + stats.uniqueHullIds.size(), "" + Math.round(stats.uniqueDeploymentPoints));
         text.addPara("\"The trick is not owning ships,\" she says. \"It's owning examples. Hulls with enough history that they teach the rest of the dockyard something.\"");
         showMainMenuOptions();
@@ -282,6 +366,30 @@ public class IsaBarEvent extends BaseBarEvent {
         options.clearOptions();
         options.addOption("Back.", BACK);
         options.addOption("Leave.", LEAVE);
+    }
+
+    private String getMarketName() {
+        MarketAPI home = IsaTrophyManager.findHomeMarket();
+        return home == null ? "the colony" : home.getName();
+    }
+
+    private String getPlayerTitle() {
+        PersonAPI player = Global.getSector() == null ? null : Global.getSector().getPlayerPerson();
+        String title = player == null ? null : player.getRank();
+        return title == null || title.length() <= 0 ? "Captain" : title;
+    }
+
+    private String getPlayerName() {
+        PersonAPI player = Global.getSector() == null ? null : Global.getSector().getPlayerPerson();
+        String name = player == null ? null : player.getNameString();
+        return name == null || name.length() <= 0 ? "" : name;
+    }
+
+    private String getPlayerPronoun() {
+        PersonAPI player = Global.getSector() == null ? null : Global.getSector().getPlayerPerson();
+        String pronoun = player == null ? null : player.getHeOrShe();
+        if (pronoun == null || pronoun.length() <= 0) return "They";
+        return pronoun.substring(0, 1).toUpperCase() + pronoun.substring(1);
     }
 
     private void showIsa() {
