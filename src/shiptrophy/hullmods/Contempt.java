@@ -85,9 +85,6 @@ public class Contempt extends BaseUniqueTrophyHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        tooltip.addPara("Trophy origin: %s.", opad, h, getRequiredShowcaseName());
-        tooltip.addPara("Uses live point-defense classification, including weapons converted by S-modded Integrated Point Defense AI.",
-                opad, h, "S-modded Integrated Point Defense AI");
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 

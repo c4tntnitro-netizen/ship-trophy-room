@@ -82,8 +82,6 @@ public class Gaze extends BaseUniqueTrophyHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        tooltip.addPara("Trophy origin: %s.", opad, h, getRequiredShowcaseName());
-        tooltip.addPara("Incompatible with %s.", opad, h, "Resistant Flux Conduits");
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 

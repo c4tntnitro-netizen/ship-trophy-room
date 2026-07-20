@@ -3,8 +3,6 @@ package shiptrophy.hullmods;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
 
 public class Memory extends BaseTrophyDoctrineHullMod {
     public static final String HULLMOD_ID = "ship_trophy_memory";
@@ -44,14 +42,6 @@ public class Memory extends BaseTrophyDoctrineHullMod {
         stats.getMaxSpeed().modifyFlat(id, getSpeedBonus(hullSize));
     }
 
-    @Override
-    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize,
-            ShipAPI ship, float width, boolean isForModSpec) {
-        super.addPostDescriptionSection(tooltip, hullSize, ship, width, isForModSpec);
-        float opad = 10f;
-        tooltip.addPara("Can only be installed on %s ships and is incompatible with %s.",
-                opad, Misc.getHighlightColor(), "Derelict or Explorarium", "Unstable Injector");
-    }
 
     @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {

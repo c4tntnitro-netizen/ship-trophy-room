@@ -46,12 +46,6 @@ public class IsaTrophyProvenance extends BaseHullMod {
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
-        tooltip.addPara("Trophy origin: Isa's Onslaught XIV, Paragon, Invictus, Conquest, and Executor showcase.",
-                opad, Misc.getHighlightColor(), "Onslaught XIV", "Paragon", "Invictus", "Conquest", "Executor");
-        tooltip.addPara("Doubles positive S-mod bonus effects from built-in hullmods on this ship. S-mod penalties are not doubled.",
-                opad, Misc.getHighlightColor(), "Doubles", "positive", "S-mod penalties are not doubled");
-        tooltip.addPara("Requires Isa's five-hull showcase: Onslaught XIV, Paragon, Invictus, Conquest, and Executor.",
-                opad, Misc.getHighlightColor(), "Onslaught XIV", "Paragon", "Invictus", "Conquest", "Executor");
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, Misc.getHighlightColor(), "one Hall of Triumph hullmod");
     }
 

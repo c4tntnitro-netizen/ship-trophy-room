@@ -81,10 +81,6 @@ public class Humanity extends NeuralInterface {
         super.addPostDescriptionSection(tooltip, hullSize, ship, width, isForModSpec);
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        TrophySubtypeSpec subtype = getSubtype();
-        String originName = subtype == null ? "Remnant" : subtype.displayName;
-        tooltip.addPara("Trophy origin: %s.", opad, h, originName);
-        tooltip.addPara("Incompatible with %s.", opad, h, "Neural Interface");
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.",
                 opad, h, "one Hall of Triumph hullmod");
     }

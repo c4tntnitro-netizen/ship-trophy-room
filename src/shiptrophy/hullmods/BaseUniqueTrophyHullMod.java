@@ -46,7 +46,6 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        tooltip.addPara("Trophy origin: %s.", opad, h, getRequiredShowcaseName());
 
         ShipVariantAPI variant = ship == null ? null : ship.getVariant();
         if (variant != null && variant.hasHullMod(getHullModId())) {

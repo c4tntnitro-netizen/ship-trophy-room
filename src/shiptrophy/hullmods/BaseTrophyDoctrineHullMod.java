@@ -65,9 +65,6 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        TrophySubtypeSpec subtype = getSubtype();
-        String originName = subtype == null ? "matching ships" : subtype.displayName;
-        tooltip.addPara("Trophy origin: %s.", opad, h, originName);
         String dmodNote = getDModCalculationNote();
         if (dmodNote != null) {
             tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");

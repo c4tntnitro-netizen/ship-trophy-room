@@ -61,7 +61,7 @@ public class LionGuardPageantry extends BaseTrophyDoctrineHullMod {
 
     @Override
     protected String getDModCalculationNote() {
-        return "This trophy refit is not a normal D-mod, but counts as a D-mod for calculations such as Derelict Operations.";
+        return "This hullmod counts as a D-mod.";
     }
 
     private boolean hasBoltCoherer(ShipAPI ship) {

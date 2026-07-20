@@ -375,10 +375,10 @@ HIGHLIGHT: Received Inheritance modspec.
 
 === isa_subtype_xiv ===
 // hook: data/campaign/rules.csv ShipTrophyIsaSubtypeComment rows
-// subtype: xiv; hullmod: XIV Legacy
+// subtype: xiv; hullmod: Legacy
 "XIV battlegroup hulls are history stapled to big guns." Isa says. "Very hard to argue with once the armor starts moving."
 ~ subtype_showcase_name = "XIV Battlegroup"
-~ hullmod_name = "XIV Legacy"
+~ hullmod_name = "Legacy"
 -> isa_subtype_progress
 
 === isa_subtype_lp ===
@@ -391,18 +391,18 @@ HIGHLIGHT: Received Inheritance modspec.
 
 === isa_subtype_lg ===
 // hook: data/campaign/rules.csv ShipTrophyIsaSubtypeComment rows
-// subtype: lg; hullmod: Lion's Guard Trophy Pageantry
+// subtype: lg; hullmod: Pageantry
 "Lion's Guard work is parade paint over surprisingly decent forge-level tuning. Ignoring the garbage wiring and that man-mulcher they call the 'Energy Bolt Coherer', it's got a surprisingly pratical layout. For some of the patterns, anways."
 ~ subtype_showcase_name = "Lion's Guard"
-~ hullmod_name = "Lion's Guard Trophy Pageantry"
+~ hullmod_name = "Pageantry"
 -> isa_subtype_progress
 
 === isa_subtype_tt ===
 // hook: data/campaign/rules.csv ShipTrophyIsaSubtypeComment rows
-// subtype: tt; hullmod: Tri-Tachyon Trophy Legacy
+// subtype: tt; hullmod: Optimization
 "Tri-Tachyon legacy hulls hide their best tricks in the absence of obvious machinery. Clean baffling, clean lies."
 ~ subtype_showcase_name = "Tri-Tachyon"
-~ hullmod_name = "Tri-Tachyon Trophy Legacy"
+~ hullmod_name = "Optimization"
 -> isa_subtype_progress
 
 === isa_subtype_knights ===
@@ -416,19 +416,19 @@ HIGHLIGHT: Received Inheritance modspec.
 
 === isa_subtype_uaf ===
 // hook: data/campaign/rules.csv shipTrophyIsaSubtypeCommentGeneric
-// subtype: uaf; required mod: uaf; hullmod: United Aurora Trophy Resonance
+// subtype: uaf; required mod: uaf; hullmod: Resonance
 "This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
 ~ subtype_showcase_name = "Auroran"
-~ hullmod_name = "United Aurora Trophy Resonance"
+~ hullmod_name = "Resonance"
 -> isa_subtype_progress
 
 === isa_subtype_iron_shell ===
 // hook: data/campaign/rules.csv shipTrophyIsaSubtypeCommentGeneric
 // subtype: iron_shell; required mod: timid_xiv
-// hullmod: Iron Shell Trophy Parade Drill
+// hullmod: Discipline
 "This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
 ~ subtype_showcase_name = "Iron Shell"
-~ hullmod_name = "Iron Shell Trophy Parade Drill"
+~ hullmod_name = "Discipline"
 -> isa_subtype_progress
 
 === isa_subtype_remnant ===
