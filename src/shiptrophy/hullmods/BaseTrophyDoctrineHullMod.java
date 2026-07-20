@@ -66,13 +66,8 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         TrophySubtypeSpec subtype = getSubtype();
-        String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
-        float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
-        String originName = subtype == null ? showcaseName : subtype.displayName;
+        String originName = subtype == null ? "matching ships" : subtype.displayName;
         tooltip.addPara("Trophy origin: %s.", opad, h, originName);
-        float current = TrophyNetwork.getSubtypeDp(getSubtypeId());
-        tooltip.addPara("Trophy network showcase: %s / %s DP worth of %s ships.",
-                opad, h, "" + Math.round(current), "" + Math.round(unlockDp), showcaseName);
         String dmodNote = getDModCalculationNote();
         if (dmodNote != null) {
             tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");

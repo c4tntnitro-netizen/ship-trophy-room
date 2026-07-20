@@ -47,8 +47,6 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         tooltip.addPara("Trophy origin: %s.", opad, h, getRequiredShowcaseName());
-        tooltip.addPara("Trophy network showcase: %s is %s.",
-                opad, h, getRequiredShowcaseName(), isUnlocked() ? "present" : "missing");
 
         ShipVariantAPI variant = ship == null ? null : ship.getVariant();
         if (variant != null && variant.hasHullMod(getHullModId())) {

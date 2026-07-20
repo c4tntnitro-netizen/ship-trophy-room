@@ -41,8 +41,6 @@ public abstract class BaseUniqueShowcaseHullMod extends BaseHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         tooltip.addPara("Trophy origin: %s.", opad, h, getRequiredShowcaseName());
-        tooltip.addPara("Trophy network showcase: %s is %s.",
-                opad, h, getRequiredShowcaseName(), isUnlocked() ? "present" : "missing");
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 }

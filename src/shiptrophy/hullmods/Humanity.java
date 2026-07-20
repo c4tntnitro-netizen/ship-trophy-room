@@ -82,13 +82,8 @@ public class Humanity extends NeuralInterface {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         TrophySubtypeSpec subtype = getSubtype();
-        String showcaseName = subtype == null ? "Remnant" : subtype.showcaseName;
-        float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
         String originName = subtype == null ? "Remnant" : subtype.displayName;
         tooltip.addPara("Trophy origin: %s.", opad, h, originName);
-        tooltip.addPara("Trophy network showcase: %s / %s DP worth of %s ships.",
-                opad, h, "" + Math.round(TrophyNetwork.getSubtypeDp(SUBTYPE_ID)),
-                "" + Math.round(unlockDp), showcaseName);
         tooltip.addPara("Incompatible with %s.", opad, h, "Neural Interface");
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.",
                 opad, h, "one Hall of Triumph hullmod");
