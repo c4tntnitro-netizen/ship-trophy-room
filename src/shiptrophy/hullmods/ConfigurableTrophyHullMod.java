@@ -40,6 +40,9 @@ public class ConfigurableTrophyHullMod extends BaseTrophyDoctrineHullMod {
 
         applyFlat(stats.getArmorBonus(), id, effect.armorFlat);
         applyFlat(stats.getHullBonus(), id, effect.hullFlat);
+        applyPercent(stats.getHullBonus(), id, effect.hullPercent);
+        applyPercent(stats.getHullDamageTakenMult(), id, effect.hullDamageTakenPercent);
+        applyPercent(stats.getArmorDamageTakenMult(), id, effect.armorDamageTakenPercent);
         applyPercent(stats.getMaxSpeed(), id, effect.maxSpeedPercent);
         applyPercent(stats.getAcceleration(), id, effect.maneuverPercent);
         applyPercent(stats.getDeceleration(), id, effect.maneuverPercent);
@@ -139,6 +142,9 @@ public class ConfigurableTrophyHullMod extends BaseTrophyDoctrineHullMod {
         final float crewLossPercent;
         final float sensorProfileFlat;
         final float sensorStrengthFlat;
+        final float hullPercent;
+        final float hullDamageTakenPercent;
+        final float armorDamageTakenPercent;
 
         EffectSpec(JSONObject row) {
             for (int i = 0; i < descriptionParams.length; i++) {
@@ -165,6 +171,9 @@ public class ConfigurableTrophyHullMod extends BaseTrophyDoctrineHullMod {
             crewLossPercent = optFloat(row, "crewLossPercent");
             sensorProfileFlat = optFloat(row, "sensorProfileFlat");
             sensorStrengthFlat = optFloat(row, "sensorStrengthFlat");
+            hullPercent = optFloat(row, "hullPercent");
+            hullDamageTakenPercent = optFloat(row, "hullDamageTakenPercent");
+            armorDamageTakenPercent = optFloat(row, "armorDamageTakenPercent");
         }
 
         private static float optFloat(JSONObject row, String key) {

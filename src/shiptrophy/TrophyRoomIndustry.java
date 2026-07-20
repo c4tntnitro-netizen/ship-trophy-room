@@ -66,8 +66,8 @@ public class TrophyRoomIndustry extends BaseIndustry {
         super.addPostDescriptionSection(tooltip, mode);
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        tooltip.addPara("Adds a dedicated Trophy Room storage tab for ships and cargo.", opad, h, "Trophy Room");
-        tooltip.addPara("All Trophy Rooms are networked. Story point generation and doctrine unlocks use the whole network's unique displayed hull types.",
+        tooltip.addPara("Adds a dedicated Hall of Triumph storage tab for ships and cargo.", opad, h, "Hall of Triumph");
+        tooltip.addPara("All Halls of Triumph are networked. Story point generation and doctrine unlocks use the whole network's unique displayed hull types.",
                 opad, h, "unique", "Duplicate ships");
         tooltip.addPara("Base rate is 1 story point every %s days. Every %s unique hull types and every %s total unique deployment points each add another full rate bonus.",
                 opad, h, "" + BASE_DAYS_PER_STORY_POINT, "" + TrophyNetwork.UNIQUE_HULLS_FOR_FULL_BONUS, "" + TrophyNetwork.DP_FOR_FULL_BONUS);
@@ -102,7 +102,7 @@ public class TrophyRoomIndustry extends BaseIndustry {
     public void addImproveDesc(TooltipMakerAPI info, ImprovementDescriptionMode mode) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        info.addPara("Reduces Trophy Room story point generation time by %s.", opad, h, "25%");
+        info.addPara("Reduces Hall of Triumph story point generation time by %s.", opad, h, "25%");
     }
 
     public static boolean isFunctionalTrophyRoom(Industry industry) {

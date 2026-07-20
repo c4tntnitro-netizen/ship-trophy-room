@@ -1,0 +1,3 @@
+id,name,order,tier,reqPoints,reqPointsPerExtraSkill,description,author,combat officer,admiral,admin,tags,icon,
+ship_trophy_isa_field_refit,Field-Refit Doctrine,11000,0,0,,"Every ship tells you where it is going to break. The trick is to listen before the shooting starts.","Isa Leicester, workshop notes",TRUE,,,"npc_only, deprecated",graphics/icons/skills/damage_control2.png,
+ship_trophy_isa_redline,Redline Calibration,11010,0,0,,"If the engines are still inside the hull when we dock, I left performance on the table.","Isa Leicester, workshop notes",TRUE,,,"npc_only, deprecated",graphics/icons/skills/helmsmanship.png,

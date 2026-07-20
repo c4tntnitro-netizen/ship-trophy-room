@@ -34,6 +34,8 @@ public class TrophyHullModUtil {
     public static boolean isVisibleTrophyHullMod(String hullModId) {
         if (hullModId == null || hullModId.length() <= 0) return false;
         if (Gaze.HULLMOD_ID.equals(hullModId) || Contempt.HULLMOD_ID.equals(hullModId)
+                || BlackLionInheritance.HULLMOD_ID.equals(hullModId)
+                || AbundantMercyVow.HULLMOD_ID.equals(hullModId)
                 || IsaTrophyManager.PROVENANCE_HULLMOD_ID.equals(hullModId)) {
             return true;
         }

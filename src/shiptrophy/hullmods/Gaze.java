@@ -1,7 +1,13 @@
 package shiptrophy.hullmods;
 
+import java.awt.Color;
+
+import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
+import com.fs.starfarer.api.impl.campaign.ids.HullMods;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.TrophyNetwork;
 
@@ -9,7 +15,7 @@ public class Gaze extends BaseUniqueTrophyHullMod {
     public static final String HULLMOD_ID = "ship_trophy_gaze";
     public static final String REQUIRED_BASE_HULL_ID = "ziggurat";
     public static final String DISCOUNT_PREFIX = "ship_trophy_gaze_op_discount_";
-    public static final int OP_DISCOUNT_PER_WEAPON = 2;
+    public static final float VENT_RATE_MULT = 2f;
 
     @Override
     protected String getHullModId() {
@@ -27,33 +33,66 @@ public class Gaze extends BaseUniqueTrophyHullMod {
     }
 
     @Override
+    public boolean isApplicableToShip(ShipAPI ship) {
+        if (!super.isApplicableToShip(ship)) return false;
+        return ship == null || ship.getVariant() == null || !ship.getVariant().hasHullMod(HullMods.FLUXBREAKERS);
+    }
+
+    @Override
+    public String getUnapplicableReason(ShipAPI ship) {
+        if (ship != null && ship.getVariant() != null && ship.getVariant().hasHullMod(HullMods.FLUXBREAKERS)) {
+            return "Incompatible with Resistant Flux Conduits";
+        }
+        return super.getUnapplicableReason(ship);
+    }
+
+    @Override
     protected void syncDiscountForVariant(ShipVariantAPI variant, boolean unlocked) {
-        syncVariant(variant, unlocked);
+        clearLegacyDiscountMarkers(variant);
     }
 
     public static void syncVariant(ShipVariantAPI variant, TrophyNetwork.CollectionStats stats) {
-        syncVariant(variant, TrophyNetwork.hasShowcasedHull(stats, REQUIRED_BASE_HULL_ID));
+        clearLegacyDiscountMarkers(variant);
     }
 
     public static void syncVariant(ShipVariantAPI variant, boolean unlocked) {
-        if (variant == null) return;
-        boolean active = unlocked && variant.hasHullMod(HULLMOD_ID);
-        int discount = active ? getDiscount(variant) : 0;
-        TrophyOpDiscounts.setDiscount(variant, DISCOUNT_PREFIX, discount);
+        clearLegacyDiscountMarkers(variant);
+    }
+
+    private static void clearLegacyDiscountMarkers(ShipVariantAPI variant) {
+        TrophyOpDiscounts.clearDiscount(variant, DISCOUNT_PREFIX);
     }
 
     @Override
     protected int getCurrentDiscount(ShipVariantAPI variant) {
-        return getDiscount(variant);
+        return 0;
     }
 
-    public static int getDiscount(ShipVariantAPI variant) {
-        return TrophyOpDiscounts.getWeaponTagDiscount(variant, OP_DISCOUNT_PER_WEAPON, "omega");
+    @Override
+    public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
+        super.applyEffectsBeforeShipCreation(hullSize, stats, id);
+        if (stats == null) return;
+        ShipVariantAPI variant = stats.getVariant();
+        if (variant == null || !variant.hasHullMod(HullMods.FLUXBREAKERS)) {
+            stats.getVentRateMult().modifyMult(id, VENT_RATE_MULT);
+        }
+    }
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
+        float opad = 10f;
+        Color h = Misc.getHighlightColor();
+        tooltip.addPara("Trophy origin: %s.", opad, h, getRequiredShowcaseName());
+        tooltip.addPara("Trophy network showcase: %s is %s.",
+                opad, h, getRequiredShowcaseName(), isUnlocked() ? "present" : "missing");
+        tooltip.addPara("Incompatible with %s.", opad, h, "Resistant Flux Conduits");
+        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 
     @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if (index == 0) return "" + OP_DISCOUNT_PER_WEAPON;
+        if (index == 0) return Math.round((VENT_RATE_MULT - 1f) * 100f) + "%";
+        if (index == 1) return "Resistant Flux Conduits";
         return null;
     }
 }

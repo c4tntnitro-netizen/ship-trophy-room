@@ -1,31 +1,34 @@
-# Ship Trophy Room
+# Hall of Triumph
 
-Adds a player-colony structure called **Trophy Room**.
+Adds a player-colony structure called **Hall of Triumph**.
 
-- Unlocks a dedicated **Trophy Room** storage tab on the colony.
+- Unlocks a dedicated **Hall of Triumph** storage tab on the colony.
 - Stores ships as normal mothballed storage vessels.
 - Generates story points passively while functional.
-- All functional Trophy Rooms are networked.
-- Adds **Isa**, a salvager and ship-modder contact who appears in the dockside bar after the first functional Trophy Room is built.
-- Base network rate is 1 story point per 180 days per functional Trophy Room.
+- All functional Halls of Triumph are networked.
+- Adds **Isa**, a salvager and ship-modder contact who appears in the dockside bar after the first functional Hall of Triumph is built.
+- Completing every vanilla Isa trophy program grants **Isa Leicester** as a steady level-8 officer with two exclusive skills; optional mod integrations are not required.
+- Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
 - Every 12 unique hull types adds another full base-rate bonus.
 - Every 240 total deployment points from unique hulls adds another full base-rate bonus.
 - Tracks hosted hull-size counts: frigates, destroyers, cruisers, and capitals.
-- Improving a structure makes that Trophy Room count as a 33% stronger story-point node.
+- Improving a structure makes that Hall of Triumph count as a 33% stronger story-point node.
 
 ## Doctrine unlocks
 
-Showcasing 60 unique DP worth of a doctrine's ships across the Trophy Room network teaches the player a 0 OP hullmod:
+Showcasing 60 unique DP worth of a doctrine's ships across the Hall of Triumph network teaches the player a 0 OP hullmod:
 
-- **Fourteenth Trophy Legacy**: unlocked by XIV Battlegroup ships; installable on low-tech ships. Adds 100 armor, reduces speed and maneuverability by 8%, and improves flux capacity and dissipation by 5%.
-- **Path Trophy Zeal**: unlocked by Luddic Path ships; installable on low-tech ships. Same speed/range/fighter replacement tradeoff as Unstable Injector, increases crew casualties by 30%, and is incompatible with Unstable Injector. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations.
+- **XIV Legacy**: unlocked by XIV Battlegroup ships; installable on low-tech ships. Adds 100 armor, reduces speed and maneuverability by 8%, and improves flux capacity and dissipation by 5%.
+- **Zeal**: unlocked by Luddic Path ships; installable on low-tech ships. Same speed/range/fighter replacement tradeoff as Unstable Injector, increases crew casualties by 30%, and is incompatible with Unstable Injector. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations.
 - **Lion's Guard Trophy Pageantry**: unlocked by Lion's Guard ships; installable on midline ships. Acts like Energy Bolt Coherer: +100 energy projectile range, -100 beam range, +25% crew casualties. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations, and it is incompatible with Energy Bolt Coherer.
 - **Tri-Tachyon Trophy Legacy**: unlocked by Tri-Tachyon/high-tech ships; installable on high-tech ships. Reduces sensor profile by 15 and adds 200 hull integrity. Incompatible with Insulated Engine Assembly.
+- **Humanity**: unlocked by showcasing 60 unique DP of Remnant ships. Reduces the ship's deployment cost to 0 DP, reduces ballistic, energy, and missile fire rate and top speed by 80%, reduces fighter engagement range by 90%, functions as Neural Interface, and is incompatible with Neural Interface.
+- **Memory**: unlocked by showcasing 60 unique DP of Domain Derelict/Explorarium ships and installable only on those ships. Adds 80% hull integrity, 300 armor, and 25/20/15/15 top speed by hull size. Incompatible with Unstable Injector.
 - **Awe**: unlocked through Isa's five-capital showcase: Onslaught XIV, Paragon, Invictus, Conquest, and Executor. Doubles positive S-mod bonus effects from built-in hullmods; S-mod penalties are not doubled.
 
-Only one Trophy Room hullmod can be installed on a ship at a time.
+Only one Hall of Triumph hullmod can be installed on a ship at a time.
 
 ## Data-driven subtypes
 
@@ -44,16 +47,24 @@ Important columns:
 
 Optional example integrations are included:
 
-- **Knights of Ludd Trophy Benediction**: active only with `knights_of_ludd`; energy weapon damage +5%, shield damage taken -5%.
-- **United Aurora Trophy Resonance**: active only with `uaf`; flux capacity/dissipation +5%, fighter refit time -10%.
+- **Honor**: active only with `knights_of_ludd`; low-tech only, hull and armor damage taken -5%, hull integrity +10%, shield damage taken -10%.
+- **United Aurora Trophy Resonance**: active only with `uaf`; a 0-OP ECCM Package equivalent, incompatible with ECCM Package.
 - **Iron Shell Trophy Parade Drill**: active only with `timid_xiv`; +75 armor, +50 ballistic weapon range.
 
 For a plain-language walkthrough of adding your own subtype and special trophy hullmod, see `docs/creating_trophy_hullmods.md`.
 
 ## Unique showcase unlocks
 
-- **Gaze**: unlocked by showcasing the Ziggurat anywhere in the Trophy Room network. Reduces OP costs of fitted Omega weapons by 2 each.
-- **Contempt**: unlocked by showcasing the Onslaught Mk.I anywhere in the Trophy Room network. Reduces OP costs of fitted Dweller and Threat weapons by 1 each.
+- **Gaze**: unlocked by showcasing the Ziggurat anywhere in the Hall of Triumph network. Doubles flux dissipation while venting and is incompatible with Resistant Flux Conduits.
+- **Contempt**: unlocked by showcasing the Onslaught Mk.I anywhere in the Hall of Triumph network. Point-defense weapons deal 25% increased damage to fighters and missiles and generate 10% less flux; this includes weapons converted by S-modded Integrated Point Defense AI. All weapons also deal 5% increased damage to hull.
+- Featured mod-ship showcases: **Abundant Mercy** from Knights Hospitaller (`knights_hospitallar`) and **The Black Lion** from Black Lion Ships (`black_lion_ships`) are always listed in Isa's modded unique-hull menu, even when their source mods are not installed. Their 0 OP trophy hullmods can only be unlocked when the corresponding ship is actually available and displayed.
+
+- **Inheritance**: unlocked by showcasing The Black Lion. Increases energy weapon damage by 10% and reduces energy weapon flux cost by 5%.
+- **Vow**: unlocked by showcasing the Abundant Mercy. Reduces crew casualties by 25% and fighter refit time by 10%.
+
+## Combat Chatter integration
+
+If **Combat Chatter** is installed, Isa uses a custom combat dialogue pool once she joins your officer roster. The integration is data-only and keyed to her officer name, **Isa Leicester**, so Combat Chatter is not required to run Hall of Triumph.
 
 ## Build
 
@@ -69,4 +80,4 @@ To make a clean install folder that excludes Git metadata and build scratch:
 .\package.ps1
 ```
 
-Then copy `dist\ShipTrophyRoom` into `Starsector\mods`, enable **Ship Trophy Room**, and start/load a campaign.
+Then copy `dist\HallOfTriumph` into `Starsector\mods`, enable **Hall of Triumph**, and start/load a campaign.

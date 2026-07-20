@@ -1,10 +1,15 @@
 {
-    "ruleCommandPackages":[
-        "shiptrophy",
+    "ruleCommandPackages": [
+        "shiptrophy"
     ],
-    "graphics":{
-        "characters":{
-            "ship_trophy_isa":"graphics/portraits/ship_trophy_isa.png",
+    "graphics": {
+        "characters": {
+            "ship_trophy_isa": "graphics/portraits/ship_trophy_isa.png",
+            "ship_trophy_isa_officer": "graphics/hullmods/awe.png"
         },
-    },
+        "illustrations": {
+            "ship_trophy_hall_complete": "graphics/Hall Of Triumph.png",
+            "ship_trophy_letterbox_black": "graphics/ship_trophy_letterbox_black.png"
+        }
+    }
 }

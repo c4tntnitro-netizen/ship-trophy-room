@@ -1,0 +1,73 @@
+{
+  "name":"Isa Leicester",
+  "personalities":["steady"],
+  "gender":["f"],
+  "chance":0,
+  "talkativeness":1,
+  "categoryTags":["original"],
+  "lines":{
+    "start":[
+      {"text":"Chief Engineer Leicester, assuming command."},
+      {"text":"Telemetry is live. Let's see what these old hulls can still teach us."},
+      {"text":"Time for some field tests."}
+    ],
+    "start_boss":[
+      {"text":"That signature is antimatter-grade trouble. Get a clean scan of it before it explodes. Or we do."},
+      {"text":"Careful with that one!"}
+    ],
+    "retreat":[
+      {"text":"Pulling back. I can fix her up."},
+      {"text":"Disengaging. Learned enough today."}
+    ],
+    "out_of_missiles":[
+      {"text":"Missile racks dry!"},
+      {"text":"That's the last missile! Ugh, hope it was worth the ordnance. All that money..."}
+    ],
+    "engaged":[
+      {"text":"Engaging. Ludd above, their loadouts are straight ass."},
+      {"text":"Let's take them apart!"},
+      {"text":"Contact! I want to know what their engineers thought they were doing."}
+    ],
+    "need_help":[
+      {"text":"I could use a hand! Before all my hard work gets blasted off!"},
+      {"text":"Support needed!"}
+    ],
+    "pursuing":[
+      {"text":"They're running! Please keep them intact!"},
+      {"text":"After them!"}
+    ],
+    "running":[
+      {"text":"Backing off!"},
+      {"text":"Falling back!"}
+    ],
+    "hull_90":[
+      {"text":"Armor's opened up!"},
+      {"text":"Breach! Breach! Seal bulkheads and send damage control!"}
+    ],
+    "hull_50":[
+      {"text":"Half hull!"},
+      {"text":"Structural integrity below fifty!"}
+    ],
+    "hull_30":[
+      {"text":"Hull critical! The ship's singing the fat lady's song!"},
+      {"text":"Son of a bitch! If we survive, I'm welding the patches up myself!"}
+    ],
+    "overload":[
+      {"text":"Overloaded. Fantastic."},
+      {"text":"Flux grid is out. Cover us, I'm fixing her up!"}
+    ],
+    "death":[
+      {"text":"Escape pods! Save as many as you ca - *static*"},
+      {"text":"Closing time, Captain- *static*"}
+    ],
+    "victory":[
+      {"text":"Glad that's over. I want logs, samples, and coffee."},
+      {"text":"Good work. Try to leave me something recognizable in the salvage."},
+      {"text":"Just a kinetic peer review."}
+    ],
+    "victory_boss":[
+      {"text":"That wreck is going to sing her song."},
+      {"text":"No one touch the weird parts until I get there. That means you, Captain."}
+    ]
+  }
+}

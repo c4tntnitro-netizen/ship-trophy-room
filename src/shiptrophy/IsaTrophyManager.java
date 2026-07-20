@@ -6,28 +6,41 @@ import java.util.List;
 import java.util.Set;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PersonImportance;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.FullName;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
+import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Personalities;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel.ContactState;
 import com.fs.starfarer.api.loading.HullModSpecAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.util.Misc;
+
+import shiptrophy.hullmods.Contempt;
+import shiptrophy.hullmods.Gaze;
 
 public class IsaTrophyManager {
     public static final String PERSON_ID = "ship_trophy_isa";
     public static final String PORTRAIT_ID = "ship_trophy_isa";
     public static final String PORTRAIT_PATH = "graphics/portraits/ship_trophy_isa.png";
+    public static final String OFFICER_PORTRAIT_ID = "ship_trophy_isa_officer";
+    public static final String OFFICER_PORTRAIT_PATH = "graphics/hullmods/awe.png";
     public static final String PROVENANCE_HULLMOD_ID = "ship_trophy_isa_provenance";
+    public static final String DEFENSIVE_SKILL_ID = "ship_trophy_isa_field_refit";
+    public static final String MOBILITY_SKILL_ID = "ship_trophy_isa_redline";
 
     private static final ShowcaseRequirement[] MASTERWORK_REQUIREMENTS = new ShowcaseRequirement[] {
             new ShowcaseRequirement("Onslaught XIV", "onslaught_xiv", null),
@@ -90,6 +103,140 @@ public class IsaTrophyManager {
         Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_ISA_MASTERWORK_COMPLETED, true);
     }
 
+    public static boolean wasUnlockDialogueSeen(String hullModId) {
+        return Global.getSector() != null && hullModId != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                        ShipTrophyRoomIds.MEMORY_ISA_UNLOCK_DIALOGUE_SEEN_PREFIX + hullModId);
+    }
+
+    public static void setUnlockDialogueSeen(String hullModId) {
+        if (Global.getSector() == null || hullModId == null) return;
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_UNLOCK_DIALOGUE_SEEN_PREFIX + hullModId, true);
+    }
+
+    public static boolean wasOfficerGranted() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(ShipTrophyRoomIds.MEMORY_ISA_OFFICER_GRANTED);
+    }
+
+    private static void setOfficerGranted() {
+        if (Global.getSector() == null) return;
+        Global.getSector().getMemoryWithoutUpdate().set(ShipTrophyRoomIds.MEMORY_ISA_OFFICER_GRANTED, true);
+    }
+
+    public static boolean wasFactionCompletionSceneShown() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                        ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE);
+    }
+
+    public static void setFactionCompletionSceneShown() {
+        if (Global.getSector() == null) return;
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE, true);
+    }
+
+    public static boolean areAllFactionHullmodsComplete(TrophyNetwork.NetworkStats stats) {
+        if (stats == null) stats = TrophyNetwork.computeNetworkStats();
+        int activePrograms = 0;
+        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
+            if (!subtype.hasHullModUnlock() || !hullModExists(subtype.hullModId)) continue;
+            activePrograms++;
+            if (stats.getSubtypeDp(subtype.id) < subtype.unlockDp) return false;
+        }
+        return activePrograms > 0;
+    }
+    public static boolean areAllQuestsComplete() {
+        return areAllQuestsComplete(TrophyNetwork.computeNetworkStats());
+    }
+
+    public static boolean areAllQuestsComplete(TrophyNetwork.NetworkStats stats) {
+        if (!isIntroduced()) return false;
+        if (!isMasterworkComplete()) return false;
+        if (stats == null) stats = TrophyNetwork.computeNetworkStats();
+        if (!TrophyNetwork.hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID)) return false;
+        if (!TrophyNetwork.hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID)) return false;
+        for (TrophyUniqueShowcases.ShowcaseSpec showcase : TrophyUniqueShowcases.getActiveShowcases()) {
+            if (showcase.isModIntegration()) continue;
+            if (!TrophyNetwork.hasShowcasedHull(stats, showcase.hullId)) return false;
+        }
+
+        for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
+            if (subtype.isModIntegration()) continue;
+            if (!subtype.hasHullModUnlock() || !hullModExists(subtype.hullModId)) continue;
+            if (stats.getSubtypeDp(subtype.id) < subtype.unlockDp) return false;
+        }
+        return true;
+    }
+
+    public static boolean grantOfficerIfComplete() {
+        if (Global.getSector() == null || wasOfficerGranted()) return false;
+
+        TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
+        if (!areAllQuestsComplete(stats)) return false;
+        setMasterworkCompleted();
+
+        CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
+        if (fleet == null || fleet.getFleetData() == null) return false;
+
+        PersonAPI isa = getOrCreateIsa(findHomeMarket());
+        if (isa == null) return false;
+        configureIsaOfficer(isa);
+
+        FleetDataAPI fleetData = fleet.getFleetData();
+        if (!isIsaOfficerInRoster(fleetData)) {
+            fleetData.addOfficer(isa);
+        }
+
+        setOfficerGranted();
+
+        if (Global.getSector().getCampaignUI() != null) {
+            Global.getSector().getCampaignUI().addMessage(
+                    "Isa Leicester has joined your fleet as an officer.", Misc.getBasePlayerColor());
+        }
+        return true;
+    }
+
+    private static boolean isIsaOfficerInRoster(FleetDataAPI fleetData) {
+        if (fleetData == null) return false;
+        for (OfficerDataAPI officer : fleetData.getOfficersCopy()) {
+            if (officer != null && officer.getPerson() != null && PERSON_ID.equals(officer.getPerson().getId())) return true;
+        }
+        return false;
+    }
+
+    private static void configureIsaOfficer(PersonAPI person) {
+        if (person == null) return;
+        person.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
+        person.setGender(FullName.Gender.FEMALE);
+        person.setFaction(Factions.PLAYER);
+        person.setPortraitSprite(getIsaPortraitSprite());
+        person.setRankId(Ranks.SPACE_CHIEF);
+        person.setPostId(Ranks.POST_NANOFORGE_ENGINEER);
+        person.setPersonality(Personalities.STEADY);
+
+        MutableCharacterStatsAPI stats = person.getStats();
+        if (stats == null) return;
+        stats.setLevel(8);
+        stats.setSkillLevel(Skills.ORDNANCE_EXPERTISE, 2f);
+        stats.setSkillLevel(Skills.SYSTEMS_EXPERTISE, 2f);
+        stats.setSkillLevel(Skills.DAMAGE_CONTROL, 2f);
+        stats.setSkillLevel(Skills.COMBAT_ENDURANCE, 1f);
+        stats.setSkillLevel(Skills.HELMSMANSHIP, 1f);
+        stats.setSkillLevel(Skills.IMPACT_MITIGATION, 1f);
+        stats.setSkillLevel(DEFENSIVE_SKILL_ID, 1f);
+        stats.setSkillLevel(MOBILITY_SKILL_ID, 1f);
+        stats.refreshCharacterStatsEffects();
+    }
+
+    public static void refreshIsaOfficerSkills() {
+        if (Global.getSector() == null || !wasOfficerGranted()) return;
+        PersonAPI isa = Global.getSector().getImportantPeople().getPerson(PERSON_ID);
+        if (isa == null) isa = getOrCreateIsa(findHomeMarket());
+        configureIsaOfficer(isa);
+    }
+
     public static PersonAPI getOrCreateIsa(MarketAPI market) {
         if (Global.getSector() == null) return null;
 
@@ -98,7 +245,7 @@ public class IsaTrophyManager {
         if (person == null) {
             person = Global.getFactory().createPerson();
             person.setId(PERSON_ID);
-            person.setName(new FullName("Isa", "", FullName.Gender.FEMALE));
+            person.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
             person.setGender(FullName.Gender.FEMALE);
             person.setFaction(Factions.PLAYER);
             person.setRankId(Ranks.SPACE_CHIEF);
@@ -109,6 +256,10 @@ public class IsaTrophyManager {
             person.addTag(Tags.CONTACT_TRADE);
             Global.getSector().getImportantPeople().addPerson(person);
         }
+        person.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
+        person.setGender(FullName.Gender.FEMALE);
+        person.setFaction(Factions.PLAYER);
+        person.setPersonality(Personalities.STEADY);
         person.setPortraitSprite(getIsaPortraitSprite());
 
         if (market != null) {
@@ -126,11 +277,20 @@ public class IsaTrophyManager {
     }
 
     public static String getIsaPortraitSprite() {
-        if (Global.getSettings() == null) return PORTRAIT_PATH;
+        return getPortraitSprite(PORTRAIT_ID, PORTRAIT_PATH);
+    }
+
+    public static String getIsaContactPortraitSprite() {
+        if (!wasOfficerGranted()) return getIsaPortraitSprite();
+        return getPortraitSprite(OFFICER_PORTRAIT_ID, OFFICER_PORTRAIT_PATH);
+    }
+
+    private static String getPortraitSprite(String id, String fallbackPath) {
+        if (Global.getSettings() == null) return fallbackPath;
         try {
-            return Global.getSettings().getSpriteName("characters", PORTRAIT_ID);
+            return Global.getSettings().getSpriteName("characters", id);
         } catch (Exception ex) {
-            return PORTRAIT_PATH;
+            return fallbackPath;
         }
     }
 

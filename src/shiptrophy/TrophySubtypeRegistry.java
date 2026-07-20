@@ -89,6 +89,10 @@ public class TrophySubtypeRegistry {
                 "", 60f, "midline", "_lg|lg_|executor", "", "lion's guard|lions guard", "(lg)|lion|executor", "", ""));
         add(new TrophySubtypeSpec("tt", "Tri-Tachyon", "Tri-Tachyon", "ship_trophy_tt_optimization",
                 "", 60f, "high-tech", "tritachyon|_tt|tt_", "", "tri-tachyon|tritachyon|high tech|high-tech", "(tt)|tri-tachyon", "", ""));
+        add(new TrophySubtypeSpec("remnant", "Remnant", "Remnant", "ship_trophy_humanity",
+                "", 60f, "any", "", "", "remnant", "", "", ""));
+        add(new TrophySubtypeSpec("domain_derelict", "Domain Derelicts", "Explorarium", "ship_trophy_memory",
+                "", 60f, "any", "", "", "explorarium|derelict", "", "", ""));
     }
 
     private static void add(TrophySubtypeSpec spec) {

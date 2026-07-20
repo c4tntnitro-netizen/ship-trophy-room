@@ -62,6 +62,10 @@ public class TrophySubtypeSpec {
                 row.optString("variantTagMatches"));
     }
 
+    public boolean isModIntegration() {
+        return requiredModId.length() > 0;
+    }
+
     public boolean isActive() {
         if (requiredModId.length() <= 0) return true;
         return Global.getSettings() != null

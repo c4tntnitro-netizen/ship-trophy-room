@@ -112,6 +112,11 @@ public class TrophyNetwork {
 
         setKnownHullMod(player, Gaze.HULLMOD_ID, hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID));
         setKnownHullMod(player, Contempt.HULLMOD_ID, hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID));
+        for (TrophyUniqueShowcases.ShowcaseSpec showcase : TrophyUniqueShowcases.getAllShowcases()) {
+            if (hullModExists(showcase.hullModId)) {
+                setKnownHullMod(player, showcase.hullModId, showcase.isActive() && hasShowcasedHull(stats, showcase.hullId));
+            }
+        }
     }
 
     private static boolean hullModExists(String hullModId) {
@@ -294,6 +299,13 @@ public class TrophyNetwork {
             if (uniqueHullIds.add(baseHullId)) {
                 float dp = Math.max(0f, member.getUnmodifiedDeploymentPointsCost());
                 uniqueHullDp.put(baseHullId, dp);
+                uniqueDeploymentPoints += dp;
+            }
+
+            String hullId = member.getHullId();
+            if (TrophyUniqueShowcases.isOptionalUniqueHull(hullId) && uniqueHullIds.add(hullId)) {
+                float dp = Math.max(0f, member.getUnmodifiedDeploymentPointsCost());
+                uniqueHullDp.put(hullId, dp);
                 uniqueDeploymentPoints += dp;
             }
 

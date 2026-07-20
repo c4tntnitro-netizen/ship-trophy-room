@@ -39,7 +39,7 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
             String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
             float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
             return "Requires " + Math.round(unlockDp) + " DP worth of "
-                    + showcaseName + " ships in the Trophy Room network";
+                    + showcaseName + " ships in the Hall of Triumph network";
         }
         if (!matchesStyle(ship)) {
             TrophySubtypeSpec subtype = getSubtype();
@@ -48,7 +48,7 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         }
         if (!hasNoOtherTrophyHullMod(ship)) {
             String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getCurrentHullModId());
-            return other == null ? "Only one Trophy Room hullmod may be installed" : "Incompatible with " + other;
+            return other == null ? "Only one Hall of Triumph hullmod may be installed" : "Incompatible with " + other;
         }
         return null;
     }
@@ -68,6 +68,8 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         TrophySubtypeSpec subtype = getSubtype();
         String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
         float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
+        String originName = subtype == null ? showcaseName : subtype.displayName;
+        tooltip.addPara("Trophy origin: %s.", opad, h, originName);
         float current = TrophyNetwork.getSubtypeDp(getSubtypeId());
         tooltip.addPara("Trophy network showcase: %s / %s DP worth of %s ships.",
                 opad, h, "" + Math.round(current), "" + Math.round(unlockDp), showcaseName);
@@ -75,7 +77,7 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         if (dmodNote != null) {
             tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");
         }
-        tooltip.addPara("Only one Trophy Room hullmod may be installed on a ship.", opad, h, "one Trophy Room hullmod");
+        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 
     protected boolean isUnlocked() {

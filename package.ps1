@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $packageRoot = Join-Path $PSScriptRoot "dist"
-$modRoot = Join-Path $packageRoot "ShipTrophyRoom"
+$modRoot = Join-Path $packageRoot "HallOfTriumph"
 
 $resolvedPackageRoot = [System.IO.Path]::GetFullPath($packageRoot)
 $resolvedModRoot = [System.IO.Path]::GetFullPath($modRoot)

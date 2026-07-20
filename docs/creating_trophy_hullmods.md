@@ -1,30 +1,30 @@
 # Creating Special Trophy Hullmods
 
-This guide is for mod authors who want Ship Trophy Room to recognize their ships and unlock a special trophy hullmod. You can make a simple bonus hullmod without writing Java.
+This guide is for mod authors who want Hall of Triumph to recognize their ships and unlock a special trophy hullmod. You can make a simple bonus hullmod without writing Java.
 
 The short version:
 
-1. Add Ship Trophy Room as a dependency in your mod.
+1. Add Hall of Triumph as a dependency in your mod.
 2. Add one row to `data/config/ship_trophy_room/subtypes.csv`.
 3. Add one row to `data/hullmods/hull_mods.csv`.
 4. Add one row to `data/config/ship_trophy_room/hullmod_effects.csv`.
 
-Do this in your own mod or patch mod. You do not need to edit Ship Trophy Room's files directly.
+Do this in your own mod or patch mod. You do not need to edit Hall of Triumph's files directly.
 
 ## 1. Add the dependency
 
-If your hullmod uses the no-code script from Ship Trophy Room, your mod should depend on Ship Trophy Room so the script exists when the game loads:
+If your hullmod uses the no-code script from Hall of Triumph, your mod should depend on Hall of Triumph so the script exists when the game loads:
 
 ```json
 "dependencies": [
   {
     "id": "ship_trophy_room",
-    "name": "Ship Trophy Room"
+    "name": "Hall of Triumph"
   }
 ]
 ```
 
-If your mod already has dependencies, add the Ship Trophy Room entry to that list.
+If your mod already has dependencies, add the Hall of Triumph entry to that list.
 
 ## 2. Add a subtype row
 
@@ -49,7 +49,7 @@ my_mod_elite,My Mod Elite,Elite,ship_trophy_my_mod_elite,my_mod,60,any,my_mod_,,
 What the columns mean:
 
 - `id`: Unique subtype id. Use your mod id as a prefix, like `my_mod_elite`.
-- `displayName`: Name shown in Trophy Room status text.
+- `displayName`: Name shown in Hall of Triumph status text.
 - `showcaseName`: Name used in unlock text, such as "60 DP worth of Elite ships".
 - `hullModId`: The hullmod to unlock when the DP target is reached.
 - `requiredModId`: Optional mod id gate. Leave blank if it should always work. Use your own mod id if this row belongs to your mod.
@@ -91,14 +91,14 @@ Example row:
 
 ```csv
 name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sModDesc,sprite
-My Mod Elite Trophy,ship_trophy_my_mod_elite,0,,Trophy Room,"offensive, restricted, no_drop_salvage",Weapons,0,FALSE,FALSE,FALSE,0,0,0,0,shiptrophy.hullmods.ConfigurableTrophyHullMod,"Elite parade tuning from showcased hulls increases energy weapon damage by %s and reduces shield damage taken by %s.",Elite trophy refit.,,graphics/hullmods/advanced_optics.png
+My Mod Elite Trophy,ship_trophy_my_mod_elite,0,,Hall of Triumph,"offensive, restricted, no_drop_salvage",Weapons,0,FALSE,FALSE,FALSE,0,0,0,0,shiptrophy.hullmods.ConfigurableTrophyHullMod,"Elite parade tuning from showcased hulls increases energy weapon damage by %s and reduces shield damage taken by %s.",Elite trophy refit.,,graphics/hullmods/advanced_optics.png
 ```
 
 The `id` must exactly match the `hullModId` from your subtype row.
 
 Use `%s` in the description for values you want to fill from `descParam0`, `descParam1`, and so on in the effects file.
 
-The `restricted` and `no_drop_salvage` tags are recommended for trophy hullmods. The hullmod is still locked by the Trophy Room network until the player showcases enough matching DP.
+The `restricted` and `no_drop_salvage` tags are recommended for trophy hullmods. The hullmod is still locked by the Hall of Triumph network until the player showcases enough matching DP.
 
 ## 4. Add no-code effects
 
@@ -111,7 +111,7 @@ data/config/ship_trophy_room/hullmod_effects.csv
 Use this header:
 
 ```csv
-hullModId,descParam0,descParam1,descParam2,descParam3,descParam4,descParam5,descParam6,descParam7,descParam8,descParam9,armorFlat,hullFlat,maxSpeedPercent,maneuverPercent,fluxCapacityPercent,fluxDissipationPercent,ballisticRangeFlat,energyRangeFlat,missileRangeFlat,ballisticDamagePercent,energyDamagePercent,missileDamagePercent,ballisticFluxCostPercent,energyFluxCostPercent,missileFluxCostPercent,shieldDamageTakenPercent,shieldUpkeepPercent,fighterRefitTimePercent,crewLossPercent,sensorProfileFlat,sensorStrengthFlat
+hullModId,descParam0,descParam1,descParam2,descParam3,descParam4,descParam5,descParam6,descParam7,descParam8,descParam9,armorFlat,hullFlat,maxSpeedPercent,maneuverPercent,fluxCapacityPercent,fluxDissipationPercent,ballisticRangeFlat,energyRangeFlat,missileRangeFlat,ballisticDamagePercent,energyDamagePercent,missileDamagePercent,ballisticFluxCostPercent,energyFluxCostPercent,missileFluxCostPercent,shieldDamageTakenPercent,shieldUpkeepPercent,fighterRefitTimePercent,crewLossPercent,sensorProfileFlat,sensorStrengthFlat,hullPercent,hullDamageTakenPercent,armorDamageTakenPercent
 ```
 
 Example row:
@@ -131,6 +131,9 @@ Supported no-code effect columns:
 
 - `armorFlat`: Adds flat armor.
 - `hullFlat`: Adds flat hull integrity.
+- `hullPercent`: Changes hull integrity by a percent.
+- `hullDamageTakenPercent`: Changes damage taken by hull by a percent.
+- `armorDamageTakenPercent`: Changes damage taken by armor by a percent.
 - `maxSpeedPercent`: Changes maximum speed by a percent.
 - `maneuverPercent`: Changes acceleration, deceleration, turn rate, and turn acceleration by a percent.
 - `fluxCapacityPercent`: Changes flux capacity by a percent.
@@ -166,25 +169,25 @@ my_mod_elite,My Mod Elite,Elite,ship_trophy_my_mod_elite,my_mod,60,any,my_mod_,,
 
 ```csv
 name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sModDesc,sprite
-My Mod Elite Trophy,ship_trophy_my_mod_elite,0,,Trophy Room,"offensive, restricted, no_drop_salvage",Weapons,0,FALSE,FALSE,FALSE,0,0,0,0,shiptrophy.hullmods.ConfigurableTrophyHullMod,"Elite parade tuning from showcased hulls increases energy weapon damage by %s and reduces shield damage taken by %s.",Elite trophy refit.,,graphics/hullmods/advanced_optics.png
+My Mod Elite Trophy,ship_trophy_my_mod_elite,0,,Hall of Triumph,"offensive, restricted, no_drop_salvage",Weapons,0,FALSE,FALSE,FALSE,0,0,0,0,shiptrophy.hullmods.ConfigurableTrophyHullMod,"Elite parade tuning from showcased hulls increases energy weapon damage by %s and reduces shield damage taken by %s.",Elite trophy refit.,,graphics/hullmods/advanced_optics.png
 ```
 
 `data/config/ship_trophy_room/hullmod_effects.csv`
 
 ```csv
-hullModId,descParam0,descParam1,descParam2,descParam3,descParam4,descParam5,descParam6,descParam7,descParam8,descParam9,armorFlat,hullFlat,maxSpeedPercent,maneuverPercent,fluxCapacityPercent,fluxDissipationPercent,ballisticRangeFlat,energyRangeFlat,missileRangeFlat,ballisticDamagePercent,energyDamagePercent,missileDamagePercent,ballisticFluxCostPercent,energyFluxCostPercent,missileFluxCostPercent,shieldDamageTakenPercent,shieldUpkeepPercent,fighterRefitTimePercent,crewLossPercent,sensorProfileFlat,sensorStrengthFlat
+hullModId,descParam0,descParam1,descParam2,descParam3,descParam4,descParam5,descParam6,descParam7,descParam8,descParam9,armorFlat,hullFlat,maxSpeedPercent,maneuverPercent,fluxCapacityPercent,fluxDissipationPercent,ballisticRangeFlat,energyRangeFlat,missileRangeFlat,ballisticDamagePercent,energyDamagePercent,missileDamagePercent,ballisticFluxCostPercent,energyFluxCostPercent,missileFluxCostPercent,shieldDamageTakenPercent,shieldUpkeepPercent,fighterRefitTimePercent,crewLossPercent,sensorProfileFlat,sensorStrengthFlat,hullPercent,hullDamageTakenPercent,armorDamageTakenPercent
 ship_trophy_my_mod_elite,5%,5%,,,,,,,,,,,,,,,,,,,5,,,,,-5,,,,,
 ```
 
 ## Included no-code examples
 
-Ship Trophy Room includes three optional integrations that use this same no-code hullmod system:
+Hall of Triumph includes optional integrations that demonstrate both the no-code and custom-Java paths:
 
-- Knights of Ludd: `ship_trophy_kol_benediction`
-- United Aurora Federation: `ship_trophy_uaf_resonance`
-- Iron Shell: `ship_trophy_iron_shell_drill`
+- Knights of Ludd Honor, using the no-code effect table: `ship_trophy_kol_benediction`
+- United Aurora Federation, using a custom Java ECCM-equivalent script: `ship_trophy_uaf_resonance`
+- Iron Shell, using the no-code effect table: `ship_trophy_iron_shell_drill`
 
-You can copy those rows from Ship Trophy Room's CSV files and adjust them for your own mod.
+You can copy those rows from Hall of Triumph's CSV files and adjust them for your own mod.
 
 ## When you still need Java
 

@@ -12,6 +12,7 @@ public class TrophyRoomSubmarketPlugin extends StoragePlugin {
         setPlayerPaidToUnlock(true);
     }
 
+
     @Override
     public boolean isEnabled(CoreUIAPI ui) {
         return hasFunctionalTrophyRoom();
@@ -20,22 +21,22 @@ public class TrophyRoomSubmarketPlugin extends StoragePlugin {
     @Override
     public String getTooltipAppendix(CoreUIAPI ui) {
         if (hasFunctionalTrophyRoom()) {
-            return "Ships displayed here contribute to the colony's Trophy Room story point generation.";
+            return "Ships displayed here contribute to the colony's Hall of Triumph story point generation.";
         }
-        return "Requires a functional Trophy Room on this colony.";
+        return "Requires a functional Hall of Triumph on this colony.";
     }
 
     @Override
     public Highlights getTooltipAppendixHighlights(CoreUIAPI ui) {
         Highlights highlights = new Highlights();
-        highlights.setText("Trophy Room", "story point generation", "Requires a functional Trophy Room");
+        highlights.setText("Hall of Triumph", "story point generation", "Requires a functional Hall of Triumph");
         return highlights;
     }
 
     @Override
     protected void createTooltipAfterDescription(TooltipMakerAPI tooltip, boolean expanded) {
         super.createTooltipAfterDescription(tooltip, expanded);
-        tooltip.addPara("Stored ships are preserved even if the Trophy Room is disrupted, but this tab can only be opened while the structure is functional.", 10f);
+        tooltip.addPara("Stored ships are preserved even if the Hall of Triumph is disrupted, but this tab can only be opened while the structure is functional.", 10f);
     }
 
     private boolean hasFunctionalTrophyRoom() {

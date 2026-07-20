@@ -17,4 +17,7 @@ public class ShipTrophyRoomIds {
     public static final String MEMORY_ISA_HOME_MARKET = "$ship_trophy_room_isa_home_market";
     public static final String MEMORY_ISA_MASTERWORK_BRIEFED = "$ship_trophy_room_isa_masterwork_briefed";
     public static final String MEMORY_ISA_MASTERWORK_COMPLETED = "$ship_trophy_room_isa_masterwork_completed";
+    public static final String MEMORY_ISA_UNLOCK_DIALOGUE_SEEN_PREFIX = "$ship_trophy_room_isa_unlock_dialogue_seen_";
+    public static final String MEMORY_ISA_OFFICER_GRANTED = "$ship_trophy_room_isa_officer_granted";
+    public static final String MEMORY_ISA_FACTION_COMPLETION_SCENE = "$ship_trophy_room_isa_faction_completion_scene";
 }
