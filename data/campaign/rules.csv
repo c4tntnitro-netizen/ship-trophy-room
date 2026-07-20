@@ -132,7 +132,7 @@ shipTrophyIsaGazeEnd,DialogOptionSelected,$option == ship_trophy_isa_gaze_3,"Set
 You hear her mutter, ""The hell is that sound? Some kind of structural acoustics?""","0:ship_trophy_isa_uniques:Back.
 100:cutCommLink:Cut the comm link.",
 shipTrophyIsaContemptLocked,DialogOptionSelected,"$option == ship_trophy_isa_contempt
-!IsaContactRulesCMD uniqueShowcased contempt","SetShortcut cutCommLink ""ESCAPE""","""An Onslaught Mk.I would give the yard enough defensive-fire data to teach lighter batteries some contempt of their own.""","0:ship_trophy_isa_uniques:Back.
+!IsaContactRulesCMD uniqueShowcased contempt","SetShortcut cutCommLink ""ESCAPE""","""Say, Cap. Let me know if you find any... legendary, near mythical ship frames from the early Domain Era out there. 'Kay?""","0:ship_trophy_isa_uniques:Back.
 100:cutCommLink:Cut the comm link.",
 shipTrophyIsaContemptUnlocked,DialogOptionSelected,"$option == ship_trophy_isa_contempt
 IsaContactRulesCMD uniqueShowcased contempt","IsaContactRulesCMD prepare

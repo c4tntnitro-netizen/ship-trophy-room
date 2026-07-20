@@ -298,7 +298,7 @@ Isa puts her hand over her heart. "Rest in peace, now."
 + Back. -> isa_uniques
 === isa_unique_contempt_locked ===
 // hook: data/campaign/rules.csv shipTrophyIsaContemptLocked
-"An Onslaught Mk.I would give the yard enough defensive-fire data to teach lighter batteries some contempt of their own."
+"Say, Cap. Let me know if you find any... legendary, near mythical ship frames from the early Domain Era out there. 'Kay?"
 + Back. -> isa_uniques
 
 === isa_unique_mercy_unlocked ===
