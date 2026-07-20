@@ -92,7 +92,7 @@ public class TrophySubtypeRegistry {
         add(new TrophySubtypeSpec("remnant", "Remnant", "Remnant", "ship_trophy_humanity",
                 "", 60f, "any", "", "", "remnant", "", "", ""));
         add(new TrophySubtypeSpec("domain_derelict", "Domain Derelicts", "Explorarium", "ship_trophy_memory",
-                "", 60f, "any", "", "", "explorarium|derelict", "", "", ""));
+                "", 40f, "any", "", "", "explorarium|derelict", "", "", ""));
     }
 
     private static void add(TrophySubtypeSpec spec) {
