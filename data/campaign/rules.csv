@@ -52,7 +52,7 @@ SetTextHighlightColors hColor
 SetTextHighlights ""Received Awe modspec.""","""Useful?"" Isa grins. She pinches the web down to a single rotating modspec and flicks it from her terminal to yours. ""Commander, this is my Magnum Opus. Your ships will have never sung so beautifully in their lives.""
 
 Received Awe modspec.","0:ship_trophy_isa_masterwork_3:""It's named 'Awe'? Modest of you.""",
-shipTrophyIsaMasterworkUnlockEnd,DialogOptionSelected,$option == ship_trophy_isa_masterwork_3,"SetShortcut cutCommLink ""ESCAPE""","""I considered 'Isa Leicester Is The Best In The Persean Sector,'"" she says. ""Marketing talked me down.""
+shipTrophyIsaMasterworkUnlockEnd,DialogOptionSelected,$option == ship_trophy_isa_masterwork_3,"SetShortcut cutCommLink ""ESCAPE""","""I considered 'Isa Leicester Is The Best,'"" she says. ""Marketing talked me down.""
 
 She is still smiling when she turns back to the five ships.","0:ship_trophy_isa_masterwork:Back.
 100:cutCommLink:Cut the comm link.",
