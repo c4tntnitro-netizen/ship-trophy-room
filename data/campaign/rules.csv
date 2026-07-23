@@ -114,7 +114,7 @@ shipTrophyIsaGazeUnlockedText,ShipTrophyIsaGazeUnlockedText,,,"""This thing... Z
 
 Isa rubs her temples. 
 
-""At least until I can figure out where that damn ringing sound is coming from inside it. Most ships have like, this pleasant hum but this..."" 
+""At least until I can figure out where that damn ringing sound is coming from inside it."" 
 
 Her rubbing intensifies; her frown deepens.",,
 shipTrophyIsaGazeUnlockedOptionsNew,ShipTrophyIsaGazeUnlockedOptions,!IsaContactRulesCMD unlockSeen gaze,"SetOptionColor ship_trophy_isa_gaze_2 highlight
