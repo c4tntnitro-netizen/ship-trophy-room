@@ -184,8 +184,8 @@ ship_trophy_my_mod_elite,5%,5%,,,,,,,,,,,,,,,,,,,5,,,,,-5,,,,,
 Hall of Triumph includes optional integrations that demonstrate both the no-code and custom-Java paths:
 
 - Knights of Ludd Honor, using the no-code effect table: `ship_trophy_kol_benediction`
-- United Aurora Federation, using a custom Java ECCM-equivalent script: `ship_trophy_uaf_resonance`
-- Iron Shell, using the no-code effect table: `ship_trophy_iron_shell_drill`
+- United Aurora Federation, using a custom Java guided-missile and heavy-ordnance decoy script: `ship_trophy_uaf_resonance`
+- Iron Shell Discipline, using a custom Java Iaido system-replacement and torpedo-impact script: `ship_trophy_iron_shell_drill`
 
 You can copy those rows from Hall of Triumph's CSV files and adjust them for your own mod.
 

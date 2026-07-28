@@ -1,4 +1,8 @@
 id,trigger,conditions,script,text,options,notes
+shipTrophyIsaRemoteContact,ShipTrophyIsaRemoteContact,,"IsaContactRulesCMD showContactPortrait
+IsaContactRulesCMD prepareMain
+FireAll ShipTrophyIsaMainText
+FireAll ShipTrophyIsaMainOptions",,,Remote contact entry point available from Isa's Contacts intel after recruitment.
 shipTrophyIsaContactOption,PopulateOptions,"$id == ship_trophy_isa
 !IsaContactRulesCMD alreadyJoined",,,40:ship_trophy_isa_open:Talk about the Hall of Triumph ledgers.,Isa contact entry point before officer recruitment.
 shipTrophyIsaOfficerContactOption,PopulateOptions,"$id == ship_trophy_isa
@@ -437,3 +441,56 @@ The view settles on ranks of restored hulls beneath the gallery lights, each fac
 ""You've done it, Captain. The Hall of Triumph is done. Not finished, mind you; places like this are never finished. But every core ledger is preserved under one roof. Not under war, but peace.""
 
 Isa glances from the distant gallery to the fleet around you. ""The Hall can preserve what came before. From here on, we get to make what comes next. Thank you for giving me a place in it.""","0:ship_trophy_hall_complete_leave:Welcome aboard, Chief.",CSV-owned Hall completion cinematic.
+shipTrophyIsaFactionVisitHegemony,OpenInteractionDialog,IsaFactionVisitCMD shouldShow hegemony score:10000,"IsaFactionVisitCMD prepare hegemony
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","As your fleet joins $marketName's approach queue, Isa disappears from the bridge. You find her pressed against the glass of an observation blister, three Hegemony hull profiles turning slowly above her slate.
+
+""Look at that burn profile,"" she says without turning. ""Every Hegemony ship looks like it expects the universe to punch first. Everyone calls the Onslaught blunt, but it isn't blunt. It's honest. Armor, guns, engines, and absolutely no shame about the order.""","0:ship_trophy_isa_faction_visit_reply:""You're making friends with the customs scanners.""",One-time post-recruitment Hegemony station vignette.
+shipTrophyIsaFactionVisitLeague,OpenInteractionDialog,IsaFactionVisitCMD shouldShow persean score:10000,"IsaFactionVisitCMD prepare persean
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","Isa has commandeered an auxiliary tactical display before docking clearance is even confirmed. A Conquest rotates above it, split down the center by a bright line marking its thrust axis.
+
+""Two broadsides held together by optimism and transverse thrust,"" she says fondly. ""That's League engineering. Take a Domain blueprint, argue with it for six hundred cycles, then sign your name across the parts that survived.""","0:ship_trophy_isa_faction_visit_reply:""Try not to buy one before we dock.""",One-time post-recruitment Persean League station vignette.
+shipTrophyIsaFactionVisitTriTachyon,OpenInteractionDialog,IsaFactionVisitCMD shouldShow tritachyon score:10000,"IsaFactionVisitCMD prepare tritachyon
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","By the time $marketName acknowledges your approach, Isa has three encrypted diagnostic windows open and the delighted expression of someone standing much too close to a live power conduit.
+
+""Beautiful. Infuriating. Half the mass isn't where engineering says it should be,"" she says. ""Tri-Tach ships are magic tricks performed by accountants with security clearances. Look at those phase tolerances. Look at them.""","0:ship_trophy_isa_faction_visit_reply:""Step away from their network, Isa.""",One-time post-recruitment Tri-Tachyon station vignette.
+shipTrophyIsaFactionVisitDiktat,OpenInteractionDialog,IsaFactionVisitCMD shouldShow sindrian_diktat score:10000,"IsaFactionVisitCMD prepare sindrian_diktat
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","The station's traffic-control feed is crowded with Diktat hulls, every one polished for inspection. Isa zooms in on an Executor until its gilded weapon housings fill the display.
+
+""They gold-plated a range-calibration problem until it became doctrine,"" she says. ""Awful taste. Excellent tolerances. I hate how much I like it.""","0:ship_trophy_isa_faction_visit_reply:""Don't say that where they can hear you.""",One-time post-recruitment Sindrian Diktat station vignette.
+shipTrophyIsaFactionVisitChurch,OpenInteractionDialog,IsaFactionVisitCMD shouldShow luddic_church score:10000,"IsaFactionVisitCMD prepare luddic_church
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","An old Church warship moves past the station under tug power, armor dark with repairs accumulated over generations. Isa watches it with unusual quiet.
+
+""Everyone calls them old,"" she says at last. ""Old isn't the same as obsolete. A Mora knows exactly what it is: a cathedral with a flight deck, built to keep its people alive long enough to come home and patch the same plate again.""","0:ship_trophy_isa_faction_visit_reply:""You sound almost converted.""",One-time post-recruitment Luddic Church station vignette.
+shipTrophyIsaFactionVisitPath,OpenInteractionDialog,IsaFactionVisitCMD shouldShow luddic_path score:10000,"IsaFactionVisitCMD prepare luddic_path
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","Isa studies the station's picket ships through a passive sensor feed, annotating exposed conduits, overdriven engines, and armor plates that do not appear to have begun life on the same hull.
+
+""This is a crime scene with engine mounts,"" she whispers. ""But look at those feed lines. They built it to keep firing while it's on fire. That's not ignorance. That's commitment without brakes.""","0:ship_trophy_isa_faction_visit_reply:""Please tell me you aren't taking notes.""",One-time post-recruitment Luddic Path station vignette.
+shipTrophyIsaFactionVisitPirates,OpenInteractionDialog,IsaFactionVisitCMD shouldShow pirates score:10000,"IsaFactionVisitCMD prepare pirates
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","The local traffic net is less a system than a sustained argument. Isa has isolated one battered pirate hull and is tracing its mismatched components with mounting admiration.
+
+""Every pirate ship is a confession,"" she says. ""This one admits to a stolen thruster, a borrowed gun mount, and a structural member that used to be a pressure door. And somehow the flux grid balances. Beautiful.""","0:ship_trophy_isa_faction_visit_reply:""We are not hiring the welder.""",One-time post-recruitment pirate station vignette.
+shipTrophyIsaFactionVisitIndependent,OpenInteractionDialog,IsaFactionVisitCMD shouldShow independent score:10000,"IsaFactionVisitCMD prepare independent
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","Isa cycles through the station's traffic registry: Mules rebuilt on three different worlds, Buffaloes with local drive modifications, and a Venture whose maintenance record seems old enough to vote.
+
+""No doctrine,"" she says, beaming. ""Just a thousand local answers to a thousand local disasters. This is what actually keeps the Sector alive while the great powers are busy naming their battle plans.""","0:ship_trophy_isa_faction_visit_reply:""You say that like you've found religion.""",One-time post-recruitment independent station vignette.
+shipTrophyIsaFactionVisitKnights,OpenInteractionDialog,IsaFactionVisitCMD shouldShow knights_of_selkie score:10000,"IsaFactionVisitCMD prepare knights_of_selkie
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","The station grants priority passage to a Knights of Ludd formation. Isa leans over the sensor plot as armored signatures sweep past like a procession.
+
+""They built a cathedral into a cavalry charge,"" she says, visibly delighted. ""All that armor, all that forward commitment, and just enough restraint in the flux grid to pretend this is a measured decision.""","0:ship_trophy_isa_faction_visit_reply:""Pretend?""",One-time post-recruitment Knights of Ludd station vignette; guarded by the optional mod and faction.
+shipTrophyIsaFactionVisitIronShell,OpenInteractionDialog,IsaFactionVisitCMD shouldShow ironshell score:10000,"IsaFactionVisitCMD prepare ironshell
+SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","An Iron Shell patrol cuts across the station's approach lane, XIV armor moving at a speed its silhouette has no right to possess. Isa freezes the traffic feed, rewinds it, and watches the maneuver again.
+
+""That is deeply unfair,"" she says, delighted. ""They took Hegemony armor doctrine and taught it iaido. Look at that drive calibration. The whole ship draws before the enemy realizes there's a duel.""","0:ship_trophy_isa_faction_visit_reply:""Please don't challenge the tax inspectors to a duel.""",One-time post-recruitment Iron Shell station vignette; guarded by the optional mod and faction.
+shipTrophyIsaFactionVisitReply,DialogOptionSelected,$option == ship_trophy_isa_faction_visit_reply,FireBest ShipTrophyIsaFactionVisitResponse,,,Routes the faction visit vignette to its matching response.
+shipTrophyIsaFactionVisitResponseHegemony,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current hegemony,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""They started it,"" Isa says. ""Their resolution is terrible. I was helping.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Hegemony vignette response.
+shipTrophyIsaFactionVisitResponseLeague,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current persean,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""No promises."" Isa dismisses the purchase listing but bookmarks the technical specification. ""See? Restraint.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Persean League vignette response.
+shipTrophyIsaFactionVisitResponseTriTachyon,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current tritachyon,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""I'm not in their network,"" Isa says, offended. One of the encrypted windows vanishes. ""I'm adjacent to it.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Tri-Tachyon vignette response.
+shipTrophyIsaFactionVisitResponseDiktat,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current sindrian_diktat,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""What, the taste or the tolerances?"" Isa asks. She lowers her voice anyway.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Sindrian Diktat vignette response.
+shipTrophyIsaFactionVisitResponseChurch,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current luddic_church,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""To redundancy, maybe."" Isa watches the old ship disappear behind the station. ""Every spacer finds religion eventually.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Church vignette response.
+shipTrophyIsaFactionVisitResponsePath,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current luddic_path,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","Isa tilts the slate away from you. ""Of course not."" Six pages of diagrams vanish from view.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path vignette response.
+shipTrophyIsaFactionVisitResponsePirates,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current pirates,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""Counteroffer: I hire the welder and forbid them from touching life support."" Isa zooms in on the former door. ""Probably.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Pirate vignette response.
+shipTrophyIsaFactionVisitResponseIndependent,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current independent,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""I told you."" Isa closes the registry with obvious reluctance. ""Every spacer does eventually.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Independent vignette response.
+shipTrophyIsaFactionVisitResponseKnights,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current knights_of_selkie,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""Measured decisions usually include a plan for turning around,"" Isa says. ""These have a prayer instead. I respect the weight savings.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Knights of Ludd vignette response.
+shipTrophyIsaFactionVisitResponseIronShell,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current ironshell,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""I'm not challenging anyone,"" Isa says, already opening a thrust profile. ""I'm conducting a deductible professional consultation.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Iron Shell vignette response.
+shipTrophyIsaFactionVisitContinue,DialogOptionSelected,$option == ship_trophy_isa_faction_visit_continue,"IsaFactionVisitCMD markSeen
+FireBest OpenInteractionDialog",,,Marks the faction vignette complete and resumes the station's normal docking dialogue.

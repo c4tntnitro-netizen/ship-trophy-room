@@ -1,0 +1,42 @@
+{
+    "id":"ship_trophy_iaido",
+    "type":"ENGINE_MOD",
+    "aiType":"CUSTOM",
+    "aiScript":"shiptrophy.shipsystems.ai.IaidoAI",
+    "statsScript":"shiptrophy.shipsystems.IaidoStats",
+
+    "engineGlowLengthMult":2.25,
+    "engineGlowWidthMult":1.8,
+    "engineGlowGlowMult":1.5,
+
+    "jitterUnderColor":[255,205,105,150],
+    "jitterUnderCopies":25,
+    "jitterUnderMinRange":0,
+    "jitterUnderRange":8,
+    "jitterUnderRangeRadiusFraction":0,
+
+    "jitterColor":[255,125,45,65],
+    "jitterCopies":3,
+    "jitterMinRange":0,
+    "jitterRange":6,
+    "jitterRangeRadiusFraction":0,
+
+    "flameoutOnImpactChance":0,
+    "clampTurnRateAfter":true,
+    "clampMaxSpeedAfter":true,
+    "alwaysAccelerate":true,
+
+    "useSound":"system_plasma_burn",
+    "loopSound":"system_plasma_burn_loop",
+    "outOfUsesSound":"engine_disabled",
+
+    "aiHints":{
+        "activeSpeedIncrease":275,
+        "burstMovementPotential":1000,
+        "averageSpeedIncrease":250,
+        "threatRange":1400,
+        "threatAmount":8,
+        "threatAngle":0,
+        "threatArc":360
+    }
+}

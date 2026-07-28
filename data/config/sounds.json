@@ -1,0 +1,9 @@
+{
+    "ship_trophy_iaido_torpedo_launch":[
+        {
+            "file":"sounds/sfx_systems/ship_trophy_iaido_torpedo_launch.ogg",
+            "pitch":1.0,
+            "volume":0.50
+        }
+    ]
+}

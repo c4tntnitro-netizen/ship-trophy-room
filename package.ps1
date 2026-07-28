@@ -24,6 +24,9 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "docs")) {
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "data") -Destination $resolvedModRoot -Recurse
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "graphics") -Destination $resolvedModRoot -Recurse
+if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "sounds")) {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "sounds") -Destination $resolvedModRoot -Recurse
+}
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "jars") -Destination $resolvedModRoot -Recurse
 
 Write-Host "Packaged clean install folder:"

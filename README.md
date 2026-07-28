@@ -1,5 +1,7 @@
 # Hall of Triumph
 
+> **Beta notice:** Everything in this repository should be considered a beta change. Features, balance, dialogue, assets, and save compatibility may change before a formal release.
+
 Adds a player-colony structure called **Hall of Triumph**.
 
 - Unlocks a dedicated **Hall of Triumph** storage tab on the colony.
@@ -8,6 +10,7 @@ Adds a player-colony structure called **Hall of Triumph**.
 - All functional Halls of Triumph are networked.
 - Adds **Isa**, a salvager and ship-modder contact who appears in the dockside bar after the first functional Hall of Triumph is built.
 - Completing every vanilla Isa trophy program grants **Isa Leicester** as a steady level-8 officer with two exclusive skills; optional mod integrations are not required.
+- After Isa joins the fleet, the first visit to a station owned by each supported vanilla faction plays a short, one-time vignette about that faction's shipbuilding doctrine. Knights of Ludd and Iron Shell receive their own vignettes when their respective mods are installed, but neither mod is required.
 - Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
@@ -26,7 +29,7 @@ Showcasing 60 unique DP worth of a doctrine's ships across the Hall of Triumph n
 - **Optimization**: unlocked by Tri-Tachyon/high-tech ships; installable on high-tech ships. Reduces sensor profile by 15 and adds 200 hull integrity. Incompatible with Insulated Engine Assembly.
 - **Humanity**: unlocked by showcasing 60 unique DP of Remnant ships. Reduces the ship's deployment cost to 0 DP, reduces ballistic, energy, and missile fire rate and top speed by 80%, reduces fighter engagement range by 90%, functions as Neural Interface, and is incompatible with Neural Interface.
 - **Memory**: unlocked by showcasing 40 unique DP of Domain Derelict/Explorarium ships and installable only on those ships. Adds 80% hull integrity, 300 armor, and 25/20/15/15 top speed by hull size. Incompatible with Unstable Injector.
-- **Awe**: unlocked through Isa's five-capital showcase: Onslaught XIV, Paragon, Invictus, Conquest, and Executor. Doubles positive S-mod bonus effects from built-in hullmods; S-mod penalties are not doubled.
+- **Awe**: unlocked through Isa's five-capital showcase: Onslaught XIV, Paragon, Invictus, Conquest, and Executor. Doubles supported positive S-mod bonus effects, including compatible modded hullmods; S-mod penalties are not doubled.
 
 Only one Hall of Triumph hullmod can be installed on a ship at a time.
 
@@ -48,8 +51,8 @@ Important columns:
 Optional example integrations are included:
 
 - **Honor**: active only with `knights_of_ludd`; low-tech only, hull and armor damage taken -5%, hull integrity +10%, shield damage taken -10%.
-- **Resonance**: active only with `uaf`; a 0-OP ECCM Package equivalent, incompatible with ECCM Package.
-- **Discipline**: active only with `timid_xiv`; +75 armor, +50 ballistic weapon range.
+- **Resonance**: active only with `uaf`; increases guided missile maximum speed by 33%. Torpedo and multi-rocket volleys launch two forward decoy flares at 110% of the parent munition's speed, while Semibreve launchers deploy five. Decoys remain active for 2/4/10 seconds when fired by small/medium/large launchers. Missile-based point defense, fighter weapons, and submunitions are excluded. Incompatible with ECCM Package.
+- **Discipline**: active only with `timid_xiv` and installable only on Iron Shell ships. Replaces the ship's system with **Iaido**, a high-speed armored charge that leaves torpedo launchers operational. Torpedoes fired during the draw gain 200% maximum and launch speed and deal 50% additional kinetic damage without a cap.
 
 For a plain-language walkthrough of adding your own subtype and special trophy hullmod, see `docs/creating_trophy_hullmods.md`.
 

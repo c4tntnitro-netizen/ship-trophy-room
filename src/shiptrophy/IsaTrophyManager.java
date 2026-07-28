@@ -137,6 +137,18 @@ public class IsaTrophyManager {
                 ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE, true);
     }
 
+    public static boolean wasFactionVisitSceneShown(String factionId) {
+        return Global.getSector() != null && factionId != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                        ShipTrophyRoomIds.MEMORY_ISA_FACTION_VISIT_SCENE_PREFIX + factionId);
+    }
+
+    public static void setFactionVisitSceneShown(String factionId) {
+        if (Global.getSector() == null || factionId == null) return;
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_FACTION_VISIT_SCENE_PREFIX + factionId, true);
+    }
+
     public static boolean areAllFactionHullmodsComplete(TrophyNetwork.NetworkStats stats) {
         if (stats == null) stats = TrophyNetwork.computeNetworkStats();
         int activePrograms = 0;
@@ -302,13 +314,17 @@ public class IsaTrophyManager {
         for (Object item : Global.getSector().getIntelManager().getIntel(ContactIntel.class)) {
             ContactIntel intel = (ContactIntel) item;
             if (intel.getPerson() != null && PERSON_ID.equals(intel.getPerson().getId())) {
+                if (wasOfficerGranted() && !(intel instanceof IsaContactIntel)) {
+                    Global.getSector().getIntelManager().removeIntel(intel);
+                    break;
+                }
                 intel.setState(ContactState.NON_PRIORITY);
                 intel.ensureIsAddedToMarket();
                 return;
             }
         }
 
-        ContactIntel intel = new ContactIntel(person, market);
+        ContactIntel intel = new IsaContactIntel(person, market);
         intel.setState(ContactState.NON_PRIORITY);
         intel.ensureIsAddedToMarket();
         if (text == null) {
