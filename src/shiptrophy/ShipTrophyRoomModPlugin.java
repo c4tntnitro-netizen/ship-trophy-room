@@ -28,6 +28,9 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);
         TrophyNetwork.refreshPlayerHullmodUnlocks(stats);
+        if (IsaTrophyManager.isIntroduced()) {
+            IsaTrophyManager.ensureContact(IsaTrophyManager.findHomeMarket(), null);
+        }
         IsaTrophyManager.refreshIsaHullmod();
         IsaTrophyManager.refreshIsaOfficerSkills();
     }

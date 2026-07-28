@@ -1,8 +1,9 @@
 id,trigger,conditions,script,text,options,notes
-shipTrophyIsaRemoteContact,ShipTrophyIsaRemoteContact,,"IsaContactRulesCMD showContactPortrait
+shipTrophyIsaRemoteContact,ShipTrophyIsaRemoteContact,,"BeginConversation ship_trophy_isa
+IsaContactRulesCMD showContactPortrait
 IsaContactRulesCMD prepareMain
 FireAll ShipTrophyIsaMainText
-FireAll ShipTrophyIsaMainOptions",,,Remote contact entry point available from Isa's Contacts intel after recruitment.
+FireAll ShipTrophyIsaMainOptions",,,Remote contact entry point available from Isa's Contacts intel.
 shipTrophyIsaContactOption,PopulateOptions,"$id == ship_trophy_isa
 !IsaContactRulesCMD alreadyJoined",,,40:ship_trophy_isa_open:Talk about the Hall of Triumph ledgers.,Isa contact entry point before officer recruitment.
 shipTrophyIsaOfficerContactOption,PopulateOptions,"$id == ship_trophy_isa

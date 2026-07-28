@@ -311,17 +311,24 @@ public class IsaTrophyManager {
         PersonAPI person = getOrCreateIsa(market);
         if (person == null) return;
 
+        IsaContactIntel customIntel = null;
+        List<ContactIntel> staleIntel = new ArrayList<ContactIntel>();
         for (Object item : Global.getSector().getIntelManager().getIntel(ContactIntel.class)) {
             ContactIntel intel = (ContactIntel) item;
-            if (intel.getPerson() != null && PERSON_ID.equals(intel.getPerson().getId())) {
-                if (wasOfficerGranted() && !(intel instanceof IsaContactIntel)) {
-                    Global.getSector().getIntelManager().removeIntel(intel);
-                    break;
-                }
-                intel.setState(ContactState.NON_PRIORITY);
-                intel.ensureIsAddedToMarket();
-                return;
+            if (intel.getPerson() == null || !PERSON_ID.equals(intel.getPerson().getId())) continue;
+            if (intel instanceof IsaContactIntel && customIntel == null) {
+                customIntel = (IsaContactIntel) intel;
+            } else {
+                staleIntel.add(intel);
             }
+        }
+        for (ContactIntel intel : staleIntel) {
+            Global.getSector().getIntelManager().removeIntel(intel);
+        }
+        if (customIntel != null) {
+            customIntel.setState(ContactState.NON_PRIORITY);
+            customIntel.ensureIsAddedToMarket();
+            return;
         }
 
         ContactIntel intel = new IsaContactIntel(person, market);
