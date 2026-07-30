@@ -32,6 +32,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final int SPHERE_VERTEX_STRIDE = 4;
     private static final int SPHERE_VERTICES_PER_BAND = (RENDER_SEGMENTS + 1) * 2;
     private static final float[] INWARD_SPHERE_MESH = buildInwardSphereMesh();
+    private static final float ATMOSPHERE_INNER_RADIUS =
+            (GanEdenGenerator.WARNING_INNER_RADIUS
+                    + GanEdenGenerator.SURFACE_OUTER_RADIUS) * 0.5f;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
@@ -190,7 +193,7 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             // shifts the white haze toward nitrogen blue at the horizon.
             renderGradientAnnulus(
                     center,
-                    GanEdenGenerator.WARNING_INNER_RADIUS,
+                    ATMOSPHERE_INNER_RADIUS,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
                     new Color(242, 248, 255, 8),
                     new Color(82, 164, 255, 138),
