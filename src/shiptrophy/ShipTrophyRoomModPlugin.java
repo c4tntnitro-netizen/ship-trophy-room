@@ -26,7 +26,9 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         ShatteredRingGenerator.ensureGenerated();
         GanEdenGenerator.ensureGenerated();
         Global.getSector().removeScriptsOfClass(GanEdenAmbushScript.class);
-        Global.getSector().addScript(new GanEdenAmbushScript());
+        if (!GanEdenAmbushScript.ensureFleet()) {
+            Global.getSector().addScript(new GanEdenAmbushScript());
+        }
         Global.getSector().removeScriptsOfClass(StoryPointGeneratorScript.class);
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);

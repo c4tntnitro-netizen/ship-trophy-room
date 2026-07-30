@@ -46,28 +46,53 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
     @Override
     public void advance(float amount) {
         if (Global.getSector() == null || finished) return;
+        finished = ensureFleet();
+    }
 
+    /**
+     * Adds the fleet directly to Gan Eden instead of using spawnFleet().
+     * The latter broadcasts a spawn event which some fleet-limiter mods
+     * intercept, potentially deleting this deliberately hand-authored fleet.
+     */
+    public static boolean ensureFleet() {
+        if (Global.getSector() == null) return false;
         StarSystemAPI system = Global.getSector().getStarSystem(
                 GanEdenGenerator.SYSTEM_ID);
-        if (system == null) return;
+        if (system == null) return false;
 
         SectorEntityToken anchor = system.getEntityById(
                 GanEdenGenerator.ARRIVAL_RING_ID);
         if (anchor == null) anchor = system.getCenter();
 
         CampaignFleetAPI existing = findExistingFleet(system);
-        if (existing != null) {
+        if (existing != null
+                && existing.getFleetData().getNumMembers() >= 2) {
             configureGuard(existing, anchor);
-            finished = true;
-            return;
+            logPlacement("reused", existing);
+            return true;
+        }
+        if (existing != null) {
+            system.removeEntity(existing);
         }
 
         CampaignFleetAPI fleet = createFleet();
-        if (fleet == null || fleet.isEmpty()) return;
+        if (fleet == null
+                || fleet.isEmpty()
+                || fleet.getFleetData().getNumMembers() < 2) {
+            System.err.println(
+                    "Hall of Triumph: "
+                            + "Unable to create Gan Eden golden Omega fleet "
+                            + "with both guardian ships.");
+            return false;
+        }
 
-        system.spawnFleet(anchor, RING_OFFSET, 0f, fleet);
+        system.addEntity(fleet);
+        fleet.setLocation(
+                anchor.getLocation().x + RING_OFFSET,
+                anchor.getLocation().y);
         configureGuard(fleet, anchor);
-        finished = true;
+        logPlacement("placed", fleet);
+        return true;
     }
 
     private static CampaignFleetAPI findExistingFleet(
@@ -142,6 +167,8 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 true);
         memory.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
         memory.set(MemFlags.MEMORY_KEY_FORCE_TRANSPONDER_OFF, true);
+        fleet.getStats().getSensorProfileMod().modifyFlat(
+                FLEET_KEY, 2000f, "Aureate guardian signature");
 
         fleet.clearAssignments();
         fleet.addAssignment(
@@ -149,5 +176,17 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 anchor,
                 GUARD_DURATION,
                 "waiting in silence");
+    }
+
+    private static void logPlacement(
+            String action,
+            CampaignFleetAPI fleet) {
+        System.out.println(
+                "Hall of Triumph: Gan Eden golden Omega fleet " + action
+                        + ": members="
+                        + fleet.getFleetData().getNumMembers()
+                        + ", location=("
+                        + fleet.getLocation().x + ", "
+                        + fleet.getLocation().y + ")");
     }
 }
