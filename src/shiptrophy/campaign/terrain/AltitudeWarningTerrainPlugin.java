@@ -88,6 +88,15 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     }
 
     @Override
+    public String getEffectCategory() {
+        // BaseTerrain.advance() requires this to group overlapping instances
+        // before it calls applyEffect(). Gan Eden has one boundary, but using
+        // a stable category also prevents duplicate effects if a save ever
+        // contains more than one copy of the terrain.
+        return "ship_trophy_altitude_warning";
+    }
+
+    @Override
     public boolean hasTooltip() {
         return true;
     }
