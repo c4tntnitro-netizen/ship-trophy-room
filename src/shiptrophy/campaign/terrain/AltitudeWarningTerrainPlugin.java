@@ -26,14 +26,14 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final float DEEP_RETURN_SPEED = 220f;
     private static final float WARNING_DEPTH = 430f;
     private static final float EMERGENCY_BACKSTOP_DEPTH = 520f;
-    private static final float BACKDROP_WIDTH = 6200f;
-    private static final float BACKDROP_HEIGHT = 3485f;
+    private static final float BACKDROP_WIDTH = 9000f;
+    private static final float BACKDROP_HEIGHT = 5053.7109f;
     private static final float BLACK_BACKDROP_SIZE = 20000f;
 
-    // The original reference placed the sun at approximately (0.16, 0.68).
-    // Offset the cleaned plate so Starsector's real star, at world origin,
-    // occupies that cleared location.
-    private static final float STAR_U = 0.16f;
+    // The extrapolated plate moves the lower-left playable opening inward.
+    // Offset it so Starsector's real star, at world origin, sits inside that
+    // opening instead of overlapping the surrounding shell.
+    private static final float STAR_U = 0.33f;
     private static final float STAR_V = 0.70f;
     private static final float BACKDROP_OFFSET_X =
             (0.5f - STAR_U) * BACKDROP_WIDTH;
@@ -47,15 +47,15 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
      * silhouette.
      */
     private static final float[][] APERTURE_UV = new float[][] {
-            {0.27f, 0.015f},
-            {0.70f, 0.015f},
-            {0.755f, 0.81f},
-            {0.70f, 0.87f},
-            {0.58f, 0.925f},
-            {0.12f, 0.925f},
-            {0.06f, 0.87f},
-            {0.07f, 0.66f},
-            {0.14f, 0.33f}
+            {0.17f, 0.10f},
+            {0.72f, 0.11f},
+            {0.70f, 0.42f},
+            {0.66f, 0.69f},
+            {0.59f, 0.86f},
+            {0.44f, 0.95f},
+            {0.31f, 0.76f},
+            {0.24f, 0.58f},
+            {0.19f, 0.32f}
     };
 
     private static final String WARNING_RECENT_KEY =
@@ -184,7 +184,7 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public float getRenderRange() {
-        return 7000f;
+        return 10000f;
     }
 
     @Override
