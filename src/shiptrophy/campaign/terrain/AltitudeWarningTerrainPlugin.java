@@ -36,7 +36,7 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
 
-    private transient SpriteAPI eccentricSurfaceTexture;
+    private transient SpriteAPI innerSurfaceTexture;
 
     public void reconfigure(SectorEntityToken center, float width, float middle) {
         if (params == null) {
@@ -170,7 +170,7 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             // its inward-facing side. The geography itself now curves into the
             // horizon instead of meeting a separately stretched ring texture.
             renderInwardSphere(
-                    eccentricSurfaceTexture,
+                    innerSurfaceTexture,
                     center,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
                     new Color(255, 255, 255, 255),
@@ -216,9 +216,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     }
 
     private void ensureTextures() {
-        if (eccentricSurfaceTexture == null) {
-            eccentricSurfaceTexture = Global.getSettings().getSprite(
-                    "ship_trophy_gan_eden", "inner_surface_eccentric");
+        if (innerSurfaceTexture == null) {
+            innerSurfaceTexture = Global.getSettings().getSprite(
+                    "ship_trophy_gan_eden", "inner_surface");
         }
     }
 
