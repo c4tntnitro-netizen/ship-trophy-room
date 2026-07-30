@@ -12,9 +12,7 @@
             "ship_trophy_letterbox_black": "graphics/ship_trophy_letterbox_black.png"
         },
         "ship_trophy_gan_eden": {
-            "inner_surface_eccentric": "graphics/planets/terran_eccentric.jpg",
-            "shell_detail": "graphics/planets/rings_special0.png",
-            "warning": "graphics/planets/rings_special0.png"
+            "inner_surface_eccentric": "graphics/planets/terran_eccentric.jpg"
         }
     }
 }

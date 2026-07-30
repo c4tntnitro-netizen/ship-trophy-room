@@ -23,15 +23,15 @@ import shiptrophy.campaign.GanEdenGenerator;
  */
 public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final Color WARNING_COLOR = new Color(255, 105, 55);
-    private static final float BASE_RETURN_SPEED = 45f;
-    private static final float MAX_RETURN_SPEED = 165f;
+    private static final float SURFACE_RETURN_SPEED = 90f;
+    private static final float DEEP_RETURN_SPEED = 220f;
+    private static final float EMERGENCY_BACKSTOP_RADIUS = 2525f;
     private static final int RENDER_SEGMENTS = 96;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
 
     private transient SpriteAPI eccentricSurfaceTexture;
-    private transient SpriteAPI shellTexture;
 
     public void reconfigure(SectorEntityToken center, float width, float middle) {
         if (params == null) {
@@ -72,36 +72,47 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
         float outwardX = dx / distance;
         float outwardY = dy / distance;
-        float depth = clamp(
+        float approach = smoothStep(clamp(
                 (distance - GanEdenGenerator.WARNING_INNER_RADIUS)
-                        / (GanEdenGenerator.WARNING_OUTER_RADIUS
-                                - GanEdenGenerator.WARNING_INNER_RADIUS));
+                        / (GanEdenGenerator.HARD_SURFACE_RADIUS
+                                - GanEdenGenerator.WARNING_INNER_RADIUS)));
+        float penetration = smoothStep(clamp(
+                (distance - GanEdenGenerator.HARD_SURFACE_RADIUS)
+                        / (EMERGENCY_BACKSTOP_RADIUS
+                                - GanEdenGenerator.HARD_SURFACE_RADIUS)));
 
         Vector2f velocity = fleet.getVelocity();
         float radialVelocity = velocity.x * outwardX + velocity.y * outwardY;
-        float desiredRadialVelocity = -(BASE_RETURN_SPEED
-                + (MAX_RETURN_SPEED - BASE_RETURN_SPEED) * depth);
+        float desiredRadialVelocity = -(
+                SURFACE_RETURN_SPEED * approach
+                        + (DEEP_RETURN_SPEED - SURFACE_RETURN_SPEED) * penetration);
 
         if (radialVelocity > desiredRadialVelocity) {
-            float blend = Math.min(1f, Math.max(0.08f, amount * 40f));
+            // A frame-rate-independent spring response. Near the warning's
+            // inner edge it only feathers off outward momentum; the response
+            // becomes firmer as the fleet enters the visible atmosphere and
+            // the fleet naturally rebounds toward the star.
+            float responsePerSecond = 0.55f + 3.25f * approach + 4.2f * penetration;
+            float blend = 1f - (float) Math.exp(-responsePerSecond * Math.max(0f, amount));
             float correction = (radialVelocity - desiredRadialVelocity) * blend;
             fleet.setVelocity(
                     velocity.x - outwardX * correction,
                     velocity.y - outwardY * correction);
         }
 
-        // The outer edge is a hard safety rail. It never inflicts damage; it
-        // only places the fleet just inside the surface and points it inward.
-        if (distance > GanEdenGenerator.HARD_SURFACE_RADIUS) {
-            float safeRadius = GanEdenGenerator.HARD_SURFACE_RADIUS - 12f;
+        // This is unreachable during ordinary flight: it is a last-resort
+        // guard for extreme modded campaign speeds, buried well beneath the
+        // visible surface instead of forming the apparent boundary.
+        if (distance > EMERGENCY_BACKSTOP_RADIUS) {
+            float safeRadius = EMERGENCY_BACKSTOP_RADIUS - 12f;
             fleet.setLocation(
                     center.x + outwardX * safeRadius,
                     center.y + outwardY * safeRadius);
 
             Vector2f corrected = fleet.getVelocity();
             float correctedRadial = corrected.x * outwardX + corrected.y * outwardY;
-            if (correctedRadial > -BASE_RETURN_SPEED) {
-                float correction = correctedRadial + BASE_RETURN_SPEED;
+            if (correctedRadial > -DEEP_RETURN_SPEED) {
+                float correction = correctedRadial + DEEP_RETURN_SPEED;
                 fleet.setVelocity(
                         corrected.x - outwardX * correction,
                         corrected.y - outwardY * correction);
@@ -148,9 +159,20 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            // The system background is the unmodified terran_eccentric world
-            // map. Mask only the space beyond the shell so the inhabited
-            // interior remains directly behind the sun and fleet.
+            // Draw one continuous, world-anchored copy beneath the entire
+            // cavity. Using the same image once avoids the visual seam caused
+            // by separately remapping it around the annular shell.
+            renderTexturedQuad(
+                    eccentricSurfaceTexture,
+                    center,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f,
+                    new Color(255, 255, 255, 255),
+                    alpha);
+
+            // The location's official background remains a vanilla black
+            // background, preventing this texture from leaking into the title
+            // screen. Mask the generated world image beyond the sphere.
             renderSolidAnnulus(
                     center,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
@@ -158,22 +180,14 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     new Color(0, 0, 0, 255),
                     alpha);
 
-            renderTexturedAnnulus(
-                    eccentricSurfaceTexture,
+            // The shell is a darkened continuation of the same geography,
+            // rather than a second copy stretched around the circumference.
+            renderGradientAnnulus(
                     center,
                     GanEdenGenerator.HARD_SURFACE_RADIUS,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(255, 255, 255, 230),
-                    alpha);
-
-            // Faint structural tracery keeps the terrain from reading as an
-            // ordinary planetary ring while preserving the geography.
-            renderTexturedAnnulus(
-                    shellTexture,
-                    center,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(190, 198, 188, 35),
+                    new Color(22, 31, 28, 5),
+                    new Color(13, 19, 17, 105),
                     alpha);
 
             renderGradientAnnulus(
@@ -188,14 +202,14 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     center,
                     GanEdenGenerator.HARD_SURFACE_RADIUS - 10f,
                     GanEdenGenerator.HARD_SURFACE_RADIUS + 10f,
-                    new Color(196, 226, 255, 135),
+                    new Color(196, 226, 255, 100),
                     alpha);
 
             renderSolidAnnulus(
                     center,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS - 16f,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS + 16f,
-                    new Color(128, 142, 135, 145),
+                    new Color(112, 124, 120, 125),
                     alpha);
         } finally {
             GL11.glPopMatrix();
@@ -208,17 +222,13 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             eccentricSurfaceTexture = Global.getSettings().getSprite(
                     "ship_trophy_gan_eden", "inner_surface_eccentric");
         }
-        if (shellTexture == null) {
-            shellTexture = Global.getSettings().getSprite(
-                    "ship_trophy_gan_eden", "shell_detail");
-        }
     }
 
-    private static void renderTexturedAnnulus(
+    private static void renderTexturedQuad(
             SpriteAPI texture,
             Vector2f center,
-            float innerRadius,
-            float outerRadius,
+            float width,
+            float height,
             Color color,
             float alphaMult) {
         if (texture == null) return;
@@ -231,24 +241,18 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         float texY = texture.getTexY();
         float texWidth = texture.getTexWidth();
         float texHeight = texture.getTexHeight();
+        float halfWidth = width * 0.5f;
+        float halfHeight = height * 0.5f;
 
-        GL11.glBegin(GL11.GL_QUAD_STRIP);
-        for (int i = 0; i <= RENDER_SEGMENTS; i++) {
-            float progress = (float) i / RENDER_SEGMENTS;
-            double angle = Math.PI * 2.0 * progress;
-            float cos = (float) Math.cos(angle);
-            float sin = (float) Math.sin(angle);
-            float u = texX + texWidth * progress;
-
-            GL11.glTexCoord2f(u, texY + texHeight);
-            GL11.glVertex2f(
-                    center.x + cos * innerRadius,
-                    center.y + sin * innerRadius);
-            GL11.glTexCoord2f(u, texY);
-            GL11.glVertex2f(
-                    center.x + cos * outerRadius,
-                    center.y + sin * outerRadius);
-        }
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glTexCoord2f(texX, texY + texHeight);
+        GL11.glVertex2f(center.x - halfWidth, center.y - halfHeight);
+        GL11.glTexCoord2f(texX + texWidth, texY + texHeight);
+        GL11.glVertex2f(center.x + halfWidth, center.y - halfHeight);
+        GL11.glTexCoord2f(texX + texWidth, texY);
+        GL11.glVertex2f(center.x + halfWidth, center.y + halfHeight);
+        GL11.glTexCoord2f(texX, texY);
+        GL11.glVertex2f(center.x - halfWidth, center.y + halfHeight);
         GL11.glEnd();
     }
 
@@ -345,5 +349,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     private static float clamp(float value) {
         return Math.max(0f, Math.min(1f, value));
+    }
+
+    private static float smoothStep(float value) {
+        return value * value * (3f - 2f * value);
     }
 }

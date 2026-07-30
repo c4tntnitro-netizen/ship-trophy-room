@@ -33,8 +33,8 @@ public final class GanEdenGenerator {
     public static final boolean SHATTERED_RING_GATEWAY_ENABLED = false;
 
     public static final float WARNING_INNER_RADIUS = 1650f;
-    public static final float WARNING_OUTER_RADIUS = 2150f;
     public static final float HARD_SURFACE_RADIUS = 2050f;
+    public static final float ALTITUDE_EFFECT_OUTER_RADIUS = 2600f;
     public static final float SURFACE_OUTER_RADIUS = 3000f;
 
     private static final String SURFACE_BAND_ID = "ship_trophy_gan_eden_surface";
@@ -103,7 +103,7 @@ public final class GanEdenGenerator {
         // playable Sector until removeHyperspaceAnchor() runs.
         system.getLocation().set(100000f, 100000f);
         system.setBaseName(SYSTEM_NAME);
-        system.setBackgroundTextureFilename("graphics/planets/terran_eccentric.jpg");
+        system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setLightColor(new Color(255, 238, 190));
         system.setMapGridWidthOverride(6500f);
         system.setMapGridHeightOverride(6500f);
@@ -120,7 +120,7 @@ public final class GanEdenGenerator {
         system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
         system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
         system.addTag(Tags.SYSTEM_ALREADY_USED_FOR_STORY);
-        system.setBackgroundTextureFilename("graphics/planets/terran_eccentric.jpg");
+        system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setDoNotShowIntelFromThisLocationOnMap(true);
         system.setMapGridWidthOverride(6500f);
         system.setMapGridHeightOverride(6500f);
@@ -163,8 +163,11 @@ public final class GanEdenGenerator {
     }
 
     private static void ensureAltitudeWarning(StarSystemAPI system, PlanetAPI star) {
-        float width = WARNING_OUTER_RADIUS - WARNING_INNER_RADIUS;
-        float middle = (WARNING_OUTER_RADIUS + WARNING_INNER_RADIUS) * 0.5f;
+        // Let the soft return field continue beneath the visible atmosphere.
+        // This gives fast fleets room to decelerate and rebound without a
+        // position clamp at the apparent surface.
+        float width = ALTITUDE_EFFECT_OUTER_RADIUS - WARNING_INNER_RADIUS;
+        float middle = (ALTITUDE_EFFECT_OUTER_RADIUS + WARNING_INNER_RADIUS) * 0.5f;
         SectorEntityToken existing = system.getEntityById(ALTITUDE_TERRAIN_ID);
         if (existing instanceof CampaignTerrainAPI) {
             CampaignTerrainAPI terrain = (CampaignTerrainAPI) existing;

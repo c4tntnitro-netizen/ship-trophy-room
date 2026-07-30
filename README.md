@@ -33,7 +33,7 @@ The editable writing aid for this material is in `dialogue/shattered_ring.ink`.
 
 ## Gan Eden
 
-Gan Eden is a deliberately compact, completely siloed star system built inside a prototype Dyson sphere. A warm central star illuminates the playable interior over Starsector's native `terran_eccentric` world map. Beyond the playable space, a white atmospheric haze deepens toward blue as the viewing angle approaches the inner surface. This **Altitude Warning** zone pushes fleets safely back toward the star without causing hull, combat-readiness, or crew damage. The same unmodified geographic texture wraps around the circular inner surface, with complete blackness outside the shell.
+Gan Eden is a deliberately compact, completely siloed star system built inside a prototype Dyson sphere. A warm central star illuminates the playable interior over one continuous, world-anchored copy of Starsector's native `terran_eccentric` map. Beyond the playable space, a white atmospheric haze deepens toward blue as the viewing angle approaches the inner surface. This **Altitude Warning** zone softly decelerates approaching fleets and rebounds them toward the star without causing hull, combat-readiness, or crew damage. The geography continues beneath a subtly darkened circular shell, with complete blackness outside it.
 
 Gan Eden has no markets, objectives, NPC fleets, jump points, nascent gravity wells, or hyperspace anchor. An inert Eden Transit Ring marks the intended arrival point but provides no interaction or return route. The system is tagged as cut off and hidden, excluded from random mission targeting, and cannot become a respawn location.
 
