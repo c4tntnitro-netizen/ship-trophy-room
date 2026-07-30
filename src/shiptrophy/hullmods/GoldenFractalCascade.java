@@ -9,6 +9,8 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.hullmods.ShardSpawner;
 import com.fs.starfarer.api.impl.hullmods.ShardSpawner.ShardFadeInPlugin;
 
@@ -19,7 +21,16 @@ import com.fs.starfarer.api.impl.hullmods.ShardSpawner.ShardFadeInPlugin;
 public final class GoldenFractalCascade extends ShardSpawner {
     public static final String HULLMOD_ID = "ship_trophy_golden_fractal";
 
-    private static final Color GOLD_TINT = new Color(255, 194, 74);
+    private static final Color GOLD_TINT = new Color(218, 207, 170);
+    private static final Color WEAPON_TINT = new Color(235, 238, 242);
+    private static final Color VENT_CORE_COLOR =
+            new Color(238, 229, 195);
+    private static final Color VENT_FRINGE_COLOR =
+            new Color(191, 181, 147);
+    private static final Color EXPLOSION_COLOR =
+            new Color(235, 220, 166);
+    private static final Color OVERLOAD_COLOR =
+            new Color(221, 211, 175);
     private static final String DATA_PREFIX =
             "ship_trophy_golden_fractal_spawned_";
     private static final String FACET_VARIANT =
@@ -126,10 +137,19 @@ public final class GoldenFractalCascade extends ShardSpawner {
         if (ship.getSpriteAPI() != null) {
             ship.getSpriteAPI().setColor(GOLD_TINT);
         }
-        ship.setVentCoreColor(new Color(255, 226, 120));
-        ship.setVentFringeColor(new Color(255, 156, 36));
-        ship.setExplosionFlashColorOverride(new Color(255, 190, 55));
-        ship.setOverloadColor(new Color(255, 188, 62));
+        for (WeaponAPI weapon : ship.getAllWeapons()) {
+            setSpriteColor(weapon.getSprite());
+            setSpriteColor(weapon.getUnderSpriteAPI());
+            setSpriteColor(weapon.getBarrelSpriteAPI());
+        }
+        ship.setVentCoreColor(VENT_CORE_COLOR);
+        ship.setVentFringeColor(VENT_FRINGE_COLOR);
+        ship.setExplosionFlashColorOverride(EXPLOSION_COLOR);
+        ship.setOverloadColor(OVERLOAD_COLOR);
+    }
+
+    private static void setSpriteColor(SpriteAPI sprite) {
+        if (sprite != null) sprite.setColor(WEAPON_TINT);
     }
 
     private static float normalizeAngle(float angle) {

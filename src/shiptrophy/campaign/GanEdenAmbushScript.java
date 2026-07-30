@@ -1,9 +1,12 @@
 package shiptrophy.campaign;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -14,6 +17,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec.DropData;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial;
 import com.fs.starfarer.api.util.Misc;
 
 /**
@@ -23,6 +29,8 @@ import com.fs.starfarer.api.util.Misc;
 public final class GanEdenAmbushScript implements EveryFrameScript {
     public static final String FLEET_KEY =
             "$shipTrophyGanEdenGoldenAmbushFleet";
+    private static final String LOOT_KEY =
+            "$shipTrophyGanEdenGoldenLootConfigured";
 
     private static final String SINISTRAL_VARIANT =
             "ship_trophy_golden_shard_left_Attack";
@@ -30,6 +38,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             "ship_trophy_golden_shard_right_Attack";
     private static final float RING_OFFSET = 350f;
     private static final float GUARD_DURATION = 1000000f;
+    private static final long LOOT_SEED = 0x617572656174654cL;
 
     private boolean finished;
 
@@ -168,6 +177,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         memory.set(MemFlags.MEMORY_KEY_FORCE_TRANSPONDER_OFF, true);
         fleet.getStats().getSensorProfileMod().modifyFlat(
                 FLEET_KEY, 2000f, "Aureate guardian signature");
+        ensureReward(fleet, memory);
 
         fleet.clearAssignments();
         fleet.addAssignment(
@@ -175,6 +185,39 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 anchor,
                 GUARD_DURATION,
                 "waiting in silence");
+    }
+
+    private static void ensureReward(
+            CampaignFleetAPI fleet,
+            MemoryAPI memory) {
+        if (memory.getBoolean(LOOT_KEY)) return;
+
+        List<DropData> randomDrops = new ArrayList<DropData>();
+        randomDrops.add(createDrop("omega_weapons_large", 4, 4));
+        randomDrops.add(createDrop("omega_weapons_medium", 4, 8));
+        randomDrops.add(createDrop("omega_weapons_small", 12, 16));
+
+        CargoAPI reward = SalvageEntity.generateSalvage(
+                new Random(LOOT_SEED),
+                1f,
+                1f,
+                1f,
+                1f,
+                new ArrayList<DropData>(),
+                randomDrops);
+        BaseSalvageSpecial.addExtraSalvage(fleet, reward);
+        memory.set(LOOT_KEY, true);
+    }
+
+    private static DropData createDrop(
+            String group,
+            int minimum,
+            int maximum) {
+        DropData drop = new DropData();
+        drop.group = group;
+        drop.chances = minimum;
+        drop.maxChances = maximum;
+        return drop;
     }
 
     private static void logPlacement(
