@@ -1,0 +1,14 @@
+{
+    "baseHullId": "shard_right",
+    "skinHullId": "ship_trophy_golden_shard_right",
+    "hullName": "Dextral Shard",
+    "descriptionPrefix": "An aureate Omega construct guarding the sealed interior of Gan Eden.",
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": ["shard_spawner"],
+    "removeBuiltInWeapons": [],
+    "builtInMods": ["ship_trophy_golden_fractal"],
+    "tags": ["hide_in_codex"],
+    "builtInWeapons": {}
+}

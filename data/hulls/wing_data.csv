@@ -1,0 +1,2 @@
+id,variant,tags,tier,rarity,fleet pts,op cost,formation,range,attackRunRange,attackPositionOffset,num,role,role desc,refit,base value,,,,,,,,,,,,,number
+ship_trophy_golden_aspect_wing,ship_trophy_golden_aspect_Attack,"auto_fighter, no_drop, no_sell, rapid_reform, leader_no_swarm, wingmen_no_swarm, match_leader_facing, attack_at_an_angle, independent_of_carrier, restricted, hide_in_codex",3,,6,10,V,100000,600,300,3,FIGHTER,Transience,20,20000,,,,,,,,,,,,,998

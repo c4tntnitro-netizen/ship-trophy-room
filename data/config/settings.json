@@ -13,7 +13,7 @@
         },
         "ship_trophy_gan_eden": {
             "inner_surface": "graphics/planets/gan_eden_inner_surface.png",
-            "shell_structure": "graphics/stations/gate.png"
+            "shell_structure": "graphics/planets/gan_eden_shell_structure.png"
         }
     }
 }

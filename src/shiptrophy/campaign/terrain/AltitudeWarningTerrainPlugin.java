@@ -35,10 +35,11 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final float ATMOSPHERE_INNER_RADIUS =
             (GanEdenGenerator.WARNING_INNER_RADIUS
                     + GanEdenGenerator.SURFACE_OUTER_RADIUS) * 0.5f;
-    private static final float GATE_SPRITE_INNER_RADIUS_FRACTION = 100f / 128f;
+    // Measured from the alpha edge of gan_eden_shell_structure.png.
+    private static final float SHELL_SPRITE_INNER_RADIUS_FRACTION = 0.5443f;
     private static final float STRUCTURAL_FRAME_SIZE =
             GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f
-                    / GATE_SPRITE_INNER_RADIUS_FRACTION;
+                    / SHELL_SPRITE_INNER_RADIUS_FRACTION;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
@@ -194,10 +195,10 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     new Color(0, 0, 0, 255),
                     alpha);
 
-            // The vanilla gate sprite is a transparent circular structure.
-            // Scale it so its 100px inner radius lands exactly on Gan Eden's
-            // horizon, leaving the detailed Domain-era plating entirely
-            // outside the inhabited surface as a visible cutaway shell.
+            // The transparent Dyson shell frame is scaled so the exposed
+            // machinery of its inner rim lands exactly on Gan Eden's horizon.
+            // Solar collectors and armor then extend into the black cutaway
+            // outside the inhabited surface.
             renderCenteredSprite(
                     shellStructureTexture,
                     center,
