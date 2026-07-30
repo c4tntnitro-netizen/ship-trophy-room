@@ -149,6 +149,23 @@ public class IsaTrophyManager {
                 ShipTrophyRoomIds.MEMORY_ISA_FACTION_VISIT_SCENE_PREFIX + factionId, true);
     }
 
+    public static boolean wasShatteredRingHomecomingShown() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                        ShipTrophyRoomIds.MEMORY_ISA_SHATTERED_RING_HOMECOMING);
+    }
+
+    public static void setShatteredRingHomecomingShown() {
+        if (Global.getSector() == null) return;
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_SHATTERED_RING_HOMECOMING, true);
+    }
+
+    public static boolean isIsaOfficerInPlayerFleet() {
+        if (Global.getSector() == null || Global.getSector().getPlayerFleet() == null) return false;
+        return isIsaOfficerInRoster(Global.getSector().getPlayerFleet().getFleetData());
+    }
+
     public static boolean areAllFactionHullmodsComplete(TrophyNetwork.NetworkStats stats) {
         if (stats == null) stats = TrophyNetwork.computeNetworkStats();
         int activePrograms = 0;

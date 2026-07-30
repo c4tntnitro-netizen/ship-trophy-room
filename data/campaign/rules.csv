@@ -441,6 +441,28 @@ The view settles on ranks of restored hulls beneath the gallery lights, each fac
 ""You've done it, Captain. The Hall of Triumph is done. Not finished, mind you; places like this are never finished. But every core ledger is preserved under one roof. Not under war, but peace.""
 
 Isa glances from the distant gallery to the fleet around you. ""The Hall can preserve what came before. From here on, we get to make what comes next. Thank you for giving me a place in it.""","0:ship_trophy_hall_complete_leave:Welcome aboard, Chief.",CSV-owned Hall completion cinematic.
+shipTrophyIsaShatteredRingHomecoming,OpenInteractionDialog,IsaHomecomingCMD shouldShow score:20000,"IsaHomecomingCMD prepare
+SetShortcut ship_trophy_isa_homecoming_reply ""ESCAPE""","The broken arcs of the Shattered Ring fill the forward view, black adamantine cutting across the light of Penelope's Star. Wreck-farm tugs move among the fragments like insects tending an immense skeleton.
+
+Isa comes to the bridge without being called. For once, she has no slate in her hands.
+
+""Still there,"" she says softly. ""Stupid thing to say about an adamantine ring. I used to wonder anyway.""","0:ship_trophy_isa_homecoming_reply:""Welcome home, Isa.""",One-time homecoming scene when officer Isa returns to the Shattered Ring.
+shipTrophyIsaShatteredRingHomecomingReply,DialogOptionSelected,$option == ship_trophy_isa_homecoming_reply,"SetShortcut ship_trophy_isa_homecoming_name ""ESCAPE""","Isa laughs, but the sound catches halfway out.
+
+""Home. Yeah. I suppose it is."" She watches a salvage tug cross the viewport. ""One of those crews found my pod out in the Suitors. I was small enough to carry under one arm. No manifest. No family record. Just a spacer suit big enough to swaddle me in, with ISAAC LEICESTER stenciled across the chest. So the revival ward wrote it down.""
+
+She shrugs. ""That isn't much of an origin story here. Half the Ring has a version of it. Pod people, they call us. Affectionately, usually.""
+
+""Took me years to learn Isaac wasn't generally a girl's name. Took about five minutes after that to decide Isa was.""","0:ship_trophy_isa_homecoming_name:""Isa suits you better.""",Isa explains her name and the Ring's pod community.
+shipTrophyIsaShatteredRingHomecomingName,DialogOptionSelected,$option == ship_trophy_isa_homecoming_name,"SetShortcut ship_trophy_isa_homecoming_continue ""ESCAPE""","""It does,"" she says. ""Kept the rest, though. Somebody wanted Isaac Leicester to make it here. Close enough.""
+
+Dock control clears your fleet for berth nineteen. The comm channel immediately fills with overlapping voices, several of them shouting Isa's name.
+
+""Oh, no,"" she says. Her smile betrays her. ""They told everyone.""
+
+She turns for the lift before docking is complete. ""Come on. I want to see what they ruined while I was gone.""","0:ship_trophy_isa_homecoming_continue:Take us in.",Final homecoming beat.
+shipTrophyIsaShatteredRingHomecomingContinue,DialogOptionSelected,$option == ship_trophy_isa_homecoming_continue,"IsaHomecomingCMD markSeen
+FireBest OpenInteractionDialog",,,Marks the Shattered Ring homecoming complete and resumes normal docking.
 shipTrophyIsaFactionVisitHegemony,OpenInteractionDialog,IsaFactionVisitCMD shouldShow hegemony score:10000,"IsaFactionVisitCMD prepare hegemony
 SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","As your fleet joins $marketName's approach queue, Isa disappears from the bridge. You find her pressed against the glass of an observation blister, three Hegemony hull profiles turning slowly above her slate.
 

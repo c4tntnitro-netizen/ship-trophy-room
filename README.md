@@ -26,6 +26,8 @@ The Shattered Ring is generated in the fixed Penelope's Star system at game star
 
 The Ring is Isa's birthplace: salvagers recovered her there as an infant in a cryopod, swaddled in a spacer suit marked **Isaac Leicester**. She shortened the inherited name to Isa after learning its masculine association. Her story is not unique there; generations of cryopod survivors—affectionately called “pod people”—form an ordinary and established part of the Ring's community.
 
+After Isa joins the player's officer roster, bringing her to the Shattered Ring triggers a one-time homecoming scene. The scene waits until she is actually present in the fleet and takes precedence over the generic Independent-station vignette.
+
 The editable writing aid for this material is in `dialogue/shattered_ring.ink`.
 
 ## Doctrine unlocks

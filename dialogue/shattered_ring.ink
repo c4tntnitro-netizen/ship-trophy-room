@@ -16,6 +16,7 @@ The locals call the orbital claims wreck-farms. Salvager families tend them for 
 ~ visited_shattered_ring = true
 
 + [Ask why the Ring has so many revival wards.] -> shattered_ring_pod_people
++ [Preview Isa's post-recruitment homecoming.] -> isa_shattered_ring_homecoming
 + [Enter the port registry.] -> END
 
 === shattered_ring_pod_people ===
@@ -43,3 +44,44 @@ Her smile is crooked, but not embarrassed.
 ~ isa_origin_revealed = true
 
 -> END
+
+=== isa_shattered_ring_homecoming ===
+// Runtime rules:
+// shipTrophyIsaShatteredRingHomecoming
+// shipTrophyIsaShatteredRingHomecomingReply
+// shipTrophyIsaShatteredRingHomecomingName
+// shipTrophyIsaShatteredRingHomecomingContinue
+// Eligibility: Isa has joined the officer roster, is still in the fleet, and
+// this one-time scene has not previously completed.
+
+The broken arcs of the Shattered Ring fill the forward view, black adamantine cutting across the light of Penelope's Star. Wreck-farm tugs move among the fragments like insects tending an immense skeleton.
+
+Isa comes to the bridge without being called. For once, she has no slate in her hands.
+
+"Still there," she says softly. "Stupid thing to say about an adamantine ring. I used to wonder anyway."
+
++ "Welcome home, Isa." -> isa_shattered_ring_homecoming_origin
+
+=== isa_shattered_ring_homecoming_origin ===
+
+Isa laughs, but the sound catches halfway out.
+
+"Home. Yeah. I suppose it is." She watches a salvage tug cross the viewport. "One of those crews found my pod out in the Suitors. I was small enough to carry under one arm. No manifest. No family record. Just a spacer suit big enough to swaddle me in, with ISAAC LEICESTER stenciled across the chest. So the revival ward wrote it down."
+
+She shrugs. "That isn't much of an origin story here. Half the Ring has a version of it. Pod people, they call us. Affectionately, usually."
+
+"Took me years to learn Isaac wasn't generally a girl's name. Took about five minutes after that to decide Isa was."
+
++ "Isa suits you better." -> isa_shattered_ring_homecoming_dock
+
+=== isa_shattered_ring_homecoming_dock ===
+
+"It does," she says. "Kept the rest, though. Somebody wanted Isaac Leicester to make it here. Close enough."
+
+Dock control clears your fleet for berth nineteen. The comm channel immediately fills with overlapping voices, several of them shouting Isa's name.
+
+"Oh, no," she says. Her smile betrays her. "They told everyone."
+
+She turns for the lift before docking is complete. "Come on. I want to see what they ruined while I was gone."
+
++ [Take us in.] -> END

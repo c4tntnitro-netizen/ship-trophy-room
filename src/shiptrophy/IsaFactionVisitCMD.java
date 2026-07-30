@@ -65,6 +65,7 @@ public class IsaFactionVisitCMD implements CommandPlugin {
 
         MarketAPI market = target.getMarket();
         if (market == null || market.isPlayerOwned()) return false;
+        if (IsaHomecomingCMD.isShatteredRing(target, market)) return false;
 
         String actualFaction = canonicalFaction(market.getFactionId());
         return requestedFaction.equals(actualFaction)

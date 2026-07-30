@@ -21,4 +21,5 @@ public class ShipTrophyRoomIds {
     public static final String MEMORY_ISA_OFFICER_GRANTED = "$ship_trophy_room_isa_officer_granted";
     public static final String MEMORY_ISA_FACTION_COMPLETION_SCENE = "$ship_trophy_room_isa_faction_completion_scene";
     public static final String MEMORY_ISA_FACTION_VISIT_SCENE_PREFIX = "$ship_trophy_room_isa_faction_visit_scene_";
+    public static final String MEMORY_ISA_SHATTERED_RING_HOMECOMING = "$ship_trophy_room_isa_shattered_ring_homecoming";
 }
