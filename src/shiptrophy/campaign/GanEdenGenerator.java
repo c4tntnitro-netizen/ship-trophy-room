@@ -79,7 +79,7 @@ public final class GanEdenGenerator {
         }
     }
 
-    private static StarSystemAPI findSystem() {
+    public static StarSystemAPI findSystem() {
         StarSystemAPI system = Global.getSector().getStarSystem(SYSTEM_ID);
         if (system != null) return system;
 

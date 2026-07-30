@@ -56,8 +56,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
      */
     public static boolean ensureFleet() {
         if (Global.getSector() == null) return false;
-        StarSystemAPI system = Global.getSector().getStarSystem(
-                GanEdenGenerator.SYSTEM_ID);
+        StarSystemAPI system = GanEdenGenerator.findSystem();
         if (system == null) return false;
 
         SectorEntityToken anchor = system.getEntityById(
