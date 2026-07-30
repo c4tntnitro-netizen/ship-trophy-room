@@ -2,13 +2,11 @@ package shiptrophy.campaign;
 
 import java.util.Random;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -19,12 +17,10 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 
 /**
- * Springs Gan Eden's one-time golden Omega welcome party after the player
- * arrives. The descendants are created by GoldenFractalCascade during combat.
+ * Ensures Gan Eden's golden Omega fleet is parked beside the transit ring.
+ * The descendants are created by GoldenFractalCascade during combat.
  */
 public final class GanEdenAmbushScript implements EveryFrameScript {
-    public static final String TRIGGERED_KEY =
-            "$shipTrophyGanEdenGoldenAmbushTriggered";
     public static final String FLEET_KEY =
             "$shipTrophyGanEdenGoldenAmbushFleet";
 
@@ -32,16 +28,14 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             "ship_trophy_golden_shard_left_Attack";
     private static final String DEXTRAL_VARIANT =
             "ship_trophy_golden_shard_right_Attack";
-    private static final float ARRIVAL_GRACE_SECONDS = 1.25f;
-    private static final float SPAWN_DISTANCE = 700f;
+    private static final float RING_OFFSET = 350f;
+    private static final float GUARD_DURATION = 1000000f;
 
-    private float elapsedInGanEden;
+    private boolean finished;
 
     @Override
     public boolean isDone() {
-        return Global.getSector() != null
-                && Global.getSector().getMemoryWithoutUpdate()
-                        .getBoolean(TRIGGERED_KEY);
+        return finished;
     }
 
     @Override
@@ -51,35 +45,41 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
 
     @Override
     public void advance(float amount) {
-        if (Global.getSector() == null
-                || Global.getSector().getPlayerFleet() == null
-                || isDone()) {
-            return;
-        }
-
-        CampaignFleetAPI player = Global.getSector().getPlayerFleet();
-        LocationAPI location = player.getContainingLocation();
-        if (location == null
-                || !GanEdenGenerator.SYSTEM_ID.equals(location.getId())) {
-            elapsedInGanEden = 0f;
-            return;
-        }
-
-        elapsedInGanEden += Math.max(0f, amount);
-        if (elapsedInGanEden < ARRIVAL_GRACE_SECONDS) return;
+        if (Global.getSector() == null || finished) return;
 
         StarSystemAPI system = Global.getSector().getStarSystem(
                 GanEdenGenerator.SYSTEM_ID);
         if (system == null) return;
 
+        SectorEntityToken anchor = system.getEntityById(
+                GanEdenGenerator.ARRIVAL_RING_ID);
+        if (anchor == null) anchor = system.getCenter();
+
+        CampaignFleetAPI existing = findExistingFleet(system);
+        if (existing != null) {
+            configureGuard(existing, anchor);
+            finished = true;
+            return;
+        }
+
         CampaignFleetAPI fleet = createFleet();
         if (fleet == null || fleet.isEmpty()) return;
 
-        Vector2f offset = chooseTangentialSpawnOffset(player, system);
-        system.spawnFleet(player, offset.x, offset.y, fleet);
-        configureAttack(fleet, player);
+        system.spawnFleet(anchor, RING_OFFSET, 0f, fleet);
+        configureGuard(fleet, anchor);
+        finished = true;
+    }
 
-        Global.getSector().getMemoryWithoutUpdate().set(TRIGGERED_KEY, true);
+    private static CampaignFleetAPI findExistingFleet(
+            StarSystemAPI system) {
+        for (CampaignFleetAPI fleet : system.getFleets()) {
+            if (fleet != null
+                    && fleet.getMemoryWithoutUpdate()
+                            .getBoolean(FLEET_KEY)) {
+                return fleet;
+            }
+        }
+        return null;
     }
 
     private static CampaignFleetAPI createFleet() {
@@ -129,37 +129,12 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         member.updateStats();
     }
 
-    private static Vector2f chooseTangentialSpawnOffset(
-            CampaignFleetAPI player,
-            StarSystemAPI system) {
-        Vector2f center = system.getCenter().getLocation();
-        Vector2f at = player.getLocation();
-        float radialX = at.x - center.x;
-        float radialY = at.y - center.y;
-        float length = (float) Math.sqrt(
-                radialX * radialX + radialY * radialY);
-        if (length < 1f) {
-            radialX = 1f;
-            radialY = 0f;
-            length = 1f;
-        }
-
-        // A tangent keeps the ambush clear of both the central star and the
-        // altitude-warning boundary, regardless of how the player entered.
-        return new Vector2f(
-                -radialY / length * SPAWN_DISTANCE,
-                radialX / length * SPAWN_DISTANCE);
-    }
-
-    private static void configureAttack(
+    private static void configureGuard(
             CampaignFleetAPI fleet,
-            CampaignFleetAPI player) {
+            SectorEntityToken anchor) {
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         memory.set(FLEET_KEY, true);
         memory.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
-        memory.set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
-        memory.set(MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE, true);
-        memory.set(MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, true);
         memory.set(MemFlags.MEMORY_KEY_NO_REP_IMPACT, true);
         memory.set(MemFlags.MEMORY_KEY_NO_SHIP_RECOVERY, true);
         memory.set(
@@ -170,9 +145,9 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
 
         fleet.clearAssignments();
         fleet.addAssignment(
-                FleetAssignment.INTERCEPT,
-                player,
-                1000f,
-                "closing on your fleet");
+                FleetAssignment.ORBIT_PASSIVE,
+                anchor,
+                GUARD_DURATION,
+                "waiting in silence");
     }
 }
