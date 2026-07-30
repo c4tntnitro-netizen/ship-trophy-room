@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain.RingParams;
+import com.fs.starfarer.api.impl.MusicPlayerPluginImpl;
 
 import shiptrophy.campaign.terrain.AltitudeWarningTerrainPlugin;
 
@@ -29,6 +30,7 @@ public final class GanEdenGenerator {
     public static final String ALTITUDE_TERRAIN_TYPE = "ship_trophy_altitude_warning";
     public static final String ARRIVAL_RING_ID = "ship_trophy_gan_eden_arrival_ring";
     public static final String ARRIVAL_RING_TYPE = "ship_trophy_gan_eden_arrival_ring";
+    public static final String MUSIC_SET_ID = "ship_trophy_gan_eden_music";
 
     public static final boolean SHATTERED_RING_GATEWAY_ENABLED = false;
 
@@ -120,6 +122,8 @@ public final class GanEdenGenerator {
         system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
         system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
         system.addTag(Tags.SYSTEM_ALREADY_USED_FOR_STORY);
+        system.getMemoryWithoutUpdate().set(
+                MusicPlayerPluginImpl.MUSIC_SET_MEM_KEY, MUSIC_SET_ID);
         system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setDoNotShowIntelFromThisLocationOnMap(true);
         system.setMapGridWidthOverride(6500f);

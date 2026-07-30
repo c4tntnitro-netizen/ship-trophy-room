@@ -1,4 +1,13 @@
 {
+    "music":{
+        "ship_trophy_gan_eden_music":[
+            {
+                "file":"ship_trophy_lonesome_journey.ogg",
+                "source":"sounds/music",
+                "volume":0.65
+            }
+        ]
+    },
     "ship_trophy_iaido_torpedo_launch":[
         {
             "file":"sounds/sfx_systems/ship_trophy_iaido_torpedo_launch.ogg",

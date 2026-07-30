@@ -39,6 +39,18 @@ Gan Eden has no markets, objectives, NPC fleets, jump points, nascent gravity we
 
 The eventual transit mechanism through the Shattered Ring is intentionally disabled. During development, enter the system with the Console Commands mod using `jump Gan Eden`.
 
+## Music credits
+
+```text
+Song: Lonesome Journey
+Composer: Keys Of Moon
+Website: https://www.youtube.com/c/keysofmoonmusic
+License: Creative Commons (BY 3.0) https://creativecommons.org/licenses/by/3.0/
+Music powered by BreakingCopyright: https://breakingcopyright.com
+```
+
+Adaptation notice: the supplied MP3 was converted to Ogg Vorbis and followed by ten seconds of silence to create Gan Eden's repeating ambient-music cycle. The musical content was otherwise unchanged.
+
 ## Doctrine unlocks
 
 Showcasing 60 unique DP worth of a doctrine's ships across the Hall of Triumph network teaches the player a 0 OP hullmod:
