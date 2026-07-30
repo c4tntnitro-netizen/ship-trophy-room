@@ -17,6 +17,10 @@ public class IsaContactOptionsCMD implements CommandPlugin {
 
         String command = value(params, 0, memoryMap);
         boolean modded = isModded(value(params, 1, memoryMap));
+        if ("populateMasterworkOption".equals(command)) {
+            IsaContactRulesCMD.populateMasterworkOption(dialog.getOptionPanel());
+            return true;
+        }
         if ("populateGenericUniqueOptions".equals(command)) {
             IsaContactRulesCMD.populateGenericUniqueOptions(dialog.getOptionPanel(), modded);
             return true;
@@ -45,6 +49,7 @@ public class IsaContactOptionsCMD implements CommandPlugin {
 
     @Override
     public int getOptionOrder(List<Token> params, Map<String, MemoryAPI> memoryMap) {
+        if ("populateMasterworkOption".equals(value(params, 0, memoryMap))) return 10;
         return 0;
     }
 }

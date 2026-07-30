@@ -68,6 +68,10 @@ public class IsaContactRulesCMD implements CommandPlugin {
             showMasterworkStatus(dialog.getTextPanel());
             return true;
         }
+        if ("showMasterworkIntro".equals(command)) {
+            showMasterworkIntro(dialog.getTextPanel());
+            return true;
+        }
         if ("masterworkComplete".equals(command)) {
             return IsaTrophyManager.isMasterworkComplete();
         }
@@ -243,6 +247,78 @@ public class IsaContactRulesCMD implements CommandPlugin {
         for (IsaTrophyManager.ShowcaseRequirement requirement : IsaTrophyManager.getMasterworkRequirements()) {
             addStatusLine(text, requirement.met, requirement.displayName);
         }
+    }
+
+    private static void showMasterworkIntro(TextPanelAPI text) {
+        List<IsaTrophyManager.ShowcaseRequirement> requirements = IsaTrophyManager.getMasterworkRequirements();
+        int complete = 0;
+        for (IsaTrophyManager.ShowcaseRequirement requirement : requirements) {
+            if (requirement.met) complete++;
+        }
+
+        if (complete >= requirements.size()) {
+            return;
+        }
+
+        if (complete == 0) {
+            text.addPara("\"I have an idea. Or... a dream, more like,\" Isa says. "
+                    + "\"Get me an Onslaught XIV. A Paragon. An Invictus. A Conquest. "
+                    + "An Executor. Do that, and I can get to work.\"");
+            return;
+        }
+
+        String missing = getMissingMasterworkHullNames(requirements);
+        LabelAPI line = text.addPara("\"We're getting there,\" Isa says. "
+                + "\"The Hall network has %s of the five hulls. I still need %s.\"",
+                Misc.getHighlightColor(),
+                Integer.toString(complete),
+                missing);
+        line.setHighlight(Integer.toString(complete), missing);
+        line.setHighlightColors(Misc.getHighlightColor(), Misc.getNegativeHighlightColor());
+    }
+
+    static void populateMasterworkOption(OptionPanelAPI options) {
+        List<IsaTrophyManager.ShowcaseRequirement> requirements = IsaTrophyManager.getMasterworkRequirements();
+        int complete = 0;
+        for (IsaTrophyManager.ShowcaseRequirement requirement : requirements) {
+            if (requirement.met) complete++;
+        }
+
+        int total = requirements.size();
+        boolean unlocked = total > 0 && complete >= total;
+        boolean unseen = unlocked && !IsaTrophyManager.wasUnlockDialogueSeen(IsaTrophyManager.PROVENANCE_HULLMOD_ID);
+        Color color = unseen ? Misc.getHighlightColor() : Misc.getTextColor();
+
+        String label = "Review Isa's masterwork (" + complete + "/" + total + " hulls).";
+        String tooltip;
+        if (unlocked) {
+            tooltip = unseen
+                    ? "All five hulls are displayed. Isa has completed Awe."
+                    : "All five required hulls are currently displayed.";
+        } else {
+            tooltip = "Still needed: " + getMissingMasterworkHullNames(requirements);
+        }
+        options.addOption(label, "ship_trophy_isa_masterwork", color, tooltip);
+    }
+
+    private static String getMissingMasterworkHullNames(
+            List<IsaTrophyManager.ShowcaseRequirement> requirements) {
+        StringBuilder result = new StringBuilder();
+        int missing = 0;
+        for (IsaTrophyManager.ShowcaseRequirement requirement : requirements) {
+            if (!requirement.met) missing++;
+        }
+
+        int seen = 0;
+        for (IsaTrophyManager.ShowcaseRequirement requirement : requirements) {
+            if (requirement.met) continue;
+            seen++;
+            if (result.length() > 0) {
+                result.append(seen == missing && missing > 1 ? " and " : ", ");
+            }
+            result.append(requirement.displayName);
+        }
+        return result.toString();
     }
 
     private static void grantOfficer(MemoryAPI local) {

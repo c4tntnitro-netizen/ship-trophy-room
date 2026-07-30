@@ -163,7 +163,16 @@ SYSTEM: Isa has the Hall of Triumph network up on a battered slate: {functional_
 
 === isa_masterwork ===
 // hook: data/campaign/rules.csv shipTrophyIsaMasterworkHub
+// The main-menu option displays live progress as "Review Isa's masterwork (n/5 hulls)."
+// Its tooltip lists whichever required hulls are currently missing.
+
+{ all five required hulls are stored:
+    // No intro line; continue directly to isa_masterwork_complete.
+- else if at least one required hull is stored:
+    "We're getting there," Isa says. "The Hall network has [n] of the five hulls. I still need [dynamic list of missing hulls]."
+- else:
 "I have an idea." Isa says. "Get me an Onslaught XIV. A Paragon. An Invictus. A Conquest. An Executor. Do that, and I can get to work."
+}
 
 STATUS: Complete or Needed: Onslaught XIV
 STATUS: Complete or Needed: Paragon

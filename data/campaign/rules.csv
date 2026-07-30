@@ -25,17 +25,16 @@ SetTextHighlights $shipTrophyIsaRooms $shipTrophyIsaUniqueHulls $shipTrophyIsaUn
 ""It's not about not owning ships,"" she says. ""It's owning history. Hulls with enough legacy that they teach us all.""",,
 shipTrophyIsaMainJoin,ShipTrophyIsaMainOptions,IsaContactRulesCMD canJoin,"SetOptionColor ship_trophy_isa_join_fleet highlight
 SetTooltip ship_trophy_isa_join_fleet ""Every vanilla Hall of Triumph ledger is complete. Isa can now join your officer roster.""",,0:ship_trophy_isa_join_fleet:Isa is ready to join the fleet.,
-shipTrophyIsaMainMasterwork,ShipTrophyIsaMainOptions,,,,10:ship_trophy_isa_masterwork:Review Isa's masterwork.,
+shipTrophyIsaMainMasterwork,ShipTrophyIsaMainOptions,,IsaContactOptionsCMD populateMasterworkOption,,,
 shipTrophyIsaMainUniques,ShipTrophyIsaMainOptions,,,,20:ship_trophy_isa_uniques:Ask about unique hulls.,
 shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtypes:Ask about vanilla faction and subtype programs.,
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
 shipTrophyIsaMainModdedSubtypes,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasSubtypePrograms modded,,,50:ship_trophy_isa_modded_subtypes:Ask about modded faction and subtype programs.,
 shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut cutCommLink ""ESCAPE""",,100:cutCommLink:Cut the comm link.,
 shipTrophyIsaMasterworkHub,DialogOptionSelected,$option == ship_trophy_isa_masterwork,"IsaContactRulesCMD prepareMasterwork
-FireAll ShipTrophyIsaMasterworkIntro
+IsaContactRulesCMD showMasterworkIntro
 IsaContactRulesCMD showMasterworkStatus
 FireBest ShipTrophyIsaMasterworkState",,,
-shipTrophyIsaMasterworkIntro,ShipTrophyIsaMasterworkIntro,,,"""I have an idea. Or... a dream, more like."" Isa says. ""Get me an Onslaught XIV. A Paragon. An Invictus. A Conquest. An Executor. Do that, and I can get to work.""",,
 shipTrophyIsaMasterworkIncomplete,ShipTrophyIsaMasterworkState,!IsaContactRulesCMD masterworkComplete,"SetShortcut cutCommLink ""ESCAPE""","""Bring me the missing hulls and I'll get to work on my custom modspec.""","0:ship_trophy_isa_masterwork:Back.
 100:cutCommLink:Cut the comm link.",
 shipTrophyIsaMasterworkComplete,ShipTrophyIsaMasterworkState,IsaContactRulesCMD masterworkComplete,"FireAll ShipTrophyIsaMasterworkCompleteText
