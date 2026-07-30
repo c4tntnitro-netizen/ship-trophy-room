@@ -19,6 +19,7 @@ $sources = Get-ChildItem -Recurse -Path (Join-Path $PSScriptRoot "src") -Filter 
 $classpath = @(
     (Join-Path $core "starfarer.api.jar"),
     (Join-Path $core "json.jar"),
+    (Join-Path $core "lwjgl.jar"),
     (Join-Path $core "lwjgl_util.jar")
 ) -join [System.IO.Path]::PathSeparator
 & $javac --release 8 -classpath $classpath -d $classes @sources

@@ -3,6 +3,7 @@ package shiptrophy.campaign;
 import java.awt.Color;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -10,6 +11,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain.RingParams;
+
+import shiptrophy.campaign.terrain.AltitudeWarningTerrainPlugin;
 
 /**
  * Generates the prototype Dyson-sphere interior called Gan Eden.
@@ -24,12 +27,15 @@ public final class GanEdenGenerator {
     public static final String STAR_ID = "ship_trophy_gan_eden_star";
     public static final String ALTITUDE_TERRAIN_ID = "ship_trophy_gan_eden_altitude";
     public static final String ALTITUDE_TERRAIN_TYPE = "ship_trophy_altitude_warning";
+    public static final String ARRIVAL_RING_ID = "ship_trophy_gan_eden_arrival_ring";
+    public static final String ARRIVAL_RING_TYPE = "ship_trophy_gan_eden_arrival_ring";
 
     public static final boolean SHATTERED_RING_GATEWAY_ENABLED = false;
 
-    public static final float WARNING_INNER_RADIUS = 3450f;
-    public static final float WARNING_OUTER_RADIUS = 4350f;
-    public static final float HARD_SURFACE_RADIUS = 4210f;
+    public static final float WARNING_INNER_RADIUS = 1650f;
+    public static final float WARNING_OUTER_RADIUS = 2150f;
+    public static final float HARD_SURFACE_RADIUS = 2050f;
+    public static final float SURFACE_OUTER_RADIUS = 3000f;
 
     private static final String SURFACE_BAND_ID = "ship_trophy_gan_eden_surface";
     private static final String INNER_SEAM_ID = "ship_trophy_gan_eden_inner_seam";
@@ -55,6 +61,7 @@ public final class GanEdenGenerator {
 
             ensureInteriorSurface(system, star);
             ensureAltitudeWarning(system, star);
+            ensureArrivalRing(system, star);
             removeHyperspaceAnchor(system);
 
             // Deliberately dormant for now. A later story pass will create the
@@ -98,8 +105,8 @@ public final class GanEdenGenerator {
         system.setBaseName(SYSTEM_NAME);
         system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setLightColor(new Color(255, 238, 190));
-        system.setMapGridWidthOverride(11000f);
-        system.setMapGridHeightOverride(11000f);
+        system.setMapGridWidthOverride(6500f);
+        system.setMapGridHeightOverride(6500f);
         system.setMaxRadiusInHyperspace(0f);
         system.setProcgen(false);
         return system;
@@ -113,7 +120,10 @@ public final class GanEdenGenerator {
         system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
         system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
         system.addTag(Tags.SYSTEM_ALREADY_USED_FOR_STORY);
+        system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setDoNotShowIntelFromThisLocationOnMap(true);
+        system.setMapGridWidthOverride(6500f);
+        system.setMapGridHeightOverride(6500f);
         system.setMaxRadiusInHyperspace(0f);
     }
 
@@ -141,68 +151,35 @@ public final class GanEdenGenerator {
     }
 
     private static void ensureInteriorSurface(StarSystemAPI system, PlanetAPI star) {
-        if (system.getEntityById(SURFACE_BAND_ID) == null) {
-            SectorEntityToken surface = system.addRingBand(
-                    star,
-                    "ship_trophy_gan_eden",
-                    "inner_surface",
-                    512f,
-                    0,
-                    new Color(186, 203, 166, 255),
-                    1600f,
-                    5000f,
-                    7200f);
-            if (surface != null) surface.setId(SURFACE_BAND_ID);
-        }
-
-        if (system.getEntityById(INNER_SEAM_ID) == null) {
-            SectorEntityToken seam = system.addRingBand(
-                    star,
-                    "ship_trophy_gan_eden",
-                    "shell_detail",
-                    128f,
-                    0,
-                    new Color(185, 154, 104, 130),
-                    150f,
-                    HARD_SURFACE_RADIUS,
-                    3600f);
-            if (seam != null) seam.setId(INNER_SEAM_ID);
-        }
-
-        if (system.getEntityById(OUTER_SEAM_ID) == null) {
-            SectorEntityToken seam = system.addRingBand(
-                    star,
-                    "ship_trophy_gan_eden",
-                    "shell_detail",
-                    128f,
-                    2,
-                    new Color(115, 125, 135, 160),
-                    210f,
-                    5760f,
-                    5400f);
-            if (seam != null) seam.setId(OUTER_SEAM_ID);
-        }
-
-        if (system.getEntityById(WARNING_BAND_ID) == null) {
-            SectorEntityToken warning = system.addRingBand(
-                    star,
-                    "ship_trophy_gan_eden",
-                    "warning",
-                    128f,
-                    1,
-                    new Color(255, 92, 48, 90),
-                    360f,
-                    WARNING_INNER_RADIUS + 170f,
-                    2400f);
-            if (warning != null) warning.setId(WARNING_BAND_ID);
-        }
+        // The first prototype used ordinary planetary ring bands. Those are
+        // culled like normal orbital scenery and can be invisible from the
+        // initial camera position. The altitude terrain now renders the shell
+        // explicitly; remove legacy bands from saves that already generated
+        // the first version.
+        removeLegacyBand(system, SURFACE_BAND_ID);
+        removeLegacyBand(system, INNER_SEAM_ID);
+        removeLegacyBand(system, OUTER_SEAM_ID);
+        removeLegacyBand(system, WARNING_BAND_ID);
     }
 
     private static void ensureAltitudeWarning(StarSystemAPI system, PlanetAPI star) {
-        if (system.getEntityById(ALTITUDE_TERRAIN_ID) != null) return;
-
         float width = WARNING_OUTER_RADIUS - WARNING_INNER_RADIUS;
         float middle = (WARNING_OUTER_RADIUS + WARNING_INNER_RADIUS) * 0.5f;
+        SectorEntityToken existing = system.getEntityById(ALTITUDE_TERRAIN_ID);
+        if (existing instanceof CampaignTerrainAPI) {
+            CampaignTerrainAPI terrain = (CampaignTerrainAPI) existing;
+            if (terrain.getPlugin() instanceof AltitudeWarningTerrainPlugin) {
+                AltitudeWarningTerrainPlugin plugin =
+                        (AltitudeWarningTerrainPlugin) terrain.getPlugin();
+                plugin.reconfigure(star, width, middle);
+                existing.setCircularOrbit(star, 0f, 0f, 100000f);
+                return;
+            }
+        }
+        if (existing != null) {
+            system.removeEntity(existing);
+        }
+
         RingParams params = new RingParams(width, middle, star, "Altitude Warning");
         SectorEntityToken terrain = system.addTerrain(ALTITUDE_TERRAIN_TYPE, params);
         if (terrain != null) {
@@ -219,6 +196,32 @@ public final class GanEdenGenerator {
             anchor.getContainingLocation().removeEntity(anchor);
         }
         system.setHyperspaceAnchor(null);
+    }
+
+    private static void ensureArrivalRing(StarSystemAPI system, PlanetAPI star) {
+        SectorEntityToken ring = system.getEntityById(ARRIVAL_RING_ID);
+        if (ring == null) {
+            ring = system.addCustomEntity(
+                    ARRIVAL_RING_ID,
+                    "Eden Transit Ring",
+                    ARRIVAL_RING_TYPE,
+                    Factions.NEUTRAL);
+        }
+        if (ring == null) return;
+
+        ring.setCircularOrbitPointingDown(star, 35f, 1250f, 100000f);
+        ring.setDiscoverable(false);
+        ring.setSensorProfile(null);
+        ring.addTag(Tags.NON_CLICKABLE);
+        ring.addTag(Tags.NO_ENTITY_TOOLTIP);
+        ring.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+    }
+
+    private static void removeLegacyBand(StarSystemAPI system, String id) {
+        SectorEntityToken band = system.getEntityById(id);
+        if (band != null) {
+            system.removeEntity(band);
+        }
     }
 
     private static void ensureShatteredRingGateway(StarSystemAPI system) {
