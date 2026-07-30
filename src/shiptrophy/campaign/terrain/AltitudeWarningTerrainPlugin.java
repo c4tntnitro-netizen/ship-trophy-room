@@ -35,11 +35,16 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final float ATMOSPHERE_INNER_RADIUS =
             (GanEdenGenerator.WARNING_INNER_RADIUS
                     + GanEdenGenerator.SURFACE_OUTER_RADIUS) * 0.5f;
+    private static final float GATE_SPRITE_INNER_RADIUS_FRACTION = 100f / 128f;
+    private static final float STRUCTURAL_FRAME_SIZE =
+            GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f
+                    / GATE_SPRITE_INNER_RADIUS_FRACTION;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
 
     private transient SpriteAPI innerSurfaceTexture;
+    private transient SpriteAPI shellStructureTexture;
 
     public void reconfigure(SectorEntityToken center, float width, float middle) {
         if (params == null) {
@@ -189,6 +194,18 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     new Color(0, 0, 0, 255),
                     alpha);
 
+            // The vanilla gate sprite is a transparent circular structure.
+            // Scale it so its 100px inner radius lands exactly on Gan Eden's
+            // horizon, leaving the detailed Domain-era plating entirely
+            // outside the inhabited surface as a visible cutaway shell.
+            renderCenteredSprite(
+                    shellStructureTexture,
+                    center,
+                    STRUCTURAL_FRAME_SIZE,
+                    STRUCTURAL_FRAME_SIZE,
+                    new Color(255, 255, 255, 245),
+                    alpha);
+
             // Looking increasingly edge-on through the inner atmosphere
             // shifts the white haze toward nitrogen blue at the horizon.
             renderGradientAnnulus(
@@ -223,6 +240,42 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             innerSurfaceTexture = Global.getSettings().getSprite(
                     "ship_trophy_gan_eden", "inner_surface");
         }
+        if (shellStructureTexture == null) {
+            shellStructureTexture = Global.getSettings().getSprite(
+                    "ship_trophy_gan_eden", "shell_structure");
+        }
+    }
+
+    private static void renderCenteredSprite(
+            SpriteAPI texture,
+            Vector2f center,
+            float width,
+            float height,
+            Color color,
+            float alphaMult) {
+        if (texture == null) return;
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        texture.bindTexture();
+        setColor(color, alphaMult);
+
+        float texX = texture.getTexX();
+        float texY = texture.getTexY();
+        float texWidth = texture.getTexWidth();
+        float texHeight = texture.getTexHeight();
+        float halfWidth = width * 0.5f;
+        float halfHeight = height * 0.5f;
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glTexCoord2f(texX, texY + texHeight);
+        GL11.glVertex2f(center.x - halfWidth, center.y - halfHeight);
+        GL11.glTexCoord2f(texX + texWidth, texY + texHeight);
+        GL11.glVertex2f(center.x + halfWidth, center.y - halfHeight);
+        GL11.glTexCoord2f(texX + texWidth, texY);
+        GL11.glVertex2f(center.x + halfWidth, center.y + halfHeight);
+        GL11.glTexCoord2f(texX, texY);
+        GL11.glVertex2f(center.x - halfWidth, center.y + halfHeight);
+        GL11.glEnd();
     }
 
     private static void renderInwardSphere(
