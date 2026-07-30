@@ -27,6 +27,11 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final float DEEP_RETURN_SPEED = 220f;
     private static final float EMERGENCY_BACKSTOP_RADIUS = 2525f;
     private static final int RENDER_SEGMENTS = 96;
+    private static final int SPHERE_RADIAL_SEGMENTS = 48;
+    private static final float SPHERE_LONGITUDE_OFFSET = 0.25f;
+    private static final int SPHERE_VERTEX_STRIDE = 4;
+    private static final int SPHERE_VERTICES_PER_BAND = (RENDER_SEGMENTS + 1) * 2;
+    private static final float[] INWARD_SPHERE_MESH = buildInwardSphereMesh();
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
@@ -159,20 +164,21 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            // Draw one continuous, world-anchored copy beneath the entire
-            // cavity. Using the same image once avoids the visual seam caused
-            // by separately remapping it around the annular shell.
-            renderTexturedQuad(
+            // Starsector's planet maps are 2:1 equirectangular textures. Lift
+            // this circular projection onto the back hemisphere and sample it
+            // by longitude and latitude, i.e. view the planetary surface from
+            // its inward-facing side. The geography itself now curves into the
+            // horizon instead of meeting a separately stretched ring texture.
+            renderInwardSphere(
                     eccentricSurfaceTexture,
                     center,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
                     new Color(255, 255, 255, 255),
                     alpha);
 
-            // The location's official background remains a vanilla black
-            // background, preventing this texture from leaking into the title
-            // screen. Mask the generated world image beyond the sphere.
+            // The location's official background is also vanilla black. This
+            // mask guarantees a clean circular aperture while keeping custom
+            // planet imagery out of Starsector's title-screen background cache.
             renderSolidAnnulus(
                     center,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
@@ -180,36 +186,28 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     new Color(0, 0, 0, 255),
                     alpha);
 
-            // The shell is a darkened continuation of the same geography,
-            // rather than a second copy stretched around the circumference.
-            renderGradientAnnulus(
-                    center,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(22, 31, 28, 5),
-                    new Color(13, 19, 17, 105),
-                    alpha);
-
+            // Looking increasingly edge-on through the inner atmosphere
+            // shifts the white haze toward nitrogen blue at the horizon.
             renderGradientAnnulus(
                     center,
                     GanEdenGenerator.WARNING_INNER_RADIUS,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
                     new Color(242, 248, 255, 8),
-                    new Color(82, 164, 255, 112),
+                    new Color(82, 164, 255, 138),
                     alpha);
 
             renderSolidAnnulus(
                     center,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS - 10f,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS + 10f,
-                    new Color(196, 226, 255, 100),
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS - 20f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 20f,
+                    new Color(184, 220, 255, 150),
                     alpha);
 
             renderSolidAnnulus(
                     center,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS - 16f,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 16f,
-                    new Color(112, 124, 120, 125),
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 20f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 36f,
+                    new Color(52, 64, 68, 150),
                     alpha);
         } finally {
             GL11.glPopMatrix();
@@ -224,16 +222,16 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         }
     }
 
-    private static void renderTexturedQuad(
+    private static void renderInwardSphere(
             SpriteAPI texture,
             Vector2f center,
-            float width,
-            float height,
+            float radius,
             Color color,
             float alphaMult) {
         if (texture == null) return;
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         texture.bindTexture();
         setColor(color, alphaMult);
 
@@ -241,19 +239,81 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         float texY = texture.getTexY();
         float texWidth = texture.getTexWidth();
         float texHeight = texture.getTexHeight();
-        float halfWidth = width * 0.5f;
-        float halfHeight = height * 0.5f;
+        int cursor = 0;
 
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(texX, texY + texHeight);
-        GL11.glVertex2f(center.x - halfWidth, center.y - halfHeight);
-        GL11.glTexCoord2f(texX + texWidth, texY + texHeight);
-        GL11.glVertex2f(center.x + halfWidth, center.y - halfHeight);
-        GL11.glTexCoord2f(texX + texWidth, texY);
-        GL11.glVertex2f(center.x + halfWidth, center.y + halfHeight);
-        GL11.glTexCoord2f(texX, texY);
-        GL11.glVertex2f(center.x - halfWidth, center.y + halfHeight);
-        GL11.glEnd();
+        for (int radial = 0; radial < SPHERE_RADIAL_SEGMENTS; radial++) {
+            GL11.glBegin(GL11.GL_QUAD_STRIP);
+            for (int vertex = 0; vertex < SPHERE_VERTICES_PER_BAND; vertex++) {
+                float diskX = INWARD_SPHERE_MESH[cursor++];
+                float diskY = INWARD_SPHERE_MESH[cursor++];
+                float u = INWARD_SPHERE_MESH[cursor++];
+                float v = INWARD_SPHERE_MESH[cursor++];
+
+                GL11.glTexCoord2f(
+                        texX + texWidth * u,
+                        texY + texHeight * v);
+                GL11.glVertex2f(
+                        center.x + radius * diskX,
+                        center.y + radius * diskY);
+            }
+            GL11.glEnd();
+        }
+    }
+
+    private static float[] buildInwardSphereMesh() {
+        float[] mesh = new float[
+                SPHERE_RADIAL_SEGMENTS
+                        * SPHERE_VERTICES_PER_BAND
+                        * SPHERE_VERTEX_STRIDE];
+        int cursor = 0;
+
+        for (int radial = 0; radial < SPHERE_RADIAL_SEGMENTS; radial++) {
+            float inner = (float) radial / SPHERE_RADIAL_SEGMENTS;
+            float outer = (float) (radial + 1) / SPHERE_RADIAL_SEGMENTS;
+
+            for (int angular = 0; angular <= RENDER_SEGMENTS; angular++) {
+                double angle = Math.PI * 2.0 * angular / RENDER_SEGMENTS;
+                float cos = (float) Math.cos(angle);
+                float sin = (float) Math.sin(angle);
+
+                cursor = putInwardSphereVertex(mesh, cursor, inner, cos, sin);
+                cursor = putInwardSphereVertex(mesh, cursor, outer, cos, sin);
+            }
+        }
+        return mesh;
+    }
+
+    private static int putInwardSphereVertex(
+            float[] mesh,
+            int cursor,
+            float diskRadius,
+            float cos,
+            float sin) {
+        float diskX = diskRadius * cos;
+        float diskY = diskRadius * sin;
+
+        // An equidistant 180-degree interior view: screen radius represents
+        // angular distance from the camera's inward viewing axis. Unlike the
+        // orthographic projection used for an exterior planet, this does not
+        // crush the surface into a thin strip at the circular horizon.
+        float viewAngle = (float) Math.PI * 0.5f * diskRadius;
+        float sinViewAngle = (float) Math.sin(viewAngle);
+        float sphereX = -sinViewAngle * cos;
+        float sphereY = sinViewAngle * sin;
+        float sphereZ = -(float) Math.cos(viewAngle);
+
+        float longitude = (float) Math.atan2(sphereZ, sphereX);
+        float latitude = (float) Math.asin(Math.max(
+                -1f, Math.min(1f, sphereY)));
+        float u = 0.5f + longitude / ((float) Math.PI * 2f)
+                + SPHERE_LONGITUDE_OFFSET;
+        float v = 0.5f - latitude / (float) Math.PI;
+
+        mesh[cursor++] = diskX;
+        mesh[cursor++] = diskY;
+        mesh[cursor++] = u;
+        mesh[cursor++] = v;
+        return cursor;
     }
 
     private static void renderGradientAnnulus(
