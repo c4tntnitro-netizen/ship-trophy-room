@@ -10,6 +10,11 @@
         "illustrations": {
             "ship_trophy_hall_complete": "graphics/Hall Of Triumph.png",
             "ship_trophy_letterbox_black": "graphics/ship_trophy_letterbox_black.png"
+        },
+        "ship_trophy_gan_eden": {
+            "inner_surface": "graphics/planets/terran.jpg",
+            "shell_detail": "graphics/planets/rings_special0.png",
+            "warning": "graphics/planets/rings_special0.png"
         }
     }
 }

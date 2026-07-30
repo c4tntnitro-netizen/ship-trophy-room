@@ -4,7 +4,7 @@
   "author": "Codex",
   "utility": "false",
   "version": "1.0.0",
-  "description": "Adds the Hall of Triumph colony structure, Isa Leicester and her trophy doctrines, and the Shattered Ring free port in Penelope's Star.",
+  "description": "Adds the Hall of Triumph colony structure, Isa Leicester and her trophy doctrines, the Shattered Ring free port, and the sealed Gan Eden prototype system.",
   "gameVersion": "0.98a",
   "jars": ["jars/HallOfTriumph.jar"],
   "modPlugin": "shiptrophy.ShipTrophyRoomModPlugin"

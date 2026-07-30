@@ -1,0 +1,5 @@
+{
+    "ship_trophy_altitude_warning":{
+        "plugin":"shiptrophy.campaign.terrain.AltitudeWarningTerrainPlugin"
+    }
+}

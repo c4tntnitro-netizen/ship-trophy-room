@@ -12,6 +12,7 @@ Adds a player-colony structure called **Hall of Triumph**.
 - Completing every vanilla Isa trophy program grants **Isa Leicester** as a steady level-8 officer with two exclusive skills; optional mod integrations are not required.
 - After Isa joins the fleet, the first visit to a station owned by each supported vanilla faction plays a short, one-time vignette about that faction's shipbuilding doctrine. Knights of Ludd and Iron Shell receive their own vignettes when their respective mods are installed, but neither mod is required.
 - Adds **The Shattered Ring**, an independent size-4 free port in Penelope's Star. The station is built into the remains of an adamantine ring and supports a community of salvagers, wreck-farmers, and cryopod survivors.
+- Adds **Gan Eden**, a compact prototype Dyson-sphere interior currently isolated from hyperspace for environment testing.
 - Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
@@ -29,6 +30,14 @@ The Ring is Isa's birthplace: salvagers recovered her there as an infant in a cr
 After Isa joins the player's officer roster, bringing her to the Shattered Ring triggers a one-time homecoming scene. The scene waits until she is actually present in the fleet and takes precedence over the generic Independent-station vignette.
 
 The editable writing aid for this material is in `dialogue/shattered_ring.ink`.
+
+## Gan Eden
+
+Gan Eden is a deliberately compact, completely siloed star system built inside a prototype Dyson sphere. A warm central star illuminates the playable interior. Beyond the playable space, a narrow **Altitude Warning** zone pushes fleets safely back toward the star without causing hull, combat-readiness, or crew damage. The inhabited inner surface forms a geographic ring beyond that boundary, with complete blackness outside the shell.
+
+Gan Eden has no markets, objectives, NPC fleets, jump points, nascent gravity wells, or hyperspace anchor. It is tagged as cut off and hidden, excluded from random mission targeting, and cannot become a respawn location.
+
+The eventual transit mechanism through the Shattered Ring is intentionally disabled. During development, enter the system with the Console Commands mod using `jump Gan Eden`.
 
 ## Doctrine unlocks
 
