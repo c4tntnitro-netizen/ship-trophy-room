@@ -11,6 +11,7 @@ Adds a player-colony structure called **Hall of Triumph**.
 - Adds **Isa**, a salvager and ship-modder contact who appears in the dockside bar after the first functional Hall of Triumph is built.
 - Completing every vanilla Isa trophy program grants **Isa Leicester** as a steady level-8 officer with two exclusive skills; optional mod integrations are not required.
 - After Isa joins the fleet, the first visit to a station owned by each supported vanilla faction plays a short, one-time vignette about that faction's shipbuilding doctrine. Knights of Ludd and Iron Shell receive their own vignettes when their respective mods are installed, but neither mod is required.
+- Adds **The Shattered Ring**, an independent size-4 free port in Penelope's Star. The station is built into the remains of an adamantine ring and supports a community of salvagers, wreck-farmers, and cryopod survivors.
 - Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
@@ -18,6 +19,14 @@ Adds a player-colony structure called **Hall of Triumph**.
 - Every 240 total deployment points from unique hulls adds another full base-rate bonus.
 - Tracks hosted hull-size counts: frigates, destroyers, cruisers, and capitals.
 - Improving a structure makes that Hall of Triumph count as a 33% stronger story-point node.
+
+## The Shattered Ring
+
+The Shattered Ring is generated in the fixed Penelope's Star system at game start or the next time an existing campaign is loaded. It is an Independent size-4 free port with a custom station sprite, a shipbreaking economy, Wreck Farms, a Pod Community condition, and a persistent local field of claimed derelicts and debris. In randomized-sector configurations where Penelope's Star does not exist, generation is skipped safely.
+
+The Ring is Isa's birthplace: salvagers recovered her there as an infant in a cryopod, swaddled in a spacer suit marked **Isaac Leicester**. She shortened the inherited name to Isa after learning its masculine association. Her story is not unique there; generations of cryopod survivors—affectionately called “pod people”—form an ordinary and established part of the Ring's community.
+
+The editable writing aid for this material is in `dialogue/shattered_ring.ink`.
 
 ## Doctrine unlocks
 

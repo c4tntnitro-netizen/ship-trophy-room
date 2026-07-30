@@ -1,0 +1,2 @@
+name,id,tags,planetary,decivRemove,script,desc,icon,order
+Pod Community,ship_trophy_pod_community,,,FALSE,shiptrophy.campaign.PodCommunityCondition,"Cryopods are common salvage in the surrounding wreck fields, and the Ring's revival wards have accumulated generations of people separated from their original lives by decades or centuries. Locals jokingly call them ""pod people""; here, the term usually implies kinship rather than novelty.",graphics/icons/industry/cryorevival.png,365

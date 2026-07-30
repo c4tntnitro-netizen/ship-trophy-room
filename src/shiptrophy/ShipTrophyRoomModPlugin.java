@@ -3,6 +3,7 @@ package shiptrophy;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 
+import shiptrophy.campaign.ShatteredRingGenerator;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
 
 public class ShipTrophyRoomModPlugin extends BaseModPlugin {
@@ -20,6 +21,7 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         if (Global.getSector() == null) return;
         TrophySubtypeRegistry.reload();
         ConfigurableTrophyHullMod.reload();
+        ShatteredRingGenerator.ensureGenerated();
         Global.getSector().removeScriptsOfClass(StoryPointGeneratorScript.class);
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);

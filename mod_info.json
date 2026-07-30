@@ -4,7 +4,7 @@
   "author": "Codex",
   "utility": "false",
   "version": "1.0.0",
-  "description": "Adds a buildable Hall of Triumph structure to player colonies. It unlocks dedicated ship storage and slowly generates story points from curated display vessels.",
+  "description": "Adds the Hall of Triumph colony structure, Isa Leicester and her trophy doctrines, and the Shattered Ring free port in Penelope's Star.",
   "gameVersion": "0.98a",
   "jars": ["jars/HallOfTriumph.jar"],
   "modPlugin": "shiptrophy.ShipTrophyRoomModPlugin"
