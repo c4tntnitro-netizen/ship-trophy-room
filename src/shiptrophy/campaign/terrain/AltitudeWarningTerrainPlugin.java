@@ -3,8 +3,8 @@ package shiptrophy.campaign.terrain;
 import java.awt.Color;
 import java.util.EnumSet;
 
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.opengl.GL11;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignEngineLayers;
@@ -15,53 +15,31 @@ import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 
+import shiptrophy.campaign.GanEdenGenerator;
+
 /**
- * A non-damaging traffic-control field around Gan Eden's forced-perspective
- * triangular aperture. The backdrop and the collision boundary share the same
- * normalized geometry, so fleets rebound from the structure they can see.
+ * A non-damaging traffic-control field along Gan Eden's inhabited inner
+ * surface. It arrests outward motion and redirects fleets toward the star.
  */
 public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final Color WARNING_COLOR = new Color(255, 105, 55);
     private static final float SURFACE_RETURN_SPEED = 90f;
     private static final float DEEP_RETURN_SPEED = 220f;
-    private static final float WARNING_DEPTH = 430f;
-    private static final float EMERGENCY_BACKSTOP_DEPTH = 520f;
-    private static final float BACKDROP_WIDTH = 9000f;
-    private static final float BACKDROP_HEIGHT = 5053.7109f;
-    private static final float BLACK_BACKDROP_SIZE = 20000f;
-
-    // The extrapolated plate moves the lower-left playable opening inward.
-    // Offset it so Starsector's real star, at world origin, sits inside that
-    // opening instead of overlapping the surrounding shell.
-    private static final float STAR_U = 0.33f;
-    private static final float STAR_V = 0.70f;
-    private static final float BACKDROP_OFFSET_X =
-            (0.5f - STAR_U) * BACKDROP_WIDTH;
-    private static final float BACKDROP_OFFSET_Y =
-            (STAR_V - 0.5f) * BACKDROP_HEIGHT;
-
-    /**
-     * Clockwise in image coordinates; the Y conversion below turns this into
-     * a counter-clockwise world polygon. Extra vertices follow the rounded
-     * left and lower shell edges while retaining the reference's triangular
-     * silhouette.
-     */
-    private static final float[][] APERTURE_UV = new float[][] {
-            {0.17f, 0.10f},
-            {0.72f, 0.11f},
-            {0.70f, 0.42f},
-            {0.66f, 0.69f},
-            {0.59f, 0.86f},
-            {0.44f, 0.95f},
-            {0.31f, 0.76f},
-            {0.24f, 0.58f},
-            {0.19f, 0.32f}
-    };
-
+    private static final float EMERGENCY_BACKSTOP_RADIUS = 2525f;
+    private static final int RENDER_SEGMENTS = 96;
+    private static final int SPHERE_RADIAL_SEGMENTS = 48;
+    private static final float SPHERE_LONGITUDE_OFFSET = 0.25f;
+    private static final int SPHERE_VERTEX_STRIDE = 4;
+    private static final int SPHERE_VERTICES_PER_BAND = (RENDER_SEGMENTS + 1) * 2;
+    private static final float[] INWARD_SPHERE_MESH = buildInwardSphereMesh();
+    private static final float ATMOSPHERE_INNER_RADIUS =
+            (GanEdenGenerator.WARNING_INNER_RADIUS
+                    + GanEdenGenerator.SURFACE_OUTER_RADIUS) * 0.5f;
+    private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
 
-    private transient SpriteAPI backdropTexture;
+    private transient SpriteAPI innerSurfaceTexture;
 
     public void reconfigure(SectorEntityToken center, float width, float middle) {
         if (params == null) {
@@ -79,101 +57,83 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     public void advance(float amount) {
         super.advance(amount);
 
-        if (Global.getSector() == null
-                || Global.getSector().getPlayerFleet() == null) {
-            return;
-        }
+        if (Global.getSector() == null || Global.getSector().getPlayerFleet() == null) return;
         CampaignFleetAPI player = Global.getSector().getPlayerFleet();
-        if (containsEntity(player)
-                && !player.getMemoryWithoutUpdate()
-                        .getBoolean(WARNING_RECENT_KEY)) {
-            player.addFloatingText(
-                    "ALTITUDE WARNING", WARNING_COLOR, 0.8f, true);
-            player.getMemoryWithoutUpdate().set(
-                    WARNING_RECENT_KEY, true, 2f);
+        boolean inside = containsEntity(player);
+        if (inside && !player.getMemoryWithoutUpdate().getBoolean(WARNING_RECENT_KEY)) {
+            player.addFloatingText("ALTITUDE WARNING", WARNING_COLOR, 0.8f, true);
+            player.getMemoryWithoutUpdate().set(WARNING_RECENT_KEY, true, 0.5f);
         }
-    }
-
-    @Override
-    public boolean containsEntity(SectorEntityToken token) {
-        if (token == null) return false;
-        return containsPoint(token.getLocation(), token.getRadius());
-    }
-
-    @Override
-    public boolean containsPoint(Vector2f point, float radius) {
-        BoundarySample sample = sampleBoundary(point);
-        if (sample == null) return false;
-        return !sample.inside
-                || sample.distance <= WARNING_DEPTH + Math.max(0f, radius);
     }
 
     @Override
     public void applyEffect(SectorEntityToken token, float amount) {
-        if (!(token instanceof CampaignFleetAPI)) return;
-
-        BoundarySample sample = sampleBoundary(token.getLocation());
-        if (sample == null
-                || (sample.inside && sample.distance > WARNING_DEPTH)) {
-            return;
-        }
+        if (!(token instanceof CampaignFleetAPI) || params == null || params.relatedEntity == null) return;
 
         CampaignFleetAPI fleet = (CampaignFleetAPI) token;
-        Vector2f inward = computeInwardDirection(
-                fleet.getLocation(), sample);
-        float approach = sample.inside
-                ? smoothStep(clamp(
-                        (WARNING_DEPTH - sample.distance) / WARNING_DEPTH))
-                : 1f;
-        float penetration = sample.inside
-                ? 0f
-                : smoothStep(clamp(
-                        sample.distance / EMERGENCY_BACKSTOP_DEPTH));
+        Vector2f center = params.relatedEntity.getLocation();
+        Vector2f location = fleet.getLocation();
+        float dx = location.x - center.x;
+        float dy = location.y - center.y;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+        if (distance <= 0f) return;
+
+        float outwardX = dx / distance;
+        float outwardY = dy / distance;
+        float approach = smoothStep(clamp(
+                (distance - GanEdenGenerator.WARNING_INNER_RADIUS)
+                        / (GanEdenGenerator.HARD_SURFACE_RADIUS
+                                - GanEdenGenerator.WARNING_INNER_RADIUS)));
+        float penetration = smoothStep(clamp(
+                (distance - GanEdenGenerator.HARD_SURFACE_RADIUS)
+                        / (EMERGENCY_BACKSTOP_RADIUS
+                                - GanEdenGenerator.HARD_SURFACE_RADIUS)));
 
         Vector2f velocity = fleet.getVelocity();
-        float outwardVelocity =
-                -(velocity.x * inward.x + velocity.y * inward.y);
-        float desiredOutwardVelocity = -(
+        float radialVelocity = velocity.x * outwardX + velocity.y * outwardY;
+        float desiredRadialVelocity = -(
                 SURFACE_RETURN_SPEED * approach
-                        + (DEEP_RETURN_SPEED - SURFACE_RETURN_SPEED)
-                                * penetration);
+                        + (DEEP_RETURN_SPEED - SURFACE_RETURN_SPEED) * penetration);
 
-        if (outwardVelocity > desiredOutwardVelocity) {
-            float responsePerSecond =
-                    0.55f + 3.25f * approach + 4.2f * penetration;
-            float blend = 1f - (float) Math.exp(
-                    -responsePerSecond * Math.max(0f, amount));
-            float correction =
-                    (outwardVelocity - desiredOutwardVelocity) * blend;
+        if (radialVelocity > desiredRadialVelocity) {
+            // A frame-rate-independent spring response. Near the warning's
+            // inner edge it only feathers off outward momentum; the response
+            // becomes firmer as the fleet enters the visible atmosphere and
+            // the fleet naturally rebounds toward the star.
+            float responsePerSecond = 0.55f + 3.25f * approach + 4.2f * penetration;
+            float blend = 1f - (float) Math.exp(-responsePerSecond * Math.max(0f, amount));
+            float correction = (radialVelocity - desiredRadialVelocity) * blend;
             fleet.setVelocity(
-                    velocity.x + inward.x * correction,
-                    velocity.y + inward.y * correction);
+                    velocity.x - outwardX * correction,
+                    velocity.y - outwardY * correction);
         }
 
-        // Extreme modded campaign speeds can cross the soft field in one
-        // frame. Put the fleet just inside the visible frame and preserve the
-        // same spring-like inward motion instead of letting it escape beneath
-        // the painted shell.
-        if (!sample.inside
-                && sample.distance > EMERGENCY_BACKSTOP_DEPTH) {
+        // This is unreachable during ordinary flight: it is a last-resort
+        // guard for extreme modded campaign speeds, buried well beneath the
+        // visible surface instead of forming the apparent boundary.
+        if (distance > EMERGENCY_BACKSTOP_RADIUS) {
+            float safeRadius = EMERGENCY_BACKSTOP_RADIUS - 12f;
             fleet.setLocation(
-                    sample.closest.x + inward.x * 12f,
-                    sample.closest.y + inward.y * 12f);
+                    center.x + outwardX * safeRadius,
+                    center.y + outwardY * safeRadius);
 
             Vector2f corrected = fleet.getVelocity();
-            float correctedOutward =
-                    -(corrected.x * inward.x + corrected.y * inward.y);
-            if (correctedOutward > -DEEP_RETURN_SPEED) {
-                float correction = correctedOutward + DEEP_RETURN_SPEED;
+            float correctedRadial = corrected.x * outwardX + corrected.y * outwardY;
+            if (correctedRadial > -DEEP_RETURN_SPEED) {
+                float correction = correctedRadial + DEEP_RETURN_SPEED;
                 fleet.setVelocity(
-                        corrected.x + inward.x * correction,
-                        corrected.y + inward.y * correction);
+                        corrected.x - outwardX * correction,
+                        corrected.y - outwardY * correction);
             }
         }
     }
 
     @Override
     public String getEffectCategory() {
+        // BaseTerrain.advance() requires this to group overlapping instances
+        // before it calls applyEffect(). Gan Eden has one boundary, but using
+        // a stable category also prevents duplicate effects if a save ever
+        // contains more than one copy of the terrain.
         return "ship_trophy_altitude_warning";
     }
 
@@ -184,7 +144,7 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public float getRenderRange() {
-        return 10000f;
+        return GanEdenGenerator.SURFACE_OUTER_RADIUS + 2500f;
     }
 
     @Override
@@ -195,32 +155,62 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             return;
         }
 
-        Vector2f star = params.relatedEntity.getLocation();
-        if (!viewport.isNearViewport(star, getRenderRange())) return;
-        ensureTexture();
+        Vector2f center = params.relatedEntity.getLocation();
+        if (!viewport.isNearViewport(center, getRenderRange())) return;
 
-        Vector2f plateCenter = getBackdropCenter(star);
+        ensureTextures();
         float alpha = viewport.getAlphaMult();
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glPushMatrix();
         try {
             GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(
-                    GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            renderSolidQuad(
-                    star,
-                    BLACK_BACKDROP_SIZE,
-                    BLACK_BACKDROP_SIZE,
+            // Starsector's planet maps are 2:1 equirectangular textures. Lift
+            // this circular projection onto the back hemisphere and sample it
+            // by longitude and latitude, i.e. view the planetary surface from
+            // its inward-facing side. The geography itself now curves into the
+            // horizon instead of meeting a separately stretched ring texture.
+            renderInwardSphere(
+                    innerSurfaceTexture,
+                    center,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
+                    new Color(255, 255, 255, 255),
+                    alpha);
+
+            // The location's official background is also vanilla black. This
+            // mask guarantees a clean circular aperture while keeping custom
+            // planet imagery out of Starsector's title-screen background cache.
+            renderSolidAnnulus(
+                    center,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
+                    BLACK_BACKDROP_RADIUS,
                     new Color(0, 0, 0, 255),
                     alpha);
-            renderCenteredSprite(
-                    backdropTexture,
-                    plateCenter,
-                    BACKDROP_WIDTH,
-                    BACKDROP_HEIGHT,
-                    new Color(255, 255, 255, 255),
+
+            // Looking increasingly edge-on through the inner atmosphere
+            // shifts the white haze toward nitrogen blue at the horizon.
+            renderGradientAnnulus(
+                    center,
+                    ATMOSPHERE_INNER_RADIUS,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
+                    new Color(242, 248, 255, 8),
+                    new Color(82, 164, 255, 138),
+                    alpha);
+
+            renderSolidAnnulus(
+                    center,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS - 20f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 20f,
+                    new Color(184, 220, 255, 150),
+                    alpha);
+
+            renderSolidAnnulus(
+                    center,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 20f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 36f,
+                    new Color(52, 64, 68, 150),
                     alpha);
         } finally {
             GL11.glPopMatrix();
@@ -228,125 +218,23 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         }
     }
 
-    private void ensureTexture() {
-        if (backdropTexture == null) {
-            backdropTexture = Global.getSettings().getSprite(
-                    "ship_trophy_gan_eden", "triangle_backdrop");
+    private void ensureTextures() {
+        if (innerSurfaceTexture == null) {
+            innerSurfaceTexture = Global.getSettings().getSprite(
+                    "ship_trophy_gan_eden", "inner_surface");
         }
     }
 
-    private BoundarySample sampleBoundary(Vector2f point) {
-        if (point == null
-                || params == null
-                || params.relatedEntity == null) {
-            return null;
-        }
-
-        Vector2f star = params.relatedEntity.getLocation();
-        Vector2f plateCenter = getBackdropCenter(star);
-        boolean inside = false;
-        float bestDistanceSquared = Float.MAX_VALUE;
-        Vector2f closest = null;
-
-        int count = APERTURE_UV.length;
-        for (int i = 0, previous = count - 1; i < count; previous = i++) {
-            Vector2f a = toWorld(APERTURE_UV[previous], plateCenter);
-            Vector2f b = toWorld(APERTURE_UV[i], plateCenter);
-
-            if ((a.y > point.y) != (b.y > point.y)) {
-                float intersectionX = (b.x - a.x)
-                        * (point.y - a.y) / (b.y - a.y) + a.x;
-                if (point.x < intersectionX) inside = !inside;
-            }
-
-            Vector2f edgePoint = closestPointOnSegment(point, a, b);
-            float dx = point.x - edgePoint.x;
-            float dy = point.y - edgePoint.y;
-            float distanceSquared = dx * dx + dy * dy;
-            if (distanceSquared < bestDistanceSquared) {
-                bestDistanceSquared = distanceSquared;
-                closest = edgePoint;
-            }
-        }
-
-        return new BoundarySample(
-                inside,
-                (float) Math.sqrt(bestDistanceSquared),
-                closest,
-                polygonCentroid(plateCenter));
-    }
-
-    private static Vector2f computeInwardDirection(
-            Vector2f point,
-            BoundarySample sample) {
-        float dx;
-        float dy;
-        if (sample.inside) {
-            dx = point.x - sample.closest.x;
-            dy = point.y - sample.closest.y;
-        } else {
-            dx = sample.closest.x - point.x;
-            dy = sample.closest.y - point.y;
-        }
-
-        float length = (float) Math.sqrt(dx * dx + dy * dy);
-        if (length < 0.001f) {
-            dx = sample.centroid.x - point.x;
-            dy = sample.centroid.y - point.y;
-            length = (float) Math.sqrt(dx * dx + dy * dy);
-        }
-        if (length < 0.001f) return new Vector2f(0f, 1f);
-        return new Vector2f(dx / length, dy / length);
-    }
-
-    private static Vector2f closestPointOnSegment(
-            Vector2f point,
-            Vector2f a,
-            Vector2f b) {
-        float edgeX = b.x - a.x;
-        float edgeY = b.y - a.y;
-        float lengthSquared = edgeX * edgeX + edgeY * edgeY;
-        if (lengthSquared <= 0f) return new Vector2f(a);
-
-        float t = ((point.x - a.x) * edgeX
-                + (point.y - a.y) * edgeY) / lengthSquared;
-        t = clamp(t);
-        return new Vector2f(a.x + edgeX * t, a.y + edgeY * t);
-    }
-
-    private static Vector2f polygonCentroid(Vector2f plateCenter) {
-        float x = 0f;
-        float y = 0f;
-        for (float[] uv : APERTURE_UV) {
-            Vector2f vertex = toWorld(uv, plateCenter);
-            x += vertex.x;
-            y += vertex.y;
-        }
-        return new Vector2f(x / APERTURE_UV.length, y / APERTURE_UV.length);
-    }
-
-    private static Vector2f getBackdropCenter(Vector2f star) {
-        return new Vector2f(
-                star.x + BACKDROP_OFFSET_X,
-                star.y + BACKDROP_OFFSET_Y);
-    }
-
-    private static Vector2f toWorld(float[] uv, Vector2f plateCenter) {
-        return new Vector2f(
-                plateCenter.x + (uv[0] - 0.5f) * BACKDROP_WIDTH,
-                plateCenter.y + (0.5f - uv[1]) * BACKDROP_HEIGHT);
-    }
-
-    private static void renderCenteredSprite(
+    private static void renderInwardSphere(
             SpriteAPI texture,
             Vector2f center,
-            float width,
-            float height,
+            float radius,
             Color color,
             float alphaMult) {
         if (texture == null) return;
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         texture.bindTexture();
         setColor(color, alphaMult);
 
@@ -354,38 +242,117 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         float texY = texture.getTexY();
         float texWidth = texture.getTexWidth();
         float texHeight = texture.getTexHeight();
-        float halfWidth = width * 0.5f;
-        float halfHeight = height * 0.5f;
+        int cursor = 0;
 
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(texX, texY + texHeight);
-        GL11.glVertex2f(center.x - halfWidth, center.y - halfHeight);
-        GL11.glTexCoord2f(texX + texWidth, texY + texHeight);
-        GL11.glVertex2f(center.x + halfWidth, center.y - halfHeight);
-        GL11.glTexCoord2f(texX + texWidth, texY);
-        GL11.glVertex2f(center.x + halfWidth, center.y + halfHeight);
-        GL11.glTexCoord2f(texX, texY);
-        GL11.glVertex2f(center.x - halfWidth, center.y + halfHeight);
+        for (int radial = 0; radial < SPHERE_RADIAL_SEGMENTS; radial++) {
+            GL11.glBegin(GL11.GL_QUAD_STRIP);
+            for (int vertex = 0; vertex < SPHERE_VERTICES_PER_BAND; vertex++) {
+                float diskX = INWARD_SPHERE_MESH[cursor++];
+                float diskY = INWARD_SPHERE_MESH[cursor++];
+                float u = INWARD_SPHERE_MESH[cursor++];
+                float v = INWARD_SPHERE_MESH[cursor++];
+
+                GL11.glTexCoord2f(
+                        texX + texWidth * u,
+                        texY + texHeight * v);
+                GL11.glVertex2f(
+                        center.x + radius * diskX,
+                        center.y + radius * diskY);
+            }
+            GL11.glEnd();
+        }
+    }
+
+    private static float[] buildInwardSphereMesh() {
+        float[] mesh = new float[
+                SPHERE_RADIAL_SEGMENTS
+                        * SPHERE_VERTICES_PER_BAND
+                        * SPHERE_VERTEX_STRIDE];
+        int cursor = 0;
+
+        for (int radial = 0; radial < SPHERE_RADIAL_SEGMENTS; radial++) {
+            float inner = (float) radial / SPHERE_RADIAL_SEGMENTS;
+            float outer = (float) (radial + 1) / SPHERE_RADIAL_SEGMENTS;
+
+            for (int angular = 0; angular <= RENDER_SEGMENTS; angular++) {
+                double angle = Math.PI * 2.0 * angular / RENDER_SEGMENTS;
+                float cos = (float) Math.cos(angle);
+                float sin = (float) Math.sin(angle);
+
+                cursor = putInwardSphereVertex(mesh, cursor, inner, cos, sin);
+                cursor = putInwardSphereVertex(mesh, cursor, outer, cos, sin);
+            }
+        }
+        return mesh;
+    }
+
+    private static int putInwardSphereVertex(
+            float[] mesh,
+            int cursor,
+            float diskRadius,
+            float cos,
+            float sin) {
+        float diskX = diskRadius * cos;
+        float diskY = diskRadius * sin;
+
+        // An equidistant 180-degree interior view: screen radius represents
+        // angular distance from the camera's inward viewing axis. Unlike the
+        // orthographic projection used for an exterior planet, this does not
+        // crush the surface into a thin strip at the circular horizon.
+        float viewAngle = (float) Math.PI * 0.5f * diskRadius;
+        float sinViewAngle = (float) Math.sin(viewAngle);
+        float sphereX = -sinViewAngle * cos;
+        float sphereY = sinViewAngle * sin;
+        float sphereZ = -(float) Math.cos(viewAngle);
+
+        float longitude = (float) Math.atan2(sphereZ, sphereX);
+        float latitude = (float) Math.asin(Math.max(
+                -1f, Math.min(1f, sphereY)));
+        float u = 0.5f + longitude / ((float) Math.PI * 2f)
+                + SPHERE_LONGITUDE_OFFSET;
+        float v = 0.5f - latitude / (float) Math.PI;
+
+        mesh[cursor++] = diskX;
+        mesh[cursor++] = diskY;
+        mesh[cursor++] = u;
+        mesh[cursor++] = v;
+        return cursor;
+    }
+
+    private static void renderGradientAnnulus(
+            Vector2f center,
+            float innerRadius,
+            float outerRadius,
+            Color innerColor,
+            Color outerColor,
+            float alphaMult) {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glBegin(GL11.GL_QUAD_STRIP);
+        for (int i = 0; i <= RENDER_SEGMENTS; i++) {
+            double angle = Math.PI * 2.0 * i / RENDER_SEGMENTS;
+            float cos = (float) Math.cos(angle);
+            float sin = (float) Math.sin(angle);
+
+            setColor(innerColor, alphaMult);
+            GL11.glVertex2f(
+                    center.x + cos * innerRadius,
+                    center.y + sin * innerRadius);
+            setColor(outerColor, alphaMult);
+            GL11.glVertex2f(
+                    center.x + cos * outerRadius,
+                    center.y + sin * outerRadius);
+        }
         GL11.glEnd();
     }
 
-    private static void renderSolidQuad(
+    private static void renderSolidAnnulus(
             Vector2f center,
-            float width,
-            float height,
+            float innerRadius,
+            float outerRadius,
             Color color,
             float alphaMult) {
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        setColor(color, alphaMult);
-        float halfWidth = width * 0.5f;
-        float halfHeight = height * 0.5f;
-
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glVertex2f(center.x - halfWidth, center.y - halfHeight);
-        GL11.glVertex2f(center.x + halfWidth, center.y - halfHeight);
-        GL11.glVertex2f(center.x + halfWidth, center.y + halfHeight);
-        GL11.glVertex2f(center.x - halfWidth, center.y + halfHeight);
-        GL11.glEnd();
+        renderGradientAnnulus(
+                center, innerRadius, outerRadius, color, color, alphaMult);
     }
 
     private static void setColor(Color color, float alphaMult) {
@@ -430,9 +397,8 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
         tooltip.addTitle("Altitude Warning", WARNING_COLOR);
         tooltip.addPara(
-                "The inhabited aperture ends at Gan Eden's exposed shell. "
-                        + "Automated traffic controls redirect approaching "
-                        + "fleets into the visible interior.",
+                "The inner surface of Gan Eden is dangerously close. "
+                        + "Automated traffic controls redirect approaching fleets toward the star.",
                 10f);
         tooltip.addPara(
                 "The field causes no hull, combat readiness, or crew damage.",
@@ -450,23 +416,5 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     private static float smoothStep(float value) {
         return value * value * (3f - 2f * value);
-    }
-
-    private static final class BoundarySample {
-        private final boolean inside;
-        private final float distance;
-        private final Vector2f closest;
-        private final Vector2f centroid;
-
-        private BoundarySample(
-                boolean inside,
-                float distance,
-                Vector2f closest,
-                Vector2f centroid) {
-            this.inside = inside;
-            this.distance = distance;
-            this.closest = closest;
-            this.centroid = centroid;
-        }
     }
 }
