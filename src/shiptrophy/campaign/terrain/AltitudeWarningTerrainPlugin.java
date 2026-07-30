@@ -25,11 +25,11 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final Color WARNING_COLOR = new Color(255, 105, 55);
     private static final float BASE_RETURN_SPEED = 45f;
     private static final float MAX_RETURN_SPEED = 165f;
-    private static final int RENDER_SEGMENTS = 160;
+    private static final int RENDER_SEGMENTS = 96;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
+    private static final String WARNING_RECENT_KEY =
+            "$shipTrophyGanEdenAltitudeWarningRecent";
 
-    private transient boolean playerWasInside;
-    private transient SpriteAPI surfaceTexture;
     private transient SpriteAPI eccentricSurfaceTexture;
     private transient SpriteAPI shellTexture;
 
@@ -52,10 +52,10 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         if (Global.getSector() == null || Global.getSector().getPlayerFleet() == null) return;
         CampaignFleetAPI player = Global.getSector().getPlayerFleet();
         boolean inside = containsEntity(player);
-        if (inside && !playerWasInside) {
+        if (inside && !player.getMemoryWithoutUpdate().getBoolean(WARNING_RECENT_KEY)) {
             player.addFloatingText("ALTITUDE WARNING", WARNING_COLOR, 0.8f, true);
+            player.getMemoryWithoutUpdate().set(WARNING_RECENT_KEY, true, 0.5f);
         }
-        playerWasInside = inside;
     }
 
     @Override
@@ -148,24 +148,14 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            // Campaign locations add procedural background stars independently
-            // of the selected background image. A solid layer beneath all
-            // entities removes them and makes the sphere read as an enclosure.
-            renderSolidDisk(center, BLACK_BACKDROP_RADIUS, new Color(0, 0, 0, 255), alpha);
-
+            // The system background is the unmodified terran_eccentric world
+            // map. Mask only the space beyond the shell so the inhabited
+            // interior remains directly behind the sun and fleet.
             renderSolidAnnulus(
                     center,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(139, 188, 104, 255),
-                    alpha);
-
-            renderTexturedAnnulus(
-                    surfaceTexture,
-                    center,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(72, 176, 54, 145),
+                    BLACK_BACKDROP_RADIUS,
+                    new Color(0, 0, 0, 255),
                     alpha);
 
             renderTexturedAnnulus(
@@ -173,7 +163,7 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     center,
                     GanEdenGenerator.HARD_SURFACE_RADIUS,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(54, 148, 42, 90),
+                    new Color(255, 255, 255, 230),
                     alpha);
 
             // Faint structural tracery keeps the terrain from reading as an
@@ -183,29 +173,29 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     center,
                     GanEdenGenerator.HARD_SURFACE_RADIUS,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(215, 176, 118, 55),
+                    new Color(190, 198, 188, 35),
                     alpha);
 
             renderGradientAnnulus(
                     center,
                     GanEdenGenerator.WARNING_INNER_RADIUS,
                     GanEdenGenerator.HARD_SURFACE_RADIUS,
-                    new Color(255, 86, 42, 10),
-                    new Color(255, 92, 42, 105),
+                    new Color(242, 248, 255, 8),
+                    new Color(82, 164, 255, 112),
                     alpha);
 
             renderSolidAnnulus(
                     center,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS - 28f,
-                    GanEdenGenerator.HARD_SURFACE_RADIUS + 28f,
-                    new Color(255, 176, 92, 145),
+                    GanEdenGenerator.HARD_SURFACE_RADIUS - 10f,
+                    GanEdenGenerator.HARD_SURFACE_RADIUS + 10f,
+                    new Color(196, 226, 255, 135),
                     alpha);
 
             renderSolidAnnulus(
                     center,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS - 34f,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 34f,
-                    new Color(42, 218, 126, 175),
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS - 16f,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 16f,
+                    new Color(128, 142, 135, 145),
                     alpha);
         } finally {
             GL11.glPopMatrix();
@@ -214,10 +204,6 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     }
 
     private void ensureTextures() {
-        if (surfaceTexture == null) {
-            surfaceTexture = Global.getSettings().getSprite(
-                    "ship_trophy_gan_eden", "inner_surface");
-        }
         if (eccentricSurfaceTexture == null) {
             eccentricSurfaceTexture = Global.getSettings().getSprite(
                     "ship_trophy_gan_eden", "inner_surface_eccentric");
@@ -226,21 +212,6 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             shellTexture = Global.getSettings().getSprite(
                     "ship_trophy_gan_eden", "shell_detail");
         }
-    }
-
-    private static void renderSolidDisk(
-            Vector2f center, float radius, Color color, float alphaMult) {
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        setColor(color, alphaMult);
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-        GL11.glVertex2f(center.x, center.y);
-        for (int i = 0; i <= RENDER_SEGMENTS; i++) {
-            double angle = Math.PI * 2.0 * i / RENDER_SEGMENTS;
-            GL11.glVertex2f(
-                    center.x + (float) Math.cos(angle) * radius,
-                    center.y + (float) Math.sin(angle) * radius);
-        }
-        GL11.glEnd();
     }
 
     private static void renderTexturedAnnulus(

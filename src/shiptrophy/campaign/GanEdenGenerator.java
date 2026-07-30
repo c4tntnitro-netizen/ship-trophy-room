@@ -103,7 +103,7 @@ public final class GanEdenGenerator {
         // playable Sector until removeHyperspaceAnchor() runs.
         system.getLocation().set(100000f, 100000f);
         system.setBaseName(SYSTEM_NAME);
-        system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
+        system.setBackgroundTextureFilename("graphics/planets/terran_eccentric.jpg");
         system.setLightColor(new Color(255, 238, 190));
         system.setMapGridWidthOverride(6500f);
         system.setMapGridHeightOverride(6500f);
@@ -120,7 +120,7 @@ public final class GanEdenGenerator {
         system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
         system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
         system.addTag(Tags.SYSTEM_ALREADY_USED_FOR_STORY);
-        system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
+        system.setBackgroundTextureFilename("graphics/planets/terran_eccentric.jpg");
         system.setDoNotShowIntelFromThisLocationOnMap(true);
         system.setMapGridWidthOverride(6500f);
         system.setMapGridHeightOverride(6500f);
