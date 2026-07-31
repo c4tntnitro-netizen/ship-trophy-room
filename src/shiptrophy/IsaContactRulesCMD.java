@@ -7,7 +7,9 @@ import java.util.Map;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.CommandPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.FullName;
@@ -185,19 +187,19 @@ public class IsaContactRulesCMD implements CommandPlugin {
         dialog.getTextPanel().clear();
         dialog.getOptionPanel().clearOptions();
         PersonAPI isa = IsaTrophyManager.getOrCreateIsa(IsaTrophyManager.findHomeMarket());
-        if (isa != null) dialog.getVisualPanel().showPersonInfo(contactDisplayPerson(isa));
+        if (isa != null) dialog.getVisualPanel().showPersonInfo(contactDisplayPerson(dialog, isa));
     }
 
     private static void showContactPortrait(InteractionDialogAPI dialog) {
         PersonAPI isa = IsaTrophyManager.getOrCreateIsa(IsaTrophyManager.findHomeMarket());
         if (isa != null) {
             dialog.getVisualPanel().hideSecondPerson();
-            dialog.getVisualPanel().showPersonInfo(contactDisplayPerson(isa));
+            dialog.getVisualPanel().showPersonInfo(contactDisplayPerson(dialog, isa));
         }
     }
 
-    private static PersonAPI contactDisplayPerson(PersonAPI isa) {
-        if (!IsaTrophyManager.wasOfficerGranted()) return isa;
+    private static PersonAPI contactDisplayPerson(InteractionDialogAPI dialog, PersonAPI isa) {
+        if (!isHallOfficeContact(dialog)) return isa;
         PersonAPI display = Global.getFactory().createPerson();
         display.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
         display.setGender(FullName.Gender.FEMALE);
@@ -207,6 +209,18 @@ public class IsaContactRulesCMD implements CommandPlugin {
         display.setPersonality(isa.getPersonalityAPI().getId());
         display.setPortraitSprite(IsaTrophyManager.getIsaContactPortraitSprite());
         return display;
+    }
+
+    private static boolean isHallOfficeContact(InteractionDialogAPI dialog) {
+        if (dialog == null || !IsaTrophyManager.wasOfficerGranted()) return false;
+
+        SectorEntityToken target = dialog.getInteractionTarget();
+        MarketAPI current = target == null ? null : target.getMarket();
+        MarketAPI home = IsaTrophyManager.findHomeMarket();
+        return current != null
+                && current.isPlayerOwned()
+                && home != null
+                && current.getId().equals(home.getId());
     }
 
     private static void showBodyguards(InteractionDialogAPI dialog) {

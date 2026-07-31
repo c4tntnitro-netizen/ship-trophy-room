@@ -28,7 +28,7 @@ public class IsaContactIntel extends ContactIntel {
             String rank = isa.getRank() == null ? "Contact" : isa.getRank();
             String post = isa.getPost() == null ? "Nanoforge Engineer" : isa.getPost();
             TooltipMakerAPI portrait = info.beginImageWithText(
-                    IsaTrophyManager.getIsaContactPortraitSprite(), 128f);
+                    IsaTrophyManager.getIsaPortraitSprite(), 128f);
             portrait.addPara("Name: %s", 0f, Misc.getHighlightColor(), isa.getNameString());
             portrait.addPara("Rank: %s", 3f, Misc.getHighlightColor(), rank);
             portrait.addPara(post, 3f);
