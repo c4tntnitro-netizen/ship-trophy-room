@@ -1,21 +1,26 @@
 id,trigger,conditions,script,text,options,notes
 shipTrophyIsaRemoteContact,ShipTrophyIsaRemoteContact,,"BeginConversation ship_trophy_isa
+$shipTrophyIsaIntelDialog = true
 IsaContactRulesCMD showContactPortrait
 IsaContactRulesCMD prepareMain
 FireAll ShipTrophyIsaMainText
 FireAll ShipTrophyIsaMainOptions",,,Remote contact entry point available from Isa's Contacts intel.
+shipTrophyIsaCloseIntel,DialogOptionSelected,"$option == ship_trophy_isa_close
+$shipTrophyIsaIntelDialog",DismissDialog,You cut the comm link.,,Dismisses Isa's rules dialogue when opened as an Intel-screen overlay.
+shipTrophyIsaCloseConversation,DialogOptionSelected,"$option == ship_trophy_isa_close
+!$shipTrophyIsaIntelDialog",EndConversation,You cut the comm link.,,Returns cleanly from Isa's normal market-contact conversation.
 shipTrophyIsaContactOption,PopulateOptions,"$id == ship_trophy_isa
 !IsaContactRulesCMD alreadyJoined",,,40:ship_trophy_isa_open:Talk about the Hall of Triumph ledgers.,Isa contact entry point before officer recruitment.
 shipTrophyIsaOfficerContactOption,PopulateOptions,"$id == ship_trophy_isa
 IsaContactRulesCMD alreadyJoined",IsaContactRulesCMD showContactPortrait,,40:ship_trophy_isa_officer_call:Call Isa's Hall office.,Post-recruitment contact entry point.
-shipTrophyIsaOfficerCall,DialogOptionSelected,$option == ship_trophy_isa_officer_call,"SetShortcut cutCommLink ""ESCAPE""","The connection routes to Isa's office. Instead of a live feed, the comm screen displays her screensaver: a photo of her looking out at the stars, below the shadow of some unknown ship.","0:ship_trophy_isa_officer_answer:""Isa?""
-100:cutCommLink:Cut the comm link.",Post-recruitment office screensaver beat.
-shipTrophyIsaOfficerAnswer,DialogOptionSelected,$option == ship_trophy_isa_officer_answer,"SetShortcut cutCommLink ""ESCAPE""","A moment later, the screensaver folds away. Isa appears on the feed from somewhere aboard your fleet, safety goggles pushed into her hair and a spanner still in one hand.
+shipTrophyIsaOfficerCall,DialogOptionSelected,$option == ship_trophy_isa_officer_call,"SetShortcut ship_trophy_isa_close ""ESCAPE""","The connection routes to Isa's office. Instead of a live feed, the comm screen displays her screensaver: a photo of her looking out at the stars, below the shadow of some unknown ship.","0:ship_trophy_isa_officer_answer:""Isa?""
+100:ship_trophy_isa_close:Cut the comm link.",Post-recruitment office screensaver beat.
+shipTrophyIsaOfficerAnswer,DialogOptionSelected,$option == ship_trophy_isa_officer_answer,"SetShortcut ship_trophy_isa_close ""ESCAPE""","A moment later, the screensaver folds away. Isa appears on the feed from somewhere aboard your fleet, safety goggles pushed into her hair and a spanner still in one hand.
 
 ""Commander? Why are you calling my office? I'm still here with the fleet. You could've just talked to me.""
 
 She glances off-screen. ""Well? You wanted something?""","0:ship_trophy_isa_open:""Since we're connected, pull up the Hall ledgers.""
-100:cutCommLink:Cut the comm link.",Post-recruitment answer before the normal Hall menu.
+100:ship_trophy_isa_close:Cut the comm link.",Post-recruitment answer before the normal Hall menu.
 shipTrophyIsaContactOpen,DialogOptionSelected,$option == ship_trophy_isa_open,"IsaContactRulesCMD prepareMain
 FireAll ShipTrophyIsaMainText
 FireAll ShipTrophyIsaMainOptions",,,Opens or returns to Isa's rules-driven Hall menu.
@@ -30,13 +35,13 @@ shipTrophyIsaMainUniques,ShipTrophyIsaMainOptions,,,,20:ship_trophy_isa_uniques:
 shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtypes:Ask about vanilla faction and subtype programs.,
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
 shipTrophyIsaMainModdedSubtypes,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasSubtypePrograms modded,,,50:ship_trophy_isa_modded_subtypes:Ask about modded faction and subtype programs.,
-shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut cutCommLink ""ESCAPE""",,100:cutCommLink:Cut the comm link.,
+shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,100:ship_trophy_isa_close:Cut the comm link.,
 shipTrophyIsaMasterworkHub,DialogOptionSelected,$option == ship_trophy_isa_masterwork,"IsaContactRulesCMD prepareMasterwork
 IsaContactRulesCMD showMasterworkIntro
 IsaContactRulesCMD showMasterworkStatus
 FireBest ShipTrophyIsaMasterworkState",,,
-shipTrophyIsaMasterworkIncomplete,ShipTrophyIsaMasterworkState,!IsaContactRulesCMD masterworkComplete,"SetShortcut cutCommLink ""ESCAPE""","""Bring me the missing hulls and I'll get to work on my custom modspec.""","0:ship_trophy_isa_masterwork:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaMasterworkIncomplete,ShipTrophyIsaMasterworkState,!IsaContactRulesCMD masterworkComplete,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Bring me the missing hulls and I'll get to work on my custom modspec.""","0:ship_trophy_isa_masterwork:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMasterworkComplete,ShipTrophyIsaMasterworkState,IsaContactRulesCMD masterworkComplete,"FireAll ShipTrophyIsaMasterworkCompleteText
 FireBest ShipTrophyIsaMasterworkCompleteOptions",,,
 shipTrophyIsaMasterworkCompleteText,ShipTrophyIsaMasterworkCompleteText,,,"Isa has all five hull profiles hanging in the air around her: Onslaught XIV, Paragon, Invictus, Conquest, Executor. Lines of forge notation connect them into a web only she seems able to read.
@@ -44,22 +49,22 @@ shipTrophyIsaMasterworkCompleteText,ShipTrophyIsaMasterworkCompleteText,,,"Isa h
 ""Would you look at that,"" she says, almost reverently. ""Five different answers to the same question: how much ship can you build before the song you're singing becomes noise?""",,
 shipTrophyIsaMasterworkCompleteOptionsNew,ShipTrophyIsaMasterworkCompleteOptions,!IsaContactRulesCMD unlockSeen awe,"SetOptionColor ship_trophy_isa_masterwork_2 highlight
 SetTooltip ship_trophy_isa_masterwork_2 ""Isa has completed her masterwork.""
-SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_masterwork_2:""You made something useful, then?""
+SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_masterwork_2:""You made something useful, then?""
 90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMasterworkCompleteOptionsSeen,ShipTrophyIsaMasterworkCompleteOptions,IsaContactRulesCMD unlockSeen awe,"SetTooltip ship_trophy_isa_masterwork_2 ""Isa has completed her masterwork.""
-SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_masterwork_2:""You made something useful, then?""
+SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_masterwork_2:""You made something useful, then?""
 90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMasterworkUnlock,DialogOptionSelected,$option == ship_trophy_isa_masterwork_2,"IsaContactRulesCMD markUnlockSeen awe
 SetTextHighlightColors hColor
 SetTextHighlights ""Received Awe modspec.""","""Useful?"" Isa grins. She pinches the web down to a single rotating modspec and flicks it from her terminal to yours. ""Commander, this is my Magnum Opus. Your ships will have never sung so beautifully in their lives.""
 
 Received Awe modspec.","0:ship_trophy_isa_masterwork_3:""It's named 'Awe'? Modest of you.""",
-shipTrophyIsaMasterworkUnlockEnd,DialogOptionSelected,$option == ship_trophy_isa_masterwork_3,"SetShortcut cutCommLink ""ESCAPE""","""I considered 'Isa Leicester Is The Best,'"" she says. ""Marketing talked me down.""
+shipTrophyIsaMasterworkUnlockEnd,DialogOptionSelected,$option == ship_trophy_isa_masterwork_3,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""I considered 'Isa Leicester Is The Best,'"" she says. ""Marketing talked me down.""
 
 She is still smiling when she turns back to the five ships.","0:ship_trophy_isa_masterwork:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaUniquesHub,DialogOptionSelected,$option == ship_trophy_isa_uniques,"IsaContactRulesCMD prepare
 IsaContactRulesCMD refreshStats
 FireAll ShipTrophyIsaUniqueIntro
@@ -84,8 +89,8 @@ SetTooltip ship_trophy_isa_contempt ""Unlocked: Contempt""",,20:ship_trophy_isa_
 shipTrophyIsaContemptOptionSeen,ShipTrophyIsaUniqueOptionsVanilla,"IsaContactRulesCMD uniqueShowcased contempt
 IsaContactRulesCMD unlockSeen contempt","SetTooltip ship_trophy_isa_contempt ""Unlocked: Contempt""",,20:ship_trophy_isa_contempt:Discuss the Onslaught Mk.I.,
 shipTrophyIsaGenericVanillaOptions,ShipTrophyIsaUniqueOptionsVanilla,,IsaContactOptionsCMD populateGenericUniqueOptions vanilla,,,
-shipTrophyIsaUniqueVanillaBack,ShipTrophyIsaUniqueOptionsVanilla,,"SetShortcut cutCommLink ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaUniqueVanillaBack,ShipTrophyIsaUniqueOptionsVanilla,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMercyOptionLocked,ShipTrophyIsaUniqueOptionsModded,"IsaContactRulesCMD uniqueActive mercy
 !IsaContactRulesCMD uniqueShowcased mercy","SetTooltip ship_trophy_isa_mercy ""Requires Abundant Mercy from Knights Hospitaller""",,10:ship_trophy_isa_mercy:Discuss Abundant Mercy.,
 shipTrophyIsaMercyOptionNew,ShipTrophyIsaUniqueOptionsModded,"IsaContactRulesCMD uniqueActive mercy
@@ -105,11 +110,11 @@ shipTrophyIsaLionOptionSeen,ShipTrophyIsaUniqueOptionsModded,"IsaContactRulesCMD
 IsaContactRulesCMD uniqueShowcased lion
 IsaContactRulesCMD unlockSeen lion","SetTooltip ship_trophy_isa_lion ""Unlocked: Inheritance""",,20:ship_trophy_isa_lion:Discuss The Black Lion.,
 shipTrophyIsaGenericModdedOptions,ShipTrophyIsaUniqueOptionsModded,,IsaContactOptionsCMD populateGenericUniqueOptions modded,,,
-shipTrophyIsaUniqueModdedBack,ShipTrophyIsaUniqueOptionsModded,,"SetShortcut cutCommLink ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaUniqueModdedBack,ShipTrophyIsaUniqueOptionsModded,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGazeLocked,DialogOptionSelected,"$option == ship_trophy_isa_gaze
-!IsaContactRulesCMD uniqueShowcased gaze","SetShortcut cutCommLink ""ESCAPE""","""If you ever find out what Tri-Tach was working on in their blacksites, come find me. Quietly.""","0:ship_trophy_isa_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+!IsaContactRulesCMD uniqueShowcased gaze","SetShortcut ship_trophy_isa_close ""ESCAPE""","""If you ever find out what Tri-Tach was working on in their blacksites, come find me. Quietly.""","0:ship_trophy_isa_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGazeUnlocked,DialogOptionSelected,"$option == ship_trophy_isa_gaze
 IsaContactRulesCMD uniqueShowcased gaze","IsaContactRulesCMD prepare
 FireAll ShipTrophyIsaGazeUnlockedText
@@ -131,13 +136,13 @@ SetTextHighlightColors hColor
 SetTextHighlights ""Received Gaze modspec.""","""I know, I know."" Isa waves at the hologram on her Tri-pad, and a modspec flies from her terminal to yours. ""Those are my findings from that abomination.""
 
 Received Gaze modspec.","0:ship_trophy_isa_gaze_3:""Thanks, Chief. Take the day off.""",
-shipTrophyIsaGazeEnd,DialogOptionSelected,$option == ship_trophy_isa_gaze_3,"SetShortcut cutCommLink ""ESCAPE""","""Thaaanks."" Isa waves as she walks off.
+shipTrophyIsaGazeEnd,DialogOptionSelected,$option == ship_trophy_isa_gaze_3,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Thaaanks."" Isa waves as she walks off.
 
 You hear her mutter, ""The hell is that sound? Some kind of structural acoustics?""","0:ship_trophy_isa_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaContemptLocked,DialogOptionSelected,"$option == ship_trophy_isa_contempt
-!IsaContactRulesCMD uniqueShowcased contempt","SetShortcut cutCommLink ""ESCAPE""","""Say, Cap. Let me know if you find any... legendary, near mythical ship frames from the early Domain Era out there. 'Kay?""","0:ship_trophy_isa_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+!IsaContactRulesCMD uniqueShowcased contempt","SetShortcut ship_trophy_isa_close ""ESCAPE""","""Say, Cap. Let me know if you find any... legendary, near mythical ship frames from the early Domain Era out there. 'Kay?""","0:ship_trophy_isa_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaContemptUnlocked,DialogOptionSelected,"$option == ship_trophy_isa_contempt
 IsaContactRulesCMD uniqueShowcased contempt","IsaContactRulesCMD prepare
 FireAll ShipTrophyIsaContemptUnlockedText
@@ -169,13 +174,13 @@ SetTextHighlights ""Received Contempt modspec.""","Isa sends the pattern to your
 
 Received Contempt modspec.","0:ship_trophy_isa_contempt_5:""Contempt.""",
 shipTrophyIsaContemptFive,DialogOptionSelected,$option == ship_trophy_isa_contempt_5,,"""Seemed appropriate."" Isa glances toward the gathered engineers. ""Give us another minute before you open the berth to visitors, Commander.""","0:ship_trophy_isa_contempt_6:""Have you found what happened to the original crew?""",
-shipTrophyIsaContemptSix,DialogOptionSelected,$option == ship_trophy_isa_contempt_6,"SetShortcut cutCommLink ""ESCAPE""","Isa shakes her head. ""Anything... 'sentient' has long died out. There's nothing left in those drives but empty subroutines and a bunch of weights and neural nets.""
+shipTrophyIsaContemptSix,DialogOptionSelected,$option == ship_trophy_isa_contempt_6,"SetShortcut ship_trophy_isa_close ""ESCAPE""","Isa shakes her head. ""Anything... 'sentient' has long died out. There's nothing left in those drives but empty subroutines and a bunch of weights and neural nets.""
 
 Isa puts her hand over her heart. ""Rest in peace, now.""","0:ship_trophy_isa_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMercyLocked,DialogOptionSelected,"$option == ship_trophy_isa_mercy
-!IsaContactRulesCMD uniqueShowcased mercy","SetShortcut cutCommLink ""ESCAPE""","""Keep an eye out for Abundant Mercy, the Knights Hospitaller's Invictus-pattern ships. If you get it into the network, I want a separate ledger for it.""","0:ship_trophy_isa_modded_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+!IsaContactRulesCMD uniqueShowcased mercy","SetShortcut ship_trophy_isa_close ""ESCAPE""","""Keep an eye out for Abundant Mercy, the Knights Hospitaller's Invictus-pattern ships. If you get it into the network, I want a separate ledger for it.""","0:ship_trophy_isa_modded_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMercyUnlocked,DialogOptionSelected,"$option == ship_trophy_isa_mercy
 IsaContactRulesCMD uniqueShowcased mercy","IsaContactRulesCMD prepare
 FireAll ShipTrophyIsaMercyUnlockedText
@@ -193,11 +198,11 @@ SetTextHighlightColors hColor
 SetTextHighlights ""Received Vow modspec.""","""I told you, right? My team's the best in the Sec."" Isa sends a pale-gold modspec to your terminal. ""This is as close as I can get without asking the ship to grow a halo.""
 
 Received Vow modspec.","0:ship_trophy_isa_mercy_3:""That's close enough.""",
-shipTrophyIsaMercyThree,DialogOptionSelected,$option == ship_trophy_isa_mercy_3,"SetShortcut cutCommLink ""ESCAPE""","Isa nods toward the Mercy. ""For a first draft.""","0:ship_trophy_isa_modded_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaMercyThree,DialogOptionSelected,$option == ship_trophy_isa_mercy_3,"SetShortcut ship_trophy_isa_close ""ESCAPE""","Isa nods toward the Mercy. ""For a first draft.""","0:ship_trophy_isa_modded_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaLionLocked,DialogOptionSelected,"$option == ship_trophy_isa_lion
-!IsaContactRulesCMD uniqueShowcased lion","SetShortcut cutCommLink ""ESCAPE""","""Keep an eye out for The Black Lion from Black Lion Ships. If you get it into the network, I want a separate ledger for it. That hull is not just another class entry.""","0:ship_trophy_isa_modded_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+!IsaContactRulesCMD uniqueShowcased lion","SetShortcut ship_trophy_isa_close ""ESCAPE""","""Keep an eye out for The Black Lion from Black Lion Ships. If you get it into the network, I want a separate ledger for it. That hull is not just another class entry.""","0:ship_trophy_isa_modded_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaLionUnlocked,DialogOptionSelected,"$option == ship_trophy_isa_lion
 IsaContactRulesCMD uniqueShowcased lion","IsaContactRulesCMD prepare
 FireAll ShipTrophyIsaLionUnlockedText
@@ -215,42 +220,42 @@ SetTextHighlightColors hColor
 SetTextHighlights ""Received Inheritance modspec.""","""Professional recognition."" Isa gathers the brightest layers into a new file and pushes it across the link. ""I stripped out the vanity. Mostly.""
 
 Received Inheritance modspec.","0:ship_trophy_isa_lion_3:""What did you leave in?""",
-shipTrophyIsaLionThree,DialogOptionSelected,$option == ship_trophy_isa_lion_3,"SetShortcut cutCommLink ""ESCAPE""","""The part that wins... 'disagreements',"" she says. ""Kinetic ones.""","0:ship_trophy_isa_modded_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaLionThree,DialogOptionSelected,$option == ship_trophy_isa_lion_3,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""The part that wins... 'disagreements',"" she says. ""Kinetic ones.""","0:ship_trophy_isa_modded_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGenericUniqueSelected,DialogOptionSelected,IsaContactRulesCMD isGenericUniqueOption,"IsaContactRulesCMD prepareUniqueFromOption
 FireBest ShipTrophyIsaGenericUniqueState",,,
-shipTrophyIsaGenericUniqueInactive,ShipTrophyIsaGenericUniqueState,!IsaContactRulesCMD currentUniqueActive,"SetShortcut cutCommLink ""ESCAPE""","""That ledger isn't active right now,"" Isa says. ""Might be a missing mod, might be a bad index.""","0:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaGenericUniqueInactive,ShipTrophyIsaGenericUniqueState,!IsaContactRulesCMD currentUniqueActive,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""That ledger isn't active right now,"" Isa says. ""Might be a missing mod, might be a bad index.""","0:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGenericUniqueLockedVanilla,ShipTrophyIsaGenericUniqueState,"IsaContactRulesCMD currentUniqueActive
 !IsaContactRulesCMD currentUniqueShowcased
 !IsaContactRulesCMD currentUniqueModded","SetTextHighlightColors hColor
 SetTextHighlights $shipTrophyIsaUniqueShowcaseName
-SetShortcut cutCommLink ""ESCAPE""","""If you can get $shipTrophyIsaUniqueShowcaseName into the network, I want a separate ledger for it. That hull is not just another class entry.""","0:ship_trophy_isa_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""If you can get $shipTrophyIsaUniqueShowcaseName into the network, I want a separate ledger for it. That hull is not just another class entry.""","0:ship_trophy_isa_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGenericUniqueLockedModded,ShipTrophyIsaGenericUniqueState,"IsaContactRulesCMD currentUniqueActive
 !IsaContactRulesCMD currentUniqueShowcased
 IsaContactRulesCMD currentUniqueModded","SetTextHighlightColors hColor
 SetTextHighlights $shipTrophyIsaUniqueShowcaseName
-SetShortcut cutCommLink ""ESCAPE""","""If you can get $shipTrophyIsaUniqueShowcaseName into the network, I want a separate ledger for it. That hull is not just another class entry.""","0:ship_trophy_isa_modded_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""If you can get $shipTrophyIsaUniqueShowcaseName into the network, I want a separate ledger for it. That hull is not just another class entry.""","0:ship_trophy_isa_modded_uniques:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGenericUniqueUnlockedVanilla,ShipTrophyIsaGenericUniqueState,"IsaContactRulesCMD currentUniqueActive
 IsaContactRulesCMD currentUniqueShowcased
 !IsaContactRulesCMD currentUniqueModded","IsaContactRulesCMD markCurrentUniqueSeen
 SetTextHighlightColors hColor hColor
 SetTextHighlights $shipTrophyIsaUniqueShowcaseName $shipTrophyIsaUniqueReceipt
-SetShortcut cutCommLink ""ESCAPE""","""The $shipTrophyIsaUniqueShowcaseName ledger is live. Good. I wanted that one treated as its own exhibit, not filed under the stock hull.""
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""The $shipTrophyIsaUniqueShowcaseName ledger is live. Good. I wanted that one treated as its own exhibit, not filed under the stock hull.""
 
 $shipTrophyIsaUniqueReceipt","0:ship_trophy_isa_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaGenericUniqueUnlockedModded,ShipTrophyIsaGenericUniqueState,"IsaContactRulesCMD currentUniqueActive
 IsaContactRulesCMD currentUniqueShowcased
 IsaContactRulesCMD currentUniqueModded","IsaContactRulesCMD markCurrentUniqueSeen
 SetTextHighlightColors hColor hColor
 SetTextHighlights $shipTrophyIsaUniqueShowcaseName $shipTrophyIsaUniqueReceipt
-SetShortcut cutCommLink ""ESCAPE""","""The $shipTrophyIsaUniqueShowcaseName ledger is live. Good. I wanted that one treated as its own exhibit, not filed under the stock hull.""
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""The $shipTrophyIsaUniqueShowcaseName ledger is live. Good. I wanted that one treated as its own exhibit, not filed under the stock hull.""
 
 $shipTrophyIsaUniqueReceipt","0:ship_trophy_isa_modded_uniques:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypesHub,DialogOptionSelected,$option == ship_trophy_isa_subtypes,"IsaContactRulesCMD refreshStats
 FireAll ShipTrophyIsaSubtypeIntro
 FireAll ShipTrophyIsaSubtypeOptionsVanilla",,,
@@ -259,11 +264,11 @@ FireAll ShipTrophyIsaSubtypeIntro
 FireAll ShipTrophyIsaSubtypeOptionsModded",,,
 shipTrophyIsaSubtypeIntro,ShipTrophyIsaSubtypeIntro,,,"""Pick a family and I'll tell you whether the displays have enough mass to teach us anything useful.""",,
 shipTrophyIsaSubtypeDynamicOptionsVanilla,ShipTrophyIsaSubtypeOptionsVanilla,,IsaContactOptionsCMD populateSubtypeOptions vanilla,,,
-shipTrophyIsaSubtypeBackVanilla,ShipTrophyIsaSubtypeOptionsVanilla,,"SetShortcut cutCommLink ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaSubtypeBackVanilla,ShipTrophyIsaSubtypeOptionsVanilla,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeDynamicOptionsModded,ShipTrophyIsaSubtypeOptionsModded,,IsaContactOptionsCMD populateSubtypeOptions modded,,,
-shipTrophyIsaSubtypeBackModded,ShipTrophyIsaSubtypeOptionsModded,,"SetShortcut cutCommLink ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaSubtypeBackModded,ShipTrophyIsaSubtypeOptionsModded,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeSelected,DialogOptionSelected,IsaContactRulesCMD isSubtypeOption,"IsaContactRulesCMD prepareSubtypeFromOption
 FireBest ShipTrophyIsaSubtypeComment
 FireBest ShipTrophyIsaSubtypeState",,,
@@ -277,8 +282,8 @@ shipTrophyIsaSubtypeCommentIronShell,ShipTrophyIsaSubtypeComment,IsaContactRules
 shipTrophyIsaSubtypeCommentRemnant,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype remnant score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
 shipTrophyIsaSubtypeCommentDerelict,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype domain_derelict score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
 shipTrophyIsaSubtypeCommentGeneric,ShipTrophyIsaSubtypeComment,,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
-shipTrophyIsaSubtypeInactive,ShipTrophyIsaSubtypeState,!IsaContactRulesCMD currentSubtypeActive,"SetShortcut cutCommLink ""ESCAPE""","""That ledger isn't active right now,"" Isa says. ""Might be a missing mod, might be a bad index.""","0:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaSubtypeInactive,ShipTrophyIsaSubtypeState,!IsaContactRulesCMD currentSubtypeActive,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""That ledger isn't active right now,"" Isa says. ""Might be a missing mod, might be a bad index.""","0:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeLocked,ShipTrophyIsaSubtypeState,"IsaContactRulesCMD currentSubtypeActive
 !IsaContactRulesCMD currentSubtypeUnlocked","FireAll ShipTrophyIsaSubtypeLockedText
 FireBest ShipTrophyIsaSubtypeLockedOptions",,,
@@ -286,10 +291,10 @@ shipTrophyIsaSubtypeLockedText,ShipTrophyIsaSubtypeLockedText,,"SetTextHighlight
 SetTextHighlights $shipTrophyIsaSubtypeCurrentDp $shipTrophyIsaSubtypeUnlockDp $shipTrophyIsaSubtypeShowcaseName $shipTrophyIsaSubtypeRemainingDp","Showcase progress: $shipTrophyIsaSubtypeCurrentDp / $shipTrophyIsaSubtypeUnlockDp DP worth of $shipTrophyIsaSubtypeShowcaseName ships.
 
 ""Not enough examples yet. Bring me $shipTrophyIsaSubtypeRemainingDp more DP worth and the pattern should stop lying to us.""",,
-shipTrophyIsaSubtypeLockedOptionsVanilla,ShipTrophyIsaSubtypeLockedOptions,!IsaContactRulesCMD currentSubtypeModded,"SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
-shipTrophyIsaSubtypeLockedOptionsModded,ShipTrophyIsaSubtypeLockedOptions,IsaContactRulesCMD currentSubtypeModded,"SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_modded_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
+shipTrophyIsaSubtypeLockedOptionsVanilla,ShipTrophyIsaSubtypeLockedOptions,!IsaContactRulesCMD currentSubtypeModded,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_subtypes:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
+shipTrophyIsaSubtypeLockedOptionsModded,ShipTrophyIsaSubtypeLockedOptions,IsaContactRulesCMD currentSubtypeModded,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_modded_subtypes:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlocked,ShipTrophyIsaSubtypeState,"IsaContactRulesCMD currentSubtypeActive
 IsaContactRulesCMD currentSubtypeUnlocked","FireAll ShipTrophyIsaSubtypeUnlockedText
 FireBest ShipTrophyIsaSubtypeUnlockedOptions",,,
@@ -302,25 +307,25 @@ Isa drags the $shipTrophyIsaSubtypeShowcaseName display records into a single st
 shipTrophyIsaSubtypeUnlockedOptionsNewVanilla,ShipTrophyIsaSubtypeUnlockedOptions,"!IsaContactRulesCMD currentSubtypeUnlockSeen
 !IsaContactRulesCMD currentSubtypeModded","SetOptionColor ship_trophy_isa_subtype_unlock_current highlight
 SetTooltip ship_trophy_isa_subtype_unlock_current ""Isa has completed the $shipTrophyIsaSubtypeHullmodName modspec.""
-SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
+SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
 90:ship_trophy_isa_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlockedOptionsSeenVanilla,ShipTrophyIsaSubtypeUnlockedOptions,"IsaContactRulesCMD currentSubtypeUnlockSeen
 !IsaContactRulesCMD currentSubtypeModded","SetTooltip ship_trophy_isa_subtype_unlock_current ""Isa has completed the $shipTrophyIsaSubtypeHullmodName modspec.""
-SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
+SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
 90:ship_trophy_isa_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlockedOptionsNewModded,ShipTrophyIsaSubtypeUnlockedOptions,"!IsaContactRulesCMD currentSubtypeUnlockSeen
 IsaContactRulesCMD currentSubtypeModded","SetOptionColor ship_trophy_isa_subtype_unlock_current highlight
 SetTooltip ship_trophy_isa_subtype_unlock_current ""Isa has completed the $shipTrophyIsaSubtypeHullmodName modspec.""
-SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
+SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
 90:ship_trophy_isa_modded_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlockedOptionsSeenModded,ShipTrophyIsaSubtypeUnlockedOptions,"IsaContactRulesCMD currentSubtypeUnlockSeen
 IsaContactRulesCMD currentSubtypeModded","SetTooltip ship_trophy_isa_subtype_unlock_current ""Isa has completed the $shipTrophyIsaSubtypeHullmodName modspec.""
-SetShortcut cutCommLink ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
+SetShortcut ship_trophy_isa_close ""ESCAPE""",,"0:ship_trophy_isa_subtype_unlock_current:""What did they teach you?""
 90:ship_trophy_isa_modded_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlockSelected,DialogOptionSelected,$option == ship_trophy_isa_subtype_unlock_current,"IsaContactRulesCMD prepareCurrentSubtype
 FireBest ShipTrophyIsaSubtypeUnlockState",,,
 shipTrophyIsaSubtypeUnlockVanilla,ShipTrophyIsaSubtypeUnlockState,"IsaContactRulesCMD currentSubtypeActive
@@ -328,62 +333,62 @@ IsaContactRulesCMD currentSubtypeUnlocked
 !IsaContactRulesCMD currentSubtypeModded","IsaContactRulesCMD markCurrentSubtypeSeen
 SetTextHighlightColors hColor
 SetTextHighlights $shipTrophyIsaSubtypeReceipt
-SetShortcut cutCommLink ""ESCAPE""","""Enough."" Isa signs the file with one quick stroke and sends it to your terminal. ""The yard crews have their modspec.""
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""Enough."" Isa signs the file with one quick stroke and sends it to your terminal. ""The yard crews have their modspec.""
 
 $shipTrophyIsaSubtypeReceipt
 
 ""Frame it, will ya?""","0:ship_trophy_isa_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlockModded,ShipTrophyIsaSubtypeUnlockState,"IsaContactRulesCMD currentSubtypeActive
 IsaContactRulesCMD currentSubtypeUnlocked
 IsaContactRulesCMD currentSubtypeModded","IsaContactRulesCMD markCurrentSubtypeSeen
 SetTextHighlightColors hColor
 SetTextHighlights $shipTrophyIsaSubtypeReceipt
-SetShortcut cutCommLink ""ESCAPE""","""Enough."" Isa signs the file with one quick stroke and sends it to your terminal. ""The yard crews have their modspec.""
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""Enough."" Isa signs the file with one quick stroke and sends it to your terminal. ""The yard crews have their modspec.""
 
 $shipTrophyIsaSubtypeReceipt
 
 ""Frame it, will ya?""","0:ship_trophy_isa_modded_subtypes:Back.
-100:cutCommLink:Cut the comm link.",
-shipTrophyIsaSubtypeUnlockFailed,ShipTrophyIsaSubtypeUnlockState,!IsaContactRulesCMD currentSubtypeActive,"SetShortcut cutCommLink ""ESCAPE""","""Not yet,"" Isa says. ""The display pattern isn't stable enough.""","0:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
+shipTrophyIsaSubtypeUnlockFailed,ShipTrophyIsaSubtypeUnlockState,!IsaContactRulesCMD currentSubtypeActive,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Not yet,"" Isa says. ""The display pattern isn't stable enough.""","0:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaSubtypeUnlockNoLongerReady,ShipTrophyIsaSubtypeUnlockState,"IsaContactRulesCMD currentSubtypeActive
-!IsaContactRulesCMD currentSubtypeUnlocked","SetShortcut cutCommLink ""ESCAPE""","""Not yet,"" Isa says. ""The display pattern isn't stable enough.""","0:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+!IsaContactRulesCMD currentSubtypeUnlocked","SetShortcut ship_trophy_isa_close ""ESCAPE""","""Not yet,"" Isa says. ""The display pattern isn't stable enough.""","0:ship_trophy_isa_open:Back.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinReady,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet
 !IsaContactRulesCMD alreadyJoined
 IsaContactRulesCMD canJoin","SetOptionColor ship_trophy_isa_join_fleet_confirm highlight
 SetTooltip ship_trophy_isa_join_fleet_confirm ""Isa will join your officer roster.""
-SetShortcut cutCommLink ""ESCAPE""","For once, Isa has no slate in her hands. No schematics, no lists, no half-disassembled parts balanced on the furniture. Just a travel case at her feet and a hard little smile she is trying, unsuccessfully, to hide.
+SetShortcut ship_trophy_isa_close ""ESCAPE""","For once, Isa has no slate in her hands. No schematics, no lists, no half-disassembled parts balanced on the furniture. Just a travel case at her feet and a hard little smile she is trying, unsuccessfully, to hide.
 
 ""The Hall can run without me staring over its shoulder now,"" she says. ""Every ledger is clean. Every weird old hull has taught us what it was going to teach from a dock. So if you'll have me, Captain, I want to join you. I want to see what legacies looks like when they're being made.""","0:ship_trophy_isa_join_fleet_confirm:""Let's go write history.""
 90:ship_trophy_isa_open:Back.
-100:cutCommLink:Cut the comm link.",
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinAlready,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet
 IsaContactRulesCMD alreadyJoined","SetTextHighlightColors hColor
 SetTextHighlights ""Isa has already joined your fleet as an officer.""
-SetShortcut cutCommLink ""ESCAPE""",Isa has already joined your fleet as an officer.,"0:ship_trophy_isa_open:Back to contact dialogue.
-100:cutCommLink:Cut the comm link.",
+SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa has already joined your fleet as an officer.,"0:ship_trophy_isa_open:Back to contact dialogue.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinIncomplete,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet
 !IsaContactRulesCMD alreadyJoined
-!IsaContactRulesCMD canJoin","SetShortcut cutCommLink ""ESCAPE""",The Hall of Triumph is not quite ready for Isa to leave her workshop yet.,"0:ship_trophy_isa_open:Back to contact dialogue.
-100:cutCommLink:Cut the comm link.",
+!IsaContactRulesCMD canJoin","SetShortcut ship_trophy_isa_close ""ESCAPE""",The Hall of Triumph is not quite ready for Isa to leave her workshop yet.,"0:ship_trophy_isa_open:Back to contact dialogue.
+100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinConfirm,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet_confirm
 !IsaContactRulesCMD alreadyJoined
 IsaContactRulesCMD canJoin","IsaContactRulesCMD grantOfficer
 SetTextHighlightColors hColor
 SetTextHighlights ""Isa has joined your fleet as an officer.""
-SetShortcut cutCommLink ""ESCAPE""",Isa has joined your fleet as an officer.,"0:ship_trophy_isa_open:Back to contact dialogue.
-100:cutCommLink:Cut the comm link.",Direct success response; avoids a second result-dispatch trigger.
+SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa has joined your fleet as an officer.,"0:ship_trophy_isa_open:Back to contact dialogue.
+100:ship_trophy_isa_close:Cut the comm link.",Direct success response; avoids a second result-dispatch trigger.
 shipTrophyIsaJoinConfirmAlready,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet_confirm
 IsaContactRulesCMD alreadyJoined","SetTextHighlightColors hColor
 SetTextHighlights ""Isa has already joined your fleet as an officer.""
-SetShortcut cutCommLink ""ESCAPE""",Isa has already joined your fleet as an officer.,"0:ship_trophy_isa_open:Back to contact dialogue.
-100:cutCommLink:Cut the comm link.",Direct stale-confirmation fallback.
+SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa has already joined your fleet as an officer.,"0:ship_trophy_isa_open:Back to contact dialogue.
+100:ship_trophy_isa_close:Cut the comm link.",Direct stale-confirmation fallback.
 shipTrophyIsaJoinConfirmIncomplete,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet_confirm
 !IsaContactRulesCMD alreadyJoined
-!IsaContactRulesCMD canJoin","SetShortcut cutCommLink ""ESCAPE""",The Hall of Triumph is not quite ready for Isa to leave her workshop yet.,"0:ship_trophy_isa_open:Back to contact dialogue.
-100:cutCommLink:Cut the comm link.",Direct stale-confirmation fallback.
+!IsaContactRulesCMD canJoin","SetShortcut ship_trophy_isa_close ""ESCAPE""",The Hall of Triumph is not quite ready for Isa to leave her workshop yet.,"0:ship_trophy_isa_open:Back to contact dialogue.
+100:ship_trophy_isa_close:Cut the comm link.",Direct stale-confirmation fallback.
 shipTrophyIsaBarPrompt,ShipTrophyIsaBarPrompt,,,"A lean, red-haired spacer with her overalls still dusted in machine oil and soot watches the traffic from the dockside bar at $shipTrophyIsaBarMarketName. Her crew has staked out a bar table under a spread of projected hull sections. They're in the middle of some lively debate over the feasibility of some kind of ship technology. Coaxial weaponry, by the looks of it. Her eyes glint as she sees hull after hull move in and out of the designated display berth.",0:ship_trophy_isa_bar_begin:Approach the salvager watching the Hall of Triumph traffic.,CSV-owned prompt; Java substitutes the event object required by BaseBarEvent.
 shipTrophyIsaBarIntro,ShipTrophyIsaBarIntro,,,"Her crew whispers as you approach and hurriedly clean up the blueprints. The spacer, however, turns and beams at you.
 

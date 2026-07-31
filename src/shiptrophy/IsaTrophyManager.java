@@ -343,7 +343,7 @@ public class IsaTrophyManager {
             Global.getSector().getIntelManager().removeIntel(intel);
         }
         if (customIntel != null) {
-            customIntel.setState(ContactState.NON_PRIORITY);
+            customIntel.ensurePermanentState();
             customIntel.ensureIsAddedToMarket();
             return;
         }
