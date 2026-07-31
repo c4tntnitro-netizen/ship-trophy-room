@@ -35,11 +35,17 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final float ATMOSPHERE_INNER_RADIUS =
             (GanEdenGenerator.WARNING_INNER_RADIUS
                     + GanEdenGenerator.SURFACE_OUTER_RADIUS) * 0.5f;
+    // Measured from the alpha edge of gan_eden_outer_edge.png.
+    private static final float OUTER_EDGE_INNER_RADIUS_FRACTION = 0.59888f;
+    private static final float OUTER_EDGE_SIZE =
+            GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f
+                    / OUTER_EDGE_INNER_RADIUS_FRACTION;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
 
     private transient SpriteAPI innerSurfaceTexture;
+    private transient SpriteAPI outerEdgeTexture;
 
     public void reconfigure(SectorEntityToken center, float width, float middle) {
         if (params == null) {
@@ -144,7 +150,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public float getRenderRange() {
-        return GanEdenGenerator.SURFACE_OUTER_RADIUS + 2500f;
+        return Math.max(
+                GanEdenGenerator.SURFACE_OUTER_RADIUS + 2500f,
+                OUTER_EDGE_SIZE * 0.5f + 500f);
     }
 
     @Override
@@ -199,18 +207,12 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     new Color(82, 164, 255, 138),
                     alpha);
 
-            renderSolidAnnulus(
+            renderCenteredSprite(
+                    outerEdgeTexture,
                     center,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS - 20f,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 20f,
-                    new Color(184, 220, 255, 150),
-                    alpha);
-
-            renderSolidAnnulus(
-                    center,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 20f,
-                    GanEdenGenerator.SURFACE_OUTER_RADIUS + 36f,
-                    new Color(52, 64, 68, 150),
+                    OUTER_EDGE_SIZE,
+                    OUTER_EDGE_SIZE,
+                    new Color(255, 255, 255, 255),
                     alpha);
         } finally {
             GL11.glPopMatrix();
@@ -222,6 +224,10 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         if (innerSurfaceTexture == null) {
             innerSurfaceTexture = Global.getSettings().getSprite(
                     "ship_trophy_gan_eden", "inner_surface");
+        }
+        if (outerEdgeTexture == null) {
+            outerEdgeTexture = Global.getSettings().getSprite(
+                    "ship_trophy_gan_eden", "outer_edge");
         }
     }
 
@@ -353,6 +359,38 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             float alphaMult) {
         renderGradientAnnulus(
                 center, innerRadius, outerRadius, color, color, alphaMult);
+    }
+
+    private static void renderCenteredSprite(
+            SpriteAPI texture,
+            Vector2f center,
+            float width,
+            float height,
+            Color color,
+            float alphaMult) {
+        if (texture == null) return;
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        texture.bindTexture();
+        setColor(color, alphaMult);
+
+        float texX = texture.getTexX();
+        float texY = texture.getTexY();
+        float texWidth = texture.getTexWidth();
+        float texHeight = texture.getTexHeight();
+        float halfWidth = width * 0.5f;
+        float halfHeight = height * 0.5f;
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glTexCoord2f(texX, texY + texHeight);
+        GL11.glVertex2f(center.x - halfWidth, center.y - halfHeight);
+        GL11.glTexCoord2f(texX + texWidth, texY + texHeight);
+        GL11.glVertex2f(center.x + halfWidth, center.y - halfHeight);
+        GL11.glTexCoord2f(texX + texWidth, texY);
+        GL11.glVertex2f(center.x + halfWidth, center.y + halfHeight);
+        GL11.glTexCoord2f(texX, texY);
+        GL11.glVertex2f(center.x - halfWidth, center.y + halfHeight);
+        GL11.glEnd();
     }
 
     private static void setColor(Color color, float alphaMult) {

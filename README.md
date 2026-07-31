@@ -33,7 +33,7 @@ The editable writing aid for this material is in `dialogue/shattered_ring.ink`.
 
 ## Gan Eden
 
-Gan Eden is a deliberately compact, completely siloed star system built inside a prototype Dyson sphere. Its inward-facing surface uses a spherical projection of a custom 2:1 world map, so the geography itself curves and foreshortens into the circular horizon around the warm central star. Beyond the playable space, a white atmospheric haze deepens toward blue as the viewing angle approaches that inner surface. This **Altitude Warning** zone softly decelerates approaching fleets and rebounds them toward the star without causing hull, combat-readiness, or crew damage. Complete blackness lies outside the sphere's circular aperture.
+Gan Eden is a deliberately compact, completely siloed star system built inside a prototype Dyson sphere. Its inward-facing surface uses a spherical projection of a custom 2:1 world map, so the geography itself curves and foreshortens into the circular horizon around the warm central star. Beyond the playable space, a white atmospheric haze deepens toward blue as the viewing angle approaches that inner surface. An asymmetric annulus of dark armor plate, recessed machinery, repair sections, and outward antenna spars frames the circular edge of the constructed world. This **Altitude Warning** zone softly decelerates approaching fleets and rebounds them toward the star without causing hull, combat-readiness, or crew damage. Complete blackness lies outside the sphere's circular aperture.
 
 Gan Eden has no markets, objectives, ambient NPC fleets, jump points, nascent gravity wells, or hyperspace anchor. 
 ## Music credits
