@@ -707,3 +707,65 @@ shipTrophyIsaFactionVisitResponseKnights,ShipTrophyIsaFactionVisitResponse,IsaFa
 shipTrophyIsaFactionVisitResponseIronShell,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current ironshell,,"""I'm not challenging anyone,"" Isa says, already opening a thrust profile. ""I'm conducting a deductible professional consultation.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Iron Shell vignette response.
 shipTrophyIsaFactionVisitContinue,DialogOptionSelected,$option == ship_trophy_isa_faction_visit_continue,"IsaFactionVisitCMD markSeen
 FireBest OpenInteractionDialog",,,Marks the faction vignette complete and resumes the station's normal docking dialogue.
+shipTrophyShroudedSubstrateBeginIsa,ShroudedSubstrateRightClick,"!$player.canMakeDwellerWeapons
+IsaContactRulesCMD isaInFleet score:10000","ShowImageVisual shrouded_weapon_assembly
+SetStoryOption shroudedSubstrateBegin 1 analyzeSubstrate technology ""Analyzed Shrouded Substrate""","You join your technology officer and Isa in a small briefing room overlooking the shop bay dedicated to what has been euphemistically dubbed ""special salvage"".
+
+Haz-suited technicians attend to the containment machinery, stepping over coils of tube and wire. A mess of makeshift components were pulled from the common microforge libraries then torn apart and re-engineered to operate in this unusual, even extraordinary, application.
+
+Isa wears a frown, tapping a TriPad as she observes the ongoing work. Tech can barely contain their excitement.
+
+""$PlayerSirOrMadam,"" they say in unison at your arrival.","shroudedSubstrateBegin:""So. What is it?""
+defaultLeave:Leave",Isa replaces the anonymous engineering chief in the first Shrouded Substrate briefing while she is in the player fleet.
+shipTrophyShroudedSubstrateOptSelAIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelA
+IsaContactRulesCMD isaInFleet score:10000","$saidWhatIsIt = true 0
+$canSayGA = true 0","Isa makes a show of looking to Tech expectantly, mouth quite intentionally shut. It appears they've had this argument already.
+
+""As, um."" Tech passes a look of consternation back toward Isa.
+
+""In truth, I could not say, exactly. And unfortunately we're not equipped to perform a full scientific investigation. Clearly it is a part of, or a product of the, the... hostile force which we bested. But to know what it IS... you'd need a full science team and laboratory facilities to even begin to approach the right questions, to say nothing of answers...""","shroudedSubstrate_optSelAga:""Like the Galatia Academy.""
+shroudedSubstrate_optSelAtt:""Like Tri-Tachyon.""",Isa-specific Shrouded Substrate explanation.
+shipTrophyShroudedSubstrateOptSelAga2Isa,DialogOptionSelected,"$option == shroudedSubstrate_optSelAga2
+!$saidTTthen
+IsaContactRulesCMD isaInFleet score:10000",unset $canSayGA,"Isa answers. ""Yes, there's nothing like this in the public archives. The Galatia Academy is supposed to be neutral. But as you know, $playerSirOrMadam, the Hegemony will reach in to put its hands on the controls, so to speak, if it sees something it doesn't like. The Hegemony doesn't like disruption. And this...""
+
+She extends a hand to indicate the contents of the workbay.
+
+Tech nods agreement, ""The Ministry of Technology Standards would surely seize such specimens. I could not say what they would do with them, but we would not see them ever again. That much is certain.""","shroudedSubstrate_optSelAtt:""Tri-Tachyon then.""",Isa-specific Galatia Academy response.
+shipTrophyShroudedSubstrateOptSelAga2bIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelAga2
+$saidTTthen
+IsaContactRulesCMD isaInFleet score:10000","unset $canSayGA
+FireAll shroudedSubstrateBeginOpts","Isa answers. ""Yes, there's nothing like this in the public archives. The Galatia Academy is supposed to be neutral. But as you know, $playerSirOrMadam, the Hegemony will reach in to put its hands on the controls, so to speak, if it sees something it doesn't like. The Hegemony doesn't like disruption. And this...""
+
+She extends a hand to indicate the contents of the workbay.
+
+Tech nods agreement, ""The Ministry of Technology Standards would surely seize such specimens. I could not say what they would do with them, but we would not see them ever again. That much is certain.""",,Isa-specific Galatia Academy response after Tri-Tachyon has already been discussed.
+shipTrophyShroudedSubstrateOptSelBIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelB
+IsaContactRulesCMD isaInFleet score:10000","$saidValuable = true 0
+FireAll shroudedSubstrateBeginOpts","""Extremely,"" Tech answers, exchanging a look with Isa. ""If the energy output ratio scales as projected...""
+
+""It's dangerous,"" Isa says. ""It's almost too easy to build a weapon with this 'substrate'. Imagine if the Pathers-""
+
+""-Yes, yes, another Mairaath,"" Tech interrupts. ""As with any applied technology, sufficiently powerful, it could... $playerSirOrMadam. To answer your query, yes, extremely valuable.""",,Isa-specific Shrouded Substrate value response.
+shipTrophyShroudedSubstrateOptSelCIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelC
+IsaContactRulesCMD isaInFleet score:10000","$saidUseful = true 0
+FireAll shroudedSubstrateBeginOpts","""Very,"" your technology officer exchanges another look with Isa. ""In my professional opinion.""
+
+""When stabilized, and... provoked, it appears to create energy from... somewhere else. Or transform it, enhance it. The gain is spectacular.""
+
+Isa steps forward. ""That test with the laser-cutter would have blown a hole through the hull if,"" she glances at Tech, ""if we were not following protocol by using a blast-plate backing in the test zone.""
+
+""Look, I did concede you were correct to-"" Tech catches your expression and shuts up, putting on a deferential look.",,Isa-specific Shrouded Substrate usefulness response.
+shipTrophyShroudedSubstrateOptSelDIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelD
+IsaContactRulesCMD isaInFleet score:10000","$saidDestroyed = true 0
+FireAll shroudedSubstrateBeginOpts","Isa smirks at Tech.
+
+""It is essentially unstable, if left alone,"" Tech admits. ""Without containment, it will,"" a pause, searching for the word.
+
+""Fade away? No, withdraw. Slowly. The process is non-linear, and appears to accelerate, given time. Although it's hard to measure exact terms of mass, volume, or... output. It all just becomes... less.""",,Isa-specific Shrouded Substrate destruction response.
+shipTrophyShroudedSubstrateOptSelEIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelE
+IsaContactRulesCMD isaInFleet score:10000",,"Tech looks to Isa, who can barely suppress a grin despite her previous air of skepticism. Isa nods and flips a TriPad around.
+
+""It's pretty simple, $playerSirOrMadam. Scale up the testing rig using modified common equipment to produce outputs in the combat application range. A robust chassis is not difficult. We're already equipped to repair modular components of most weapon systems using microforged components and existing supply stocks.""
+
+She pauses, looking into the workbay once more. ""The key is this 'substrate'. It provides the core, the... amplification, the transformation.""",shroudedSubstrate_optSelE2:Continue,Isa-specific Shrouded Substrate weaponization response.

@@ -83,6 +83,9 @@ public class IsaContactRulesCMD implements CommandPlugin {
         if ("alreadyJoined".equals(command)) {
             return IsaTrophyManager.wasOfficerGranted();
         }
+        if ("isaInFleet".equals(command)) {
+            return IsaTrophyManager.isIsaOfficerInPlayerFleet();
+        }
         if ("grantOfficer".equals(command)) {
             grantOfficer(local);
             return true;
