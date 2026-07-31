@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc.Token;
 
 import shiptrophy.campaign.ShatteredRingGenerator;
+import shiptrophy.campaign.GanEdenQuestManager;
 
 /** One-time scene when officer Isa is brought home to the Shattered Ring. */
 public class IsaHomecomingCMD implements CommandPlugin {
@@ -32,6 +33,7 @@ public class IsaHomecomingCMD implements CommandPlugin {
         }
         if ("markSeen".equals(command)) {
             IsaTrophyManager.setShatteredRingHomecomingShown();
+            GanEdenQuestManager.start(dialog.getTextPanel());
             return true;
         }
         return false;

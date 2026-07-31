@@ -12,7 +12,7 @@ Adds a player-colony structure called **Hall of Triumph**.
 - Completing every vanilla Isa trophy program grants **Isa Leicester** as a steady level-8 officer with two exclusive skills; optional mod integrations are not required.
 - After Isa joins the fleet, the first visit to a station owned by each supported vanilla faction plays a short, one-time vignette about that faction's shipbuilding doctrine. Knights of Ludd and Iron Shell receive their own vignettes when their respective mods are installed, but neither mod is required.
 - Adds **The Shattered Ring**, an independent size-4 free port in Penelope's Star. The station is built into the remains of an adamantine ring and supports a community of salvagers, wreck-farmers, and cryopod survivors.
-- Adds **Gan Eden**, a compact prototype Dyson-sphere interior currently isolated from hyperspace for environment testing.
+- Adds **Gan Eden**, a compact prototype Dyson-sphere interior reached through Isa's post-recruitment story quest.
 - Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
@@ -27,15 +27,17 @@ The Shattered Ring is generated in the fixed Penelope's Star system at game star
 
 The Ring is Isa's birthplace: salvagers recovered her there as an infant in a cryopod, swaddled in a spacer suit marked **Isaac Leicester**. She shortened the inherited name to Isa after learning its masculine association. Her story is not unique there; generations of cryopod survivors—affectionately called “pod people”—form an ordinary and established part of the Ring's community.
 
-After Isa joins the player's officer roster, bringing her to the Shattered Ring triggers a one-time homecoming scene. The scene waits until she is actually present in the fleet and takes precedence over the generic Independent-station vignette.
+After Isa joins the player's officer roster, bringing her to the Shattered Ring triggers a one-time homecoming scene and begins **A Name on a Suit**. Isa asks the player to help determine who her parents were. Gargoyle recovers the Ring's last pre-Collapse passenger record, revealing that Isaac Leicester traveled alone to an uncharted adamantine ring.
 
-The editable writing aid for this material is in `dialogue/shattered_ring.ink`.
+The editable writing aids are in `dialogue/shattered_ring.ink` and `dialogue/gan_eden_quest.ink`.
 
 ## Gan Eden
 
 Gan Eden is a deliberately compact, completely siloed star system built inside a prototype Dyson sphere. Its inward-facing surface uses a spherical projection of a custom 2:1 world map, so the geography itself curves and foreshortens into the circular horizon around the warm central star. Beyond the playable space, a white atmospheric haze deepens toward blue as the viewing angle approaches that inner surface. Sparse, disconnected remnants of dark Domain-era armor and machinery cling to the horizon, with irregular plates and antenna spars encroaching over the constructed world's inner surface. This **Altitude Warning** zone softly decelerates approaching fleets and rebounds them toward the star without causing hull, combat-readiness, or crew damage. Complete blackness lies outside the sphere's circular aperture.
 
-Gan Eden has no markets, objectives, ambient NPC fleets, jump points, nascent gravity wells, or hyperspace anchor. 
+Gan Eden has no ordinary jump point, nascent gravity well, or hyperspace anchor. The quest requires both vanilla Coronal Hypershunts to be reactivated; their synchronized signatures reveal the exact coordinates of a remote transit ring. The system contains five fixed, surveyable settlement sites built into the Dyson sphere's inner shell and no ambient civilian population.
+
+At Eden Prime, Isa finds Isaac Leicester's lone grave and an evacuation record linked to her cryopod. The system is guarded by two named Golden Omega Shards, **Cherubim** and **Lahat Haharev**. The grave can be found before or after the battle; the quest completes only when both parts are resolved. After completion, newly spawned Remnant Ordos have a 9% chance to be led by one randomly selected Golden Shard and a 1% chance to be led by both.
 ## Music credits
 
 ```text

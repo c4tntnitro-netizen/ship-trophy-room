@@ -76,7 +76,23 @@ She shrugs. "That isn't much of an origin story here. Half the Ring has a versio
 
 === isa_shattered_ring_homecoming_dock ===
 
-"It does," she says. "Kept the rest, though. Somebody wanted Isaac Leicester to make it here. Close enough."
+"It does," she says. "Kept the rest, though."
+
+For a while she watches the wreck-farms in silence. Then she takes a breath.
+
+"I want to know who my parents were, Cap. Whether Isaac was one of them. Why somebody put me in that pod and sent me here alone."
+
+She brings up a corroded line from the Ring's oldest transit index. ISAAC LEICESTER remains legible beneath centuries of checksum failures.
+
+"This was buried in flight control. I can keep the hardware alive, but these locks are Collapse-era ugly. We need someone who enjoys making old security systems feel inadequate."
+
++ "Then we'll find out." -> isa_shattered_ring_homecoming_departure
+
+=== isa_shattered_ring_homecoming_departure ===
+
+Isa's answer comes too quickly. "Good."
+
+Then, more quietly: "Thank you."
 
 Dock control clears your fleet for berth nineteen. The comm channel immediately fills with overlapping voices, several of them shouting Isa's name.
 

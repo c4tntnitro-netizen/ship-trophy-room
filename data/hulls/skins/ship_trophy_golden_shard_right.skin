@@ -8,7 +8,12 @@
     "removeEngineSlots": [],
     "removeBuiltInMods": ["shard_spawner"],
     "removeBuiltInWeapons": [],
-    "builtInMods": ["ship_trophy_golden_fractal"],
+    "builtInMods": [
+        "ship_trophy_golden_fractal",
+        "ship_trophy_flaming_sword_burden"
+    ],
     "tags": ["hide_in_codex"],
-    "builtInWeapons": {}
+    "builtInWeapons": {
+        "WS 003": "ship_trophy_flaming_sword"
+    }
 }

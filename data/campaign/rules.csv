@@ -447,19 +447,30 @@ The view settles on ranks of restored hulls beneath the gallery lights, each fac
 
 Isa glances from the distant gallery to the fleet around you. ""The Hall can preserve what came before. From here on, we get to make what comes next. Thank you for giving me a place in it.""","0:ship_trophy_hall_complete_leave:Welcome aboard, Chief.",CSV-owned Hall completion cinematic.
 shipTrophyIsaShatteredRingHomecoming,OpenInteractionDialog,IsaHomecomingCMD shouldShow score:20000,"IsaHomecomingCMD prepare
-SetShortcut ship_trophy_isa_homecoming_reply ""ESCAPE""","The broken arcs of the Shattered Ring fill the forward view, black adamantine cutting across the light of Penelope's Star. Wreck-farm tugs move among the fragments like insects tending an immense skeleton.
+","The broken arcs of the Shattered Ring fill the forward view, black adamantine cutting across the light of Penelope's Star. Wreck-farm tugs move among the fragments like insects tending an immense skeleton.
 
 Isa comes to the bridge without being called. For once, she has no slate in her hands.
 
 ""Still there,"" she says softly. ""Stupid thing to say about an adamantine ring. I used to wonder anyway.""","0:ship_trophy_isa_homecoming_reply:""Welcome home, Isa.""",One-time homecoming scene when officer Isa returns to the Shattered Ring.
-shipTrophyIsaShatteredRingHomecomingReply,DialogOptionSelected,$option == ship_trophy_isa_homecoming_reply,"SetShortcut ship_trophy_isa_homecoming_name ""ESCAPE""","Isa laughs, but the sound catches halfway out.
+shipTrophyIsaShatteredRingHomecomingReply,DialogOptionSelected,$option == ship_trophy_isa_homecoming_reply,,"Isa laughs, but the sound catches halfway out.
 
 ""Home. Yeah. I suppose it is."" She watches a salvage tug cross the viewport. ""One of those crews found my pod out in the Suitors. I was small enough to carry under one arm. No manifest. No family record. Just a spacer suit big enough to swaddle me in, with ISAAC LEICESTER stenciled across the chest. So the revival ward wrote it down.""
 
 She shrugs. ""That isn't much of an origin story here. Half the Ring has a version of it. Pod people, they call us. Affectionately, usually.""
 
 ""Took me years to learn Isaac wasn't generally a girl's name. Took about five minutes after that to decide Isa was.""","0:ship_trophy_isa_homecoming_name:""Isa suits you better.""",Isa explains her name and the Ring's pod community.
-shipTrophyIsaShatteredRingHomecomingName,DialogOptionSelected,$option == ship_trophy_isa_homecoming_name,"SetShortcut ship_trophy_isa_homecoming_continue ""ESCAPE""","""It does,"" she says. ""Kept the rest, though. Somebody wanted Isaac Leicester to make it here. Close enough.""
+shipTrophyIsaShatteredRingHomecomingName,DialogOptionSelected,$option == ship_trophy_isa_homecoming_name,,"""It does,"" she says. ""Kept the rest, though.""
+
+For a while she watches the wreck-farms in silence. Then she takes a breath.
+
+""I want to know who my parents were, Cap. Whether Isaac was one of them. Why somebody put me in that pod and sent me here alone.""
+
+She brings up a corroded line from the Ring's oldest transit index. ISAAC LEICESTER remains legible beneath centuries of checksum failures.
+
+""This was buried in flight control. I can keep the hardware alive, but these locks are Collapse-era ugly. We need someone who enjoys making old security systems feel inadequate.""","0:ship_trophy_isa_homecoming_question:""Then we'll find out.""",Isa asks the player to help uncover her family history.
+shipTrophyIsaShatteredRingHomecomingQuestion,DialogOptionSelected,$option == ship_trophy_isa_homecoming_question,"SetShortcut ship_trophy_isa_homecoming_continue ""ESCAPE""","Isa's answer comes too quickly. ""Good.""
+
+Then, more quietly: ""Thank you.""
 
 Dock control clears your fleet for berth nineteen. The comm channel immediately fills with overlapping voices, several of them shouting Isa's name.
 
@@ -468,6 +479,67 @@ Dock control clears your fleet for berth nineteen. The comm channel immediately 
 She turns for the lift before docking is complete. ""Come on. I want to see what they ruined while I was gone.""","0:ship_trophy_isa_homecoming_continue:Take us in.",Final homecoming beat.
 shipTrophyIsaShatteredRingHomecomingContinue,DialogOptionSelected,$option == ship_trophy_isa_homecoming_continue,"IsaHomecomingCMD markSeen
 FireBest OpenInteractionDialog",,,Marks the Shattered Ring homecoming complete and resumes normal docking.
+shipTrophyGanEdenGargoyleOption,PopulateOptions,"$menuState == main
+GanEdenQuestCMD canContactGargoyle",,,"55:ship_trophy_gan_eden_gargoyle:Ask Isa about the Ring's damaged transit logs.",Adds Isa's investigation to the Shattered Ring port menu.
+shipTrophyGanEdenGargoyleStart,DialogOptionSelected,$option == ship_trophy_gan_eden_gargoyle,GanEdenQuestCMD prepareGargoyle,"Isa has converted an unused berth office into a forensic workshop. The transit index hangs above its central table in thousands of red, broken fragments.
+
+""I found our specialist,"" she says.
+
+A second channel opens. Gargoyle regards the data with the patient disdain of someone deciding which rule of reality to insult first.
+
+""You have a door,"" Gargoyle says. ""You would like it to become embarrassed about having ever been locked.""","0:ship_trophy_gan_eden_gargoyle_patch:Patch Gargoyle into the Ring archive.",Gargoyle joins the investigation without altering the vanilla character's campaign state.
+shipTrophyGanEdenGargoyleHack,DialogOptionSelected,$option == ship_trophy_gan_eden_gargoyle_patch,,"Gargoyle's intrusion blooms through the dead archive. Checksums mend themselves. Entire columns of meaningless symbols decide, under pressure, to become dates and destination hashes.
+
+Isa leans over the table. ""There. Passenger movements, final month before the Collapse.""
+
+Only one outbound name survives.
+
+ISAAC LEICESTER.
+
+He was the Ring's final passenger, carried through an adamantine transit aperture to a destination outside every surviving Sector chart.","0:ship_trophy_gan_eden_gargoyle_where:Where did he go?",The recovered manifest identifies Isaac Leicester.
+shipTrophyGanEdenGargoyleTriangulate,DialogOptionSelected,$option == ship_trophy_gan_eden_gargoyle_where,"GanEdenQuestCMD finishGargoyle
+SetShortcut ship_trophy_gan_eden_gargoyle_continue ""ESCAPE""","""The destination field was never a coordinate,"" Gargoyle says. ""It was a phase relationship between two stellar-scale power sources.""
+
+Two signatures appear: the Sector's Coronal Hypershunts, recorded while both were still active.
+
+""Reactivate both taps,"" Isa says, already following the reconstruction. ""Two baselines. One intersection. Then we find the ring Isaac went through.""
+
+[Reactivate both Coronal Hypershunts to triangulate the Gan Eden Transit Ring.]","0:ship_trophy_gan_eden_gargoyle_continue:Return to the port.",The two vanilla Coronal Hypershunts become the quest objective.
+shipTrophyGanEdenGargoyleContinue,DialogOptionSelected,$option == ship_trophy_gan_eden_gargoyle_continue,FireAll PopulateOptions,"Gargoyle closes the archive channel. Isa keeps the recovered name suspended over the table.",,
+shipTrophyGanEdenExternalRing,OpenInteractionDialog,GanEdenQuestCMD isExternalRing score:50000,"SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","The reconstructed ring hangs in hyperspace without a nascent gravity well or any corresponding star. Its adamantine surface is awake, drawing impossible depth through an aperture that should show only more hyperspace.","0:ship_trophy_gan_eden_ring_enter:Enter the Gan Eden Transit Ring.
+100:ship_trophy_gan_eden_ring_leave:Leave.",Quest-gated entrance to Gan Eden.
+shipTrophyGanEdenExternalRingEnter,DialogOptionSelected,$option == ship_trophy_gan_eden_ring_enter,"GanEdenQuestCMD transitIn
+DismissDialog",,,Transfers the player into Gan Eden.
+shipTrophyGanEdenInternalRing,OpenInteractionDialog,GanEdenQuestCMD isInternalRing score:50000,"SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Hyperspace moves beyond it like weather seen through armored glass.","0:ship_trophy_gan_eden_ring_exit:Return to hyperspace.
+100:ship_trophy_gan_eden_ring_leave:Remain in Gan Eden.",Quest-gated exit from Gan Eden.
+shipTrophyGanEdenInternalRingExit,DialogOptionSelected,$option == ship_trophy_gan_eden_ring_exit,"GanEdenQuestCMD transitOut
+DismissDialog",,,Transfers the player back to the remote ring.
+shipTrophyGanEdenRingLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_ring_leave,DismissDialog,,,
+shipTrophyGanEdenGrave,OpenInteractionDialog,GanEdenQuestCMD shouldShowGrave score:50000,"GanEdenQuestCMD prepareGrave","The space elevator answers Isa's inherited suit transponder.
+
+Its doors open onto an empty concourse. Departure boards still promise connections to cities whose lights have been dark for two centuries. Beyond them, a sealed memorial garden has kept one tree alive beneath patient lamps.
+
+There is one grave.
+
+ISAAC LEICESTER","0:ship_trophy_gan_eden_grave_read:Open the memorial archive with Isa.",Isa and the player find Isaac Leicester's lone grave.
+shipTrophyGanEdenGraveRead,DialogOptionSelected,$option == ship_trophy_gan_eden_grave_read,,"The archive contains no family registry. It contains one final maintenance log, recorded after every other inhabitant had gone.
+
+Isaac's voice is exhausted.
+
+""Isa made the crossing. The Ring confirmed receipt. That has to be enough.""
+
+The attached evacuation record bears the serial number of the cryopod that carried Isa to the Shattered Ring.
+
+Isa reads it twice. ""My father, then. Probably."" She touches the name on the stone. ""Close enough for me.""","0:ship_trophy_gan_eden_grave_stay:Stay with her.",The record strongly identifies Isaac as Isa's father without inventing a complete family record.
+shipTrophyGanEdenGraveStay,DialogOptionSelected,$option == ship_trophy_gan_eden_grave_stay,"GanEdenQuestCMD markGrave
+SetShortcut ship_trophy_gan_eden_grave_leave ""ESCAPE""","You wait beneath the memorial tree.
+
+Eventually Isa sits beside the grave and begins telling Isaac Leicester about the Shattered Ring: the wreck-farms, the revival ward, the terrible food, and every impossible ship that carried her farther than he could have imagined.
+
+When she finally stands, the paradise beyond the glass remains empty. Only the distant golden signatures of Cherubim and Lahat Haharev move against the sun.","0:ship_trophy_gan_eden_grave_leave:Return to the fleet.",Finding the grave completes the personal investigation; the guardians remain as the finale if alive.
+shipTrophyGanEdenGraveLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_grave_leave,DismissDialog,,,
+shipTrophyGanEdenGraveNeedsIsa,OpenInteractionDialog,GanEdenQuestCMD graveNeedsIsa score:45000,"SetShortcut ship_trophy_gan_eden_grave_leave ""ESCAPE""","The memorial archive recognizes Isa Leicester's inherited suit transponder, but she is not present to answer its identity challenge. You will need to return with Isa in the fleet.","0:ship_trophy_gan_eden_grave_leave:Leave.",Prevents resolving Isa's family story without Isa.
+shipTrophyGanEdenGraveInspected,OpenInteractionDialog,GanEdenQuestCMD graveInspected score:45000,"SetShortcut ship_trophy_gan_eden_grave_leave ""ESCAPE""","The memorial garden remains sealed and alive above Eden Prime. Isaac Leicester's grave rests beneath its single tree.","0:ship_trophy_gan_eden_grave_leave:Leave the memorial in peace.",Repeat interaction after the grave scene.
 shipTrophyIsaFactionVisitHegemony,OpenInteractionDialog,IsaFactionVisitCMD shouldShow hegemony score:10000,"IsaFactionVisitCMD prepare hegemony
 ","As your fleet joins $marketName's approach queue, Isa disappears from the bridge. You find her pressed face-first against the glass of an observation blister, watching Hegemony-pattern ships parade one by one down a parallel departure queue. Her slate displays a hologram of each passing vessel, all of them carefully logged and annotated.
 
@@ -769,3 +841,4 @@ IsaContactRulesCMD isaInFleet score:10000",,"Tech looks to Isa, who can barely s
 ""It's pretty simple, $playerSirOrMadam. Scale up the testing rig using modified common equipment to produce outputs in the combat application range. A robust chassis is not difficult. We're already equipped to repair modular components of most weapon systems using microforged components and existing supply stocks.""
 
 She pauses, looking into the workbay once more. ""The key is this 'substrate'. It provides the core, the... amplification, the transformation.""",shroudedSubstrate_optSelE2:Continue,Isa-specific Shrouded Substrate weaponization response.
+shipTrophyGanEdenSurfaceSiteCanColonize,PrintSystemCutOffText,$market.shipTrophyGanEdenSurfaceSite score:100000,,"Although Gan Eden is sealed from hyperspace, this fixed shell site is connected to self-contained atmosphere, power, and transit infrastructure. Establishing a colony here remains possible.",,Allows colonization of fixed Gan Eden surface sites while the prototype system is isolated.

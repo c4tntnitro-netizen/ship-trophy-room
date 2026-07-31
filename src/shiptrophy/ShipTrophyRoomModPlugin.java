@@ -1,10 +1,16 @@
 package shiptrophy;
 
+import java.util.ArrayList;
+
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 
 import shiptrophy.campaign.GanEdenAmbushScript;
 import shiptrophy.campaign.GanEdenGenerator;
+import shiptrophy.campaign.GanEdenOrdoListener;
+import shiptrophy.campaign.GanEdenQuestManager;
+import shiptrophy.campaign.GanEdenQuestScript;
 import shiptrophy.campaign.ShatteredRingGenerator;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
 
@@ -25,10 +31,19 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         ConfigurableTrophyHullMod.reload();
         ShatteredRingGenerator.ensureGenerated();
         GanEdenGenerator.ensureGenerated();
+        GanEdenQuestManager.ensureForCurrentSave();
+        Global.getSector().removeScriptsOfClass(GanEdenQuestScript.class);
+        Global.getSector().addScript(new GanEdenQuestScript());
         Global.getSector().removeScriptsOfClass(GanEdenAmbushScript.class);
-        if (!GanEdenAmbushScript.ensureFleet()) {
-            Global.getSector().addScript(new GanEdenAmbushScript());
+        GanEdenAmbushScript.ensureFleet();
+        Global.getSector().addScript(new GanEdenAmbushScript());
+        for (CampaignEventListener listener : new ArrayList<CampaignEventListener>(
+                Global.getSector().getAllListeners())) {
+            if (listener instanceof GanEdenOrdoListener) {
+                Global.getSector().removeListener(listener);
+            }
         }
+        Global.getSector().addTransientListener(new GanEdenOrdoListener());
         Global.getSector().removeScriptsOfClass(StoryPointGeneratorScript.class);
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);

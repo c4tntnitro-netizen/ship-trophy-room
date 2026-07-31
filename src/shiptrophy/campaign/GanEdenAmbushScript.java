@@ -31,20 +31,29 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             "$shipTrophyGanEdenGoldenAmbushFleet";
     private static final String LOOT_KEY =
             "$shipTrophyGanEdenGoldenLootConfigured";
+    private static final String ACTIVE_KEY =
+            "$shipTrophyGanEdenGoldenAmbushActive";
+    private static final String DEFEATED_KEY =
+            "$shipTrophyGanEdenGoldenAmbushDefeated";
+    private static final String PARTIAL_SINCE_KEY =
+            "$shipTrophyGanEdenGoldenAmbushPartialSince";
 
     private static final String SINISTRAL_VARIANT =
             "ship_trophy_golden_shard_left_Attack";
     private static final String DEXTRAL_VARIANT =
             "ship_trophy_golden_shard_right_Attack";
+    private static final String SINISTRAL_NAME = "Cherubim";
+    private static final String DEXTRAL_NAME = "Lahat Haharev";
     private static final float RING_OFFSET = 350f;
     private static final float GUARD_DURATION = 1000000f;
+    private static final float DEFENDER_RESET_DAYS = 10f;
     private static final long LOOT_SEED = 0x617572656174654cL;
 
-    private boolean finished;
+    private float checkInterval;
 
     @Override
     public boolean isDone() {
-        return finished;
+        return false;
     }
 
     @Override
@@ -54,8 +63,11 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
 
     @Override
     public void advance(float amount) {
-        if (Global.getSector() == null || finished) return;
-        finished = ensureFleet();
+        if (Global.getSector() == null) return;
+        checkInterval += amount;
+        if (checkInterval < 1f) return;
+        checkInterval = 0f;
+        maintainFleet();
     }
 
     /**
@@ -67,20 +79,34 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         if (Global.getSector() == null) return false;
         StarSystemAPI system = GanEdenGenerator.findSystem();
         if (system == null) return false;
+        MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
+        if (sectorMemory.getBoolean(DEFEATED_KEY)) return true;
+
+        CampaignFleetAPI existing = findExistingFleet(system);
+        if (existing == null
+                && !sectorMemory.getBoolean(ACTIVE_KEY)
+                && !GanEdenQuestManager.isAtLeast(
+                        GanEdenQuestManager.Stage.GAN_EDEN_REVEALED)) {
+            return true;
+        }
 
         SectorEntityToken anchor = system.getEntityById(
                 GanEdenGenerator.ARRIVAL_RING_ID);
         if (anchor == null) anchor = system.getCenter();
 
-        CampaignFleetAPI existing = findExistingFleet(system);
-        if (existing != null
-                && existing.getFleetData().getNumMembers() >= 2) {
+        if (existing != null && !existing.isEmpty()) {
             configureGuard(existing, anchor);
+            sectorMemory.set(ACTIVE_KEY, true);
             logPlacement("reused", existing);
             return true;
         }
         if (existing != null) {
             system.removeEntity(existing);
+        }
+        if (sectorMemory.getBoolean(ACTIVE_KEY)) {
+            sectorMemory.set(DEFEATED_KEY, true);
+            sectorMemory.unset(PARTIAL_SINCE_KEY);
+            return true;
         }
 
         CampaignFleetAPI fleet = createFleet();
@@ -99,8 +125,57 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 anchor.getLocation().x + RING_OFFSET,
                 anchor.getLocation().y);
         configureGuard(fleet, anchor);
+        sectorMemory.set(ACTIVE_KEY, true);
+        sectorMemory.unset(PARTIAL_SINCE_KEY);
         logPlacement("placed", fleet);
         return true;
+    }
+
+    /**
+     * Mirrors vanilla salvage defenders: a partially defeated fleet remains
+     * available for ten days, while an outright victory clears it forever.
+     */
+    private static void maintainFleet() {
+        StarSystemAPI system = GanEdenGenerator.findSystem();
+        if (system == null) return;
+
+        MemoryAPI memory = Global.getSector().getMemoryWithoutUpdate();
+        if (memory.getBoolean(DEFEATED_KEY)) return;
+
+        CampaignFleetAPI fleet = findExistingFleet(system);
+        if (fleet == null || fleet.isEmpty()) {
+            if (memory.getBoolean(ACTIVE_KEY)) {
+                memory.set(DEFEATED_KEY, true);
+                memory.unset(PARTIAL_SINCE_KEY);
+            } else {
+                ensureFleet();
+            }
+            return;
+        }
+
+        int members = fleet.getFleetData().getNumMembers();
+        if (members >= 2) {
+            memory.unset(PARTIAL_SINCE_KEY);
+            return;
+        }
+
+        if (!memory.contains(PARTIAL_SINCE_KEY)) {
+            memory.set(
+                    PARTIAL_SINCE_KEY,
+                    Global.getSector().getClock().getTimestamp());
+            return;
+        }
+
+        long since = memory.getLong(PARTIAL_SINCE_KEY);
+        if (Global.getSector().getClock().getElapsedDaysSince(since)
+                < DEFENDER_RESET_DAYS) {
+            return;
+        }
+
+        system.removeEntity(fleet);
+        memory.unset(ACTIVE_KEY);
+        memory.unset(PARTIAL_SINCE_KEY);
+        ensureFleet();
     }
 
     private static CampaignFleetAPI findExistingFleet(
@@ -120,25 +195,13 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 Factions.OMEGA, "Aureate Refractions", true);
         if (fleet == null) return null;
 
-        FleetMemberAPI sinistral =
-                fleet.getFleetData().addFleetMember(SINISTRAL_VARIANT);
-        FleetMemberAPI dextral =
-                fleet.getFleetData().addFleetMember(DEXTRAL_VARIANT);
-        if (sinistral == null || dextral == null) return fleet;
-
         Random random = new Random(0x6a616e6564656eL);
-        PersonAPI sinistralCore = createOmegaCore(random);
-        PersonAPI dextralCore = createOmegaCore(random);
-        if (sinistralCore != null) {
-            sinistral.setCaptain(sinistralCore);
-            fleet.setCommander(sinistralCore);
+        FleetMemberAPI sinistral = addNamedGuardian(fleet, true, random);
+        FleetMemberAPI dextral = addNamedGuardian(fleet, false, random);
+        if (sinistral == null || dextral == null) return fleet;
+        if (sinistral.getCaptain() != null) {
+            fleet.setCommander(sinistral.getCaptain());
         }
-        if (dextralCore != null) {
-            dextral.setCaptain(dextralCore);
-        }
-
-        readyMember(sinistral);
-        readyMember(dextral);
         fleet.getFleetData().setFlagship(sinistral);
         fleet.getFleetData().sort();
         fleet.forceSync();
@@ -146,6 +209,27 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
         return fleet;
+    }
+
+    /** Adds one named Golden Shard, used by both the finale and rare Ordos. */
+    public static FleetMemberAPI addNamedGuardian(
+            CampaignFleetAPI fleet, boolean sinistral, Random random) {
+        if (fleet == null) return null;
+        FleetMemberAPI member = fleet.getFleetData().addFleetMember(
+                sinistral ? SINISTRAL_VARIANT : DEXTRAL_VARIANT);
+        if (member == null) return null;
+        member.setShipName(sinistral ? SINISTRAL_NAME : DEXTRAL_NAME);
+        PersonAPI core = createOmegaCore(random == null
+                ? new Random() : random);
+        if (core != null) member.setCaptain(core);
+        readyMember(member);
+        return member;
+    }
+
+    public static boolean isDefeated() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate()
+                        .getBoolean(DEFEATED_KEY);
     }
 
     private static PersonAPI createOmegaCore(Random random) {
@@ -165,9 +249,24 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
     private static void configureGuard(
             CampaignFleetAPI fleet,
             SectorEntityToken anchor) {
+        ensureGuardianNames(fleet);
+
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         memory.set(FLEET_KEY, true);
-        memory.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
+        boolean dormantForQuest = GanEdenQuestManager.isAtLeast(
+                GanEdenQuestManager.Stage.GAN_EDEN_REVEALED)
+                && !GanEdenQuestManager.isGraveFound();
+        if (dormantForQuest) {
+            memory.unset(MemFlags.MEMORY_KEY_MAKE_HOSTILE);
+            memory.unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
+            memory.set(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, true);
+            memory.set(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE, true);
+        } else {
+            memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE);
+            memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE);
+            memory.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
+            memory.set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+        }
         memory.set(MemFlags.MEMORY_KEY_NO_REP_IMPACT, true);
         memory.set(MemFlags.MEMORY_KEY_NO_SHIP_RECOVERY, true);
         memory.set(
@@ -185,6 +284,17 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 anchor,
                 GUARD_DURATION,
                 "waiting in silence");
+    }
+
+    private static void ensureGuardianNames(CampaignFleetAPI fleet) {
+        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+            String variantId = member.getVariant().getHullVariantId();
+            if (SINISTRAL_VARIANT.equals(variantId)) {
+                member.setShipName(SINISTRAL_NAME);
+            } else if (DEXTRAL_VARIANT.equals(variantId)) {
+                member.setShipName(DEXTRAL_NAME);
+            }
+        }
     }
 
     private static void ensureReward(

@@ -1,0 +1,22 @@
+{
+    # A colonizable Gan Eden site is represented as a PlanetAPI so vanilla's
+    # survey/colony UI remains available, but it is drawn as a compact fixed
+    # installation rather than as a free-floating world.
+    "ship_trophy_gan_eden_surface_site":{
+        "name":"Dyson Sphere Surface Site",
+        "tilt":0,
+        "pitch":0,
+        "rotation":0,
+        "planetColor":[210,225,235,255],
+        "atmosphereThickness":0,
+        "atmosphereThicknessMin":0,
+        "atmosphereColor":[0,0,0,0],
+        "texture":"graphics/icons/station0.png",
+        "icon":"graphics/icons/station0.png",
+        "starscapeIcon":"graphics/icons/station0.png",
+        "iconColor":[170,210,225,255],
+        "scaleMultMapIcon":0.7,
+        "scaleMultStarscapeIcon":0.7,
+        "lightPosition":[0,0,10],
+    },
+}

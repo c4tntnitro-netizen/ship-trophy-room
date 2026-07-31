@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -18,9 +20,8 @@ import shiptrophy.campaign.terrain.AltitudeWarningTerrainPlugin;
 /**
  * Generates the prototype Dyson-sphere interior called Gan Eden.
  *
- * Gan Eden is intentionally cut off from hyperspace. The future route through
- * the Shattered Ring is represented by a feature flag and remains disabled
- * while the system is being developed and tested.
+ * Gan Eden is intentionally cut off from ordinary hyperspace. Isa's quest
+ * reveals a separate transit ring without creating a normal system anchor.
  */
 public final class GanEdenGenerator {
     public static final String SYSTEM_ID = "ship_trophy_gan_eden";
@@ -30,9 +31,25 @@ public final class GanEdenGenerator {
     public static final String ALTITUDE_TERRAIN_TYPE = "ship_trophy_altitude_warning";
     public static final String ARRIVAL_RING_ID = "ship_trophy_gan_eden_arrival_ring";
     public static final String ARRIVAL_RING_TYPE = "ship_trophy_gan_eden_arrival_ring";
+    public static final String SPACE_ELEVATOR_ID =
+            "ship_trophy_gan_eden_space_elevator";
+    public static final String SPACE_ELEVATOR_TYPE =
+            "ship_trophy_gan_eden_space_elevator";
     public static final String MUSIC_SET_ID = "ship_trophy_gan_eden_music";
-
-    public static final boolean SHATTERED_RING_GATEWAY_ENABLED = false;
+    public static final String EDEN_PRIME_ID = "ship_trophy_gan_eden_prime";
+    public static final String VERDANT_REACH_ID =
+            "ship_trophy_gan_eden_verdant_reach";
+    public static final String PELAGOS_ID = "ship_trophy_gan_eden_pelagos";
+    public static final String CINDERWAKE_ID =
+            "ship_trophy_gan_eden_cinderwake";
+    public static final String RIMEWELL_ID =
+            "ship_trophy_gan_eden_rimewell";
+    public static final String SANCTUARY_CONDITION_ID =
+            "ship_trophy_gan_eden_sanctuary";
+    public static final String SURFACE_SITE_TYPE =
+            "ship_trophy_gan_eden_surface_site";
+    public static final String SURFACE_SITE_MEMORY_KEY =
+            "$shipTrophyGanEdenSurfaceSite";
 
     public static final float WARNING_INNER_RADIUS = 1650f;
     public static final float HARD_SURFACE_RADIUS = 2050f;
@@ -61,16 +78,13 @@ public final class GanEdenGenerator {
             PlanetAPI star = ensureStar(system);
             if (star == null) return;
 
+            ensureColonizableSurfaceSites(system, star);
+            ensureSpaceElevator(system);
             ensureInteriorSurface(system, star);
             ensureAltitudeWarning(system, star);
             ensureArrivalRing(system, star);
             removeHyperspaceAnchor(system);
 
-            // Deliberately dormant for now. A later story pass will create the
-            // Shattered Ring transit mechanism when this flag is enabled.
-            if (SHATTERED_RING_GATEWAY_ENABLED) {
-                ensureShatteredRingGateway(system);
-            }
         } catch (RuntimeException ex) {
             // A partially generated experimental system should never prevent
             // an existing campaign from loading.
@@ -166,6 +180,201 @@ public final class GanEdenGenerator {
         removeLegacyBand(system, WARNING_BAND_ID);
     }
 
+    /**
+     * Adds five fixed settlement anchors on Gan Eden's inhabited inner shell.
+     *
+     * These are deliberately not separate worlds. They use PlanetAPI only as
+     * a thin compatibility layer for Starsector's survey and colony screens;
+     * visually and spatially they are small surface installations pinned to
+     * permanent coordinates on the Dyson sphere's projected inner surface.
+     * Stable ids preserve survey and colony state in existing campaigns.
+     */
+    private static void ensureColonizableSurfaceSites(
+            StarSystemAPI system, PlanetAPI star) {
+        ensureSurfaceSite(
+                system, star, EDEN_PRIME_ID, "Eden Prime",
+                "ship_trophy_gan_eden_eden_prime", 210f, 520f,
+                Conditions.HABITABLE,
+                Conditions.MILD_CLIMATE,
+                Conditions.FARMLAND_BOUNTIFUL,
+                Conditions.ORGANICS_ABUNDANT);
+        ensureSurfaceSite(
+                system, star, VERDANT_REACH_ID, "Verdant Reach",
+                "ship_trophy_gan_eden_verdant_reach", 315f, 760f,
+                Conditions.HABITABLE,
+                Conditions.FARMLAND_ADEQUATE,
+                Conditions.ORGANICS_PLENTIFUL,
+                Conditions.ORE_MODERATE);
+        ensureSurfaceSite(
+                system, star, PELAGOS_ID, "Pelagos Basin",
+                "ship_trophy_gan_eden_pelagos_basin", 95f, 1010f,
+                Conditions.HABITABLE,
+                Conditions.WATER_SURFACE,
+                Conditions.ORGANICS_ABUNDANT,
+                Conditions.VOLATILES_DIFFUSE);
+        ensureSurfaceSite(
+                system, star, CINDERWAKE_ID, "Cinderwake",
+                "ship_trophy_gan_eden_cinderwake", 170f, 1480f,
+                Conditions.HOT,
+                Conditions.ORE_ABUNDANT,
+                Conditions.RARE_ORE_MODERATE);
+        ensureSurfaceSite(
+                system, star, RIMEWELL_ID, "Rimewell",
+                "ship_trophy_gan_eden_rimewell", 255f, 1260f,
+                Conditions.VERY_COLD,
+                Conditions.VOLATILES_ABUNDANT,
+                Conditions.RARE_ORE_SPARSE);
+
+        ensureSanctuaryCondition(system, EDEN_PRIME_ID);
+        ensureSanctuaryCondition(system, VERDANT_REACH_ID);
+        ensureSanctuaryCondition(system, PELAGOS_ID);
+        ensureSanctuaryCondition(system, CINDERWAKE_ID);
+        ensureSanctuaryCondition(system, RIMEWELL_ID);
+    }
+
+    private static void ensureSanctuaryCondition(
+            StarSystemAPI system, String entityId) {
+        SectorEntityToken entity = system.getEntityById(entityId);
+        if (!(entity instanceof PlanetAPI)) return;
+
+        MarketAPI market = ((PlanetAPI) entity).getMarket();
+        if (market == null) return;
+
+        // Match Starsector's isolated tutorial-market pattern. A unique
+        // economy group gives this colony no eligible import/export partners,
+        // including the other sealed Gan Eden colony sites.
+        market.setEconGroup(market.getId());
+        if (!market.hasCondition(SANCTUARY_CONDITION_ID)) {
+            market.addCondition(SANCTUARY_CONDITION_ID);
+        }
+    }
+
+    private static PlanetAPI ensureSurfaceSite(
+            StarSystemAPI system,
+            PlanetAPI star,
+            String id,
+            String name,
+            String illustrationId,
+            float angle,
+            float surfaceRadius,
+            String... conditions) {
+        SectorEntityToken existing = system.getEntityById(id);
+        PlanetAPI site = existing instanceof PlanetAPI
+                ? (PlanetAPI) existing
+                : null;
+        if (existing != null && site == null) {
+            system.removeEntity(existing);
+        }
+
+        boolean created = site == null;
+        if (created) {
+            // addPlanet supplies the vanilla planet-condition market used by
+            // surveying and colonization. The orbit is immediately replaced
+            // by a fixed shell coordinate below.
+            site = system.addPlanet(
+                    id, star, name, SURFACE_SITE_TYPE,
+                    angle, 44f, surfaceRadius, 100000f);
+        }
+        if (site == null) return null;
+
+        if (!SURFACE_SITE_TYPE.equals(site.getTypeId())) {
+            site.changeType(
+                    SURFACE_SITE_TYPE,
+                    new java.util.Random(id.hashCode()));
+        }
+        site.setRadius(44f);
+        site.setFixedLocation(
+                star.getLocation().x + cosDegrees(angle) * surfaceRadius,
+                star.getLocation().y + sinDegrees(angle) * surfaceRadius);
+        site.setDiscoverable(true);
+        site.setDescriptionIdOverride(SURFACE_SITE_TYPE);
+        site.setInteractionImage("illustrations", illustrationId);
+        site.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+
+        MarketAPI market = site.getMarket();
+        if (market != null) {
+            // Once the player establishes a colony, vanilla changes this flag
+            // to false. Never flip it back or overwrite the player's name on
+            // a later load; only the still-unclaimed surface site is a
+            // planet-condition-only market.
+            boolean establishedColony = !market.isPlanetConditionMarketOnly();
+            if (!establishedColony) {
+                site.setName(name);
+                market.setPlanetConditionMarketOnly(true);
+            }
+            market.getMemoryWithoutUpdate().set(SURFACE_SITE_MEMORY_KEY, true);
+            if (created) {
+                market.setSurveyLevel(MarketAPI.SurveyLevel.NONE);
+                for (String condition : conditions) {
+                    market.addCondition(condition);
+                }
+            }
+        } else {
+            site.setName(name);
+        }
+        return site;
+    }
+
+    /**
+     * Adds the Eden Prime space elevator that will host Isa's grave cutscene.
+     * Its stable id lets the eventual story interaction bind to the same POI
+     * in both new and existing campaigns.
+     */
+    private static void ensureSpaceElevator(StarSystemAPI system) {
+        SectorEntityToken edenPrime = system.getEntityById(EDEN_PRIME_ID);
+        if (!(edenPrime instanceof PlanetAPI)) return;
+
+        SectorEntityToken elevator = system.getEntityById(SPACE_ELEVATOR_ID);
+        if (elevator == null) {
+            elevator = system.addCustomEntity(
+                    SPACE_ELEVATOR_ID,
+                    "Eden Prime Space Elevator",
+                    SPACE_ELEVATOR_TYPE,
+                    Factions.NEUTRAL);
+        }
+        if (elevator == null) return;
+
+        // The elevator is rooted in the shell as well. Campaign coordinates
+        // are a projection of that surface, so keep its marker fixed beside
+        // Eden Prime rather than literally moving it toward the central sun.
+        PlanetAPI star = system.getStar();
+        float centerX = star == null ? 0f : star.getLocation().x;
+        float centerY = star == null ? 0f : star.getLocation().y;
+        float dx = edenPrime.getLocation().x - centerX;
+        float dy = edenPrime.getLocation().y - centerY;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+        if (distance > 0f) {
+            float tangentX = -dy / distance;
+            float tangentY = dx / distance;
+            float outwardX = dx / distance;
+            float outwardY = dy / distance;
+            float elevatorX = edenPrime.getLocation().x
+                    + tangentX * 125f + outwardX * 30f;
+            float elevatorY = edenPrime.getLocation().y
+                    + tangentY * 125f + outwardY * 30f;
+            elevator.setFixedLocation(
+                    elevatorX,
+                    elevatorY);
+            elevator.setFacing((float) Math.toDegrees(Math.atan2(
+                    edenPrime.getLocation().y - elevatorY,
+                    edenPrime.getLocation().x - elevatorX)) - 90f);
+        }
+        elevator.setDiscoverable(true);
+        elevator.setSensorProfile(1f);
+        elevator.setCustomDescriptionId(SPACE_ELEVATOR_TYPE);
+        elevator.setInteractionImage("illustrations", "orbital");
+        elevator.addTag(Tags.STATION);
+        elevator.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+    }
+
+    private static float cosDegrees(float angle) {
+        return (float) Math.cos(Math.toRadians(angle));
+    }
+
+    private static float sinDegrees(float angle) {
+        return (float) Math.sin(Math.toRadians(angle));
+    }
+
     private static void ensureAltitudeWarning(StarSystemAPI system, PlanetAPI star) {
         // Let the soft return field continue beneath the visible atmosphere.
         // This gives fast fleets room to decelerate and rebound without a
@@ -218,9 +427,19 @@ public final class GanEdenGenerator {
 
         ring.setCircularOrbitPointingDown(star, 35f, 1250f, 100000f);
         ring.setDiscoverable(false);
-        ring.setSensorProfile(null);
-        ring.addTag(Tags.NON_CLICKABLE);
-        ring.addTag(Tags.NO_ENTITY_TOOLTIP);
+        if (GanEdenQuestManager.isAtLeast(
+                GanEdenQuestManager.Stage.GAN_EDEN_REVEALED)) {
+            ring.setSensorProfile(1f);
+            ring.addTag(Tags.GATE);
+            ring.addTag(Tags.STORY_CRITICAL);
+            ring.addTag(Tags.HAS_INTERACTION_DIALOG);
+            ring.removeTag(Tags.NON_CLICKABLE);
+            ring.removeTag(Tags.NO_ENTITY_TOOLTIP);
+        } else {
+            ring.setSensorProfile(null);
+            ring.addTag(Tags.NON_CLICKABLE);
+            ring.addTag(Tags.NO_ENTITY_TOOLTIP);
+        }
         ring.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
     }
 
@@ -231,9 +450,4 @@ public final class GanEdenGenerator {
         }
     }
 
-    private static void ensureShatteredRingGateway(StarSystemAPI system) {
-        // Story-gated transit is intentionally not implemented during the
-        // environment prototype. Keeping this method empty makes the disabled
-        // state explicit and prevents accidental access from Penelope's Star.
-    }
 }
