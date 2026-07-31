@@ -32,6 +32,7 @@ public class IsaTrophyScript implements EveryFrameScript {
         interval.advance(Global.getSector().getClock().convertToDays(amount));
         if (!interval.intervalElapsed()) return;
 
+        IsaFactionVisitCMD.applyPersistentBonuses();
         MarketAPI home = IsaTrophyManager.findHomeMarket();
         if (home == null) return;
 

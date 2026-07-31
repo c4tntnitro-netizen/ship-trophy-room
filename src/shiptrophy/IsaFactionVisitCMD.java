@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -11,6 +12,7 @@ import com.fs.starfarer.api.campaign.rules.CommandPlugin;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -22,6 +24,21 @@ public class IsaFactionVisitCMD implements CommandPlugin {
     private static final String KOL_FACTION_ID = "knights_of_selkie";
     private static final String IRON_SHELL_MOD_ID = "timid_xiv";
     private static final String IRON_SHELL_FACTION_ID = "ironshell";
+    private static final String PLAYER_TITLE = "$shipTrophyIsaPlayerTitle";
+
+    private static final String HEGEMONY_REWARD =
+            "$shipTrophyIsaFactionVisitHegemonyReward";
+    private static final String LEAGUE_REBUKE =
+            "$shipTrophyIsaFactionVisitLeagueRebuke";
+    private static final String LEAGUE_PURCHASE =
+            "$shipTrophyIsaFactionVisitLeaguePurchase";
+    private static final String TRITACHYON_REWARD =
+            "$shipTrophyIsaFactionVisitTriTachyonReward";
+
+    private static final String HEGEMONY_SENSOR_MOD =
+            "ship_trophy_isa_hegemony_observation_blister";
+    private static final String TRITACHYON_SUPPLY_MOD =
+            "ship_trophy_isa_tritachyon_maintenance_manual";
 
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params,
@@ -41,6 +58,14 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         if ("prepare".equals(command)) {
             if (!shouldShow(dialog, requestedFaction)) return false;
             local.set(CURRENT_FACTION, requestedFaction, 0f);
+            PersonAPI player = Global.getSector() == null
+                    ? null
+                    : Global.getSector().getPlayerPerson();
+            String title = player == null ? null : player.getRank();
+            local.set(
+                    PLAYER_TITLE,
+                    title == null || title.length() <= 0 ? "Commander" : title,
+                    0f);
             showIsa(dialog);
             return true;
         }
@@ -54,7 +79,95 @@ public class IsaFactionVisitCMD implements CommandPlugin {
             }
             return true;
         }
+        if ("grantHegemonyReward".equals(command)) {
+            grantHegemonyReward();
+            return true;
+        }
+        if ("grantLeagueRebuke".equals(command)) {
+            grantLeagueRebuke();
+            return true;
+        }
+        if ("grantLeaguePurchase".equals(command)) {
+            grantLeaguePurchase();
+            return true;
+        }
+        if ("grantTriTachyonReward".equals(command)) {
+            grantTriTachyonReward();
+            return true;
+        }
         return false;
+    }
+
+    private static void grantHegemonyReward() {
+        MemoryAPI memory = getSectorMemory();
+        if (memory == null || memory.getBoolean(HEGEMONY_REWARD)) return;
+        memory.set(HEGEMONY_REWARD, true);
+        applyPersistentBonuses();
+    }
+
+    private static void grantLeagueRebuke() {
+        MemoryAPI memory = getSectorMemory();
+        if (memory == null || memory.getBoolean(LEAGUE_REBUKE)) return;
+        memory.set(LEAGUE_REBUKE, true);
+
+        PersonAPI isa = IsaTrophyManager.getOrCreateIsa(IsaTrophyManager.findHomeMarket());
+        if (isa != null && isa.getRelToPlayer() != null) {
+            isa.getRelToPlayer().setRel(
+                    Math.max(-1f, isa.getRelToPlayer().getRel() - 0.05f));
+        }
+    }
+
+    private static void grantLeaguePurchase() {
+        MemoryAPI memory = getSectorMemory();
+        if (memory == null || memory.getBoolean(LEAGUE_PURCHASE)) return;
+        memory.set(LEAGUE_PURCHASE, true);
+
+        CampaignFleetAPI fleet = Global.getSector() == null
+                ? null
+                : Global.getSector().getPlayerFleet();
+        if (fleet == null || fleet.getCargo() == null) return;
+        float credits = fleet.getCargo().getCredits().get();
+        fleet.getCargo().getCredits().subtract(Math.min(2000f, credits));
+        fleet.getCargo().addFighters("thunder_wing", 1);
+    }
+
+    private static void grantTriTachyonReward() {
+        MemoryAPI memory = getSectorMemory();
+        if (memory == null || memory.getBoolean(TRITACHYON_REWARD)) return;
+        memory.set(TRITACHYON_REWARD, true);
+        applyPersistentBonuses();
+    }
+
+    public static void applyPersistentBonuses() {
+        MemoryAPI memory = getSectorMemory();
+        CampaignFleetAPI fleet = Global.getSector() == null
+                ? null
+                : Global.getSector().getPlayerFleet();
+        if (memory == null || fleet == null) return;
+
+        if (memory.getBoolean(HEGEMONY_REWARD)) {
+            fleet.getStats().getSensorProfileMod().modifyPercent(
+                    HEGEMONY_SENSOR_MOD,
+                    -1f,
+                    "Isa: concealed observation blister");
+        }
+
+        if (memory.getBoolean(TRITACHYON_REWARD)
+                && fleet.getFleetData() != null) {
+            for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+                if (member == null || member.getStats() == null) continue;
+                member.getStats().getSuppliesPerMonth().modifyPercent(
+                        TRITACHYON_SUPPLY_MOD,
+                        -1f,
+                        "Isa: phase-coil maintenance manual");
+            }
+        }
+    }
+
+    private static MemoryAPI getSectorMemory() {
+        return Global.getSector() == null
+                ? null
+                : Global.getSector().getMemoryWithoutUpdate();
     }
 
     private static boolean shouldShow(InteractionDialogAPI dialog, String requestedFaction) {

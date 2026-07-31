@@ -469,17 +469,206 @@ She turns for the lift before docking is complete. ""Come on. I want to see what
 shipTrophyIsaShatteredRingHomecomingContinue,DialogOptionSelected,$option == ship_trophy_isa_homecoming_continue,"IsaHomecomingCMD markSeen
 FireBest OpenInteractionDialog",,,Marks the Shattered Ring homecoming complete and resumes normal docking.
 shipTrophyIsaFactionVisitHegemony,OpenInteractionDialog,IsaFactionVisitCMD shouldShow hegemony score:10000,"IsaFactionVisitCMD prepare hegemony
-SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","As your fleet joins $marketName's approach queue, Isa disappears from the bridge. You find her pressed against the glass of an observation blister, three Hegemony hull profiles turning slowly above her slate.
+SetShortcut ship_trophy_isa_hegemony_customs ""ESCAPE""","As your fleet joins $marketName's approach queue, Isa disappears from the bridge. You find her pressed face-first against the glass of an observation blister, watching Hegemony-pattern ships parade one by one down a parallel departure queue. Her slate displays a hologram of each passing vessel, all of them carefully logged and annotated.
 
-""Look at that burn profile,"" she says without turning. ""Every Hegemony ship looks like it expects the universe to punch first. Everyone calls the Onslaught blunt, but it isn't blunt. It's honest. Armor, guns, engines, and absolutely no shame about the order.""","0:ship_trophy_isa_faction_visit_reply:""You're making friends with the customs scanners.""",One-time post-recruitment Hegemony station vignette.
+""Look at that armor profile,"" she says without turning. ""Every Hegemony ship looks like it expects the universe to sucker-punch it, so it makes sure to swing first. Strike hard, strike true, strike only once."" She nods approvingly. ""Decisive Battle Doctrine.""
+
+You nod toward the security overhang crowning the docks.","0:ship_trophy_isa_hegemony_customs:""You're making friends with customs.""",One-time post-recruitment Hegemony station vignette.
+shipTrophyIsaFactionVisitHegemonyCustoms,DialogOptionSelected,$option == ship_trophy_isa_hegemony_customs,"SetShortcut ship_trophy_isa_hegemony_spy ""ESCAPE""","Far above, two officers on the overhang are staring down at Isa. Then at you. One raises a slate while the other points.
+
+Isa sinks several centimeters below the observation window. ""What's the big deal? I just wanted to watch.""","0:ship_trophy_isa_hegemony_spy:""They might think you're a spy.""",Hegemony vignette customs response.
+shipTrophyIsaFactionVisitHegemonySpy,DialogOptionSelected,$option == ship_trophy_isa_hegemony_spy,"SetShortcut ship_trophy_isa_hegemony_not_sure ""ESCAPE""","""Fine."" Isa puts the slate away. ""This'll be fine, right?""","0:ship_trophy_isa_hegemony_not_sure:""I wouldn't be so sure.""",Hegemony vignette warning.
+shipTrophyIsaFactionVisitHegemonyNotSure,DialogOptionSelected,$option == ship_trophy_isa_hegemony_not_sure,"IsaFactionVisitCMD grantHegemonyReward
+SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","It is not fine.
+
+You and your fleet spend another fifteen hours in customs after Hegemony security confiscates Isa's slate and holds her for questioning overnight.
+
+You eventually get your chief engineer back: grouchy, sleep-deprived, and significantly more anti-authoritarian than when she went in.
+
+Her first act back on the bridge is to begin designing a less conspicuous observation blister for your flagship.
+
+[Fleet sensor profile reduced by 1%]","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Hegemony vignette conclusion and permanent fleet reward.
 shipTrophyIsaFactionVisitLeague,OpenInteractionDialog,IsaFactionVisitCMD shouldShow persean score:10000,"IsaFactionVisitCMD prepare persean
-SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","Isa has commandeered an auxiliary tactical display before docking clearance is even confirmed. A Conquest rotates above it, split down the center by a bright line marking its thrust axis.
+SetShortcut ship_trophy_isa_league_rebuke ""ESCAPE""","As your fleet enters $marketName's docking queue, you find Isa standing among a crowd of spectators, staring up at the star-filled sky.
 
-""Two broadsides held together by optimism and transverse thrust,"" she says fondly. ""That's League engineering. Take a Domain blueprint, argue with it for six hundred cycles, then sign your name across the parts that survived.""","0:ship_trophy_isa_faction_visit_reply:""Try not to buy one before we dock.""",One-time post-recruitment Persean League station vignette.
+A local League detachment is putting on an airshow. Flights of G-10 Thunders scream overhead to delighted cheers, banking between the station's towers before scattering into precise, independent formations.
+
+Isa, however, is silent.
+
+A Thunder makes a particularly low pass over the concourse. Its exhaust washes through the crowd, sending coats, hats, and unsecured market displays fluttering in its wake. Isa's hair sweeps across her eyes, but her gaze never wavers. She watches the fighters climb away, one by one, before disappearing into the waiting bays of their Heron carrier.
+
+""Look at them,"" she says quietly. ""The statistics say most fighter pilots have a life expectancy measured in hours of combat. It's a job for suicidal people, honestly.""
+
+Her slate lights up with a purchase listing for a surplus Thunder wing.
+
+""But for a few minutes at a time, they're the only people in the fleet who get to choose exactly where they go.""
+
+She opens the technical specifications.
+
+""I think I understand the appeal.""","0:ship_trophy_isa_league_rebuke:Only until someone in CIC tells them where to go.",One-time post-recruitment Persean League station vignette.
+shipTrophyIsaFactionVisitLeagueRebuke,DialogOptionSelected,$option == ship_trophy_isa_league_rebuke,"SetShortcut ship_trophy_isa_league_apologize ""ESCAPE""","""$shipTrophyIsaPlayerTitle?""
+
+Isa lowers the slate and fixes you with a sharp gaze.
+
+""I know that from your chair in the CIC, we're probably just numbers moving across a tac screen. And I know you're the one who has to make those decisions.""
+
+Her expression softens.
+
+""But please, once in a while... remember us.""","0:ship_trophy_isa_league_apologize:Of course. Sorry, Isa.
+10:ship_trophy_isa_league_role:We've all got our role to play.
+20:ship_trophy_isa_league_faithful:No soul is merely a number in Ludd's sight.",League vignette player response.
+shipTrophyIsaFactionVisitLeagueApologize,DialogOptionSelected,$option == ship_trophy_isa_league_apologize,"SetShortcut ship_trophy_isa_league_purchase ""ESCAPE""","She holds your gaze for another moment before looking back toward the retreating fighters.
+
+The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:Try not to buy one before we dock.",League vignette conciliatory response.
+shipTrophyIsaFactionVisitLeagueRole,DialogOptionSelected,$option == ship_trophy_isa_league_role,"IsaFactionVisitCMD grantLeagueRebuke
+SetShortcut ship_trophy_isa_league_purchase ""ESCAPE""","""Hm.""
+
+Isa turns away and busies herself with her slate.
+
+""Sure.""
+
+[Relationship with Isa reduced by 5]","0:ship_trophy_isa_league_purchase:Try not to buy one before we dock.",League vignette relationship consequence.
+shipTrophyIsaFactionVisitLeagueFaithful,DialogOptionSelected,$option == ship_trophy_isa_league_faithful,"SetShortcut ship_trophy_isa_league_purchase ""ESCAPE""","Isa studies your face for a moment.
+
+""Amen,"" she says, a little uncertainly.
+
+She holds your gaze for another moment before looking back toward the retreating fighters.
+
+The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:Try not to buy one before we dock.",League vignette faithful response.
+shipTrophyIsaFactionVisitLeaguePurchase,DialogOptionSelected,$option == ship_trophy_isa_league_purchase,"IsaFactionVisitCMD grantLeaguePurchase
+SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""No promises.""
+
+Isa dismisses the purchase listing, but bookmarks the technical specifications.
+
+""See? Restraint.""
+
+[Lost 2,000 credits]
+[Thunder wing LPC acquired]","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",League vignette purchase and reward.
 shipTrophyIsaFactionVisitTriTachyon,OpenInteractionDialog,IsaFactionVisitCMD shouldShow tritachyon score:10000,"IsaFactionVisitCMD prepare tritachyon
-SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","By the time $marketName acknowledges your approach, Isa has three encrypted diagnostic windows open and the delighted expression of someone standing much too close to a live power conduit.
+SetShortcut ship_trophy_isa_tritachyon_wary ""ESCAPE""","The moment your fleet receives docking clearance, Isa's slate begins vibrating.
 
-""Beautiful. Infuriating. Half the mass isn't where engineering says it should be,"" she says. ""Tri-Tach ships are magic tricks performed by accountants with security clearances. Look at those phase tolerances. Look at them.""","0:ship_trophy_isa_faction_visit_reply:""Step away from their network, Isa.""",One-time post-recruitment Tri-Tachyon station vignette.
+She looks down at it, frowns, and dismisses a purchase offer for replacement flux conduits.
+
+Another appears immediately.
+
+Then another.
+
+The next time you find her, she is standing before the panoramic window of a Tri-Tachyon show berth. Beyond the glass, an Afflictor-class frigate hangs motionless against the stars, its hull picked out by cold blue running lights.
+
+A pleasant synthetic voice fills the concourse.
+
+""Observe the elegance of total battlespace control.""
+
+The Afflictor vanishes.
+
+A heartbeat later, it reappears several kilometers away, directly behind a target drone. The drone comes apart under a burst of laser fire. Polite applause ripples through the showroom.
+
+Isa leans toward the glass.
+
+""That turn rate was far too high for auxiliary thrusters, and I don't see any extra maneuvering ports,"" she murmurs. ""Did those psychopaths actually disable the safety interlocks for a marketing stunt? Stars above.""
+
+Her slate vibrates again.
+
+This time, the advertisement addresses her by name.
+
+CUSTOMA SHIP ARCHITECTURES PERSONNEL DISCOUNT
+
+Based on her recent technical searches, professional history, fleet composition, estimated liquidity, and observed pupil response during the demonstration, Tri-Tachyon predicts an eighty-seven percent likelihood that Isa would benefit from immediate Afflictor ownership.
+
+Financing has already been approved.
+
+Isa rolls her eyes.
+
+""I didn't give them any of that information.""
+
+The showroom voice answers without being asked.
+
+""You did not need to, Ms. Leicester. Tri-Tachyon Marketing Services is the finest in the Domain. We have--""
+
+Isa cuts the advertisement chatbot off with a wave of the hand, scowling at the speakers overhead.","0:ship_trophy_isa_tritachyon_efficient:That's efficient.
+10:ship_trophy_isa_tritachyon_wary:That's creepy.
+20:ship_trophy_isa_tritachyon_faithful:That's an abomination.",One-time post-recruitment Tri-Tachyon station vignette.
+shipTrophyIsaFactionVisitTriTachyonEfficient,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_efficient,"SetShortcut ship_trophy_isa_tritachyon_premium ""ESCAPE""","Isa gives you a frown.
+
+""Efficient ain't the same thing as harmless, $shipTrophyIsaPlayerTitle.""
+
+She turns the slate around. Beneath the financing offer is a projected repayment schedule extending several years beyond her estimated life expectancy.
+
+""Though they did get my preferred reactor configuration right.""
+
+Isa begins digging through the concourse app's privacy settings. Each menu opens into three more menus, all of them already set to OPTIMAL.
+
+""I think entering the concourse counted as consent.""
+
+She pauses.
+
+""Possibly docking at the station counted as consent.""","0:ship_trophy_isa_tritachyon_premium:I'll spring for the premium docking package next time. I hear it comes with fewer ads.
+10:ship_trophy_isa_tritachyon_bodyguards:I think being born counted as consent. Your fault, really.",Tri-Tachyon vignette efficient response.
+shipTrophyIsaFactionVisitTriTachyonWary,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_wary,"SetShortcut ship_trophy_isa_tritachyon_premium ""ESCAPE""","""Exactly.""
+
+Isa begins digging through the concourse app's privacy settings. Each menu opens into three more menus, all of them already set to OPTIMAL.
+
+""I think entering the concourse counted as consent.""
+
+She pauses.
+
+""Possibly docking at the station counted as consent.""","0:ship_trophy_isa_tritachyon_premium:I'll spring for the premium docking package next time. I hear it comes with fewer ads.
+10:ship_trophy_isa_tritachyon_bodyguards:I think being born counted as consent. Your fault, really.",Tri-Tachyon vignette wary response.
+shipTrophyIsaFactionVisitTriTachyonFaithful,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_faithful,"SetShortcut ship_trophy_isa_tritachyon_premium ""ESCAPE""","""That's one way to put it,"" she says quietly. ""And you're not entirely wrong.""
+
+For a moment, the showroom's blue light reflects strangely in her eyes.
+
+Isa begins digging through the concourse app's privacy settings. Each menu opens into three more menus, all of them already set to OPTIMAL.
+
+""I think entering the concourse counted as consent.""
+
+She pauses.
+
+""Possibly docking at the station counted as consent.""","0:ship_trophy_isa_tritachyon_premium:I'll spring for the premium docking package next time. I hear it comes with fewer ads.
+10:ship_trophy_isa_tritachyon_bodyguards:I think being born counted as consent. Your fault, really.",Tri-Tachyon vignette faithful response.
+shipTrophyIsaFactionVisitTriTachyonPremium,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_premium,"SetShortcut ship_trophy_isa_tritachyon_response ""ESCAPE""","Isa snorts.","0:ship_trophy_isa_tritachyon_response:Continue.",Tri-Tachyon premium-docking response.
+shipTrophyIsaFactionVisitTriTachyonBodyguards,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_bodyguards,"IsaContactRulesCMD showBodyguards
+SetShortcut ship_trophy_isa_tritachyon_response ""ESCAPE""","Isa kicks you.
+
+""I docked your mom and that counted as consent.""
+
+You spend the next few moments kicking each other.
+
+It is extremely unfair that your bodyguards help her kick you too.
+
+By the time you get up from the fetal position you were in, Isa already has her slate open.","0:ship_trophy_isa_tritachyon_response:Continue.",Tri-Tachyon bodyguard response.
+shipTrophyIsaFactionVisitTriTachyonResponse,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_response,"IsaContactRulesCMD showContactPortrait
+SetShortcut ship_trophy_isa_tritachyon_objection ""ESCAPE""","Isa pulls a small data wafer from her pack and plugs it back into a secondary port on her slate.
+
+Her slate's display fractures into a hundred miniature windows, each controlled by one of her own delta-level AI agents.
+
+Bulk agricultural machinery.
+
+Ceremonial armor polish.
+
+Volturnian lobster breeding equipment.
+
+Industrial quantities of devotional candles.
+
+On her many screens, the advertisements flicker. Sleek phase ships disappear, replaced by increasingly confused offers for farming equipment, shrine furnishings, and twelve thousand liters of crustacean feed.
+
+Isa smiles.
+
+""There. Now we're both learning.""
+
+Her slate vibrates again.
+
+A complete phase-coil maintenance manual has been added to her account as a complimentary incentive.
+
+She bookmarks it.","0:ship_trophy_isa_tritachyon_objection:I thought you objected to their methods.",Tri-Tachyon counter-advertising response.
+shipTrophyIsaFactionVisitTriTachyonObjection,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_objection,"IsaFactionVisitCMD grantTriTachyonReward
+SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""I hate being manipulated.""
+
+Isa closes the Afflictor financing offer. The maintenance manual remains open. She winks.
+
+""I like winning.""
+
+[Monthly fleet supply consumption reduced by 1%]","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Tri-Tachyon vignette conclusion and permanent fleet reward.
 shipTrophyIsaFactionVisitDiktat,OpenInteractionDialog,IsaFactionVisitCMD shouldShow sindrian_diktat score:10000,"IsaFactionVisitCMD prepare sindrian_diktat
 SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","The station's traffic-control feed is crowded with Diktat hulls, every one polished for inspection. Isa zooms in on an Executor until its gilded weapon housings fill the display.
 
@@ -509,9 +698,6 @@ SetShortcut ship_trophy_isa_faction_visit_reply ""ESCAPE""","An Iron Shell patro
 
 ""That is deeply unfair,"" she says, delighted. ""They took Hegemony armor doctrine and taught it iaido. Look at that drive calibration. The whole ship draws before the enemy realizes there's a duel.""","0:ship_trophy_isa_faction_visit_reply:""Please don't challenge the tax inspectors to a duel.""",One-time post-recruitment Iron Shell station vignette; guarded by the optional mod and faction.
 shipTrophyIsaFactionVisitReply,DialogOptionSelected,$option == ship_trophy_isa_faction_visit_reply,FireBest ShipTrophyIsaFactionVisitResponse,,,Routes the faction visit vignette to its matching response.
-shipTrophyIsaFactionVisitResponseHegemony,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current hegemony,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""They started it,"" Isa says. ""Their resolution is terrible. I was helping.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Hegemony vignette response.
-shipTrophyIsaFactionVisitResponseLeague,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current persean,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""No promises."" Isa dismisses the purchase listing but bookmarks the technical specification. ""See? Restraint.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Persean League vignette response.
-shipTrophyIsaFactionVisitResponseTriTachyon,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current tritachyon,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""I'm not in their network,"" Isa says, offended. One of the encrypted windows vanishes. ""I'm adjacent to it.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Tri-Tachyon vignette response.
 shipTrophyIsaFactionVisitResponseDiktat,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current sindrian_diktat,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""What, the taste or the tolerances?"" Isa asks. She lowers her voice anyway.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Sindrian Diktat vignette response.
 shipTrophyIsaFactionVisitResponseChurch,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current luddic_church,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","""To redundancy, maybe."" Isa watches the old ship disappear behind the station. ""Every spacer finds religion eventually.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Church vignette response.
 shipTrophyIsaFactionVisitResponsePath,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current luddic_path,"SetShortcut ship_trophy_isa_faction_visit_continue ""ESCAPE""","Isa tilts the slate away from you. ""Of course not."" Six pages of diagrams vanish from view.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path vignette response.

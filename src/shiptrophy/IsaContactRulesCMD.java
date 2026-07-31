@@ -190,7 +190,10 @@ public class IsaContactRulesCMD implements CommandPlugin {
 
     private static void showContactPortrait(InteractionDialogAPI dialog) {
         PersonAPI isa = IsaTrophyManager.getOrCreateIsa(IsaTrophyManager.findHomeMarket());
-        if (isa != null) dialog.getVisualPanel().showPersonInfo(contactDisplayPerson(isa));
+        if (isa != null) {
+            dialog.getVisualPanel().hideSecondPerson();
+            dialog.getVisualPanel().showPersonInfo(contactDisplayPerson(isa));
+        }
     }
 
     private static PersonAPI contactDisplayPerson(PersonAPI isa) {
