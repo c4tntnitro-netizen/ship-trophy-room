@@ -2,6 +2,7 @@ package shiptrophy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -24,7 +25,16 @@ public class IsaFactionVisitCMD implements CommandPlugin {
     private static final String KOL_FACTION_ID = "knights_of_selkie";
     private static final String IRON_SHELL_MOD_ID = "timid_xiv";
     private static final String IRON_SHELL_FACTION_ID = "ironshell";
+    private static final String PAGSM_MOD_ID = "PAGSM";
     private static final String PLAYER_TITLE = "$shipTrophyIsaPlayerTitle";
+    private static final String PATH_VARIANT = "$shipTrophyIsaPathVariant";
+    private static final String TRITACHYON_HIGHLIGHT =
+            "$shipTrophyIsaTriTachyonHighlight";
+    private static final String CHURCH_DONATION =
+            "$shipTrophyIsaFactionVisitChurchDonation";
+    private static final String[] PATH_VARIANTS = {
+            "nursery", "workshop", "returned_ship", "mechanic"
+    };
 
     private static final String HEGEMONY_REWARD =
             "$shipTrophyIsaFactionVisitHegemonyReward";
@@ -51,6 +61,14 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         if ("shouldShow".equals(command)) {
             return shouldShow(dialog, requestedFaction);
         }
+        if ("shouldShowDiktatVanilla".equals(command)) {
+            return !isModEnabled(PAGSM_MOD_ID)
+                    && shouldShow(dialog, Factions.DIKTAT);
+        }
+        if ("shouldShowDiktatPAGSM".equals(command)) {
+            return isModEnabled(PAGSM_MOD_ID)
+                    && shouldShow(dialog, Factions.DIKTAT);
+        }
 
         MemoryAPI local = memoryMap == null ? null : memoryMap.get(MemKeys.LOCAL);
         if (local == null) return false;
@@ -66,6 +84,15 @@ public class IsaFactionVisitCMD implements CommandPlugin {
                     PLAYER_TITLE,
                     title == null || title.length() <= 0 ? "Commander" : title,
                     0f);
+            if (Factions.TRITACHYON.equals(requestedFaction)
+                    && Global.getSector() != null
+                    && Global.getSector().getFaction(Factions.TRITACHYON) != null) {
+                local.set(
+                        TRITACHYON_HIGHLIGHT,
+                        Global.getSector().getFaction(Factions.TRITACHYON)
+                                .getBaseUIColor(),
+                        0f);
+            }
             showIsa(dialog);
             return true;
         }
@@ -95,7 +122,50 @@ public class IsaFactionVisitCMD implements CommandPlugin {
             grantTriTachyonReward();
             return true;
         }
+        if ("pickPath".equals(command)) {
+            pickPathVariant(dialog, local);
+            return true;
+        }
+        if ("currentPath".equals(command)) {
+            return value(params, 1, memoryMap)
+                    .equals(local.getString(PATH_VARIANT));
+        }
+        if ("grantChurchDonation".equals(command)) {
+            grantChurchDonation();
+            return true;
+        }
         return false;
+    }
+
+    private static void pickPathVariant(
+            InteractionDialogAPI dialog, MemoryAPI local) {
+        long seed = Global.getSector() == null
+                ? System.nanoTime()
+                : Global.getSector().getClock().getTimestamp();
+        if (Global.getSector() != null
+                && Global.getSector().getSeedString() != null) {
+            seed ^= Global.getSector().getSeedString().hashCode();
+        }
+        SectorEntityToken target = dialog == null
+                ? null : dialog.getInteractionTarget();
+        if (target != null && target.getId() != null) {
+            seed ^= ((long) target.getId().hashCode()) << 32;
+        }
+        String variant = PATH_VARIANTS[
+                new Random(seed).nextInt(PATH_VARIANTS.length)];
+        local.set(PATH_VARIANT, variant, 0f);
+    }
+
+    private static void grantChurchDonation() {
+        MemoryAPI memory = getSectorMemory();
+        if (memory == null || memory.getBoolean(CHURCH_DONATION)) return;
+        memory.set(CHURCH_DONATION, true);
+
+        CampaignFleetAPI fleet = Global.getSector() == null
+                ? null : Global.getSector().getPlayerFleet();
+        if (fleet == null || fleet.getCargo() == null) return;
+        float credits = fleet.getCargo().getCredits().get();
+        fleet.getCargo().getCredits().subtract(Math.min(1000f, credits));
     }
 
     private static void grantHegemonyReward() {
@@ -222,6 +292,16 @@ public class IsaFactionVisitCMD implements CommandPlugin {
                     && Global.getSettings().getModManager().isModEnabled(modId)
                     && Global.getSector() != null
                     && Global.getSector().getFaction(factionId) != null;
+        } catch (RuntimeException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isModEnabled(String modId) {
+        try {
+            return Global.getSettings() != null
+                    && Global.getSettings().getModManager() != null
+                    && Global.getSettings().getModManager().isModEnabled(modId);
         } catch (RuntimeException ignored) {
             return false;
         }
