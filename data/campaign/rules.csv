@@ -561,15 +561,15 @@ Her first act back on the bridge is to begin designing a less conspicuous observ
 
 [Fleet sensor profile reduced by 1%]","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Hegemony vignette conclusion and permanent fleet reward.
 shipTrophyIsaFactionVisitLeague,OpenInteractionDialog,IsaFactionVisitCMD shouldShow persean score:10000,"IsaFactionVisitCMD prepare persean
-","As your fleet enters $marketName's docking queue, you find Isa standing among a crowd of spectators, staring up at the star-filled sky.
+","After your fleet enters $marketName's docking queue, you exit the ship. You find Isa standing among a crowd of spectators, staring up at the star-filled sky.
 
-A local League detachment is putting on an airshow. Flights of G-10 Thunders scream overhead to delighted cheers, banking between the station's towers before scattering into precise, independent formations.
+A local League detachment is putting on an in-atmosphere airshow. Flights of G-10 Thunders scream overhead to delighted cheers, banking between the station's towers before scattering into precise, independent formations.
 
 Isa, however, is silent.
 
 A Thunder makes a particularly low pass over the concourse. Its exhaust washes through the crowd, sending coats, hats, and unsecured market displays fluttering in its wake. Isa's hair sweeps across her eyes, but her gaze never wavers. She watches the fighters climb away, one by one, before disappearing into the waiting bays of their Heron carrier.
 
-""Look at them,"" she says quietly. ""The statistics say most fighter pilots have a life expectancy measured in hours of combat. It's a job for suicidal people, honestly.""
+""Look at them,"" she says quietly. ""The stats say most fighter pilots have a life expectancy measured in hours after first contact. It's a job for suicidal people, honestly.""
 
 Her slate lights up with a purchase listing for a surplus Thunder wing.
 
@@ -582,14 +582,14 @@ shipTrophyIsaFactionVisitLeagueRebuke,DialogOptionSelected,$option == ship_troph
 
 Isa lowers the slate and fixes you with a sharp gaze.
 
-""I know that from your chair in the CIC, we're probably just numbers moving across a tac screen. And I know you're the one who has to make those decisions.""
+""I know that from your place in the CIC, we in the fleet are probably just icons moving across a tac screen. And I know you're the one who has to make those decisions. You are, after all, the best fleet admiral in the Sector.""
 
 Her expression softens.
 
 ""But please, once in a while... remember us.""","0:ship_trophy_isa_league_apologize:""Of course. Sorry, Isa.""
 10:ship_trophy_isa_league_role:""We've all got our role to play.""
 20:ship_trophy_isa_league_faithful:""No soul is merely a number in Ludd's sight.""",League vignette player response.
-shipTrophyIsaFactionVisitLeagueApologize,DialogOptionSelected,$option == ship_trophy_isa_league_apologize,,"She holds your gaze for another moment before looking back toward the retreating fighters.
+shipTrophyIsaFactionVisitLeagueApologize,DialogOptionSelected,$option == ship_trophy_isa_league_apologize,,"She gives an reconcilatory smile, holding your gaze for another moment before looking back toward the retreating fighters.
 
 The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:""Try not to buy one before we dock.""",League vignette conciliatory response.
 shipTrophyIsaFactionVisitLeagueRole,DialogOptionSelected,$option == ship_trophy_isa_league_role,"IsaFactionVisitCMD grantLeagueRebuke
