@@ -35,6 +35,8 @@ public final class GanEdenQuestManager {
             "ship_trophy_gan_eden_external_ring";
     public static final String CORONAL_TAP_TYPE = "coronal_tap";
     public static final String CORONAL_TAP_USABLE_KEY = "$usable";
+    public static final String AT_THE_GATES_COMPLETED_KEY =
+            "$gaATG_completed";
 
     private GanEdenQuestManager() {
     }
@@ -70,9 +72,19 @@ public final class GanEdenQuestManager {
                 ShipTrophyRoomIds.MEMORY_GAN_EDEN_GRAVE_FOUND);
     }
 
+    /** Vanilla sets this at the final conclusion of "At the Gates". */
+    public static boolean isAtTheGatesCompleted() {
+        return Global.getSector() != null
+                && memory().getBoolean(AT_THE_GATES_COMPLETED_KEY);
+    }
+
     /** Starts the quest at the end of Isa's Shattered Ring homecoming. */
     public static void start(TextPanelAPI textPanel) {
-        if (Global.getSector() == null || isStarted()) return;
+        if (Global.getSector() == null
+                || isStarted()
+                || !isAtTheGatesCompleted()) {
+            return;
+        }
         setStage(Stage.CONTACT_GARGOYLE, textPanel, true);
     }
 

@@ -70,7 +70,7 @@ A warm star hangs at the center of a constructed paradise. Seas and continents c
 
 Only two golden Omega signatures move against the light: Cherubim and Lahat Haharev.
 
-+ [Search Eden Prime with Isa.] -> isaac_grave
++ [Search the Tree of Life with Isa.] -> isaac_grave
 + [Face the Golden Shards.] -> golden_shards
 
 === isaac_grave ===

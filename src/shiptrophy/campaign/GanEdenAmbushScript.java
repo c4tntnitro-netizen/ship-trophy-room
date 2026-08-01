@@ -97,6 +97,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         if (existing != null && !existing.isEmpty()) {
             configureGuard(existing, anchor);
             sectorMemory.set(ACTIVE_KEY, true);
+            GanEdenGenerator.updateAureateSiegeConditions(system);
             logPlacement("reused", existing);
             return true;
         }
@@ -106,6 +107,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         if (sectorMemory.getBoolean(ACTIVE_KEY)) {
             sectorMemory.set(DEFEATED_KEY, true);
             sectorMemory.unset(PARTIAL_SINCE_KEY);
+            GanEdenGenerator.updateAureateSiegeConditions(system);
             return true;
         }
 
@@ -127,6 +129,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         configureGuard(fleet, anchor);
         sectorMemory.set(ACTIVE_KEY, true);
         sectorMemory.unset(PARTIAL_SINCE_KEY);
+        GanEdenGenerator.updateAureateSiegeConditions(system);
         logPlacement("placed", fleet);
         return true;
     }
@@ -140,13 +143,17 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         if (system == null) return;
 
         MemoryAPI memory = Global.getSector().getMemoryWithoutUpdate();
-        if (memory.getBoolean(DEFEATED_KEY)) return;
+        if (memory.getBoolean(DEFEATED_KEY)) {
+            GanEdenGenerator.updateAureateSiegeConditions(system);
+            return;
+        }
 
         CampaignFleetAPI fleet = findExistingFleet(system);
         if (fleet == null || fleet.isEmpty()) {
             if (memory.getBoolean(ACTIVE_KEY)) {
                 memory.set(DEFEATED_KEY, true);
                 memory.unset(PARTIAL_SINCE_KEY);
+                GanEdenGenerator.updateAureateSiegeConditions(system);
             } else {
                 ensureFleet();
             }
@@ -230,6 +237,14 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         return Global.getSector() != null
                 && Global.getSector().getMemoryWithoutUpdate()
                         .getBoolean(DEFEATED_KEY);
+    }
+
+    /** True from the first guardian spawn until both Golden Shards are gone. */
+    public static boolean isEncounterActive() {
+        if (Global.getSector() == null) return false;
+        MemoryAPI memory = Global.getSector().getMemoryWithoutUpdate();
+        return memory.getBoolean(ACTIVE_KEY)
+                && !memory.getBoolean(DEFEATED_KEY);
     }
 
     private static PersonAPI createOmegaCore(Random random) {

@@ -2,17 +2,14 @@ package shiptrophy.campaign;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 
-/**
- * Makes Gan Eden colonies exceptionally stable but economically inaccessible
- * while the prototype system remains sealed from the wider Sector.
- */
+/** Keeps Gan Eden markets economically isolated from the wider Sector. */
 public class GanEdenSanctuaryCondition extends BaseMarketConditionPlugin {
-    private static final float STABILITY_BONUS = 100f;
-
     @Override
     public void apply(String id) {
-        market.getStability().modifyFlat(
-                id, STABILITY_BONUS, "Gan Eden sanctuary");
+        // Earlier builds used this condition to grant +100 stability. Scrub
+        // that legacy modifier so the Aureate Siege's -10 is consequential
+        // in campaigns which have already visited Gan Eden.
+        market.getStability().unmodify(id);
 
         // Starsector's StatBonus formula is:
         // (base * (1 + percent / 100) + flat) * product(multipliers).

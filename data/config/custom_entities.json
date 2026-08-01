@@ -79,7 +79,7 @@
         "layers":[STATIONS, BELOW_STATIONS],
     },
     "ship_trophy_gan_eden_space_elevator":{
-        "defaultName":"Eden Prime Space Elevator",
+        "defaultName":"Tree of Life Space Elevator",
         "nameInText":"space elevator",
         "shortName":"elevator",
         "aOrAn":"the",

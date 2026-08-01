@@ -74,10 +74,10 @@ public final class GoldenFractalCascade extends ShardSpawner {
         if (ship == null) return;
 
         applyGoldenAppearance(ship);
+        preventRetreat(ship);
 
         String baseHullId = ship.getHullSpec().getBaseHullId();
         if ("tesseract".equals(baseHullId)) {
-            preventRetreat(ship);
             return;
         }
         boolean shard = "shard_left".equals(baseHullId)
@@ -129,31 +129,32 @@ public final class GoldenFractalCascade extends ShardSpawner {
                 ship, SPAWN_TIME, spawners));
     }
 
-    /**
-     * Tesseracts are the terminal phase of the encounter. Letting one flee
-     * removes the intended climax and can also end the battle before the
-     * player has destroyed every branch of the fracture hierarchy.
-     */
+    /** Keeps every stage of the aureate fracture hierarchy committed. */
     private static void preventRetreat(ShipAPI ship) {
         CombatEngineAPI engine = Global.getCombatEngine();
         if (engine == null || !ship.isAlive()) return;
 
-        engine.setCombatNotOverForAtLeast(1f);
-
-        CombatFleetManagerAPI fleetManager =
-                engine.getFleetManager(ship.getOwner());
-        CombatTaskManagerAPI taskManager = fleetManager == null
-                ? null
-                : fleetManager.getTaskManager(false);
-        if (taskManager != null) {
-            CombatFleetManagerAPI.AssignmentInfo assignment =
-                    taskManager.getAssignmentFor(ship);
-            if (assignment != null
-                    && assignment.getType() == CombatAssignmentType.RETREAT) {
-                DeployedFleetMemberAPI deployed =
-                        fleetManager.getDeployedFleetMember(ship);
-                if (deployed != null) {
-                    taskManager.orderSearchAndDestroy(deployed, false);
+        // Independent Aspect wings have no deployed fleet member to retask;
+        // clearing their retreat flags is sufficient and avoids doing fleet
+        // assignment work for every fighter every frame.
+        if (!ship.isFighter()) {
+            engine.setCombatNotOverForAtLeast(1f);
+            CombatFleetManagerAPI fleetManager =
+                    engine.getFleetManager(ship.getOwner());
+            CombatTaskManagerAPI taskManager = fleetManager == null
+                    ? null
+                    : fleetManager.getTaskManager(false);
+            if (taskManager != null) {
+                CombatFleetManagerAPI.AssignmentInfo assignment =
+                        taskManager.getAssignmentFor(ship);
+                if (assignment != null
+                        && assignment.getType()
+                                == CombatAssignmentType.RETREAT) {
+                    DeployedFleetMemberAPI deployed =
+                            fleetManager.getDeployedFleetMember(ship);
+                    if (deployed != null) {
+                        taskManager.orderSearchAndDestroy(deployed, false);
+                    }
                 }
             }
         }

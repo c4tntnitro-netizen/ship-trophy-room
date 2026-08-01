@@ -87,7 +87,7 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
                         + "the lost ring's coordinates.";
             case GAN_EDEN_REVEALED:
                 return "Travel to the revealed Gan Eden Transit Ring and "
-                        + "search Eden Prime with Isa.";
+                        + "search the Tree of Life with Isa.";
             case GRAVE_FOUND:
                 return "Defeat Cherubim and Lahat Haharev, the golden Omega "
                         + "Shards guarding Gan Eden.";

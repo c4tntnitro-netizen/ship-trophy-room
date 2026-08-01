@@ -33,8 +33,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
     private static final int SPHERE_VERTICES_PER_BAND = (RENDER_SEGMENTS + 1) * 2;
     private static final float[] INWARD_SPHERE_MESH = buildInwardSphereMesh();
     private static final float ATMOSPHERE_INNER_RADIUS =
-            (GanEdenGenerator.WARNING_INNER_RADIUS
-                    + GanEdenGenerator.SURFACE_OUTER_RADIUS) * 0.5f;
+            GanEdenGenerator.SURFACE_OUTER_RADIUS * 0.68f;
+    private static final float HORIZON_FADE_INNER_RADIUS =
+            GanEdenGenerator.SURFACE_OUTER_RADIUS * 0.82f;
     // Measured from the alpha edge of gan_eden_outer_edge.png.
     private static final float OUTER_EDGE_INNER_RADIUS_FRACTION = 0.59888f;
     private static final float OUTER_EDGE_SIZE =
@@ -203,17 +204,23 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
                     center,
                     ATMOSPHERE_INNER_RADIUS,
                     GanEdenGenerator.SURFACE_OUTER_RADIUS,
-                    new Color(242, 248, 255, 8),
-                    new Color(82, 164, 255, 138),
+                    new Color(242, 248, 255, 0),
+                    new Color(118, 188, 255, 175),
                     alpha);
 
-            renderCenteredSprite(
-                    outerEdgeTexture,
+            // Let the visible atmosphere recede into space instead of ending
+            // at an opaque circular cut. The terrain and blue limb both fade
+            // smoothly to the same black as the exterior backdrop.
+            renderGradientAnnulus(
                     center,
-                    OUTER_EDGE_SIZE,
-                    OUTER_EDGE_SIZE,
-                    new Color(255, 255, 255, 255),
+                    HORIZON_FADE_INNER_RADIUS,
+                    GanEdenGenerator.SURFACE_OUTER_RADIUS,
+                    new Color(0, 0, 0, 0),
+                    new Color(0, 0, 0, 255),
                     alpha);
+
+            // Temporarily hidden while capturing a clean Gan Eden surface
+            // reference for the replacement rim artwork.
         } finally {
             GL11.glPopMatrix();
             GL11.glPopAttrib();
@@ -301,11 +308,14 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         float diskX = diskRadius * cos;
         float diskY = diskRadius * sin;
 
-        // An equidistant 180-degree interior view: screen radius represents
-        // angular distance from the camera's inward viewing axis. Unlike the
-        // orthographic projection used for an exterior planet, this does not
-        // crush the surface into a thin strip at the circular horizon.
-        float viewAngle = (float) Math.PI * 0.5f * diskRadius;
+        // Concentrate the angular turn through the middle of the visible
+        // surface, then ease it again before the horizon. This S-curve keeps
+        // the sphere legible without packing the remaining geography into a
+        // narrow strip at either outer edge.
+        float projectedRadius = diskRadius
+                - 0.4f / ((float) Math.PI * 2f)
+                        * (float) Math.sin((float) Math.PI * 2f * diskRadius);
+        float viewAngle = (float) Math.PI * 0.5f * projectedRadius;
         float sinViewAngle = (float) Math.sin(viewAngle);
         float sphereX = -sinViewAngle * cos;
         float sphereY = sinViewAngle * sin;

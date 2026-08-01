@@ -36,8 +36,8 @@ public final class GanEdenGenerator {
     public static final String SPACE_ELEVATOR_TYPE =
             "ship_trophy_gan_eden_space_elevator";
     public static final String MUSIC_SET_ID = "ship_trophy_gan_eden_music";
-    public static final String EDEN_PRIME_ID = "ship_trophy_gan_eden_prime";
-    public static final String VERDANT_REACH_ID =
+    public static final String TREE_OF_LIFE_ID = "ship_trophy_gan_eden_prime";
+    private static final String LEGACY_VERDANT_REACH_ID =
             "ship_trophy_gan_eden_verdant_reach";
     public static final String PELAGOS_ID = "ship_trophy_gan_eden_pelagos";
     public static final String CINDERWAKE_ID =
@@ -46,6 +46,8 @@ public final class GanEdenGenerator {
             "ship_trophy_gan_eden_rimewell";
     public static final String SANCTUARY_CONDITION_ID =
             "ship_trophy_gan_eden_sanctuary";
+    public static final String AUREATE_SIEGE_CONDITION_ID =
+            "ship_trophy_gan_eden_aureate_siege";
     public static final String SURFACE_SITE_TYPE =
             "ship_trophy_gan_eden_surface_site";
     public static final String SURFACE_SITE_MEMORY_KEY =
@@ -60,6 +62,12 @@ public final class GanEdenGenerator {
     private static final String INNER_SEAM_ID = "ship_trophy_gan_eden_inner_seam";
     private static final String OUTER_SEAM_ID = "ship_trophy_gan_eden_outer_seam";
     private static final String WARNING_BAND_ID = "ship_trophy_gan_eden_warning_band";
+    private static final String[] SURFACE_SITE_IDS = {
+        CINDERWAKE_ID,
+        RIMEWELL_ID,
+        TREE_OF_LIFE_ID,
+        PELAGOS_ID
+    };
 
     private GanEdenGenerator() {
     }
@@ -181,7 +189,7 @@ public final class GanEdenGenerator {
     }
 
     /**
-     * Adds five fixed settlement anchors on Gan Eden's inhabited inner shell.
+     * Adds four fixed settlement anchors on Gan Eden's inhabited inner shell.
      *
      * These are deliberately not separate worlds. They use PlanetAPI only as
      * a thin compatibility layer for Starsector's survey and colony screens;
@@ -192,44 +200,84 @@ public final class GanEdenGenerator {
     private static void ensureColonizableSurfaceSites(
             StarSystemAPI system, PlanetAPI star) {
         ensureSurfaceSite(
-                system, star, EDEN_PRIME_ID, "Eden Prime",
-                "ship_trophy_gan_eden_eden_prime", 210f, 520f,
-                Conditions.HABITABLE,
-                Conditions.MILD_CLIMATE,
-                Conditions.FARMLAND_BOUNTIFUL,
-                Conditions.ORGANICS_ABUNDANT);
-        ensureSurfaceSite(
-                system, star, VERDANT_REACH_ID, "Verdant Reach",
-                "ship_trophy_gan_eden_verdant_reach", 315f, 760f,
-                Conditions.HABITABLE,
-                Conditions.FARMLAND_ADEQUATE,
-                Conditions.ORGANICS_PLENTIFUL,
-                Conditions.ORE_MODERATE);
-        ensureSurfaceSite(
-                system, star, PELAGOS_ID, "Pelagos Basin",
-                "ship_trophy_gan_eden_pelagos_basin", 95f, 1010f,
-                Conditions.HABITABLE,
-                Conditions.WATER_SURFACE,
-                Conditions.ORGANICS_ABUNDANT,
-                Conditions.VOLATILES_DIFFUSE);
-        ensureSurfaceSite(
                 system, star, CINDERWAKE_ID, "Cinderwake",
-                "ship_trophy_gan_eden_cinderwake", 170f, 1480f,
+                "ship_trophy_gan_eden_cinderwake", 173.2f, 1952f,
                 Conditions.HOT,
                 Conditions.ORE_ABUNDANT,
                 Conditions.RARE_ORE_MODERATE);
         ensureSurfaceSite(
                 system, star, RIMEWELL_ID, "Rimewell",
-                "ship_trophy_gan_eden_rimewell", 255f, 1260f,
+                "ship_trophy_gan_eden_rimewell", 120.6f, 1412f,
                 Conditions.VERY_COLD,
                 Conditions.VOLATILES_ABUNDANT,
                 Conditions.RARE_ORE_SPARSE);
+        ensureSurfaceSite(
+                system, star, TREE_OF_LIFE_ID, "Tree of Life",
+                "ship_trophy_gan_eden_eden_prime", 55.6f, 1082f,
+                Conditions.HABITABLE,
+                Conditions.MILD_CLIMATE,
+                Conditions.FARMLAND_BOUNTIFUL,
+                Conditions.ORGANICS_ABUNDANT);
+        ensureSurfaceSite(
+                system, star, PELAGOS_ID, "Pelagos Basin",
+                "ship_trophy_gan_eden_pelagos_basin", 352.5f, 1699f,
+                Conditions.HABITABLE,
+                Conditions.WATER_SURFACE,
+                Conditions.ORGANICS_ABUNDANT,
+                Conditions.VOLATILES_DIFFUSE);
 
-        ensureSanctuaryCondition(system, EDEN_PRIME_ID);
-        ensureSanctuaryCondition(system, VERDANT_REACH_ID);
-        ensureSanctuaryCondition(system, PELAGOS_ID);
+        removeSurfaceSite(system, LEGACY_VERDANT_REACH_ID);
         ensureSanctuaryCondition(system, CINDERWAKE_ID);
         ensureSanctuaryCondition(system, RIMEWELL_ID);
+        ensureSanctuaryCondition(system, TREE_OF_LIFE_ID);
+        ensureSanctuaryCondition(system, PELAGOS_ID);
+        updateAureateSiegeConditions(system);
+    }
+
+    /**
+     * Applies the system-wide crisis to every Gan Eden settlement while the
+     * Golden Shard encounter is active, and removes it after total victory.
+     */
+    public static void updateAureateSiegeConditions(StarSystemAPI system) {
+        if (system == null) return;
+
+        boolean active = GanEdenAmbushScript.isEncounterActive();
+        for (String entityId : SURFACE_SITE_IDS) {
+            SectorEntityToken entity = system.getEntityById(entityId);
+            if (!(entity instanceof PlanetAPI)) continue;
+
+            MarketAPI market = ((PlanetAPI) entity).getMarket();
+            if (market == null) continue;
+
+            if (active) {
+                if (!market.hasCondition(AUREATE_SIEGE_CONDITION_ID)) {
+                    market.addCondition(AUREATE_SIEGE_CONDITION_ID);
+                }
+            } else if (market.hasCondition(AUREATE_SIEGE_CONDITION_ID)) {
+                market.removeCondition(AUREATE_SIEGE_CONDITION_ID);
+            }
+        }
+    }
+
+    private static void removeSurfaceSite(
+            StarSystemAPI system, String entityId) {
+        SectorEntityToken entity = system.getEntityById(entityId);
+        MarketAPI market = entity instanceof PlanetAPI
+                ? ((PlanetAPI) entity).getMarket()
+                : null;
+        if (market == null
+                && Global.getSector() != null
+                && Global.getSector().getEconomy() != null) {
+            market = Global.getSector().getEconomy().getMarket(entityId);
+        }
+        if (market != null
+                && Global.getSector() != null
+                && Global.getSector().getEconomy() != null) {
+            Global.getSector().getEconomy().removeMarket(market);
+        }
+        if (entity != null) {
+            system.removeEntity(entity);
+        }
     }
 
     private static void ensureSanctuaryCondition(
@@ -247,6 +295,9 @@ public final class GanEdenGenerator {
         if (!market.hasCondition(SANCTUARY_CONDITION_ID)) {
             market.addCondition(SANCTUARY_CONDITION_ID);
         }
+        // Migration for saves created while Sanctuary supplied +100
+        // stability. The condition now owns isolation only.
+        market.getStability().unmodify(SANCTUARY_CONDITION_ID);
     }
 
     private static PlanetAPI ensureSurfaceSite(
@@ -283,6 +334,8 @@ public final class GanEdenGenerator {
                     new java.util.Random(id.hashCode()));
         }
         site.setRadius(44f);
+        site.getSpec().setPlanetColor(new Color(255, 255, 255, 0));
+        site.getSpec().setIconColor(new Color(255, 255, 255, 0));
         site.setFixedLocation(
                 star.getLocation().x + cosDegrees(angle) * surfaceRadius,
                 star.getLocation().y + sinDegrees(angle) * surfaceRadius);
@@ -316,48 +369,49 @@ public final class GanEdenGenerator {
     }
 
     /**
-     * Adds the Eden Prime space elevator that will host Isa's grave cutscene.
+     * Adds the Tree of Life space elevator that hosts Isa's grave cutscene.
      * Its stable id lets the eventual story interaction bind to the same POI
      * in both new and existing campaigns.
      */
     private static void ensureSpaceElevator(StarSystemAPI system) {
-        SectorEntityToken edenPrime = system.getEntityById(EDEN_PRIME_ID);
-        if (!(edenPrime instanceof PlanetAPI)) return;
+        SectorEntityToken treeOfLife = system.getEntityById(TREE_OF_LIFE_ID);
+        if (!(treeOfLife instanceof PlanetAPI)) return;
 
         SectorEntityToken elevator = system.getEntityById(SPACE_ELEVATOR_ID);
         if (elevator == null) {
             elevator = system.addCustomEntity(
                     SPACE_ELEVATOR_ID,
-                    "Eden Prime Space Elevator",
+                    "Tree of Life Space Elevator",
                     SPACE_ELEVATOR_TYPE,
                     Factions.NEUTRAL);
         }
         if (elevator == null) return;
+        elevator.setName("Tree of Life Space Elevator");
 
         // The elevator is rooted in the shell as well. Campaign coordinates
         // are a projection of that surface, so keep its marker fixed beside
-        // Eden Prime rather than literally moving it toward the central sun.
+        // Tree of Life rather than literally moving it toward the central sun.
         PlanetAPI star = system.getStar();
         float centerX = star == null ? 0f : star.getLocation().x;
         float centerY = star == null ? 0f : star.getLocation().y;
-        float dx = edenPrime.getLocation().x - centerX;
-        float dy = edenPrime.getLocation().y - centerY;
+        float dx = treeOfLife.getLocation().x - centerX;
+        float dy = treeOfLife.getLocation().y - centerY;
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
         if (distance > 0f) {
             float tangentX = -dy / distance;
             float tangentY = dx / distance;
             float outwardX = dx / distance;
             float outwardY = dy / distance;
-            float elevatorX = edenPrime.getLocation().x
+            float elevatorX = treeOfLife.getLocation().x
                     + tangentX * 125f + outwardX * 30f;
-            float elevatorY = edenPrime.getLocation().y
+            float elevatorY = treeOfLife.getLocation().y
                     + tangentY * 125f + outwardY * 30f;
             elevator.setFixedLocation(
                     elevatorX,
                     elevatorY);
             elevator.setFacing((float) Math.toDegrees(Math.atan2(
-                    edenPrime.getLocation().y - elevatorY,
-                    edenPrime.getLocation().x - elevatorX)) - 90f);
+                    treeOfLife.getLocation().y - elevatorY,
+                    treeOfLife.getLocation().x - elevatorX)) - 90f);
         }
         elevator.setDiscoverable(true);
         elevator.setSensorProfile(1f);

@@ -42,6 +42,7 @@ public class IsaHomecomingCMD implements CommandPlugin {
     private static boolean shouldShow(InteractionDialogAPI dialog) {
         if (!IsaTrophyManager.wasOfficerGranted()
                 || !IsaTrophyManager.isIsaOfficerInPlayerFleet()
+                || !GanEdenQuestManager.isAtTheGatesCompleted()
                 || IsaTrophyManager.wasShatteredRingHomecomingShown()) {
             return false;
         }
