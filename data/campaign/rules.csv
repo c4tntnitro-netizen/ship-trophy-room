@@ -539,7 +539,7 @@ Eventually Isa sits beside the grave and begins telling Isaac Leicester about th
 When she finally stands, the paradise beyond the glass remains empty. Only the distant golden signatures of Cherubim and Lahat Haharev move against the sun.","0:ship_trophy_gan_eden_grave_leave:Return to the fleet.",Finding the grave completes the personal investigation; the guardians remain as the finale if alive.
 shipTrophyGanEdenGraveLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_grave_leave,DismissDialog,,,
 shipTrophyGanEdenGraveNeedsIsa,OpenInteractionDialog,GanEdenQuestCMD graveNeedsIsa score:45000,"SetShortcut ship_trophy_gan_eden_grave_leave ""ESCAPE""","The memorial archive recognizes Isa Leicester's inherited suit transponder, but she is not present to answer its identity challenge. You will need to return with Isa in the fleet.","0:ship_trophy_gan_eden_grave_leave:Leave.",Prevents resolving Isa's family story without Isa.
-shipTrophyGanEdenGraveInspected,OpenInteractionDialog,GanEdenQuestCMD graveInspected score:45000,"SetShortcut ship_trophy_gan_eden_grave_leave ""ESCAPE""","The memorial garden remains sealed and alive above Eden Prime. Isaac Leicester's grave rests beneath its single tree.","0:ship_trophy_gan_eden_grave_leave:Leave the memorial in peace.",Repeat interaction after the grave scene.
+shipTrophyGanEdenGraveInspected,OpenInteractionDialog,GanEdenQuestCMD graveInspected score:45000,"SetShortcut ship_trophy_gan_eden_grave_leave ""ESCAPE""","The memorial garden remains sealed and alive above the Tree of Life. Isaac Leicester's grave rests beneath its single tree.","0:ship_trophy_gan_eden_grave_leave:Leave the memorial in peace.",Repeat interaction after the grave scene.
 shipTrophyIsaFactionVisitHegemony,OpenInteractionDialog,IsaFactionVisitCMD shouldShow hegemony score:10000,"IsaFactionVisitCMD prepare hegemony
 ","As your fleet joins $marketName's approach queue, Isa disappears from the bridge. You find her pressed face-first against the glass of an observation blister, watching Hegemony-pattern ships parade one by one down a parallel departure queue. Her slate displays a hologram of each passing vessel, all of them carefully logged and annotated.
 
@@ -577,7 +577,7 @@ Her slate lights up with a purchase listing for a surplus Thunder wing.
 
 She opens the technical specifications.
 
-""I think I understand the appeal.""","0:ship_trophy_isa_league_rebuke:Only until someone in CIC tells them where to go.",One-time post-recruitment Persean League station vignette.
+""I think I understand the appeal.""","0:ship_trophy_isa_league_rebuke:""Only until someone in CIC tells them where to go.""",One-time post-recruitment Persean League station vignette.
 shipTrophyIsaFactionVisitLeagueRebuke,DialogOptionSelected,$option == ship_trophy_isa_league_rebuke,,"""$shipTrophyIsaPlayerTitle?""
 
 Isa lowers the slate and fixes you with a sharp gaze.
@@ -586,12 +586,12 @@ Isa lowers the slate and fixes you with a sharp gaze.
 
 Her expression softens.
 
-""But please, once in a while... remember us.""","0:ship_trophy_isa_league_apologize:Of course. Sorry, Isa.
-10:ship_trophy_isa_league_role:We've all got our role to play.
-20:ship_trophy_isa_league_faithful:No soul is merely a number in Ludd's sight.",League vignette player response.
+""But please, once in a while... remember us.""","0:ship_trophy_isa_league_apologize:""Of course. Sorry, Isa.""
+10:ship_trophy_isa_league_role:""We've all got our role to play.""
+20:ship_trophy_isa_league_faithful:""No soul is merely a number in Ludd's sight.""",League vignette player response.
 shipTrophyIsaFactionVisitLeagueApologize,DialogOptionSelected,$option == ship_trophy_isa_league_apologize,,"She holds your gaze for another moment before looking back toward the retreating fighters.
 
-The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:Try not to buy one before we dock.",League vignette conciliatory response.
+The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:""Try not to buy one before we dock.""",League vignette conciliatory response.
 shipTrophyIsaFactionVisitLeagueRole,DialogOptionSelected,$option == ship_trophy_isa_league_role,"IsaFactionVisitCMD grantLeagueRebuke
 ","""Hm.""
 
@@ -599,14 +599,14 @@ Isa turns away and busies herself with her slate.
 
 ""Sure.""
 
-[Relationship with Isa reduced by 5]","0:ship_trophy_isa_league_purchase:Try not to buy one before we dock.",League vignette relationship consequence.
+[Relationship with Isa reduced by 5]","0:ship_trophy_isa_league_purchase:""Try not to buy one before we dock.""",League vignette relationship consequence.
 shipTrophyIsaFactionVisitLeagueFaithful,DialogOptionSelected,$option == ship_trophy_isa_league_faithful,,"Isa studies your face for a moment.
 
 ""Amen,"" she says, a little uncertainly.
 
 She holds your gaze for another moment before looking back toward the retreating fighters.
 
-The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:Try not to buy one before we dock.",League vignette faithful response.
+The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:""Try not to buy one before we dock.""",League vignette faithful response.
 shipTrophyIsaFactionVisitLeaguePurchase,DialogOptionSelected,$option == ship_trophy_isa_league_purchase,"IsaFactionVisitCMD grantLeaguePurchase
 ","""No promises.""
 
@@ -623,9 +623,8 @@ She looks down at it, frowns, and dismisses a purchase offer for replacement flu
 
 Another appears immediately.
 
-Then another.
-
-The next time you find her, she is standing before the panoramic window of a Tri-Tachyon show berth. Beyond the glass, an Afflictor-class frigate hangs motionless against the stars, its hull picked out by cold blue running lights.
+Then another.","0:ship_trophy_isa_tritachyon_showroom:continue",Tri-Tachyon advertising prelude.
+shipTrophyIsaFactionVisitTriTachyonShowroom,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_showroom,,"The next time you find her, she is standing before the panoramic window of a Tri-Tachyon show berth. Beyond the glass, an Afflictor-class frigate hangs motionless against the stars, its hull picked out by cold blue running lights.
 
 A pleasant synthetic voice fills the concourse.
 
@@ -637,9 +636,9 @@ A heartbeat later, it reappears several kilometers away, directly behind a targe
 
 Isa leans toward the glass.
 
-""...Turn rate and speed were far too high for secondary thrusters, and I don't see any extra exhaust ports,"" she mutters. ""Did those psychopaths actually disable the safety interlocks for a marketing stunt?""","0:ship_trophy_isa_tritachyon_hey:Hey, Isa.
-10:ship_trophy_isa_tritachyon_chief:Chief.
-20:ship_trophy_isa_tritachyon_lounge:Officers' lounge here is insane. They serve drinks with monomolecular ice cubes.",One-time post-recruitment Tri-Tachyon station vignette reconstructed from Ink.
+""...Turn rate and speed were far too high for secondary thrusters, and I don't see any extra exhaust ports,"" she mutters. ""Did those psychopaths actually disable the safety interlocks for a marketing stunt?""","0:ship_trophy_isa_tritachyon_hey:""Hey, Isa.""
+10:ship_trophy_isa_tritachyon_chief:""Chief Leicester.""
+20:ship_trophy_isa_tritachyon_lounge:""Have you seen the Officers' Lounge here? It's is insane. They serve drinks with monomolecular ice cubes.""",One-time post-recruitment Tri-Tachyon station vignette reconstructed from Ink.
 shipTrophyIsaFactionVisitTriTachyonHey,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_hey,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
 shipTrophyIsaFactionVisitTriTachyonChief,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_chief,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
 shipTrophyIsaFactionVisitTriTachyonLounge,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_lounge,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
@@ -747,9 +746,7 @@ The arrivals portal deposits you directly in Isa's path.
 
 She nearly collides with you, arms piled high with Andrada merchandise, a curly straw clenched between her lips. It runs down into a massive, five-gallon novelty cup shaped like a Prometheus PM-15000.
 
-Isa stops.
-
-She lowers her sunglasses, revealing another pair waiting underneath.
+Isa stops. She lowers her sunglasses, revealing another pair waiting underneath.
 
 After a moment, she gives you a solemn nod, turns on her heel, walks right into one of your bodyguards, probably near blind due to the double-layers of shades she was wearing and marches back toward the command ship.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",PAGSM-specific Sindrian Diktat station vignette.
 shipTrophyIsaFactionVisitDiktat,OpenInteractionDialog,IsaFactionVisitCMD shouldShowDiktatVanilla score:12000,"IsaFactionVisitCMD prepare sindrian_diktat
@@ -759,35 +756,23 @@ The lights end at the customs barrier.
 
 On the other side, you find Isa chatting with a couple of Diktat engineers beside the arrivals portal. She waves, breaks off from the conversation, and joins you.
 
-There are no shops here. Only state dispensaries, shuttered offices, and a Diktat officer holding a portrait of Andrada above a line of workers.
+There are no shops here. Only state dispensaries, shuttered offices, and a Diktat commissar standing on a raised pulpit, holding a portrait of Andrada above a line of workers.
 
 ""By the Lion's mercy,"" he announces, ""every loyal citizen eats. Andrada sees your glorious labor and smiles upon you!""
 
-Through a tiny window, a clerk hands each laborer a foil-wrapped ration small enough to palm. The Diktat emblem has been stamped slightly off-center. Beneath it, part of a Hegemony logo remains visible.
+Through a tiny window, a clerk hands each laborer a foil-wrapped ration small enough to palm. On one of the ration packets, the Diktat emblem has been stamped slightly off-center. Beneath it, part of a Hegemony logo remains visible.
 
 HEGAID.
 
-Isa watches a shipforge worker tuck his ration under one arm and shuffle away.
+Isa watches a shipforge worker tuck his ration under one arm and shuffle away. You can hear the commissar repeat his propaganda, over and over, like a chant.
 
 ""$shipTrophyIsaPlayerTitle.""","0:ship_trophy_isa_diktat_first_time:""This your first time in a Diktat station?""",One-time post-recruitment Sindrian Diktat station vignette.
 shipTrophyIsaFactionVisitDiktatSecond,DialogOptionSelected,$option == ship_trophy_isa_diktat_first_time,,"""Yeah,"" Isa says. ""Can we finish things quickly here? I don't like this place.""","0:ship_trophy_isa_diktat_agree:Neither do I. We won't stay long.
 10:ship_trophy_isa_diktat_chide:You seemed friendly enough with those engineers.
 20:ship_trophy_isa_diktat_defend:The Diktat keeps Sindria safe. That counts for something.",Sindrian Diktat customs response.
-shipTrophyIsaFactionVisitDiktatAgree,DialogOptionSelected,$option == ship_trophy_isa_diktat_agree,,"""Good.""
-
-Isa glances back at the ration line.
-
-""I was worried you were about to suggest lunch.""","0:ship_trophy_isa_diktat_inspect:Continue.",Sindrian Diktat sympathetic response.
-shipTrophyIsaFactionVisitDiktatChide,DialogOptionSelected,$option == ship_trophy_isa_diktat_chide,,"""The engineers aren't the problem.""
-
-Isa glances back at the ration line.
-
-""They're usually the ones fixing it.""","0:ship_trophy_isa_diktat_inspect:Continue.",Sindrian Diktat chiding response.
-shipTrophyIsaFactionVisitDiktatDefend,DialogOptionSelected,$option == ship_trophy_isa_diktat_defend,,"""So does that shipforge worker.""
-
-Isa watches him disappear into the crowd, ration tucked beneath his arm.
-
-""Behold, the liberation of Philip Andrada.""","0:ship_trophy_isa_diktat_inspect:Continue.",Sindrian Diktat defense response.
+shipTrophyIsaFactionVisitDiktatAgree,DialogOptionSelected,$option == ship_trophy_isa_diktat_agree,,"""Good."" Isa glances back at the ration line. ""I was worried you were about to suggest lunch.""","0:ship_trophy_isa_diktat_inspect:Continue.",Sindrian Diktat sympathetic response.
+shipTrophyIsaFactionVisitDiktatChide,DialogOptionSelected,$option == ship_trophy_isa_diktat_chide,,"""The engineers aren't the problem."" Isa glances back at the ration line. ""They're usually the ones fixing it.""","0:ship_trophy_isa_diktat_inspect:Continue.",Sindrian Diktat chiding response.
+shipTrophyIsaFactionVisitDiktatDefend,DialogOptionSelected,$option == ship_trophy_isa_diktat_defend,,"""So does that shipforge worker."" Isa watches him disappear into the crowd, ration tucked beneath his arm. ""Behold, the liberation of Philip Andrada.""","0:ship_trophy_isa_diktat_inspect:Continue.",Sindrian Diktat defense response.
 shipTrophyIsaFactionVisitDiktatThird,DialogOptionSelected,$option == ship_trophy_isa_diktat_inspect,,"You leave the arrivals portal behind.
 
 The station's traffic-control feed is crowded with Diktat hulls, every one polished for inspection. On the main display, a parade fleet of Lion's Guard ships-the supposed elite of Philip Andrada's navy.
@@ -843,25 +828,22 @@ The nun releases her hands.
 
 She makes a hurried sign of blessing and retreats into the crowd, while Isa crosses her arms, self-satisfied.
 
-""What if I wanted to become a nun?""","0:ship_trophy_isa_church_response:""What were you doing here?""",Luddic Church vocation response.
+""What if I wanted to become a nun?"" Isa complains to you.","0:ship_trophy_isa_church_response:""What were you doing here?""",Luddic Church vocation response.
 shipTrophyIsaFactionVisitChurchChaplain,DialogOptionSelected,$option == ship_trophy_isa_church_chaplain,,"The nun clasps her hands in delight.
 
 ""A fleet chaplain? Oh, child, why didn't you say so?""
 
-Isa looks at you and silently mouths, I'm going to kill you.
+Isa looks at you and silently mouths, I'm going to kill you.","0:ship_trophy_isa_church_chaplain_2:""She's just modest about her calling.""",Luddic Church chaplain setup.
+shipTrophyIsaFactionVisitChurchChaplainSecond,DialogOptionSelected,$option == ship_trophy_isa_church_chaplain_2,,"""Then perhaps your fleet would contribute to our relief ministry. For the Glory of the Prophet, Sister.""
 
-""She's modest about her calling,"" you say.
-
-""Then perhaps your fleet would contribute to our relief ministry. For the Glory of the Prophet, Sister.""
-
-The nun presses a worn and weathered into Isa's hands. On it, a donation form. Isa glances at the suggested amount. Then she looks at you. Slowly, she begins to smirk.","0:ship_trophy_isa_church_donate:Donate 1,000 credits.
+The nun presses a worn and weathered tablet into Isa's hands. On it, a donation form. Isa glances at the suggested amount, then she looks at you. Slowly, she begins to grin.","0:ship_trophy_isa_church_donate:Donate 1,000 credits.
 10:ship_trophy_isa_church_escape:Briefly boost burn level at the cost of fuel and combat readiness.",Luddic Church chaplain response.
 shipTrophyIsaFactionVisitChurchDonate,DialogOptionSelected,$option == ship_trophy_isa_church_donate,"IsaFactionVisitCMD grantChurchDonation
 ","You authorize the transfer while the nun beams.
 
 ""May Ludd reward your generosity in heaven.""
 
-Isa hands the slate back.
+Isa hands the tablet back.
 
 ""He already did."" She gives you a cheerful pat on the shoulder.","0:ship_trophy_isa_church_response:""What were you doing here?""",Luddic Church donation response; deducts 1,000 credits once.
 shipTrophyIsaFactionVisitChurchEscape,DialogOptionSelected,$option == ship_trophy_isa_church_escape,,"You turn and walk briskly toward the docking concourse.
@@ -881,57 +863,7 @@ She looks back toward the vaulted doors. A hymn carries faintly through them, ne
 
 ""Don't make it weird.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Church vignette conclusion.
 shipTrophyIsaFactionVisitPath,OpenInteractionDialog,IsaFactionVisitCMD shouldShow luddic_path score:12000,"IsaFactionVisitCMD prepare luddic_path
-IsaFactionVisitCMD pickPath
-FireBest ShipTrophyIsaPathVisit",,,,Selects one of four Luddic Path station vignettes.
-shipTrophyIsaFactionVisitPathNursery,ShipTrophyIsaPathVisit,IsaFactionVisitCMD currentPath nursery,,"You asked Isa to accompany you to the ss and Isa cut through an abandoned habitation ring on the way into the station.
-
-A blast door stands open beside the corridor.
-
-MUNITIONS STORAGE
-
-Inside, missile crates have been stacked where the bunks used to be. Faded animals and stars still cover the walls. Beside the doorframe, someone marked a child's height each year in black ink.
-
-Isa stops.
-
-A Pather carrying an ammunition case shoulders past you and disappears inside.","0:ship_trophy_isa_path_nursery_response:Keep moving.",Luddic Path nursery vignette.
-shipTrophyIsaFactionVisitPathNurseryResponse,DialogOptionSelected,$option == ship_trophy_isa_path_nursery_response,,"She glances back at the drawings.
-
-Then she follows.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path nursery conclusion.
-shipTrophyIsaFactionVisitPathWorkshop,ShipTrophyIsaPathVisit,IsaFactionVisitCMD currentPath workshop,,"The sound of machine tools draws Isa toward an open workshop.
-
-Inside, a dozen mechanics work silently on a row of civilian shuttles.
-
-Passenger seats lie in heaps across the deck. The cabins have been gutted and packed with sealed drums, cable bundles, and crude detonators.
-
-Just careful hands and measured work.
-
-One mechanic paints over the faded logo of a passenger line with the symbol of the Prophet Ludd. Isa takes a step back.","0:ship_trophy_isa_path_workshop_response:Those are commuter shuttles.",Luddic Path workshop vignette.
-shipTrophyIsaFactionVisitPathWorkshopResponse,DialogOptionSelected,$option == ship_trophy_isa_path_workshop_response,,"""I know.""
-
-A worker closes the hatch on the first shuttle.
-
-""Keep walking.""
-
-She does not look back until the workshop is out of sight.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path workshop conclusion.
-shipTrophyIsaFactionVisitPathReturnedShip,ShipTrophyIsaPathVisit,IsaFactionVisitCMD currentPath returned_ship,,"A Pather destroyer limps into the station under tug power.
-
-Its armor is glowing nearly white-hot around the reactor compartment.
-
-Half the surviving crew stagger down the boarding ramp with blistered faces and blackened hands. Skin hangs loose where their pressure suits have split. One collapses before reaching the deck.
-
-Dockworkers step around him. They are already unloading ammunition and draining the ship's remaining fuel.
-
-""I know those wounds. The reactor shielding failed.""","0:ship_trophy_isa_path_returned_ship_response:Battle damage?",Luddic Path returned-ship vignette.
-shipTrophyIsaFactionVisitPathReturnedShipResponse,DialogOptionSelected,$option == ship_trophy_isa_path_returned_ship_response,,"Isa shakes her head.
-
-""Built that way.""
-
-A cart stacked with missiles rolls past the fallen crewman. The dockworkers begin cutting damaged armor from the destroyer while its crew are still being carried off.
-
-Isa lowers her slate.
-
-""Let's go.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path returned-ship conclusion.
-shipTrophyIsaFactionVisitPathMechanic,ShipTrophyIsaPathVisit,IsaFactionVisitCMD currentPath mechanic,,"A young Pather mechanic notices Isa studying an exposed power junction.
+","A young Pather mechanic notices Isa studying an exposed power junction.
 
 ""You know reactors, sister?""
 
@@ -941,9 +873,7 @@ Isa accepts it cautiously.
 
 ""A little.""
 
-He shows her a schematic and asks how to keep an overloaded core from shutting itself down.
-
-Isa begins to answer.
+He shows her a schematic and asks how to keep an overloaded core from shutting itself down. Isa begins to answer.
 
 Then she notices the civilian transponder codes beneath the reactor diagram.
 
@@ -951,32 +881,60 @@ Then she notices the civilian transponder codes beneath the reactor diagram.
 
 The mechanic smiles.
 
-""No, sister.""","0:ship_trophy_isa_path_mechanic_response:Then what are you trying to do?",Luddic Path mechanic vignette.
-shipTrophyIsaFactionVisitPathMechanicResponse,DialogOptionSelected,$option == ship_trophy_isa_path_mechanic_response,,"""It only needs to remain stable long enough to deploy its ordinance.""
-
-He says it as casually as if discussing fuel economy.
+""No, sister.""","0:ship_trophy_isa_path_mechanic_response:Then what are you trying to do?",One-time post-recruitment Luddic Path mechanic vignette.
+shipTrophyIsaFactionVisitPathMechanicResponse,DialogOptionSelected,$option == ship_trophy_isa_path_mechanic_response,,"""This craft is designated for our Martyr Corps,"" He says casually, as if discussing fuel economy, ""So we just need to keep the reactor functional in the short-term.""
 
 Isa sets the tea down. The mechanic gives her an apologetic smile.
 
 ""Was it too sweet?""
 
-Your Chief Engineer disappers into the command ship and doesn't come out for the rest of the trip.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path mechanic conclusion.
-shipTrophyIsaFactionVisitPirates,OpenInteractionDialog,IsaFactionVisitCMD shouldShow pirates score:10000,"IsaFactionVisitCMD prepare pirates
-","The local traffic net is less a system than a sustained argument. Isa has isolated one battered pirate hull and is tracing its mismatched components with mounting admiration.
+Your Chief Engineer disappears into the command ship and doesn't come out for the rest of the trip.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Luddic Path mechanic conclusion.
+shipTrophyIsaFactionVisitPirates,OpenInteractionDialog,IsaFactionVisitCMD shouldShow pirates score:12000,"IsaFactionVisitCMD prepare pirates
+","Isa has stopped beside the grav docks to watch the arriving ships.
 
-""Every pirate ship is a confession,"" she says. ""This one admits to a stolen thruster, a borrowed gun mount, and a structural member that used to be a pressure door. And somehow the flux grid balances. Beautiful.""","0:ship_trophy_isa_faction_visit_reply:""We are not hiring the welder.""",One-time post-recruitment pirate station vignette.
-shipTrophyIsaFactionVisitIndependent,OpenInteractionDialog,IsaFactionVisitCMD shouldShow independent score:10000,"IsaFactionVisitCMD prepare independent
-","Isa cycles through the station's traffic registry: Mules rebuilt on three different worlds, Buffaloes with local drive modifications, and a Venture whose maintenance record seems old enough to vote.
+One of them, a heavily modified Mudskipper, struggles to settle into its berth beneath the weight of the massive gun bolted to its frame. You seem to recognize that pattern as a Hellbore.
 
-""No doctrine,"" she says, beaming. ""Just a thousand local answers to a thousand local disasters. This is what actually keeps the Sector alive while the great powers are busy naming their battle plans.""","0:ship_trophy_isa_faction_visit_reply:""You say that like you've found religion.""",One-time post-recruitment independent station vignette.
-shipTrophyIsaFactionVisitIronShell,OpenInteractionDialog,IsaFactionVisitCMD shouldShow ironshell score:10000,"IsaFactionVisitCMD prepare ironshell
-","An Iron Shell patrol cuts across the station's approach lane, XIV armor moving at a speed its silhouette has no right to possess. Isa freezes the traffic feed, rewinds it, and watches the maneuver again.
+Isa leans over the railing.
 
-""That is deeply unfair,"" she says, delighted. ""They took Hegemony armor doctrine and taught it iaido. Look at that drive calibration. The whole ship draws before the enemy realizes there's a duel.""","0:ship_trophy_isa_faction_visit_reply:""Please don't challenge the tax inspectors to a duel.""",One-time post-recruitment Iron Shell station vignette; guarded by the optional mod and faction.
-shipTrophyIsaFactionVisitReply,DialogOptionSelected,$option == ship_trophy_isa_faction_visit_reply,FireBest ShipTrophyIsaFactionVisitResponse,,,Routes the faction visit vignette to its matching response.
-shipTrophyIsaFactionVisitResponsePirates,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current pirates,,"""Counteroffer: I hire the welder and forbid them from touching life support."" Isa zooms in on the former door. ""Probably.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Pirate vignette response.
-shipTrophyIsaFactionVisitResponseIndependent,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current independent,,"""I told you."" Isa closes the registry with obvious reluctance. ""Every spacer does eventually.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Independent vignette response.
-shipTrophyIsaFactionVisitResponseIronShell,ShipTrophyIsaFactionVisitResponse,IsaFactionVisitCMD current ironshell,,"""I'm not challenging anyone,"" Isa says, already opening a thrust profile. ""I'm conducting a deductible professional consultation.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Iron Shell vignette response.
+""Look at that.""","0:ship_trophy_isa_pirates_2:""You're admiring a Mudskipper?""",One-time post-recruitment Pirate station vignette.
+shipTrophyIsaFactionVisitPiratesSecond,DialogOptionSelected,$option == ship_trophy_isa_pirates_2,,"""The craftsmanship.""
+
+Isa points toward the improvised thrust assembly.
+
+""No proper yard. No matching parts. Probably no sober foreman.""
+
+She pulls out her slate and zooms in on a web of reinforcement struts around the engine mounts.
+
+""They grafted those jets on from three different hull classes. The couplings were machined by hand, the fuel lines are routed through the captain's old living quarters, and I'm pretty sure that heat shield used to be a blast door.""
+
+The pirate frigate fires its maneuvering thrusters and settles neatly against the docking clamps.
+
+Isa smiles.
+
+""Still flies straight. Mostly.""","0:ship_trophy_isa_pirates_3:""I'm surprised you're so positive about their work.""",Pirate craftsmanship vignette beat.
+shipTrophyIsaFactionVisitPiratesThird,DialogOptionSelected,$option == ship_trophy_isa_pirates_3,,"She lowers the slate.
+
+""I grew up on an independent station. Seen people from all walks of life. The only difference between an indy and a pirate is how many meals they've missed.""
+
+She shrugs.
+
+""And I like the poor, misunderstood underdog.""","0:ship_trophy_isa_pirates_4:continue",Pirate underdog vignette beat.
+shipTrophyIsaFactionVisitPiratesFourth,DialogOptionSelected,$option == ship_trophy_isa_pirates_4,,"The doors of a dockside bar slam open.
+
+A pirate stumbles into the concourse, wild-eyed.
+
+""I'll pay! I swear I'll pay this time!""
+
+Several others emerge behind him. They seize him by the arms and legs, carry him to the edge of the dock, and throw him screaming and pleading through the grav field.
+
+He hangs outside the station without a helmet, kicking soundlessly against the stars. His eyes bulge and his face begins to swell. Every desperate jerks sends the breath leaking from his lungs, turning him end over end, helplessly in the void.
+
+After ten seconds, they drag him back by a tether around his ankle.
+
+The moment he crosses the railing, he collapses onto the deck, wheezing and coughing blood while the bar erupts in laughter.","0:ship_trophy_isa_pirates_response:""Poor, misunderstood underdogs.""",Pirate dockside-bar vignette beat.
+shipTrophyIsaFactionVisitResponsePirates,DialogOptionSelected,$option == ship_trophy_isa_pirates_response,,"Isa kicks you, then turns back toward the pirate frigate.
+
+""Assholes,"" she mutters darkly. ""Making me look stupid.""","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",Pirate vignette conclusion.
 shipTrophyIsaFactionVisitContinue,DialogOptionSelected,$option == ship_trophy_isa_faction_visit_continue,"IsaFactionVisitCMD markSeen
 FireBest OpenInteractionDialog",,,Marks the faction vignette complete and resumes the station's normal docking dialogue.
 shipTrophyShroudedSubstrateBeginIsa,ShroudedSubstrateRightClick,"!$player.canMakeDwellerWeapons
@@ -1041,4 +999,103 @@ IsaContactRulesCMD isaInFleet score:10000",,"Tech looks to Isa, who can barely s
 ""It's pretty simple, $playerSirOrMadam. Scale up the testing rig using modified common equipment to produce outputs in the combat application range. A robust chassis is not difficult. We're already equipped to repair modular components of most weapon systems using microforged components and existing supply stocks.""
 
 She pauses, looking into the workbay once more. ""The key is this 'substrate'. It provides the core, the... amplification, the transformation.""",shroudedSubstrate_optSelE2:Continue,Isa-specific Shrouded Substrate weaponization response.
+shipTrophyShroudedSubstrateBegin2Isa,DialogOptionSelected,"$option == shroudedSubstrateBegin
+IsaContactRulesCMD isaInFleet score:10000",FireAll shroudedSubstrateBeginOpts,"""Exotic matter!"" Tech exclaims.
+
+Isa interrupts. ""Another way of saying 'we don't know what it is', and 'it doesn't act how physics says it should'.""
+
+Your technology officer begins again, enthusiasm tempered - somewhat. ""Obviously, I was about to- $playerSirOrMadam,"" Tech turns to face only you, perhaps to curb further interruptions. ""Analysis is preliminary and proceeding,"" a quick glimpse at Isa, ""carefully.""",,Isa replaces Engineering in the opening Shrouded Substrate exchange.
+shipTrophyShroudedSubstrateOptSelFIsa,DialogOptionSelected,"$option == shroudedSubstrate_optSelF
+IsaContactRulesCMD isaInFleet score:10000","$player.canMakeDwellerWeapons = true
+Highlight $player.shroudedSubstrateAvailable
+FireBest CheckPlayerHasNoSubstrate","""$PlayerSirOrMadam,"" Isa and Tech say once more in unison.
+
+Shrouded Substrate available: $player.shroudedSubstrateAvailable unit(s).","substrate_selectWeapons:Select weapons to assemble
+defaultLeave:Leave",Isa is named when Shrouded weapon assembly is unlocked.
+shipTrophyShroudedSubstrateWasAnalyzedIsa,ShroudedSubstrateRightClick,"$player.canMakeDwellerWeapons
+IsaContactRulesCMD isaInFleet score:10000","ShowImageVisual shrouded_weapon_assembly
+Highlight $player.shroudedSubstrateAvailable
+FireBest CheckPlayerHasNoSubstrate","You consult with your technical officer and Isa in a small briefing room overlooking a workbay adapted to store and analyze the unusual specimens you've found. They are poring over schematics, deep in an argument over implementation details. You are pleased to note that their disagreement plays out within a foundation built of professional respect.
+
+They notice you and, in unison, say ""$PlayerSirOrMadam.""
+
+Shrouded Substrate available: $player.shroudedSubstrateAvailable unit(s).","substrate_selectWeapons:Select weapons to assemble
+defaultLeave:Leave",Isa replaces the generic engineering chief in repeat Shrouded Substrate interactions.
+shipTrophySubstrateWeaponsPickedIsa,SubstrateWeaponsPicked,IsaContactRulesCMD isaInFleet score:10000,"Highlight $player.shroudedSubstrateAvailable
+FireBest CheckPlayerHasNoSubstrate","Your technical officer and Isa pore over the schematics, arguing over implementation details. You are pleased to note that their disagreement plays out within a foundation built of professional respect.
+
+Shrouded Substrate available: $player.shroudedSubstrateAvailable unit(s).","substrate_selectWeapons:Select weapons to assemble
+defaultLeave:Leave",Isa replaces the generic engineering chief after Shrouded weapons are assembled.
+shipTrophyShroudedMantleIntroIsa,DialogOptionSelected,"$option == ShroudedHMM_talk1
+!$player.didAShroudedHullmodUnlock
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHMM_talk2 0
+FireBest DialogOptionSelected","You find your technology officer and Isa in deep discussion over one of the unusual specimens held in the ""special salvage"" bay.",,Isa is named in the first Shrouded Mantle analysis.
+shipTrophyShroudedMantleIntroRepeatIsa,DialogOptionSelected,"$option == ShroudedHMM_talk1
+$player.didAShroudedHullmodUnlock
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHMM_talk2 0
+FireBest DialogOptionSelected","You find your technology officer and Isa in another discussion over one of the unusual specimens held in the ""special salvage"" bay.",,Isa is named in repeat Shrouded Mantle analysis.
+shipTrophyShroudedMantleTheoryIsa,DialogOptionSelected,"$option == ShroudedHMM_talk2
+IsaContactRulesCMD isaInFleet score:10000",,"Isa is frowning, manipulating a diagram of a ship with abrupt flicks at the interface. ""It'd have to be anchored to the flux grid. Only way to keep it wrapped close enough to the hull geometry.""
+
+""Precisely,"" Tech says. ""To keep the exotic material from diminishing! It will draw energy from incoming projectiles, storing it in the, um... meta-plasma?""
+
+Isa snorts dismissively.
+
+""Merely a working term,"" Tech says defensively.",ShroudedHMM_talk3:Continue,Isa replaces Engineering in Shrouded Mantle theory dialogue.
+shipTrophyShroudedMantleDischargeIsa,DialogOptionSelected,"$option == ShroudedHMM_talk3
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHMM_talk4 0
+FireBest DialogOptionSelected","""We can't store energy forever in this theoretical, pretend-plasma,"" Isa says. ""It'll have to go somewhere.""
+
+""Invert the polarity of the flux converters and flicker the drive field. Boom, a gentle bump to local time-space."" Tech looks self-satisfied. ""Um, by which I mean the ship itself.""
+
+""You hope it's a gentle bump."" Isa frowns, pulling up agrav inertial suppression timing charts. ""If it works.""",,Isa replaces Engineering in Shrouded Mantle discharge dialogue.
+shipTrophyShroudedMantleApprovalIsa,DialogOptionSelected,"$option == ShroudedHMM_talk5
+IsaContactRulesCMD isaInFleet score:10000","$player.didAShroudedHullmodUnlock = true
+$option = ShroudedHMM_talk6 0
+FireBest DialogOptionSelected","Tech and Isa jump to attention, having been so involved in their argument that neither noticed you approach.
+
+""$PlayerSirOrMadam, yes $playerSirOrMadam,"" they say, saluting.",,Isa is named when Shrouded Mantle research is approved.
+shipTrophyShroudedMantleFaithfulApprovalIsa,DialogOptionSelected,"$option == ShroudedHMM_talk5l
+$player.luddicFaithfulOrChurchCom
+IsaContactRulesCMD isaInFleet score:10000",$player.didAShroudedHullmodUnlock = true,"Tech and Isa jump to attention, having been so involved in their argument that neither noticed you approach.
+
+""$PlayerSirOrMadam, yes $playerSirOrMadam,"" they say, saluting.",ShroudedHMM_talk6:Continue,Isa is named in the Luddic Shrouded Mantle approval branch.
+shipTrophyShroudedThunderheadIntroIsa,DialogOptionSelected,"$option == ShroudedHMTH_talk1
+!$player.didAShroudedHullmodUnlock
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHMTH_talk2 0
+FireBest DialogOptionSelected","You find your technology officer and Isa in deep discussion over one of the unusual specimens held in the ""special salvage"" bay.",,Isa is named in the first Shrouded Thunderhead analysis.
+shipTrophyShroudedThunderheadIntroRepeatIsa,DialogOptionSelected,"$option == ShroudedHMTH_talk1
+$player.didAShroudedHullmodUnlock
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHMTH_talk2 0
+FireBest DialogOptionSelected","You find your technology officer and Isa in another deep discussion over one of the unusual specimens held in the ""special salvage"" bay.",,Isa is named in repeat Shrouded Thunderhead analysis.
+shipTrophyShroudedThunderheadEngineeringIsa,DialogOptionSelected,"$option == ShroudedHMTH_talk3
+IsaContactRulesCMD isaInFleet score:10000","$player.didAShroudedHullmodUnlock = true
+$option = ShroudedHMTH_talk4 0
+FireBest DialogOptionSelected","""Theoretically."" Isa crosses her arms beneath a very skeptical look.
+
+""To operate during combat... hmm. Modifications would have to be made. Shield emitters, drive field, inertial suppression... I'll need to perform some tests.""
+
+Isa finally notices you observing their talk and stands to attention. ""With your approval, $PlayerSirOrMadam.""",,Isa replaces Engineering in Shrouded Thunderhead analysis.
+shipTrophyShroudedLensIntroIsa,DialogOptionSelected,"$option == ShroudedHML_talk1
+!$player.didAShroudedHullmodUnlock
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHML_talk2 0
+FireBest DialogOptionSelected","You find your technology officer and Isa in deep discussion over one of the unusual specimens held in the ""special salvage"" bay.",,Isa is named in the first Shrouded Lens analysis.
+shipTrophyShroudedLensIntroRepeatIsa,DialogOptionSelected,"$option == ShroudedHML_talk1
+$player.didAShroudedHullmodUnlock
+IsaContactRulesCMD isaInFleet score:10000","$option = ShroudedHML_talk2 0
+FireBest DialogOptionSelected","You find your technology officer and Isa in another deep discussion over one of the unusual specimens held in the ""special salvage"" bay.",,Isa is named in repeat Shrouded Lens analysis.
+shipTrophyShroudedLensTheoryIsa,DialogOptionSelected,"$option == ShroudedHML_talk2
+IsaContactRulesCMD isaInFleet score:10000",,"""This 'lens' - a working term, of course - does not operate in normal space as-such.""
+
+Tech is deep in lecture mode over an arcane holo-diagram. You can tell they've been talking for some minutes from Isa's impatient eye roll.
+
+""It could be emplaced deep within the hull, in a specially stabilized cradle - for safety,"" Tech continues.
+
+Isa appears pained at describing this proposal as 'safe'.",ShroudedHML_talk3:Continue,Isa replaces Engineering in Shrouded Lens theory dialogue.
+shipTrophyShroudedLensRangeIsa,DialogOptionSelected,"$option == ShroudedHML_talk4
+IsaContactRulesCMD isaInFleet score:10000",$player.didAShroudedHullmodUnlock = true,"Tech and Isa both jump at your words, standing to attention. ""$PlayerSirOrMadam!"" they say in uncharacteristic unison.
+
+Isa takes the opportunity to finally get a word in. ""Accuracy decreases in... interestingly, a sharp harmonic progression. But this means anything beyond mid-range combat parameters will effectively create an energetic burst at a random spot somewhere within the n-space universe."" She side-eyes Tech. ""Just another blip of cosmic background radiation.""
+
+Tech looks like they might say something, but no words come. Isa fills the silence again. ""Practically, it could only target reasonably nearby hostiles.""",ShroudedHML_talk5:Continue,Isa replaces Engineering in Shrouded Lens range dialogue.
 shipTrophyGanEdenSurfaceSiteCanColonize,PrintSystemCutOffText,$market.shipTrophyGanEdenSurfaceSite score:100000,,"Although Gan Eden is sealed from hyperspace, this fixed shell site is connected to self-contained atmosphere, power, and transit infrastructure. Establishing a colony here remains possible.",,Allows colonization of fixed Gan Eden surface sites while the prototype system is isolated.

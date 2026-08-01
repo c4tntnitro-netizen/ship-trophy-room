@@ -2,7 +2,6 @@ package shiptrophy;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -23,19 +22,13 @@ public class IsaFactionVisitCMD implements CommandPlugin {
     private static final String CURRENT_FACTION = "$shipTrophyIsaFactionVisitId";
     private static final String KOL_MOD_ID = "knights_of_ludd";
     private static final String KOL_FACTION_ID = "knights_of_selkie";
-    private static final String IRON_SHELL_MOD_ID = "timid_xiv";
-    private static final String IRON_SHELL_FACTION_ID = "ironshell";
     private static final String PAGSM_MOD_ID = "PAGSM";
+    private static final String PIRATE_VISIT_REVISION_ID = "pirates_v2";
     private static final String PLAYER_TITLE = "$shipTrophyIsaPlayerTitle";
-    private static final String PATH_VARIANT = "$shipTrophyIsaPathVariant";
     private static final String TRITACHYON_HIGHLIGHT =
             "$shipTrophyIsaTriTachyonHighlight";
     private static final String CHURCH_DONATION =
             "$shipTrophyIsaFactionVisitChurchDonation";
-    private static final String[] PATH_VARIANTS = {
-            "nursery", "workshop", "returned_ship", "mechanic"
-    };
-
     private static final String HEGEMONY_REWARD =
             "$shipTrophyIsaFactionVisitHegemonyReward";
     private static final String LEAGUE_REBUKE =
@@ -96,13 +89,11 @@ public class IsaFactionVisitCMD implements CommandPlugin {
             showIsa(dialog);
             return true;
         }
-        if ("current".equals(command)) {
-            return requestedFaction.equals(local.getString(CURRENT_FACTION));
-        }
         if ("markSeen".equals(command)) {
             String factionId = canonicalFaction(local.getString(CURRENT_FACTION));
             if (isSupportedFaction(factionId)) {
-                IsaTrophyManager.setFactionVisitSceneShown(factionId);
+                IsaTrophyManager.setFactionVisitSceneShown(
+                        visitStateId(factionId));
             }
             return true;
         }
@@ -122,38 +113,11 @@ public class IsaFactionVisitCMD implements CommandPlugin {
             grantTriTachyonReward();
             return true;
         }
-        if ("pickPath".equals(command)) {
-            pickPathVariant(dialog, local);
-            return true;
-        }
-        if ("currentPath".equals(command)) {
-            return value(params, 1, memoryMap)
-                    .equals(local.getString(PATH_VARIANT));
-        }
         if ("grantChurchDonation".equals(command)) {
             grantChurchDonation();
             return true;
         }
         return false;
-    }
-
-    private static void pickPathVariant(
-            InteractionDialogAPI dialog, MemoryAPI local) {
-        long seed = Global.getSector() == null
-                ? System.nanoTime()
-                : Global.getSector().getClock().getTimestamp();
-        if (Global.getSector() != null
-                && Global.getSector().getSeedString() != null) {
-            seed ^= Global.getSector().getSeedString().hashCode();
-        }
-        SectorEntityToken target = dialog == null
-                ? null : dialog.getInteractionTarget();
-        if (target != null && target.getId() != null) {
-            seed ^= ((long) target.getId().hashCode()) << 32;
-        }
-        String variant = PATH_VARIANTS[
-                new Random(seed).nextInt(PATH_VARIANTS.length)];
-        local.set(PATH_VARIANT, variant, 0f);
     }
 
     private static void grantChurchDonation() {
@@ -252,7 +216,14 @@ public class IsaFactionVisitCMD implements CommandPlugin {
 
         String actualFaction = canonicalFaction(market.getFactionId());
         return requestedFaction.equals(actualFaction)
-                && !IsaTrophyManager.wasFactionVisitSceneShown(actualFaction);
+                && !IsaTrophyManager.wasFactionVisitSceneShown(
+                        visitStateId(actualFaction));
+    }
+
+    private static String visitStateId(String factionId) {
+        return Factions.PIRATES.equals(factionId)
+                ? PIRATE_VISIT_REVISION_ID
+                : factionId;
     }
 
     private static void showIsa(InteractionDialogAPI dialog) {
@@ -272,15 +243,11 @@ public class IsaFactionVisitCMD implements CommandPlugin {
                 || Factions.DIKTAT.equals(factionId)
                 || Factions.LUDDIC_CHURCH.equals(factionId)
                 || Factions.LUDDIC_PATH.equals(factionId)
-                || Factions.PIRATES.equals(factionId)
-                || Factions.INDEPENDENT.equals(factionId)) {
+                || Factions.PIRATES.equals(factionId)) {
             return true;
         }
         if (KOL_FACTION_ID.equals(factionId)) {
             return isOptionalFactionAvailable(KOL_MOD_ID, KOL_FACTION_ID);
-        }
-        if (IRON_SHELL_FACTION_ID.equals(factionId)) {
-            return isOptionalFactionAvailable(IRON_SHELL_MOD_ID, IRON_SHELL_FACTION_ID);
         }
         return false;
     }
