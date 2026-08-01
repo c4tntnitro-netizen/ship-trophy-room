@@ -551,6 +551,9 @@ shipTrophyIsaFactionVisitHegemonyCustoms,DialogOptionSelected,$option == ship_tr
 Isa sinks several centimeters below the observation window. ""What's the big deal? I just wanted to watch.""","0:ship_trophy_isa_hegemony_spy:""They might think you're a spy.""",Hegemony vignette customs response.
 shipTrophyIsaFactionVisitHegemonySpy,DialogOptionSelected,$option == ship_trophy_isa_hegemony_spy,,"""Fine."" Isa puts the slate away. ""This'll be fine, right?""","0:ship_trophy_isa_hegemony_not_sure:""I wouldn't be so sure.""",Hegemony vignette warning.
 shipTrophyIsaFactionVisitHegemonyNotSure,DialogOptionSelected,$option == ship_trophy_isa_hegemony_not_sure,"IsaFactionVisitCMD grantHegemonyReward
+PlaySound ui_acquired_blueprint
+SetTextHighlightColors good
+SetTextHighlights ""[Fleet sensor profile reduced by 1%]""
 ","It is not fine.
 
 You and your fleet spend another fifteen hours in customs after Hegemony security confiscates Isa's slate and holds her for questioning overnight.
@@ -593,6 +596,8 @@ shipTrophyIsaFactionVisitLeagueApologize,DialogOptionSelected,$option == ship_tr
 
 The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:""Try not to buy one before we dock.""",League vignette conciliatory response.
 shipTrophyIsaFactionVisitLeagueRole,DialogOptionSelected,$option == ship_trophy_isa_league_role,"IsaFactionVisitCMD grantLeagueRebuke
+SetTextHighlightColors bad
+SetTextHighlights ""[Relationship with Isa reduced by 5]""
 ","""Hm.""
 
 Isa turns away and busies herself with her slate.
@@ -608,6 +613,9 @@ She holds your gaze for another moment before looking back toward the retreating
 
 The purchase listing remains open on her slate.","0:ship_trophy_isa_league_purchase:""Try not to buy one before we dock.""",League vignette faithful response.
 shipTrophyIsaFactionVisitLeaguePurchase,DialogOptionSelected,$option == ship_trophy_isa_league_purchase,"IsaFactionVisitCMD grantLeaguePurchase
+PlaySound ui_acquired_blueprint
+SetTextHighlightColors bad good
+SetTextHighlights ""[Lost 2,000 credits]"" ""[Thunder wing LPC acquired]""
 ","""No promises.""
 
 Isa dismisses the purchase listing, but bookmarks the technical specifications.
@@ -642,17 +650,7 @@ Isa leans toward the glass.
 shipTrophyIsaFactionVisitTriTachyonHey,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_hey,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
 shipTrophyIsaFactionVisitTriTachyonChief,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_chief,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
 shipTrophyIsaFactionVisitTriTachyonLounge,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_lounge,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
-shipTrophyIsaFactionVisitTriTachyonSecond,ShipTrophyIsaTriTachyonSecond,,"SetTextHighlightColors $shipTrophyIsaTriTachyonHighlight
-SetTextHighlights ""eighty-seven percent likelihood that Isa would benefit from immediate Afflictor ownership""
-","Before Isa can answer, her slate vibrates again.
-
-This time, the advertisement addresses her by name.
-
-ISAAC LEICESTER -- CUSTOMA SHIP ARCHITECTURES PERSONNEL DISCOUNT
-
-Based on her recent technical searches, professional history, fleet composition, estimated liquidity, and observed pupil response during the demonstration, Tri-Tachyon predicts an eighty-seven percent likelihood that Isa would benefit from immediate Afflictor ownership.
-
-Financing has already been approved.","0:ship_trophy_isa_tritachyon_third:Continue",Tri-Tachyon targeted-advertisement beat.
+shipTrophyIsaFactionVisitTriTachyonSecond,ShipTrophyIsaTriTachyonSecond,,IsaFactionVisitCMD showTriTachyonAd,,"0:ship_trophy_isa_tritachyon_third:Continue",Tri-Tachyon targeted-advertisement beat with corporate typography.
 shipTrophyIsaFactionVisitTriTachyonThird,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_third,,"Isa hastily wipes the advert from her slate.
 
 ""I didn't give them any of that information.""
@@ -732,6 +730,9 @@ A complete phase-coil maintenance manual has been added to her account as a comp
 
 She bookmarks it.","0:ship_trophy_isa_tritachyon_objection:I thought you objected to their methods.",Tri-Tachyon counter-advertising response.
 shipTrophyIsaFactionVisitTriTachyonObjection,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_objection,"IsaFactionVisitCMD grantTriTachyonReward
+PlaySound ui_acquired_blueprint
+SetTextHighlightColors good
+SetTextHighlights ""[Monthly fleet supply consumption reduced by 1%]""
 ","""I hate being manipulated.""
 
 Isa closes the Afflictor financing offer. The maintenance manual remains open. She winks.
@@ -839,13 +840,17 @@ shipTrophyIsaFactionVisitChurchChaplainSecond,DialogOptionSelected,$option == sh
 The nun presses a worn and weathered tablet into Isa's hands. On it, a donation form. Isa glances at the suggested amount, then she looks at you. Slowly, she begins to grin.","0:ship_trophy_isa_church_donate:Donate 1,000 credits.
 10:ship_trophy_isa_church_escape:Briefly boost burn level at the cost of fuel and combat readiness.",Luddic Church chaplain response.
 shipTrophyIsaFactionVisitChurchDonate,DialogOptionSelected,$option == ship_trophy_isa_church_donate,"IsaFactionVisitCMD grantChurchDonation
+SetTextHighlightColors bad
+SetTextHighlights ""[Lost 1,000 credits]""
 ","You authorize the transfer while the nun beams.
 
 ""May Ludd reward your generosity in heaven.""
 
 Isa hands the tablet back.
 
-""He already did."" She gives you a cheerful pat on the shoulder.","0:ship_trophy_isa_church_response:""What were you doing here?""",Luddic Church donation response; deducts 1,000 credits once.
+""He already did."" She gives you a cheerful pat on the shoulder.
+
+[Lost 1,000 credits]","0:ship_trophy_isa_church_response:""What were you doing here?""",Luddic Church donation response; deducts 1,000 credits once.
 shipTrophyIsaFactionVisitChurchEscape,DialogOptionSelected,$option == ship_trophy_isa_church_escape,,"You turn and walk briskly toward the docking concourse.
 
 Isa calls after you.

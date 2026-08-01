@@ -65,6 +65,7 @@ Isa sinks several centimeters below the observation window. "What's the big deal
 === station_hegemony_not_sure ===
 // Runtime rule: shipTrophyIsaFactionVisitHegemonyNotSure
 // Runtime effect: IsaFactionVisitCMD grantHegemonyReward
+// Runtime presentation: green result line + ui_acquired_blueprint cue
 
 It is not fine.
 
@@ -157,6 +158,7 @@ The purchase listing remains open on her slate.
 === station_league_purchase ===
 // Runtime rule: shipTrophyIsaFactionVisitLeaguePurchase
 // Runtime effect: IsaFactionVisitCMD grantLeaguePurchase
+// Runtime presentation: red credit loss, green LPC gain + acquisition cue
 
 "No promises."
 
@@ -205,16 +207,20 @@ Isa leans toward the glass.
 + ["Have you seen the Officers' Lounge here? It's is insane. They serve drinks with monomolecular ice cubes."] -> station_tritachyon_2
 
 === station_tritachyon_2 ===
+// Runtime presentation: IsaFactionVisitCMD showTriTachyonAd
+// Orbitron blue header, small muted targeting copy, blue probability/offer
+// highlights, and a green financing-status line.
 
 Before Isa can answer, her slate vibrates again.
 
 This time, the advertisement addresses her by name.
 
-ISAAC LEICESTER -- CUSTOMA SHIP ARCHITECTURES PERSONNEL DISCOUNT
+ISAAC LEICESTER
+CUSTOMA SHIP ARCHITECTURES // PERSONNEL DISCOUNT
 
 Based on her recent technical searches, professional history, fleet composition, estimated liquidity, and observed pupil response during the demonstration, Tri-Tachyon predicts an eighty-seven percent likelihood that Isa would benefit from immediate Afflictor ownership. [Highlight in light blue tone]
 
-Financing has already been approved.
+FINANCING STATUS: PRE-APPROVED
 
 + [Continue] -> station_tritachyon_3
 
@@ -341,6 +347,7 @@ She bookmarks it.
 === station_tritachyon_objection ===
 // Runtime rule: shipTrophyIsaFactionVisitTriTachyonObjection
 // Runtime effect: IsaFactionVisitCMD grantTriTachyonReward
+// Runtime presentation: green result line + ui_acquired_blueprint cue
 
 "I hate being manipulated."
 

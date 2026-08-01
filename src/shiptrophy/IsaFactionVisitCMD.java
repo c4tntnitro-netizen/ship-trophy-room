@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.CommandPlugin;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -15,6 +16,8 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
 /** One-time faction station vignettes shown after Isa joins the fleet. */
@@ -97,6 +100,10 @@ public class IsaFactionVisitCMD implements CommandPlugin {
             }
             return true;
         }
+        if ("showTriTachyonAd".equals(command)) {
+            showTriTachyonAd(dialog);
+            return true;
+        }
         if ("grantHegemonyReward".equals(command)) {
             grantHegemonyReward();
             return true;
@@ -130,6 +137,42 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         if (fleet == null || fleet.getCargo() == null) return;
         float credits = fleet.getCargo().getCredits().get();
         fleet.getCargo().getCredits().subtract(Math.min(1000f, credits));
+    }
+
+    /** Renders the targeted advertisement as an in-world corporate insert. */
+    private static void showTriTachyonAd(InteractionDialogAPI dialog) {
+        if (dialog == null || dialog.getTextPanel() == null) return;
+        TextPanelAPI text = dialog.getTextPanel();
+        java.awt.Color corporate = new java.awt.Color(90, 175, 255);
+        if (Global.getSector() != null
+                && Global.getSector().getFaction(Factions.TRITACHYON) != null) {
+            corporate = Global.getSector().getFaction(Factions.TRITACHYON)
+                    .getBaseUIColor();
+        }
+
+        text.setFontInsignia();
+        text.addPara("Before Isa can answer, her slate vibrates again.\n\n"
+                + "This time, the advertisement addresses her by name.");
+
+        text.setFontOrbitron();
+        text.addPara("ISAAC LEICESTER", corporate);
+        text.setFontSmallInsignia();
+        text.addPara("CUSTOMA SHIP ARCHITECTURES // PERSONNEL DISCOUNT",
+                Misc.getGrayColor());
+
+        String assessment = "Based on her recent technical searches, "
+                + "professional history, fleet composition, estimated "
+                + "liquidity, and observed pupil response during the "
+                + "demonstration, Tri-Tachyon predicts an eighty-seven "
+                + "percent likelihood that Isa would benefit from immediate "
+                + "Afflictor ownership.";
+        LabelAPI copy = text.addPara(assessment, Misc.getGrayColor());
+        copy.setHighlight("eighty-seven percent likelihood",
+                "immediate Afflictor ownership");
+        copy.setHighlightColors(corporate, corporate);
+        text.addPara("FINANCING STATUS: PRE-APPROVED",
+                Misc.getPositiveHighlightColor());
+        text.setFontInsignia();
     }
 
     private static void grantHegemonyReward() {
