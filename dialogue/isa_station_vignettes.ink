@@ -33,7 +33,7 @@ ISA STATION VIGNETTES
 + [Luddic Path] -> station_path
 + [Pirates] -> station_pirates
 + [Independent] -> station_independent
-+ [Knights of Ludd (optional)] -> station_knights
+//+ [Knights of Ludd (optional)] -> station_knights
 + [Iron Shell (optional)] -> station_ironshell
 + [End preview] -> END
 
@@ -194,31 +194,42 @@ A heartbeat later, it reappears several kilometers away, directly behind a targe
 
 Isa leans toward the glass.
 
-"That turn rate was far too high for auxiliary thrusters, and I don't see any extra maneuvering ports," she murmurs. "Did those psychopaths actually disable the safety interlocks for a marketing stunt? Stars above."
+"...Turn rate and speed were far too high for secondary thrusters, and I don't see any extra exhaust ports," she mutters. "Did those psychopaths actually disable the safety interlocks for a marketing stunt?"
 
-Her slate vibrates again.
++ [Hey, Isa.] -> station_tritachyon_2
+
++ [Chief.] -> station_tritachyon_2
+
++ [Officers' lounge here is insane. They serve drinks with monomolecular ice cubes.] -> station_tritachyon_2
+
+=== station_tritachyon_2 ===
+
+Before Isa can answer, her slate vibrates again.
 
 This time, the advertisement addresses her by name.
 
-CUSTOMA SHIP ARCHITECTURES PERSONNEL DISCOUNT
+ISAAC LEICESTER -- CUSTOMA SHIP ARCHITECTURES PERSONNEL DISCOUNT
 
-Based on her recent technical searches, professional history, fleet composition, estimated liquidity, and observed pupil response during the demonstration, Tri-Tachyon predicts an eighty-seven percent likelihood that Isa would benefit from immediate Afflictor ownership.
+Based on her recent technical searches, professional history, fleet composition, estimated liquidity, and observed pupil response during the demonstration, Tri-Tachyon predicts an eighty-seven percent likelihood that Isa would benefit from immediate Afflictor ownership. [Highlight in light blue tone]
 
 Financing has already been approved.
 
-Isa rolls her eyes.
++ [Continue] -> station_tritachyon_3
+
+=== station_tritachyon_3 ===
+
+Isa hastily wipes the advert from her slate.
 
 "I didn't give them any of that information."
 
-The showroom voice answers without being asked.
+The showroom voice answers without being asked, speaking in the polished cadence of a TriOS delta-level AI.
 
-"You did not need to, Ms. Leicester. Tri-Tachyon Marketing Services is the finest in the Domain. We have--"
+"You didn't need to, Ms. Leicester. Tri-Tachyon Marketing Services is the finest in the Domain. We have--"
 
-Isa cuts the advertisement chatbot off with a wave of the hand, scowling at the speakers overhead.
+Isa cuts it off with a wave, scowling at the speakers overhead.
 
 + [That's efficient.] -> station_tritachyon_efficient
 + [That's creepy.] -> station_tritachyon_wary
-+ [That's an abomination.] -> station_tritachyon_faithful
 
 === station_tritachyon_efficient ===
 // Runtime rule: shipTrophyIsaFactionVisitTriTachyonEfficient
@@ -256,31 +267,26 @@ She pauses.
 
 -> station_tritachyon_second_choice
 
-=== station_tritachyon_faithful ===
-// Runtime rule: shipTrophyIsaFactionVisitTriTachyonFaithful
-
-"That's one way to put it," she says quietly. "And you're not entirely wrong."
-
-For a moment, the showroom's blue light reflects strangely in her eyes.
-
-Isa begins digging through the concourse app's privacy settings. Each menu opens into three more menus, all of them already set to OPTIMAL.
-
-"I think entering the concourse counted as consent."
-
-She pauses.
-
-"Possibly docking at the station counted as consent."
-
--> station_tritachyon_second_choice
-
 === station_tritachyon_second_choice ===
-+ [I'll spring for the premium docking package next time. I hear it comes with fewer ads.] -> station_tritachyon_premium
++ [I'll spring for the premium docking package next time. Ad-free, I hear.] -> station_tritachyon_premium
 + [I think being born counted as consent. Your fault, really.] -> station_tritachyon_bodyguards
 
 === station_tritachyon_premium ===
 // Runtime rule: shipTrophyIsaFactionVisitTriTachyonPremium
 
 Isa snorts.
+
+"What, premium docking means they rotate the station so you don't have to turn your ship around?"
+
+You glance through the panoramic window; in the background, six ox tugboats are slowly maneuvering a motionless Starliner inside of its berth.
+
++ ["Close, actually."] -> station_tritachyon_premium_2
+
+=== station_tritachyon_premium_2 ===
+
+Isa follows your gaze.
+
+"I hate this place."
 
 + [Continue.] -> station_tritachyon_response
 
@@ -296,7 +302,7 @@ You spend the next few moments kicking each other.
 
 It is extremely unfair that your bodyguards help her kick you too.
 
-By the time you get up from the fetal position you were in, Isa already has her slate open.
+By the time you unfold yourself from the floor, Isa already has her slate open.
 
 + [Continue.] -> station_tritachyon_response
 
@@ -304,7 +310,7 @@ By the time you get up from the fetal position you were in, Isa already has her 
 // Runtime rule: shipTrophyIsaFactionVisitTriTachyonResponse
 // Runtime visual: IsaContactRulesCMD showContactPortrait
 
-Isa pulls a small data wafer from her pack and plugs it back into a secondary port on her slate.
+Isa pulls a small data wafer from her pack and plugs it into a secondary port on her slate.
 
 Her slate's display fractures into a hundred miniature windows, each controlled by one of her own delta-level AI agents.
 
@@ -344,50 +350,353 @@ Isa closes the Afflictor financing offer. The maintenance manual remains open. S
 
 + [Continue to {market_name}.] -> station_vignette_menu
 
+
 === station_diktat ===
-// Runtime rules: shipTrophyIsaFactionVisitDiktat / shipTrophyIsaFactionVisitResponseDiktat
+// Runtime rule: shipTrophyIsaFactionVisitDiktat
 
-The station's traffic-control feed is crowded with Diktat hulls, every one polished for inspection. Isa zooms in on an Executor until its gilded weapon housings fill the display.
+Before clearing customs, you pass through a visitors’ concourse glowing with Andradan restaurants, jewelers, and imported food.
 
-"They gold-plated a range-calibration problem until it became doctrine," she says. "Awful taste. Excellent tolerances. I hate how much I like it."
+The lights end at the customs barrier.
 
-+ "Don't say that where they can hear you." -> station_diktat_response
+On the other side, you find Isa chatting with a couple of Diktat engineers beside the arrivals portal. She waves, breaks off from the conversation, and joins you.
+
+There are no shops here. Only state dispensaries, shuttered offices, and a Diktat officer holding a portrait of Andrada above a line of workers.
+
+“By the Lion’s mercy,” he announces, “every loyal citizen eats. Andrada sees your glorious labor and smiles upon you!”
+
+Through a tiny window, a clerk hands each laborer a foil-wrapped ration small enough to palm. The Diktat emblem has been stamped slightly off-center. Beneath it, part of a Hegemony logo remains visible.
+
+HEGAID.
+
+Isa watches a shipforge worker tuck his ration under one arm and shuffle away.
+
+“{player_title}.”
+
+[“This your first time in a Diktat station?”] -> station_diktat_2
+
+=== station_diktat_2 ===
+
+“Yeah,” Isa says. “Can we finish things quickly here? I don’t like this place.”
+
+* [Neither do I. We won’t stay long.] -> station_diktat_agree
+* [You seemed friendly enough with those engineers.] -> station_diktat_chide
+* [The Diktat keeps Sindria safe. That counts for something.] -> station_diktat_defend
+
+=== station_diktat_agree ===
+
+“Good.”
+
+Isa glances back at the ration line.
+
+“I was worried you were about to suggest lunch.”
+
+-> station_diktat_3
+
+=== station_diktat_chide ===
+
+“The engineers aren’t the problem.”
+
+Isa glances back at the ration line.
+
+“They’re usually the ones fixing it.”
+
+-> station_diktat_3
+
+=== station_diktat_defend ===
+
+“So does that shipforge worker.”
+
+Isa watches him disappear into the crowd, ration tucked beneath his arm.
+
+“Behold, the liberation of Philip Andrada.”
+
+-> station_diktat_3
+
+=== station_diktat_3 ===
+
+You leave the arrivals portal behind.
+
+The station’s traffic-control feed is crowded with Diktat hulls, every one polished for inspection. On the main display, a parade fleet of Lion’s Guard ships—the supposed elite of Philip Andrada’s navy.
+
+Finally perking up, Isa zooms in on an Executor until its gilded weapon housings fill the display.
+
+“Look at the placement of those ordnance mounts,” she says. “Ballistics forward for shield suppression. Energy weapons held back for armor and hull.”
+
+She studies the altered mounts, then brings up the specifications for its Lion’s Guard escorts.
+
+“What went wrong...?”
+
+* [You sound pained.] -> station_diktat_response
 
 === station_diktat_response ===
 
-"What, the taste or the tolerances?" Isa asks. She lowers her voice anyway.
+“A little, yeah.”
 
-+ [Continue to {market_name}.] -> station_vignette_menu
+Isa flicks between the Executor and its escorts.
+
+“The Executor is inspired, honestly. Its escorts are straight garbage.”
+
+One ship drifts out of formation. The others correct a moment too late.
+
+A white-and-purple-liveried Falcon fires its maneuvering jets and lurches sideways into its neighbor’s shields, instantly overloading both ships' flux grids. Lightning arcs dance between the two hulls. You can already imagine the warning klaxons blaring through both CICs.
+
+Isa lowers her slate and sighs.
+
+“I’m going back to the fleet.”
+
+[Continue to {market_name}.] -> station_vignette_menu
+
+
+=== station_diktat_pagsm ===
+// Runtime rule: shipTrophyIsaFactionVisitDiktatPAGSM
+
+The concourse resembles a fuel depot rebuilt as an Andrada-themed amusement park. Purple neon traces the bulkheads. Animated Lions salute from every wall. Somewhere behind a museum gift shop and a Volturnian lobster petting pool, the same eight bars of techno begin again. Multiple clubs are playing the same song, at seemed. 
+
+The arrivals portal deposits you directly in Isa’s path.
+
+She nearly collides with you, arms piled high with Andrada merchandise, a curly straw clenched between her lips. It runs down into a massive, five-gallon novelty cup shaped like a Prometheus PM-15000.
+
+Isa stops.
+
+She lowers her sunglasses, revealing another pair waiting underneath.
+
+After a moment, she gives you a solemn nod, turns on her heel, walks right into one of your bodyguards, probably near blind due to the double-layers of shades she was wearing and marches back toward the command ship.
+
+[Continue to {market_name}.] -> station_vignette_menu
+
 
 === station_church ===
-// Runtime rules: shipTrophyIsaFactionVisitChurch / shipTrophyIsaFactionVisitResponseChurch
+// Runtime rule: shipTrophyIsaFactionVisitChurch
 
-An old Church warship moves past the station under tug power, armor dark with repairs accumulated over generations. Isa watches it with unusual quiet.
+You are late leaving the docking concourse.
 
-"Everyone calls them old," she says at last. "Old isn't the same as obsolete. A Mora knows exactly what it is: a cathedral with a flight deck, built to keep its people alive long enough to come home and patch the same plate again."
+By the time you reach the arrivals hall, you notice a shock of familiar red hair beyond a passing line of hooded pilgrims. Curious, you approach.
 
-+ "You sound almost converted." -> station_church_response
+Isa has been cornered beside a devotional kiosk by a nun of the Church of Galactic Redemption.
+
+“There is joy to be found among the Sisters,” the nun says, clasping Isa’s hands. “A life of holiness and service, far from the worldly temptations of Moloch.”
+
+Isa carefully extracts one hand.
+
+“That sounds real nice, ma’am, but I already have a job.”
+
+“Whatever debt has been forced upon you, the convent can—”
+
+* [“You should probably ask what she does for a living.”] -> station_church_ask
+* [“She's actually part of our fleet's Chaplain Corps”] -> station_church_chaplain
+
+=== station_church_ask ===
+
+The nun hesitates.
+
+“What is your vocation, child?”
+
+Isa looks at you.
+
+Then back at the nun.
+
+“I'm an engineer. I design warships. Verrry advanced ones.”
+
+The nun releases her hands.
+
+“Oh.”
+
+She makes a hurried sign of blessing and retreats into the crowd, while Isa crosses her arms, self-satisfied.
+
+“What if I wanted to become a nun?”
+
+* ["What were you doing here?"] -> station_church_response
+
+=== station_church_chaplain ===
+
+The nun clasps her hands in delight.
+
+“A fleet chaplain? Oh, child, why didn’t you say so?”
+
+Isa looks at you and silently mouths, I’m going to kill you.
+
+“She’s modest about her calling,” you say.
+
+“Then perhaps your fleet would contribute to our relief ministry. For the Glory of the Prophet, Sister.”
+
+The nun presses a worn and weathered into Isa’s hands. On it, a donation form. Isa glances at the suggested amount. Then she looks at you. Slowly, she begins to smirk.
+
+* [Donate 1,000 credits.] -> station_church_donate
+* [Briefly boost burn level at the cost of fuel and combat readiness.] -> station_church_escape
+
+=== station_church_donate ===
+// Runtime effect: deduct 1000 credits
+
+You authorize the transfer while the nun beams.
+
+“May Ludd reward your generosity in heaven.”
+
+Isa hands the slate back.
+
+“He already did.” She gives you a cheerful pat on the shoulder.
+
+* ["What were you doing here?"] -> station_church_response
+
+=== station_church_escape ===
+
+You turn and walk briskly toward the docking concourse.
+
+Isa calls after you.
+
+“Captain?”
+
+You accelerate.
+
+“Captain!”
+
+Your bodyguards hurry to keep formation as you weave through the passing pilgrims. By the time you reach the main concourse, Isa is gaining on you.
+
+* [Continue to {market_name}.] -> station_vignette_menu
 
 === station_church_response ===
+// Runtime rule: shipTrophyIsaFactionVisitResponseChurch
 
-"To redundancy, maybe." Isa watches the old ship disappear behind the station. "Every spacer finds religion eventually."
+“Stopped by the shrine. The choir was rehearsing and I like the music.”
 
-+ [Continue to {market_name}.] -> station_vignette_menu
+She looks back toward the vaulted doors. A hymn carries faintly through them, nearly lost beneath the station machinery.
+
+“Don’t make it weird.”
+
+* [Continue to {market_name}.] -> station_vignette_menu
+
 
 === station_path ===
-// Runtime rules: shipTrophyIsaFactionVisitPath / shipTrophyIsaFactionVisitResponsePath
 
-Isa studies the station's picket ships through a passive sensor feed, annotating exposed conduits, overdriven engines, and armor plates that do not appear to have begun life on the same hull.
++ [station_path_nursery] -> station_path_nursery
++ [station_path_workshop] -> station_path_workshop
++ [station_path_returned_ship] -> station_path_returned_ship
++ [station_path_mechanic] -> station_path_mechanic
 
-"This is a crime scene with engine mounts," she whispers. "But look at those feed lines. They built it to keep firing while it's on fire. That's not ignorance. That's commitment without brakes."
 
-+ "Please tell me you aren't taking notes." -> station_path_response
 
-=== station_path_response ===
+=== station_path_nursery ===
+// Runtime rule: shipTrophyIsaFactionVisitPathNursery
 
-Isa tilts the slate away from you. "Of course not." Six pages of diagrams vanish from view.
+You asked Isa to accompany you to the ss and Isa cut through an abandoned habitation ring on the way into the station.
 
-+ [Continue to {market_name}.] -> station_vignette_menu
+A blast door stands open beside the corridor.
+
+MUNITIONS STORAGE
+
+Inside, missile crates have been stacked where the bunks used to be. Faded animals and stars still cover the walls. Beside the doorframe, someone marked a child’s height each year in black ink.
+
+Isa stops.
+
+
+A Pather carrying an ammunition case shoulders past you and disappears inside.
+
+* [Keep moving.] -> station_path_nursery_response
+
+=== station_path_nursery_response ===
+
+She glances back at the drawings.
+
+Then she follows.
+
+* [Continue to {market_name}.] -> station_vignette_menu
+
+=== station_path_workshop ===
+// Runtime rule: shipTrophyIsaFactionVisitPathWorkshop
+
+The sound of machine tools draws Isa toward an open workshop.
+
+Inside, a dozen mechanics work silently on a row of civilian shuttles.
+
+Passenger seats lie in heaps across the deck. The cabins have been gutted and packed with sealed drums, cable bundles, and crude detonators.
+
+Just careful hands and measured work.
+
+One mechanic paints over the faded logo of a passenger line with the symbol of the Prophet Ludd. Isa takes a step back.
+
+* [Those are commuter shuttles.] -> station_path_workshop_response
+
+=== station_path_workshop_response ===
+
+“I know.”
+
+A worker closes the hatch on the first shuttle.
+
+“Keep walking.”
+
+She does not look back until the workshop is out of sight.
+
+* [Continue to {market_name}.] -> station_vignette_menu
+
+=== station_path_returned_ship ===
+// Runtime rule: shipTrophyIsaFactionVisitPathReturnedShip
+
+A Pather destroyer limps into the station under tug power.
+
+Its armor is glowing nearly white-hot around the reactor compartment. 
+
+Half the surviving crew stagger down the boarding ramp with blistered faces and blackened hands. Skin hangs loose where their pressure suits have split. One collapses before reaching the deck.
+
+Dockworkers step around him. They are already unloading ammunition and draining the ship’s remaining fuel.
+
+“I know those wounds. The reactor shielding failed.”
+
+* [Battle damage?] -> station_path_returned_ship_response
+
+=== station_path_returned_ship_response ===
+
+Isa shakes her head.
+
+“Built that way.”
+
+A cart stacked with missiles rolls past the fallen crewman. The dockworkers begin cutting damaged armor from the destroyer while its crew are still being carried off.
+
+Isa lowers her slate.
+
+“Let’s go.”
+
+* [Continue to {market_name}.] -> station_vignette_menu
+
+=== station_path_mechanic ===
+// Runtime rule: shipTrophyIsaFactionVisitPathMechanic
+
+A young Pather mechanic notices Isa studying an exposed power junction.
+
+“You know reactors, sister?”
+
+His voice is friendly. He offers her a cup of tea from the flask beside his tools.
+
+Isa accepts it cautiously.
+
+“A little.”
+
+He shows her a schematic and asks how to keep an overloaded core from shutting itself down.
+
+Isa begins to answer.
+
+Then she notices the civilian transponder codes beneath the reactor diagram.
+
+“You aren’t trying to save this ship.”
+
+The mechanic smiles.
+
+“No, sister.”
+
+* [Then what are you trying to do?] -> station_path_mechanic_response
+
+=== station_path_mechanic_response ===
+
+“It only needs to remain stable long enough to deploy its ordinance.”
+
+He says it as casually as if discussing fuel economy.
+
+Isa sets the tea down. The mechanic gives her an apologetic smile.
+
+“Was it too sweet?”
+
+Your Chief Engineer disappers into the command ship and doesn't come out for the rest of the trip.
+
+* [Continue to {market_name}.] -> station_vignette_menu
+
 
 === station_pirates ===
 // Runtime rules: shipTrophyIsaFactionVisitPirates / shipTrophyIsaFactionVisitResponsePirates
@@ -419,21 +728,6 @@ Isa cycles through the station's traffic registry: Mules rebuilt on three differ
 
 + [Continue to {market_name}.] -> station_vignette_menu
 
-=== station_knights ===
-// Runtime rules: shipTrophyIsaFactionVisitKnights / shipTrophyIsaFactionVisitResponseKnights
-// Optional: shown only when knights_of_ludd is enabled and knights_of_selkie exists.
-
-The station grants priority passage to a Knights of Ludd formation. Isa leans over the sensor plot as armored signatures sweep past like a procession.
-
-"They built a cathedral into a cavalry charge," she says, visibly delighted. "All that armor, all that forward commitment, and just enough restraint in the flux grid to pretend this is a measured decision."
-
-+ "Pretend?" -> station_knights_response
-
-=== station_knights_response ===
-
-"Measured decisions usually include a plan for turning around," Isa says. "These have a prayer instead. I respect the weight savings."
-
-+ [Continue to {market_name}.] -> station_vignette_menu
 
 === station_ironshell ===
 // Runtime rules: shipTrophyIsaFactionVisitIronShell / shipTrophyIsaFactionVisitResponseIronShell
