@@ -225,6 +225,7 @@ FINANCING STATUS: PRE-APPROVED
 + [Continue] -> station_tritachyon_3
 
 === station_tritachyon_3 ===
+// Runtime presentation: TriOS header and speech use blue system text.
 
 Isa hastily wipes the advert from her slate.
 
@@ -251,6 +252,7 @@ She turns the slate around. Beneath the financing offer is a projected repayment
 "Though they did get my preferred reactor configuration right."
 
 Isa begins digging through the concourse app's privacy settings. Each menu opens into three more menus, all of them already set to OPTIMAL.
+// Runtime presentation: OPTIMAL highlighted in Tri-Tachyon blue.
 
 "I think entering the concourse counted as consent."
 
@@ -262,6 +264,7 @@ She pauses.
 
 === station_tritachyon_wary ===
 // Runtime rule: shipTrophyIsaFactionVisitTriTachyonWary
+// Runtime presentation: OPTIMAL highlighted in Tri-Tachyon blue.
 
 "Exactly."
 
@@ -362,6 +365,7 @@ Isa closes the Afflictor financing offer. The maintenance manual remains open. S
 
 === station_diktat ===
 // Runtime rule: shipTrophyIsaFactionVisitDiktat
+// Runtime presentation: HEGAID highlighted in Hegemony orange.
 
 Before clearing customs, you pass through a visitors’ concourse glowing with Andradan restaurants, jewelers, and imported food.
 

@@ -651,17 +651,11 @@ shipTrophyIsaFactionVisitTriTachyonHey,DialogOptionSelected,$option == ship_trop
 shipTrophyIsaFactionVisitTriTachyonChief,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_chief,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
 shipTrophyIsaFactionVisitTriTachyonLounge,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_lounge,FireBest ShipTrophyIsaTriTachyonSecond,,,Routes the Tri-Tachyon greeting.
 shipTrophyIsaFactionVisitTriTachyonSecond,ShipTrophyIsaTriTachyonSecond,,IsaFactionVisitCMD showTriTachyonAd,,"0:ship_trophy_isa_tritachyon_third:Continue",Tri-Tachyon targeted-advertisement beat with corporate typography.
-shipTrophyIsaFactionVisitTriTachyonThird,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_third,,"Isa hastily wipes the advert from her slate.
-
-""I didn't give them any of that information.""
-
-The showroom voice answers without being asked, speaking in the polished cadence of a TriOS delta-level AI.
-
-""You didn't need to, Ms. Leicester. Tri-Tachyon Marketing Services is the finest in the Domain. We have--""
-
-Isa cuts it off with a wave, scowling at the speakers overhead.","0:ship_trophy_isa_tritachyon_efficient:That's efficient.
+shipTrophyIsaFactionVisitTriTachyonThird,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_third,IsaFactionVisitCMD showTriOSInterruption,,"0:ship_trophy_isa_tritachyon_efficient:That's efficient.
 10:ship_trophy_isa_tritachyon_wary:That's creepy.",Tri-Tachyon sales-AI beat.
-shipTrophyIsaFactionVisitTriTachyonEfficient,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_efficient,,"Isa gives you a frown.
+shipTrophyIsaFactionVisitTriTachyonEfficient,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_efficient,"SetTextHighlightColors $shipTrophyIsaTriTachyonHighlight
+SetTextHighlights OPTIMAL
+","Isa gives you a frown.
 
 ""Efficient ain't the same thing as harmless, $shipTrophyIsaPlayerTitle.""
 
@@ -677,7 +671,9 @@ She pauses.
 
 ""Possibly docking at the station counted as consent.""","0:ship_trophy_isa_tritachyon_premium:I'll spring for the premium docking package next time. Ad-free, I hear.
 10:ship_trophy_isa_tritachyon_bodyguards:I think being born counted as consent. Your fault, really.",Tri-Tachyon vignette efficient response.
-shipTrophyIsaFactionVisitTriTachyonWary,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_wary,,"""Exactly.""
+shipTrophyIsaFactionVisitTriTachyonWary,DialogOptionSelected,$option == ship_trophy_isa_tritachyon_wary,"SetTextHighlightColors $shipTrophyIsaTriTachyonHighlight
+SetTextHighlights OPTIMAL
+","""Exactly.""
 
 Isa begins digging through the concourse app's privacy settings. Each menu opens into three more menus, all of them already set to OPTIMAL.
 
@@ -751,6 +747,8 @@ Isa stops. She lowers her sunglasses, revealing another pair waiting underneath.
 
 After a moment, she gives you a solemn nod, turns on her heel, walks right into one of your bodyguards, probably near blind due to the double-layers of shades she was wearing and marches back toward the command ship.","0:ship_trophy_isa_faction_visit_continue:Continue to $marketName.",PAGSM-specific Sindrian Diktat station vignette.
 shipTrophyIsaFactionVisitDiktat,OpenInteractionDialog,IsaFactionVisitCMD shouldShowDiktatVanilla score:12000,"IsaFactionVisitCMD prepare sindrian_diktat
+SetTextHighlightColors $shipTrophyIsaHegemonyHighlight
+SetTextHighlights HEGAID
 ","Before clearing customs, you pass through a visitors' concourse glowing with Andradan restaurants, jewelers, and imported food.
 
 The lights end at the customs barrier.

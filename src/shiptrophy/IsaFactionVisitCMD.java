@@ -30,6 +30,8 @@ public class IsaFactionVisitCMD implements CommandPlugin {
     private static final String PLAYER_TITLE = "$shipTrophyIsaPlayerTitle";
     private static final String TRITACHYON_HIGHLIGHT =
             "$shipTrophyIsaTriTachyonHighlight";
+    private static final String HEGEMONY_HIGHLIGHT =
+            "$shipTrophyIsaHegemonyHighlight";
     private static final String CHURCH_DONATION =
             "$shipTrophyIsaFactionVisitChurchDonation";
     private static final String HEGEMONY_REWARD =
@@ -89,6 +91,14 @@ public class IsaFactionVisitCMD implements CommandPlugin {
                                 .getBaseUIColor(),
                         0f);
             }
+            if (Global.getSector() != null
+                    && Global.getSector().getFaction(Factions.HEGEMONY) != null) {
+                local.set(
+                        HEGEMONY_HIGHLIGHT,
+                        Global.getSector().getFaction(Factions.HEGEMONY)
+                                .getBaseUIColor(),
+                        0f);
+            }
             showIsa(dialog);
             return true;
         }
@@ -102,6 +112,10 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         }
         if ("showTriTachyonAd".equals(command)) {
             showTriTachyonAd(dialog);
+            return true;
+        }
+        if ("showTriOSInterruption".equals(command)) {
+            showTriOSInterruption(dialog);
             return true;
         }
         if ("grantHegemonyReward".equals(command)) {
@@ -173,6 +187,33 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         text.addPara("FINANCING STATUS: PRE-APPROVED",
                 Misc.getPositiveHighlightColor());
         text.setFontInsignia();
+    }
+
+    /** Separates the showroom AI's speech from the surrounding narration. */
+    private static void showTriOSInterruption(InteractionDialogAPI dialog) {
+        if (dialog == null || dialog.getTextPanel() == null) return;
+        TextPanelAPI text = dialog.getTextPanel();
+        java.awt.Color corporate = new java.awt.Color(90, 175, 255);
+        if (Global.getSector() != null
+                && Global.getSector().getFaction(Factions.TRITACHYON) != null) {
+            corporate = Global.getSector().getFaction(Factions.TRITACHYON)
+                    .getBaseUIColor();
+        }
+
+        text.setFontInsignia();
+        text.addPara("Isa hastily wipes the advert from her slate.\n\n"
+                + "\"I didn't give them any of that information.\"\n\n"
+                + "The showroom voice answers without being asked, speaking "
+                + "in the polished cadence of a TriOS delta-level AI.");
+        text.setFontOrbitron();
+        text.addPara("TRIOS // MARKETING SERVICES", corporate);
+        text.setFontSmallInsignia();
+        text.addPara("\"You didn't need to, Ms. Leicester. Tri-Tachyon "
+                + "Marketing Services is the finest in the Domain. We "
+                + "have--\"", corporate);
+        text.setFontInsignia();
+        text.addPara("Isa cuts it off with a wave, scowling at the speakers "
+                + "overhead.");
     }
 
     private static void grantHegemonyReward() {
