@@ -80,6 +80,15 @@ public final class ShatteredRingGenerator {
             }
             if (ring == null) return;
 
+            // The Shattered Ring is an established inhabited market, not an
+            // exploration find. Reapply this on every load so campaigns made
+            // with older builds do not retain a stale discoverable flag and
+            // appear forever as "something to be discovered" on the map.
+            ring.setDiscoverable(null);
+            ring.setDiscoveryXP(null);
+            ring.setSensorProfile(null);
+            ring.addTag(Tags.STATION);
+
             MarketAPI market = Global.getSector().getEconomy().getMarket(MARKET_ID);
             if (market == null) {
                 createMarket(ring);
@@ -125,8 +134,8 @@ public final class ShatteredRingGenerator {
         ring.setCircularOrbit(focus, 315f, ORBIT_RADIUS, 420f);
         ring.setCustomDescriptionId(ENTITY_TYPE);
         ring.setInteractionImage("illustrations", "space_wreckage");
-        ring.setSensorProfile(1f);
-        ring.setDiscoverable(false);
+        ring.setSensorProfile(null);
+        ring.setDiscoverable(null);
         ring.addTag(Tags.STATION);
 
         system.addTag(Tags.THEME_INTERESTING);

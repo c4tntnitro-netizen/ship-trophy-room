@@ -1,6 +1,7 @@
 // Hall of Triumph - Shattered Ring lore and dialogue writing aid
-// This file is not loaded at runtime. It preserves the setting material for
-// proofreading and for the planned Shattered Ring story expansion.
+// This file is not loaded at runtime. It preserves the setting material and
+// an earlier homecoming draft. The canonical quest scene is now in
+// gan_eden_quest.ink and data/campaign/rules.csv.
 
 VAR visited_shattered_ring = false
 VAR isa_origin_revealed = false

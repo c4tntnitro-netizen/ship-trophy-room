@@ -1,0 +1,15 @@
+{
+    "baseHullId":"nova",
+    "skinHullId":"ship_trophy_white_nova",
+    "hullName":"Nova (Ivory)",
+    "descriptionPrefix":"A pale, refined Remnant reconstruction produced within Gan Eden.",
+    "restoreToBaseHull":false,
+    "spriteName":"graphics/ships/white_remnants/ship_trophy_white_nova.png",
+    "removeWeaponSlots":[],
+    "removeEngineSlots":[],
+    "removeBuiltInMods":[],
+    "removeBuiltInWeapons":[],
+    "builtInMods":[],
+    "tags":["hide_in_codex"],
+    "builtInWeapons":{},
+}

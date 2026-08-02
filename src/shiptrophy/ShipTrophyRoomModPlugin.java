@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 import shiptrophy.campaign.GanEdenAmbushScript;
 import shiptrophy.campaign.GanEdenBattleCreationPlugin;
 import shiptrophy.campaign.GanEdenGenerator;
+import shiptrophy.campaign.GanEdenLogManager;
 import shiptrophy.campaign.GanEdenOrdoListener;
 import shiptrophy.campaign.GanEdenQuestManager;
 import shiptrophy.campaign.GanEdenQuestScript;
@@ -35,6 +36,7 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         ShatteredRingGenerator.ensureGenerated();
         GanEdenGenerator.ensureGenerated();
         GanEdenQuestManager.ensureForCurrentSave();
+        GanEdenLogManager.ensureForCurrentSave();
         Global.getSector().removeScriptsOfClass(GanEdenQuestScript.class);
         Global.getSector().addScript(new GanEdenQuestScript());
         Global.getSector().removeScriptsOfClass(GanEdenAmbushScript.class);

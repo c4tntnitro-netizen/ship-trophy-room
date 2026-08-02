@@ -21,8 +21,8 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
     @Override
     protected String getName() {
         return GanEdenQuestManager.isCompleted()
-                ? "A Name on a Suit — Complete"
-                : "A Name on a Suit";
+                ? "A Borrowed Name — Complete"
+                : "A Borrowed Name";
     }
 
     @Override
@@ -48,9 +48,10 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
         info.addPara(
                 "Isa Leicester was recovered from a cryopod as an infant, "
                         + "swaddled in a spacer suit bearing the name Isaac "
-                        + "Leicester. A damaged transit record at the "
-                        + "Shattered Ring may be the first real clue to her "
-                        + "family.",
+                        + "Leicester. A concealed identification wafer in the "
+                        + "suit recovered Isaac Thomas Leicester's first "
+                        + "personal log and linked him to both surviving "
+                        + "Coronal Hypershunts.",
                 0f);
         info.addSpacer(10f);
         info.addSectionHeading("Current objective",
@@ -59,38 +60,44 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
                 Misc.getHighlightColor(), highlightedObjective());
 
         if (GanEdenQuestManager.getStage()
-                == Stage.REACTIVATE_HYPERSHUNTS) {
-            int repaired = GanEdenQuestManager.getRepairedHypershuntCount();
-            info.addPara("Coronal Hypershunts reactivated: %s / %s", 10f,
+                == Stage.INVESTIGATE_HYPERSHUNTS) {
+            int surveyed = GanEdenHypershuntManager.getSurveyedCount();
+            int required = GanEdenHypershuntManager.getRequiredCount();
+            info.addPara("Hypershunt routing records recovered: %s / %s", 10f,
                     Misc.getGrayColor(), Misc.getHighlightColor(),
-                    Integer.toString(repaired), "2");
+                    Integer.toString(surveyed), Integer.toString(required));
         }
         if (GanEdenQuestManager.isCompleted()) {
             info.addSpacer(10f);
             info.addPara(
-                    "Isa found Isaac Leicester's grave in Gan Eden. The "
-                            + "golden Omega guardians called Cherubim and "
-                            + "Lahat Haharev were destroyed, ending the "
-                            + "search—though aureate echoes may still appear "
-                            + "among Remnant Ordos.",
+                    "Five scattered records reconstructed Isaac Thomas "
+                            + "Leicester's Epitaph. Isa recovered the final "
+                            + "entry from Gan Eden's Space Elevator after "
+                            + "Cherubim and Lahat Haharev were destroyed—"
+                            + "though ordinary Omega Shards and Facets have "
+                            + "since begun appearing among some Remnant "
+                            + "Ordos.",
                     0f);
         }
     }
 
     private String shortObjective() {
         switch (GanEdenQuestManager.getStage()) {
-            case CONTACT_GARGOYLE:
-                return "Return to the Shattered Ring and recruit Gargoyle "
-                        + "to recover its damaged transit logs.";
-            case REACTIVATE_HYPERSHUNTS:
-                return "Reactivate both Coronal Hypershunts to triangulate "
-                        + "the lost ring's coordinates.";
+            case ASK_AROUND_SHATTERED_RING:
+            case FIND_BLACK_MARKET_CLUE:
+            case INVESTIGATE_HYPERSHUNTS:
+                return "Recover the next two personal logs from both "
+                        + "surviving Coronal Hypershunts.";
             case GAN_EDEN_REVEALED:
-                return "Travel to the revealed Gan Eden Transit Ring and "
-                        + "search the Tree of Life with Isa.";
-            case GRAVE_FOUND:
+                return "Travel to POWER TRANSIT GATE - GAN EDEN on the "
+                        + "northeastern rim of the Abyss, enter Gan Eden, and "
+                        + "recover the fourth log at the Tree of Life.";
+            case DEFEAT_GOLDEN_SHARDS:
                 return "Defeat Cherubim and Lahat Haharev, the golden Omega "
-                        + "Shards guarding Gan Eden.";
+                        + "Shards sealing the Space Elevator.";
+            case SPACE_ELEVATOR:
+                return "Approach the newly accessible Gan Eden Space Elevator "
+                        + "with Isa and recover the final record.";
             case COMPLETED:
                 return "Isa's search for Isaac Leicester is complete.";
             default:
@@ -100,14 +107,16 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
 
     private String highlightedObjective() {
         switch (GanEdenQuestManager.getStage()) {
-            case CONTACT_GARGOYLE:
-                return "Shattered Ring";
-            case REACTIVATE_HYPERSHUNTS:
-                return "both Coronal Hypershunts";
+            case ASK_AROUND_SHATTERED_RING:
+            case FIND_BLACK_MARKET_CLUE:
+            case INVESTIGATE_HYPERSHUNTS:
+                return "both surviving Coronal Hypershunts";
             case GAN_EDEN_REVEALED:
-                return "Gan Eden Transit Ring";
-            case GRAVE_FOUND:
+                return "POWER TRANSIT GATE - GAN EDEN";
+            case DEFEAT_GOLDEN_SHARDS:
                 return "Cherubim and Lahat Haharev";
+            case SPACE_ELEVATOR:
+                return "Gan Eden Space Elevator";
             case COMPLETED:
                 return "complete";
             default:
@@ -133,12 +142,20 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
     @Override
     public SectorEntityToken getMapLocation(SectorMapAPI map) {
         Stage stage = GanEdenQuestManager.getStage();
-        if (stage == Stage.REACTIVATE_HYPERSHUNTS) {
-            return GanEdenQuestManager.getFirstUnrepairedHypershunt();
+        if (stage == Stage.ASK_AROUND_SHATTERED_RING
+                || stage == Stage.FIND_BLACK_MARKET_CLUE
+                || stage == Stage.INVESTIGATE_HYPERSHUNTS) {
+            return GanEdenHypershuntManager.getFirstUnsurveyedHypershunt();
+        }
+        if (stage == Stage.SPACE_ELEVATOR) {
+            if (GanEdenGenerator.findSystem() != null) {
+                return GanEdenGenerator.findSystem().getEntityById(
+                        GanEdenGenerator.SPACE_ELEVATOR_ID);
+            }
         }
         if (stage.ordinal() >= Stage.GAN_EDEN_REVEALED.ordinal()) {
-            SectorEntityToken ring = GanEdenQuestManager.getExternalRing();
-            if (ring != null) return ring;
+            SectorEntityToken gate = GanEdenQuestManager.getExternalRing();
+            if (gate != null) return gate;
         }
         return GanEdenQuestManager.getShatteredRing();
     }

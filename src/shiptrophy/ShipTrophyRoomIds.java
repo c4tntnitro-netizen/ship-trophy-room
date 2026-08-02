@@ -24,6 +24,7 @@ public class ShipTrophyRoomIds {
     public static final String MEMORY_ISA_SHATTERED_RING_HOMECOMING = "$ship_trophy_room_isa_shattered_ring_homecoming";
     public static final String MEMORY_GAN_EDEN_QUEST_STAGE = "$shipTrophyGanEdenQuestStage";
     public static final String MEMORY_GAN_EDEN_GRAVE_FOUND = "$shipTrophyGanEdenGraveFound";
+    public static final String MEMORY_GAN_EDEN_EPITAPH_FOUND = MEMORY_GAN_EDEN_GRAVE_FOUND;
     public static final String MEMORY_GAN_EDEN_RING_X = "$shipTrophyGanEdenRingX";
     public static final String MEMORY_GAN_EDEN_RING_Y = "$shipTrophyGanEdenRingY";
 }

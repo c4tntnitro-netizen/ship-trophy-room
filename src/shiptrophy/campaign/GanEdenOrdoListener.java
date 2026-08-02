@@ -6,15 +6,18 @@ import java.util.Random;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 
-/** Adds rare post-quest Golden Shard leaders to newly spawned Remnant Ordos. */
+/** Adds occasional ordinary Omega escorts to post-victory Remnant Ordos. */
 public final class GanEdenOrdoListener extends BaseCampaignEventListener {
     private static final String PROCESSED_KEY =
             "$shipTrophyGanEdenOrdoGoldenRoll";
     private static final String ALTERED_KEY =
-            "$shipTrophyGanEdenOrdoGoldenShard";
+            "$shipTrophyGanEdenOrdoOmegaEscort";
+    private static final double ESCORT_CHANCE = 0.10;
+    private static final String FACET_VARIANT = "facet_Attack";
+    private static final String SHARD_LEFT_VARIANT = "shard_left_Attack";
+    private static final String SHARD_RIGHT_VARIANT = "shard_right_Attack";
 
     public GanEdenOrdoListener() {
         super(false);
@@ -22,7 +25,7 @@ public final class GanEdenOrdoListener extends BaseCampaignEventListener {
 
     @Override
     public void reportFleetSpawned(CampaignFleetAPI fleet) {
-        if (fleet == null || !GanEdenQuestManager.isCompleted()) return;
+        if (fleet == null || !GanEdenAmbushScript.isDefeated()) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean(
                 GanEdenAmbushScript.FLEET_KEY)) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean(PROCESSED_KEY)) return;
@@ -41,32 +44,38 @@ public final class GanEdenOrdoListener extends BaseCampaignEventListener {
                 ^ Global.getSector().getSeedString().hashCode()
                 ^ (fleet.getId() == null ? 0 : fleet.getId().hashCode());
         Random random = new Random(seed);
-        double roll = random.nextDouble();
-        if (roll >= 0.10) return;
+        if (random.nextDouble() >= ESCORT_CHANCE) return;
 
-        boolean both = roll < 0.01;
-        boolean addCherubim = both || random.nextBoolean();
-        boolean addLahat = both || !addCherubim;
-        FleetMemberAPI leader = null;
-        if (addCherubim) {
-            leader = GanEdenAmbushScript.addNamedGuardian(
-                    fleet, true, random);
+        int added = 0;
+        boolean shardEscort = random.nextFloat() < 0.45f;
+        if (shardEscort) {
+            String variant = random.nextBoolean()
+                    ? SHARD_LEFT_VARIANT
+                    : SHARD_RIGHT_VARIANT;
+            if (GanEdenAmbushScript.addRegularOmegaEscort(
+                    fleet, variant, random) != null) {
+                added++;
+            }
+            // A small fraction of successful rolls mix a Facet into the
+            // Shard's screen rather than replacing the Ordo's flagship.
+            if (random.nextFloat() < 0.15f
+                    && GanEdenAmbushScript.addRegularOmegaEscort(
+                            fleet, FACET_VARIANT, random) != null) {
+                added++;
+            }
+        } else {
+            int facets = 1 + random.nextInt(2);
+            for (int i = 0; i < facets; i++) {
+                if (GanEdenAmbushScript.addRegularOmegaEscort(
+                        fleet, FACET_VARIANT, random) != null) {
+                    added++;
+                }
+            }
         }
-        if (addLahat) {
-            FleetMemberAPI member = GanEdenAmbushScript.addNamedGuardian(
-                    fleet, false, random);
-            if (leader == null) leader = member;
-        }
-        if (leader == null) return;
+        if (added <= 0) return;
 
-        fleet.getFleetData().setFlagship(leader);
-        if (leader.getCaptain() != null) {
-            fleet.setCommander(leader.getCaptain());
-        }
         fleet.getFleetData().sort();
         fleet.forceSync();
-        fleet.setName("Aureate Ordo");
-        fleet.setNoFactionInName(true);
         fleet.getMemoryWithoutUpdate().set(ALTERED_KEY, true);
     }
 }

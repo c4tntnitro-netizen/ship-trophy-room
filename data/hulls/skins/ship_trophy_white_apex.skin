@@ -1,0 +1,15 @@
+{
+    "baseHullId":"apex",
+    "skinHullId":"ship_trophy_white_apex",
+    "hullName":"Apex (Ivory)",
+    "descriptionPrefix":"A pale, refined Remnant reconstruction produced within Gan Eden.",
+    "restoreToBaseHull":false,
+    "spriteName":"graphics/ships/white_remnants/ship_trophy_white_apex.png",
+    "removeWeaponSlots":[],
+    "removeEngineSlots":[],
+    "removeBuiltInMods":[],
+    "removeBuiltInWeapons":[],
+    "builtInMods":[],
+    "tags":["hide_in_codex"],
+    "builtInWeapons":{},
+}

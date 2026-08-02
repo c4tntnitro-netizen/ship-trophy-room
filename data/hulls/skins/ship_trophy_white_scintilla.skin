@@ -1,0 +1,15 @@
+{
+    "baseHullId":"scintilla",
+    "skinHullId":"ship_trophy_white_scintilla",
+    "hullName":"Scintilla (Ivory)",
+    "descriptionPrefix":"A pale, refined Remnant reconstruction produced within Gan Eden.",
+    "restoreToBaseHull":false,
+    "spriteName":"graphics/ships/white_remnants/ship_trophy_white_scintilla.png",
+    "removeWeaponSlots":[],
+    "removeEngineSlots":[],
+    "removeBuiltInMods":[],
+    "removeBuiltInWeapons":[],
+    "builtInMods":[],
+    "tags":["hide_in_codex"],
+    "builtInWeapons":{},
+}

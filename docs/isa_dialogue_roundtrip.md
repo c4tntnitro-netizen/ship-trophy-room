@@ -18,6 +18,11 @@ dialogue/isa.ink
 
 The Ink file is a human-facing drafting and Inky preview aid. Starsector does not load it, and it must never overwrite `rules.csv` automatically. After writing in Ink, reconcile the intended wording and branch changes into the corresponding CSV rules by hand or with a reviewed conversion.
 
+The same rule applies to the quest drafts in `dialogue/gan_eden_quest.ink`,
+`dialogue/hypershunt.ink`, and `dialogue/Logs.ink`. Their canonical runtime
+counterparts are the `shipTrophyIsaShatteredRing*` and `shipTrophyGanEden*`
+records in `rules.csv`.
+
 Keep these pieces intact while drafting:
 
 - `=== knot_names ===`

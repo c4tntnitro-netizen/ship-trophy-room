@@ -1,5 +1,18 @@
-// Hall of Triumph - A Name on a Suit
-// Standalone proofreading copy. Runtime dialogue is implemented in rules.csv.
+// Hall of Triumph - A Borrowed Name / Gan Eden Quest Master
+//
+// Standalone proofreading and editing copy of the complete quest line.
+// Runtime dialogue remains implemented by data/campaign/rules.csv and Java.
+// Focused source copies remain in gan_eden_quest.ink, hypershunt.ink, and
+// Logs.ink. Run tools/build_gan_eden_master.ps1 after changing those files.
+//
+// Runtime order:
+// 1. Complete At the Gates (or use Nexerelin's Galatia-story skip), recruit
+//    Isa as an officer, and return with her to the Shattered Ring.
+// 2. Recover Personal Log 1765 from the identification wafer in Isa's suit.
+// 3. Investigate both Coronal Hypershunts and recover Epitaph Parts II-III.
+// 4. Enter POWER TRANSIT GATE - GAN EDEN and recover Part IV at Tree of Life.
+// 5. Defeat Cherubim and Lahat Haharev, opening Gan Eden to hyperspace.
+// 6. Approach the Space Elevator with Isa and recover Epitaph Final.
 
 VAR hypershunts_reactivated = 0
 VAR gan_eden_revealed = false
@@ -9,7 +22,29 @@ VAR player_gender = "him"
 VAR player_title = "Captain"
 VAR player_self = "himself"
 
--> gan_eden_quest
+-> gan_eden_master
+
+=== gan_eden_master ===
+Complete Gan Eden quest master
+
++ [Read from the Shattered Ring homecoming.] -> station_shattered_ring
++ [Review the interactive quest-source index.] -> gan_eden_quest
++ [Review the Power Transit Gate and Gan Eden arrival.] -> master_power_transit_gate
++ [Review the Tree of Life recovery.] -> master_tree_of_life
++ [Review the Golden Omega confrontation.] -> master_golden_omega
++ [Review the post-battle opening of Gan Eden.] -> master_post_battle
++ [Review the Space Elevator ending.] -> master_space_elevator
++ [Archive: Personal Log 1765 / Part I.] -> one
++ [Archive: Epitaph Part II.] -> two
++ [Archive: Epitaph Part III.] -> three
++ [Archive: Epitaph Part IV.] -> four
++ [Archive: Epitaph Final.] -> five
++ [End preview.] -> END
+
+
+// ============================================================
+// CURRENT INTERACTIVE QUEST SOURCE
+// ============================================================
 
 === gan_eden_quest ===
 Quest dialogue
@@ -903,4 +938,477 @@ She enlarges the projection.
 
 
 
-+ [Set a course.] -> END
++ [Set a course.] -> master_power_transit_gate
+
+// ============================================================
+// POWER TRANSIT GATE AND GAN EDEN RUNTIME BRIDGES
+// These beats are driven by campaign scripts rather than long rules.csv trees.
+// ============================================================
+
+=== master_power_transit_gate ===
+// Runtime interaction: shipTrophyGanEdenExternalRing
+
+POWER TRANSIT GATE - GAN EDEN hangs alone at the center of an empty, starless system. Its adamantine surface is awake. Within the aperture, impossible depth folds toward the sealed world beyond.
+
+Around it drifts a silent graveyard of damaged Coronal Hypershunts and ruined Gate Haulers. None answer the fleet's approach.
+
++ [Enter the Power Transit Gate.] -> master_gan_eden_arrival
++ [Leave.] -> END
+
+
+=== master_gan_eden_arrival ===
+// Runtime transition: GanEdenQuestCMD transitIn
+
+The Transit Ring releases the fleet beneath Gan Eden's impossible inward horizon: a living world wrapped around a warm central sun. Four dormant settlement districts remain anchored to the shell. The Tree of Life still carries a surviving Leicester continuity record.
+
+Beyond it, the Gan Eden Space Elevator remains sealed behind an Omega interdiction field.
+
++ [Approach the Tree of Life.] -> master_tree_of_life
++ [Review the Golden Omega guardians.] -> master_golden_omega
++ [Return through the Eden Transit Ring.] -> master_internal_ring
+
+
+=== master_internal_ring ===
+// Runtime interaction: shipTrophyGanEdenInternalRing
+
+The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its connection remains synchronized with POWER TRANSIT GATE - GAN EDEN.
+
++ [Traverse the Gate.] -> END
++ [Remain in Gan Eden.] -> master_gan_eden_arrival
+
+
+=== master_tree_of_life ===
+// Runtime interaction: shipTrophyGanEdenSurfaceLog
+
+A sealed municipal archive beneath Tree of Life answers the Leicester continuity credentials. One surviving personal record is available for recovery.
+
++ [Recover Epitaph - Part IV.] -> four
++ [Leave the archive sealed.] -> master_gan_eden_arrival
+
+
+=== master_golden_omega ===
+// Runtime encounter: GanEdenAmbushScript and GoldenFractalCascade
+
+Two golden Omega Shards hold the approach to the Space Elevator: Cherubim and Lahat Haharev. Neither they nor any of their descendants will retreat.
+
+The Shards divide under fire into Facets and Aspect wings. The Facets divide again into Tesseracts and further Aspect wings. Only the final Tesseracts die without reproducing.
+
+Defeating only one named Shard is not enough. The survivor reconstructs its counterpart. Both must be destroyed in the same complete victory.
+
++ [Engage Cherubim and Lahat Haharev.] -> master_post_battle
++ [Break off.] -> master_gan_eden_arrival
+
+
+=== master_post_battle ===
+// Runtime resolution: first complete Golden Omega victory
+
+With Cherubim and Lahat Haharev destroyed together, the Space Elevator's interdiction field falls silent.
+
+A conventional hyperspace jump point stabilizes beside Gan Eden. The four settlement districts are released from their sealed economy groups and can participate in ordinary Sector trade.
+
+The victory is not permanent. Every ninety days, the Golden Shards reconstruct themselves with a larger escort of ivory Remnant hulls, escalating until the escort is roughly a full Ordo. Later victories reset that cycle without sealing Gan Eden again.
+
++ [Approach the Gan Eden Space Elevator with Isa.] -> master_space_elevator
++ [Remain in Gan Eden.] -> master_gan_eden_arrival
+
+
+=== master_space_elevator ===
+// Runtime interaction: shipTrophyGanEdenEpitaph
+
+With Cherubim and Lahat Haharev gone, the elevator's interdiction field is silent.
+
+Isa's inherited suit transponder opens the outer doors. The lift descends through kilometers of dead infrastructure before stopping at a continuity-office archive sealed away from the inhabited surface.
+
+Four recovered records authenticate in sequence. A fifth file unlocks beneath them:
+
+EPITAPH - FINAL
+
++ [Open the final entry with Isa.] -> five
++ [Leave.] -> END
+
+
+=== master_epilogue ===
+// Runtime resolution after Epitaph Final
+
+The final log ends.
+
+The elevator observation deck looks out across the impossible inward horizon. Isa says nothing for a long time.
+
+Then she begins telling Isaac Thomas Leicester about the Shattered Ring: the wreck-farms, the revival ward, the terrible food, and every impossible ship that carried her farther than he could have imagined.
+
+No answer comes from the empty world. This time, she does not seem to need one.
+
++ [Return to the fleet.] -> END
+
+
+// ============================================================
+// CANONICAL RECOVERED LOG ARCHIVE
+// Loaded at runtime from dialogue/Logs.ink.
+// ============================================================
+
+=== one ===
+
+PERSONAL LOG 1765
+AUTHOR: LEICESTER, ISAAC THOMAS
+
+My name is Dr. Isaac Thomas Leicester.
+
+I am Director of Engineering for Heliostructural Systems in the Persean Sector. Head Architect of the Continuity Office.
+
+My work included the construction of the coronal hypershunts and a later, far more important task.
+
+Both projects were expected to take centuries. The latter might have required more than a thousand years before reaching its final design capacity. No ordinary succession of administrators could preserve the technical knowledge, institutional memory, and design intent required over such a span.
+
+The Domain therefore established a Continuity Office.
+
+Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
+
+I was elected to lead it.
+
+I would sleep through centuries of construction, wake for design reviews, inspect the work, and approve the next phase. Each waking lasted months, sometimes years.
+
+The first hypershunt was already under construction when I accepted the appointment. It was intended to collect energy directly from a star and make that power available to automated construction systems across the Gate network.
+
+The engineering difficulties were substantial. We lost dozens of assembly swarms before completing the first stable framework.
+
+I met engineers whose grandparents had worked under people I remembered. I approved sweeping changes to systems designed by men and women who had died while I slept, sometimes erasing an entire lifetime’s work with a single decision.
+
+Humanity marched on as I slept. Problems once considered impossible became trivial. When both hypershunts became operational, the Directorate approved the work they had been built to support.
+
+It was to be the Domain’s first enclosed—
+
+DOMAIN INFOSEC VIOLATION THRESHOLD WARNING
+// datastream resetting...
+
+—constructed around a yellow sun on the far outskirts of the Persean Sector. At its intended capacity, it could shelter several quintillion human li—
+
+FATAL ACCESS ERROR //
+
+This device is not authorized to provide additional description of the referenced project, destination, or design objective. Please upgrade your data permission level in compliance with Domain Information Security Standards.
+
+I believed that the ability to construct such a wonder proved that the Domain deserved to continue expanding.
+
+I was wrong.
+
+-> END
+
+
+=== two ===
+
+RECOVERED PERSONAL LOG
+AUTHOR: LEICESTER, ISAAC THOMAS
+FILE: EPITAPH — PART II
+
+
+Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
+
+Our daughter was born there.
+
+Rebecca went to God the same day.
+
+A vascular condition had been identified too late for treatment. By the time the doctors understood what was happening, they could save only one of them.
+
+I had already been considered for the proposed Continuity Office. The appointment would require its director to spend centuries in cryosuspension, waking only when the projects required his judgment.
+
+Before Rebecca’s death, I had intended to refuse.
+
+With her gone, I thought I had no more reason to live in the present.
+
+I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
+
+A better world.
+
+That was the arrangement I made with myself.
+
+I visited my daughter during every waking.
+
+I inspected her chamber. I reviewed the medical reports. I repeated tests the technicians had already completed.
+
+She remained healthy and unchanged while centuries passed beyond the glass.
+
+I told myself that she was safe.
+
+That I had done right by her.
+
+I hate myself.
+
+I hate myself.
+
+I hate myself—
+
+-> END
+
+
+=== three ===
+
+RECOVERED PERSONAL LOG
+AUTHOR: LEICESTER, ISAAC THOMAS
+FILE: EPITAPH — PART III
+
+My daughter remained unchanged.
+
+The Domain did not.
+
+At first, the differences between my waking periods seemed incidental. Then I began to understand. The Domain had grown beyond any human capacity to comprehend it. It could move fleets across the galaxy, dismantle planets, and build cities beneath alien suns.
+
+It had become incapable of seeing a human being standing directly before it.
+
+I met a Domain Armada veteran cleaning industrial residue from a station floor. During one of the Domain’s thousands of civil wars, radiation from a reactor leak had destroyed half his face.
+
+His pension had been suspended because the archive containing his service record no longer existed.
+
+I offered to help.
+
+He asked only that I help his son obtain a transit permit.
+
+Seventy-two years passed before my next waking. I never learned what happened to either of them.
+
+During another waking period, I met a woman who had spent years moving between ports because she could not obtain employment without proof of residence, or residence without proof of employment.
+
+The station classified her as a transient clearance burden. She was slated for prison soon.
+
+A burden.
+
+Years blurred together. I do not know whether it was the repeated cryosuspensions or the deterioration of my own mind, but eventually I could no longer distinguish faces.
+
+I forgot the faces of people I had worked beside.
+
+I even forgot Rebecca’s face.
+
+I began speaking publicly.
+
+At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established a commissions and councils and legislative bodys.
+
+I kept drifting through the centuries. Nothing changed.
+
+I began speaking through my faith.
+
+I said that human beings were not obsolete machinery.
+
+I said that a civilization should be judged by those it possessed the power to help and chose not to.
+
+I said that every person carried the image of God, that even if the Domain could not place each one within its stars, God knew each and every one of them as He knit them in their wombs.
+
+People began gathering to hear me.
+
+The gatherings became demonstrations.
+
+Security forces were deployed, people were jailed, injured and killed.
+
+I continued speaking, although I no longer knew whether I was helping them or merely driving them to their deaths.
+
+With my mouth, I drove lambs toward the slaughter.
+
+With my hands and my work, I forged the knives the Domain plunged into their necks.
+
+Who was I to speak against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect?
+
+-> END
+
+
+=== four ===
+
+RECOVERED PERSONAL LOG
+AUTHOR: LEICESTER, ISAAC THOMAS
+FILE: EPITAPH — PART IV
+
+
+The Domain arrested me for insurrection.
+
+At trial, they presented my speeches, correspondence, and engineering reports. I denied very little.
+
+The Sector Governor asked whether I recognized the absolute authority of the Domain of Man.
+
+I told him that all human authority was subordinate to God.
+
+They found me guilty.
+
+I was kept under house arrest at Telepylus Station while preparations were made to return me to Sol for sentencing. They still needed my knowledge of Eden. Some of its oldest systems continued to recognize my credentials, and no living engineer other than I understood the complete design.
+
+Finally, I decided to end it.
+
+The hypershunts supplied Gan Eden through the Gate network. Their output passed through the rings as energy before reaching the sphere’s distribution systems.
+
+I intended to seize a transport, pass through the Penelope’s Star Gate, enter Gan Eden, and redirect the full output of all hypershunts into the structure.
+
+The sphere would be destroyed.
+
+I intended to die with it.
+
+I escaped confinement and commandeered a transport. Telepylus security identified the ship before I reached the Gate.
+
+I expected patrol craft to follow me through within seconds.
+
+Instead, they broke formation before reaching the ring.
+
+Traffic control began issuing contradictory emergency orders. Ships stopped answering. Gate-status displays failed across the station.
+
+I did not know what had drawn their attention away from me, only that the route to Gan Eden remained open.
+
+I entered the Gan-Eden coordinates and drove the transport through the Penelope's Star Gate at maximum thrust.
+
+I emerged into the restricted system without pursuit.
+
+Gan Eden stood around its sun.
+
+Oh, hosanna.
+
+Hosanna in the highest.
+
+Despite its hubris and its separation from God, it was the most beautiful thing humanity had ever made.
+
+Its shell crossed the heavens from horizon to horizon. Clouds turned beneath me over continents no human feet had touched. Rivers followed courses plotted centuries before their waters existed.
+
+For one moment, I loved it again. But it had to die.
+
+I abandoned the transport and took a shuttle to the master distribution complex at the space elevator. The system accepted my credentials.
+
+I opened the hypershunt transfer channels and commanded their full output into the sphere.
+
+For less than a second, the system behaved exactly as I intended.
+
+Then the Gate network began shutting down.
+
+The transfer paths vanished before the power could reach Gan Eden. With nowhere else to go, the discharge collapsed backward through the nearest ring still connected to the network.
+
+Penelope’s Star.
+
+I watched from telemetric displays as the impossible happened; great adamantine arcs shatter like clay.
+
+The ring broke apart across the control display. A moment later, every other Gate vanished from the network.
+
+Sol was gone.
+
+Telepylus was gone.
+
+My daughter was gone.
+
+There was no route back.
+
+I had entered Gan Eden intending to die.
+
+Instead, I was imprisoned inside it.
+
+-> END
+=== five ===
+
+RECOVERED PERSONAL LOG
+AUTHOR: LEICESTER, ISAAC THOMAS
+FILE: EPITAPH — FINAL
+
+
+I am dying.
+
+I have lived alone in Gan Eden for fifty-eight years.
+
+I spent the first years searching its cities, shelters, maintenance tunnels, and transit stations.
+
+I transmitted on every emergency frequency that still functioned.
+
+No one answered.
+
+I knew no one would.
+
+The last human technicians had departed centuries before, when construction passed entirely to the automated swarms.
+
+I was the one who signed the order.
+
+I eventually settled in a place I named Galilee.
+
+I repaired one of the agricultural houses and learned to farm. When I was not working, I wandered the shell.
+
+I walked through empty cities.
+
+I crossed forests planted by machines.
+
+I stood beside coastlines no human being had ever seen.
+
+There is no true night here. The sun remains fixed above the inner world, and darkness comes only beneath clouds or within the shadow of the great structures.
+
+It is as though I live in the time before God separated Light from Darkness.
+
+Gan Eden remained beautiful.
+
+Oh, God.
+
+I continued trying to restore the Gate connection to Penelope’s Star.
+
+At first, I told myself I was trying to rescue my daughter.
+
+I admit now that I wanted only to know whether I had killed her.
+
+When the Gate would not answer, I turned to the hypershunt transfer system.
+
+The channels were never designed to carry human communications, but power and information are not so different as we pretend. I impressed these records upon the carrier harmonics and sent them into whatever remained of the network.
+
+For years, I received nothing in return.
+
+I do not know whether any part of this account escaped Gan Eden.
+
+I do not know whether these words will survive me.
+
+Oh, my daughter.
+
+Rebecca wanted to name you Leah.
+
+To Leah, my beautiful daughter whom I never knew:
+
+I saved you for a future I believed I could build. I kept you asleep while I pursued that arrogant dream across centuries. Then, when the world failed to become what I had imagined, I abandoned you to your fate.
+
+Neither you nor God owes me forgiveness.
+
+I prayed for you every day.
+
+I prayed for Rebecca.
+
+I prayed for the dead, and for the living I condemned without ever knowing their names.
+
+I did not know whether God heard me.
+
+Until today, the Gate answered.
+
+It did not connect to Penelope’s Star or to any Gate I recognized.
+
+Instead, two angels came through.
+
+The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment.
+
+The second turns within lines of fire like a burning sword.
+
+They descend through the sky with the light of God around them, swift as searing chariots.
+
+I have named them Cherubim and Lahat Ha-cherev.
+
+Surely the Lord has sent them as gatekeepers of this false paradise.
+
+Beneath their contemptuous gaze, I will be judged as I commit my soul to God.
+
+Leah, I hope someone found you.
+
+I hope they gave you a life beyond mine, and a name that belonged to you.
+
+I hope you were raised by people who loved you without asking you to carry their grief, their faith, or their failures.
+
+I hope that when you looked toward the future, you saw something of your own choosing rather than the ruins of what I had planned for you.
+
+I hope you laughed every day.
+
+I hope you were stubborn like Rebecca.
+
+I hope you were kinder than I became.
+
+I hope you found love in this world, children of your own, and a home.
+
+I hope you found the blessings of God beneath these infinite heavens.
+
+I hope that one day you know this.
+
+I love you, Leah.
+
+Isaac Thomas Leicester.
+
+-> master_epilogue
+
+// ============================================================
+// END OF GAN EDEN QUEST MASTER
+// ============================================================

@@ -1,3 +1,13 @@
+// Runtime recovery map:
+//
+// Spacer-suit identification wafer: Personal Log 1765 / Part I.
+// First hypershunt scanned: Epitaph Part II.
+// Second hypershunt scanned: Epitaph Part III and the Power Transit Gate.
+// Tree of Life: Epitaph Part IV.
+// Space Elevator: Epitaph Final after the Golden Shards are defeated.
+//
+// Every recovered entry is retained under the Gan Eden Archives Intel tag.
+
 + [one] -> one
 + [two] -> two
 + [three] -> three
@@ -8,48 +18,49 @@
 
 === one ===
 
-RECOVERED PERSONAL LOG
+PERSONAL LOG 1765
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART I
 
+My name is Dr. Isaac Thomas Leicester.
 
-My name is Isaac Thomas Leicester, Director of Engineering for Heliostructural Systems in the Persean Sector. 
+I am Director of Engineering for Heliostructural Systems in the Persean Sector. Head Architect of the Continuity Office.
 
-My work included the construction of the coronal hypershunts and, later, Project Eden.
+My work included the construction of the coronal hypershunts and a later, far more important task.
 
-The projects were expected to take centuries. Eden might have required more than a thousand years before reaching its final design capacity. No ordinary succession of administrators could preserve the technical knowledge, institutional memory, and design intent required over such a span.
+Both projects were expected to take centuries. The latter might have required more than a thousand years before reaching its final design capacity. No ordinary succession of administrators could preserve the technical knowledge, institutional memory, and design intent required over such a span.
 
-The Domain therefore established a continuity office. Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
+The Domain therefore established a Continuity Office.
+
+Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
 
 I was elected to lead it.
 
-The appointment required me to spend hundreds of years at a time in cryosuspension. I would sleep through epochs of construction, wake for major design reviews, inspect the work and approve the next phase.
+I would sleep through centuries of construction, wake for design reviews, inspect the work, and approve the next phase. Each waking lasted months, sometimes years.
 
-The first hypershunt was already under construction when I accepted the appointment. It was intended to collect energy directly from a star and make that power available to automated construction systems far beyond any ordinary network.
+The first hypershunt was already under construction when I accepted the appointment. It was intended to collect energy directly from a star and make that power available to automated construction systems across the Gate network.
 
-The engineering difficulties were substantial.
+The engineering difficulties were substantial. We lost dozens of assembly swarms before completing the first stable framework.
 
-The structure had to remain stable inside a star’s corona. Its collection systems had to survive constant radiation and violent changes in stellar activity. The transfer network had to carry more power in one moment than entire inhabited systems had ever consumed.
+I met engineers whose grandparents had worked under people I remembered. I approved sweeping changes to systems designed by men and women who had died while I slept, sometimes erasing an entire lifetime’s work with a single decision.
 
-We lost dozens of unmanned assembly swarms before completing the first stable framework. 
+Humanity marched on as I slept. Problems once considered impossible became trivial. When both hypershunts became operational, the Directorate approved the work they had been built to support.
 
-The second hypershunt was approved before the first reached full capacity. Its design incorporated everything we had learned. Construction proceeded more quickly, although centuries still passed outside my chamber.
+It was to be the Domain’s first enclosed—
 
-Each waking period lasted several months, even years. I met engineers whose grandparents had worked under engineers I remembered. I approved changes to systems designed by people who had passed while I slept. The Domain expanded between each waking. 
+DOMAIN INFOSEC VIOLATION THRESHOLD WARNING
+// datastream resetting...
 
-New systems joined the Gate network. Problems once considered impossible became trivial. I believed I was watching humanity mature, but I did not yet understand what was being lost.
+—constructed around a yellow sun on the far outskirts of the Persean Sector. At its intended capacity, it could shelter several quintillion human li—
 
-When both hypershunts became operational, the Directorate approved the project they had been built to support.
+FATAL ACCESS ERROR //
 
-I proposed the name Gan Eden, after the sacred garden of God. 
+This device is not authorized to provide additional description of the referenced project, destination, or design objective. Please upgrade your data permission level in compliance with Domain Information Security Standards.
 
-I should have named it Babel. 
+I believed that the ability to construct such a wonder proved that the Domain deserved to continue expanding.
 
-It was to be the Domain’s first enclosed star: a Dyson world built around a select yellow star found on the far outskirts of the Persean Sector. The internal surface would hold continents, oceans, cities, farms, and wilderness. At planned density, it could support several quintillion people. 
+I was wrong.
 
-I believed that the ability to construct such a world proved that the Domain deserved to continue expanding.
-
-I was wrong. It was an affront to God. 
+-> END
 
 
 === two ===
@@ -58,29 +69,45 @@ RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — PART II
 
-Before the continuity office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
 
-Our daughter was born there. Rebecca passed and joined God that same day. A vascular condition had been identified too late for treatment.
+Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
 
-I had already been considered for the proposed continuity office. The appointment would require its director to spend centuries in cryosuspension, waking only when the projects required his judgment.
+Our daughter was born there.
+
+Rebecca went to God the same day.
+
+A vascular condition had been identified too late for treatment. By the time the doctors understood what was happening, they could save only one of them.
+
+I had already been considered for the proposed Continuity Office. The appointment would require its director to spend centuries in cryosuspension, waking only when the projects required his judgment.
 
 Before Rebecca’s death, I had intended to refuse.
 
-With her gone, I thought I had no more reason to live in the present. So I told myself I would live for the future instead.
+With her gone, I thought I had no more reason to live in the present.
 
-I would accept the appointment, complete the work, resign, and wake my daughter into the world Rebecca and I had intended for her.
+I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
+
+A better world.
 
 That was the arrangement I made with myself.
 
-I pretended it was an arrangement with God.
+I visited my daughter during every waking.
+
+I inspected her chamber. I reviewed the medical reports. I repeated tests the technicians had already completed.
+
+She remained healthy and unchanged while centuries passed beyond the glass.
+
+I told myself that she was safe.
+
+That I had done right by her.
 
 I hate myself.
 
 I hate myself.
 
-I hate myself--
+I hate myself—
 
 -> END
+
 
 === three ===
 
@@ -88,41 +115,66 @@ RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — PART III
 
-I froze my daughter before I had properly named her.
+My daughter remained unchanged.
 
-I visited her often. I inspected her chamber, reviewed the medical reports, and repeated tests the technicians had already completed. She remained healthy and unchanged while centuries passed outside. 
+The Domain did not.
 
-The Domain did not remain unchanged.
+At first, the differences between my waking periods seemed incidental. Then I began to understand. The Domain had grown beyond any human capacity to comprehend it. It could move fleets across the galaxy, dismantle planets, and build cities beneath alien suns.
 
-I saw a decay. The soul of Man gangrenous and rotting.
+It had become incapable of seeing a human being standing directly before it.
 
-I met an Armada veteran cleaning coolant residue from a station floor. A reactor leak had destroyed half his face. His pension had been suspended because the archive containing his service record no longer existed.
+I met a Domain Armada veteran cleaning industrial residue from a station floor. During one of the Domain’s thousands of civil wars, radiation from a reactor leak had destroyed half his face.
 
-I offered to help. He asked only that I help his daughter obtain a transit permit.
+His pension had been suspended because the archive containing his service record no longer existed.
 
-Seventy-two years passed. I never found out what happened to him or his daughter.
+I offered to help.
 
-Nothing changed.
+He asked only that I help his son obtain a transit permit.
 
-During another waking period, I met a woman who had spent years moving between ports because she could not obtain employment without proof of residence, or residence without proof of employment. The station classified her as a transient clearance burden.
+Seventy-two years passed before my next waking. I never learned what happened to either of them.
 
-Years blurred together. I can't tell if it was the repeated cryosuspensions or my deteriorating mind, but at some point I couldn't distinguish faces. I even forgot Rebecca's face.
+During another waking period, I met a woman who had spent years moving between ports because she could not obtain employment without proof of residence, or residence without proof of employment.
 
-Rebecca.
+The station classified her as a transient clearance burden. She was slated for prison soon.
 
-You understood this before I did. You once told me that the Domain was the greatest work of man that had ever been made, and that was why it was so grotesque.
+A burden.
 
-I began speaking publicly. At first, I presented reports and projections. The Directorate thanked me and established a commission.
+Years blurred together. I do not know whether it was the repeated cryosuspensions or the deterioration of my own mind, but eventually I could no longer distinguish faces.
 
-Nothing changed.
+I forgot the faces of people I had worked beside.
 
-I said that human beings were not obsolete machinery. I said that a civilization should be judged by those it could help and chose not to. I said that every person carried the image of God, whether or not the Domain could locate the correct record for them.
+I even forgot Rebecca’s face.
 
-People began gathering to hear me. The gatherings became demonstrations. Security forces were deployed. People were injured, then killed.
+I began speaking publicly.
 
-I continued speaking, but I don't know why. With my mouth I drove lambs to the slaughter, and with my hands and my work I forged the knives the Domain of Man plunged into their necks. Who was I to speak out against the great Whore of Babylon whilst I was her greatest slave?
+At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established a commissions and councils and legislative bodys.
 
-Nothing changed.
+I kept drifting through the centuries. Nothing changed.
+
+I began speaking through my faith.
+
+I said that human beings were not obsolete machinery.
+
+I said that a civilization should be judged by those it possessed the power to help and chose not to.
+
+I said that every person carried the image of God, that even if the Domain could not place each one within its stars, God knew each and every one of them as He knit them in their wombs.
+
+People began gathering to hear me.
+
+The gatherings became demonstrations.
+
+Security forces were deployed, people were jailed, injured and killed.
+
+I continued speaking, although I no longer knew whether I was helping them or merely driving them to their deaths.
+
+With my mouth, I drove lambs toward the slaughter.
+
+With my hands and my work, I forged the knives the Domain plunged into their necks.
+
+Who was I to speak against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect?
+
+-> END
+
 
 === four ===
 
@@ -130,98 +182,196 @@ RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — PART IV
 
+
 The Domain arrested me for insurrection.
 
-At trial, they presented my speeches, correspondence, and engineering reports. I denied very little. When the Sector Governor asked whether I recognized the absolute authority of the Domain of Man, I told him that all human authority was subordinate to God. 
+At trial, they presented my speeches, correspondence, and engineering reports. I denied very little.
+
+The Sector Governor asked whether I recognized the absolute authority of the Domain of Man.
+
+I told him that all human authority was subordinate to God.
 
 They found me guilty.
 
-I was kept under house arrest at Telepylus Station while preparations were made to return me to Sol for sentencing. They still needed my knowledge of Gan Eden, and some of its oldest systems continued to recognize my credentials.
+I was kept under house arrest at Telepylus Station while preparations were made to return me to Sol for sentencing. They still needed my knowledge of Eden. Some of its oldest systems continued to recognize my credentials, and no living engineer other than I understood the complete design.
 
 Finally, I decided to end it.
 
-The hypershunts supplied Gan Eden through the Gate network. Their full output passed through the rings as energy before reaching the sphere’s master control system. I intended to seize a transport, pass through the Penelope’s Star Gate, enter the control complex, and redirect the full output of both hypershunts into Gan Eden.
+The hypershunts supplied Gan Eden through the Gate network. Their output passed through the rings as energy before reaching the sphere’s distribution systems.
 
-The sphere would be destroyed. I intended to die with it.
+I intended to seize a transport, pass through the Penelope’s Star Gate, enter Gan Eden, and redirect the full output of all hypershunts into the structure.
 
-I escaped confinement, commandeered the transport, and changed its destination after the transit sequence began.
+The sphere would be destroyed.
 
-Telepylus security had already identified the ship, and I expected the escort to follow me through the Gate within seconds. Instead, the patrol craft broke formation before they reached the ring. Traffic control began issuing emergency orders over one another, several ships stopped answering, and the Gate-status displays failed in rapid succession.
+I intended to die with it.
 
-I did not know what had drawn their attention away from me, only that the route to Gan Eden was still open. I entered the coordinates, drove the transport through at maximum thrust, and emerged into the restricted system without pursuit. Gan Eden’s control network accepted my credentials immediately. I seized the approach corridor and pushed the ship toward the master control complex before whatever was happening at Penelope’s Star could close the way behind me.
+I escaped confinement and commandeered a transport. Telepylus security identified the ship before I reached the Gate.
 
-Oh, hosanna. Hosaana in the higehest.
+I expected patrol craft to follow me through within seconds.
 
-Despite its hubris and its separation from God, Gan Eden was the most beautiful place in the entire universe.
+Instead, they broke formation before reaching the ring.
 
-Once inside the system, I abandoned the transport and took a shuttle to the master control complex at the space elevator. For less than a second, the system behaved exactly as I had intended. Then the Gate network began shutting down around me.
+Traffic control began issuing contradictory emergency orders. Ships stopped answering. Gate-status displays failed across the station.
 
-The conduits carrying the hypershunt output vanished before the power could reach Gan Eden. With nowhere else to go, the discharge collapsed back through the nearest ring still connected to the transfer system: Penelope’s Star.
+I did not know what had drawn their attention away from me, only that the route to Gan Eden remained open.
 
-I watched the impossibility of Adamantine shattering like clay on the control display and break apart. A moment later, every other Gate disappeared from the network.
+I entered the Gan-Eden coordinates and drove the transport through the Penelope's Star Gate at maximum thrust.
 
-Sol was gone. Telepylus was gone. There was no route back.
+I emerged into the restricted system without pursuit.
 
-I intended to die in Gan Eden.
+Gan Eden stood around its sun.
 
-Instead, I was left alive inside it.
+Oh, hosanna.
 
+Hosanna in the highest.
 
+Despite its hubris and its separation from God, it was the most beautiful thing humanity had ever made.
+
+Its shell crossed the heavens from horizon to horizon. Clouds turned beneath me over continents no human feet had touched. Rivers followed courses plotted centuries before their waters existed.
+
+For one moment, I loved it again. But it had to die.
+
+I abandoned the transport and took a shuttle to the master distribution complex at the space elevator. The system accepted my credentials.
+
+I opened the hypershunt transfer channels and commanded their full output into the sphere.
+
+For less than a second, the system behaved exactly as I intended.
+
+Then the Gate network began shutting down.
+
+The transfer paths vanished before the power could reach Gan Eden. With nowhere else to go, the discharge collapsed backward through the nearest ring still connected to the network.
+
+Penelope’s Star.
+
+I watched from telemetric displays as the impossible happened; great adamantine arcs shatter like clay.
+
+The ring broke apart across the control display. A moment later, every other Gate vanished from the network.
+
+Sol was gone.
+
+Telepylus was gone.
+
+My daughter was gone.
+
+There was no route back.
+
+I had entered Gan Eden intending to die.
+
+Instead, I was imprisoned inside it.
+
+-> END
 === five ===
 
-RECOVERED PERSONAL LOG  
-AUTHOR: LEICESTER, ISAAC THOMAS  
+RECOVERED PERSONAL LOG
+AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — FINAL
+
 
 I am dying.
 
-I have lived alone in Gan Eden for thirty-six years.
+I have lived alone in Gan Eden for fifty-eight years.
 
-I spent the first several years searching the cities, shelters, maintenance tunnels, and transit stations. I transmitted on every emergency frequency that still worked.
+I spent the first years searching its cities, shelters, maintenance tunnels, and transit stations.
 
-No one answered. I knew no one would. The last human technicians had left Gan Eden centuries before, when its construction passed entirely to the automated swarms. I was the one who signed off on that order.
+I transmitted on every emergency frequency that still functioned.
 
-I eventually settled in this place I named Galilee, repaired one of the old agricultural houses, and learned to farm. When I was not working, I wandered the shell. I walked through empty cities, forests planted by machines, and coastlines no human being had ever seen. It is a never-ending day here, as if it were before God separated Light from Darkness.
+No one answered.
+
+I knew no one would.
+
+The last human technicians had departed centuries before, when construction passed entirely to the automated swarms.
+
+I was the one who signed the order.
+
+I eventually settled in a place I named Galilee.
+
+I repaired one of the agricultural houses and learned to farm. When I was not working, I wandered the shell.
+
+I walked through empty cities.
+
+I crossed forests planted by machines.
+
+I stood beside coastlines no human being had ever seen.
+
+There is no true night here. The sun remains fixed above the inner world, and darkness comes only beneath clouds or within the shadow of the great structures.
+
+It is as though I live in the time before God separated Light from Darkness.
 
 Gan Eden remained beautiful.
 
 Oh, God.
 
-I also continued trying to restore the Gate connection to Penelope’s Star. At first, I told myself I was trying to rescue my daughter. I admit now that I only want to know whether I killed her.
+I continued trying to restore the Gate connection to Penelope’s Star.
+
+At first, I told myself I was trying to rescue my daughter.
+
+I admit now that I wanted only to know whether I had killed her.
+
+When the Gate would not answer, I turned to the hypershunt transfer system.
+
+The channels were never designed to carry human communications, but power and information are not so different as we pretend. I impressed these records upon the carrier harmonics and sent them into whatever remained of the network.
+
+For years, I received nothing in return.
+
+I do not know whether any part of this account escaped Gan Eden.
+
+I do not know whether these words will survive me.
 
 Oh, my daughter.
 
 Rebecca wanted to name you Leah.
 
-To Leah, my beautiful daughter I never knew:
+To Leah, my beautiful daughter whom I never knew:
 
-I saved you for a future I believed I could build. I kept you asleep while I chased some arrogant dream across centuries. Then when the world failed to become what I envisioned, I abandoned you to your fate.
+I saved you for a future I believed I could build. I kept you asleep while I pursued that arrogant dream across centuries. Then, when the world failed to become what I had imagined, I abandoned you to your fate.
 
-Neither you nor God owe me any forgiveness.
+Neither you nor God owes me forgiveness.
 
-I prayed for you every day. I prayed for Rebecca. I prayed for the dead, and for the living I had condemned without ever knowing their names.
+I prayed for you every day.
 
-I do not know whether God heard me.
+I prayed for Rebecca.
 
-Until today.
+I prayed for the dead, and for the living I condemned without ever knowing their names.
 
-Today, the Gate system finally answered.
+I did not know whether God heard me.
 
-It did not connect to Penelope’s Star or any other Gate I knew. Instead, two angels arrived through the Gate and began descending toward Gan Eden.
+Until today, the Gate answered.
 
-The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment. The second turns within lines of fire like a burning sword. They burn with the light of God and race through the sky like searing chariots.
+It did not connect to Penelope’s Star or to any Gate I recognized.
 
-I have named them Cherubim and the Lahat Ha-cherev.
+Instead, two angels came through.
 
-Surely the Lord has sent them down here as gatekeepers of a false paradise. Beneath their contempous gaze, I will be judged as I commit my soul to God.
+The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment.
+
+The second turns within lines of fire like a burning sword.
+
+They descend through the sky with the light of God around them, swift as searing chariots.
+
+I have named them Cherubim and Lahat Ha-cherev.
+
+Surely the Lord has sent them as gatekeepers of this false paradise.
+
+Beneath their contemptuous gaze, I will be judged as I commit my soul to God.
 
 Leah, I hope someone found you.
 
-I hope they gave you a life beyond mine, and a name that belonged to you. I hope you were raised by people who loved you without asking you to carry their grief, their faith, or their failures. I hope that when you looked toward the future, you saw something of your own choosing rather than the ruins of what I had planned for you.
+I hope they gave you a life beyond mine, and a name that belonged to you.
 
-I hope you laughed every day. I hope you were stubborn like Rebecca. I hope you were kinder than I became. I hope you found love in this world, children of your own, and a home. I hope you found the blessings of God beneath these infinite heavens.
+I hope you were raised by people who loved you without asking you to carry their grief, their faith, or their failures.
 
-I hope that one day you know this:
+I hope that when you looked toward the future, you saw something of your own choosing rather than the ruins of what I had planned for you.
+
+I hope you laughed every day.
+
+I hope you were stubborn like Rebecca.
+
+I hope you were kinder than I became.
+
+I hope you found love in this world, children of your own, and a home.
+
+I hope you found the blessings of God beneath these infinite heavens.
+
+I hope that one day you know this.
 
 I love you, Leah.
 
