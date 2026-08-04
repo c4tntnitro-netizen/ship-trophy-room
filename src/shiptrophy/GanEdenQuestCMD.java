@@ -41,6 +41,20 @@ public final class GanEdenQuestCMD implements CommandPlugin {
                     dialog.getInteractionTarget(),
                     value(params, 1, memoryMap));
         }
+        if ("isSecondHypershuntCrisis".equals(command)) {
+            return GanEdenHypershuntManager.isSecondHypershuntCrisis(
+                    dialog.getInteractionTarget());
+        }
+        if ("isSecondHypershuntCrisisIsaCaptain".equals(command)) {
+            return GanEdenHypershuntManager
+                    .isSecondHypershuntCrisisIsaCaptain(
+                            dialog.getInteractionTarget());
+        }
+        if ("isSecondHypershuntCrisisIsaOnBridge".equals(command)) {
+            return GanEdenHypershuntManager
+                    .isSecondHypershuntCrisisIsaOnBridge(
+                            dialog.getInteractionTarget());
+        }
         if ("isGoldenOmega".equals(command)) {
             return GanEdenAmbushScript.isGoldenFleet(
                     dialog.getInteractionTarget());
@@ -56,6 +70,10 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         }
         if ("prepareHypershuntGuard".equals(command)) {
             GanEdenHypershuntManager.prepareGuard(dialog);
+            return true;
+        }
+        if ("prepareSecondHypershuntCrisis".equals(command)) {
+            GanEdenHypershuntManager.prepareSecondHypershuntCrisis(dialog);
             return true;
         }
         if ("canPayHypershuntPirates".equals(command)) {
@@ -131,6 +149,15 @@ public final class GanEdenQuestCMD implements CommandPlugin {
                     && GanEdenQuestManager.getStage()
                             == Stage.DEFEAT_GOLDEN_SHARDS
                     && !GanEdenAmbushScript.isDefeated();
+        }
+        if ("canLureGoldenOmega".equals(command)) {
+            return isSpaceElevator(dialog.getInteractionTarget())
+                    && GanEdenQuestManager.isCompleted()
+                    && GanEdenAmbushScript.canLureNextWave();
+        }
+        if ("lureGoldenOmega".equals(command)) {
+            return isSpaceElevator(dialog.getInteractionTarget())
+                    && GanEdenAmbushScript.lureNextWave();
         }
         if ("prepareEpitaph".equals(command)
                 || "prepareGrave".equals(command)) {
@@ -320,7 +347,7 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return boundedBreaks(paragraphCount, 0, 7, 13, paragraphCount);
         }
         if (spec == GanEdenLogSpec.PART_TWO) {
-            return boundedBreaks(paragraphCount, 0, 7, 13, paragraphCount);
+            return boundedBreaks(paragraphCount, 0, 7, 15, paragraphCount);
         }
         if (spec == GanEdenLogSpec.PART_THREE) {
             return boundedBreaks(paragraphCount, 0, 6, 14, 22, paragraphCount);

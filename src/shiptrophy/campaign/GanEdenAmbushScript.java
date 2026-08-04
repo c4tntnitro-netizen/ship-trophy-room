@@ -24,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Personalities;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec.DropData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
@@ -95,6 +96,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
      * intercept, potentially deleting this deliberately hand-authored fleet.
      */
     public static boolean ensureFleet() {
+        return ensureFleet(false);
+    }
+
+    private static boolean ensureFleet(boolean forceRespawn) {
         if (Global.getSector() == null) return false;
         StarSystemAPI system = GanEdenGenerator.findSystem();
         if (system == null) return false;
@@ -154,10 +159,11 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 sectorMemory.set(
                         RESPAWN_SINCE_KEY,
                         Global.getSector().getClock().getTimestamp());
-                return true;
+                if (!forceRespawn) return true;
             }
             long since = sectorMemory.getLong(RESPAWN_SINCE_KEY);
-            if (Global.getSector().getClock().getElapsedDaysSince(since)
+            if (!forceRespawn
+                    && Global.getSector().getClock().getElapsedDaysSince(since)
                     < RESPAWN_DAYS) {
                 return true;
             }
@@ -353,7 +359,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         member.setShipName(sinistral ? SINISTRAL_NAME : DEXTRAL_NAME);
         PersonAPI core = createOmegaCore(random == null
                 ? new Random() : random);
-        if (core != null) member.setCaptain(core);
+        if (core != null) {
+            if (!sinistral) core.setPersonality(Personalities.CAUTIOUS);
+            member.setCaptain(core);
+        }
         readyMember(member);
         return member;
     }
@@ -382,6 +391,19 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         if (Global.getSector() == null) return false;
         MemoryAPI memory = Global.getSector().getMemoryWithoutUpdate();
         return memory.getBoolean(ACTIVE_KEY);
+    }
+
+    /** True when a story-point rematch can safely create the next wave. */
+    public static boolean canLureNextWave() {
+        if (Global.getSector() == null || !isDefeated()) return false;
+        StarSystemAPI system = GanEdenGenerator.findSystem();
+        if (system == null || isEncounterActive()) return false;
+        return findExistingFleet(system) == null;
+    }
+
+    /** Skips the ninety-day reconstruction delay for the next escalation. */
+    public static boolean lureNextWave() {
+        return canLureNextWave() && ensureFleet(true);
     }
 
     public static boolean isGoldenFleet(SectorEntityToken target) {
@@ -420,10 +442,13 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         memory.set(MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE, true);
         memory.set("$ignorePlayerCommRequests", true);
         memory.set(MemFlags.MEMORY_KEY_NO_REP_IMPACT, true);
-        memory.set(MemFlags.MEMORY_KEY_NO_SHIP_RECOVERY, true);
-        memory.set(
-                MemFlags.MEMORY_KEY_NO_SHIP_DERELICTS_IN_POST_BATTLE_DEBRIS,
-                true);
+        // Golden hulls are intrinsically unboardable, while Ivory Remnants
+        // carry auto-recovery hull tags and a large individual recovery
+        // bonus. Do not suppress recovery at fleet level or the escorts can
+        // never appear in the post-battle recovery list.
+        memory.unset(MemFlags.MEMORY_KEY_NO_SHIP_RECOVERY);
+        memory.unset(
+                MemFlags.MEMORY_KEY_NO_SHIP_DERELICTS_IN_POST_BATTLE_DEBRIS);
         memory.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
         memory.set(MemFlags.MEMORY_KEY_FORCE_TRANSPONDER_OFF, true);
         ensureMusicCleanupListener(fleet);
@@ -535,6 +560,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 member.setShipName(SINISTRAL_NAME);
             } else if (DEXTRAL_VARIANT.equals(variantId)) {
                 member.setShipName(DEXTRAL_NAME);
+                if (member.getCaptain() != null) {
+                    member.getCaptain().setPersonality(
+                            Personalities.CAUTIOUS);
+                }
             }
         }
     }

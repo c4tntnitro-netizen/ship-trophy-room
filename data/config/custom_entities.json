@@ -52,7 +52,7 @@
         "layers":[STATIONS, BELOW_STATIONS],
     },
     "ship_trophy_gan_eden_external_ring":{
-        "defaultName":"POWER TRANSIT GATE - GAN EDEN",
+        "defaultName":"Power Transit Gate - Gan Eden",
         "nameInText":"Power Transit Gate",
         "shortName":"Gate",
         "aOrAn":"the",

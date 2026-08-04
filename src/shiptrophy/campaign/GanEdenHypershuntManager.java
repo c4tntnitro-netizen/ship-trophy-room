@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.lwjgl.util.vector.Vector2f;
 
@@ -24,6 +26,7 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -59,6 +62,26 @@ public final class GanEdenHypershuntManager {
             "$shipTrophyGanEdenHypershuntGuardCommitted";
     private static final String GUARD_DEFEATED_KEY =
             "$shipTrophyGanEdenHypershuntGuardDefeated";
+    private static final String GUARD_CRISIS_KEY =
+            "$shipTrophyGanEdenHypershuntSecondCrisis";
+    private static final String GUARD_CRISIS_CONTEXT_RECORDED_KEY =
+            "$shipTrophyGanEdenHypershuntCrisisContextRecorded";
+    private static final String GUARD_CRISIS_ISA_CAPTAIN_KEY =
+            "$shipTrophyGanEdenHypershuntCrisisIsaCaptain";
+    private static final String GUARD_CRISIS_ISA_SHIP_ID_KEY =
+            "$shipTrophyGanEdenHypershuntCrisisIsaShipId";
+    private static final String GUARD_CRISIS_ISA_SHIP_NAME_KEY =
+            "$shipTrophyGanEdenHypershuntCrisisIsaShipName";
+    private static final String GUARD_CRISIS_CONSEQUENCE_APPLIED_KEY =
+            "$shipTrophyGanEdenHypershuntCrisisConsequenceApplied";
+    private static final String CRISIS_REPRIMAND_PENDING_KEY =
+            "$shipTrophyGanEdenHypershuntReprimandPending";
+    private static final String CRISIS_REPRIMAND_ISA_CAPTAIN_KEY =
+            "$shipTrophyGanEdenHypershuntReprimandIsaCaptain";
+    private static final String CRISIS_REPRIMAND_SHIP_NAME_KEY =
+            "$shipTrophyGanEdenHypershuntReprimandShipName";
+    private static final String CRISIS_REPRIMAND_DMOD_NAME_KEY =
+            "$shipTrophyGanEdenHypershuntReprimandDModName";
     private static final String TAP_GUARD_FACTION_KEY =
             "$shipTrophyGanEdenHypershuntFaction";
     private static final String TAP_GUARD_SPAWNED_KEY =
@@ -71,6 +94,7 @@ public final class GanEdenHypershuntManager {
     private static final int REQUIRED_HYPERSHUNTS = 2;
     private static final float GUARD_OFFSET = 450f;
     private static final float GUARD_DURATION = 1000000f;
+    private static final float CRISIS_REINFORCEMENT_FP = 120f;
     private static final Map<String, String> PIRATE_MK_IV_SKINS;
     private static final Map<String, String> PATHER_MK_IV_SKINS;
 
@@ -151,6 +175,7 @@ public final class GanEdenHypershuntManager {
         }
 
         if (guard != null && !guard.isEmpty()) {
+            ensureSecondCrisisReinforcements(guard, tap, factionId);
             configureGuard(guard, tap, factionId);
             return;
         }
@@ -166,6 +191,8 @@ public final class GanEdenHypershuntManager {
 
         CampaignFleetAPI created = createGuard(tap, factionId);
         if (created != null && !created.isEmpty()) {
+            ensureSecondCrisisReinforcements(created, tap, factionId);
+            configureGuard(created, tap, factionId);
             tapMemory.set(TAP_GUARD_SPAWNED_KEY, true);
         } else {
             // Do not strand the quest if another mod has removed every usable
@@ -224,9 +251,13 @@ public final class GanEdenHypershuntManager {
             SectorEntityToken tap,
             String factionId) {
         applyMkIVRefit(fleet, factionId);
-        fleet.setName(Factions.LUDDIC_PATH.equals(factionId)
-                ? "Mk IV Pather Blockade"
-                : "Mk IV Claimant Flotilla");
+        boolean crisis = fleet.getMemoryWithoutUpdate()
+                .getBoolean(GUARD_CRISIS_KEY);
+        fleet.setName(crisis
+                ? "Mk IV Hypershunt Ravagers"
+                : Factions.LUDDIC_PATH.equals(factionId)
+                        ? "Mk IV Pather Blockade"
+                        : "Mk IV Claimant Flotilla");
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
         fleet.addTag(Tags.STORY_CRITICAL);
@@ -273,10 +304,84 @@ public final class GanEdenHypershuntManager {
                     FleetAssignment.ORBIT_PASSIVE,
                     tap,
                     GUARD_DURATION,
-                    Factions.LUDDIC_PATH.equals(factionId)
-                            ? "guarding forbidden ground"
-                            : "holding a salvage claim");
+                    crisis
+                            ? "ravaging the hypershunt"
+                            : Factions.LUDDIC_PATH.equals(factionId)
+                                    ? "guarding forbidden ground"
+                                    : "holding a salvage claim");
         }
+    }
+
+    /**
+     * Turns the unsurveyed second objective into one stable mixed fleet.
+     * Starsector campaign battles are two-sided; keeping both raider groups
+     * in one FleetAPI prevents either rival from being assigned to the
+     * player's side or generating a phantom allied fleet.
+     */
+    private static void ensureSecondCrisisReinforcements(
+            CampaignFleetAPI guard,
+            SectorEntityToken tap,
+            String primaryFactionId) {
+        if (guard == null
+                || tap == null
+                || guard.getMemoryWithoutUpdate()
+                        .getBoolean(GUARD_CRISIS_KEY)
+                || getSurveyedCount() != 1
+                || tap.getMemoryWithoutUpdate()
+                        .getBoolean(TAP_SURVEYED_KEY)) {
+            return;
+        }
+
+        String reinforcementFaction = Factions.LUDDIC_PATH.equals(
+                primaryFactionId) ? Factions.PIRATES : Factions.LUDDIC_PATH;
+        Random random = new Random(
+                stableKey(tap).hashCode()
+                        ^ reinforcementFaction.hashCode()
+                        ^ 0x637269736973L);
+        FleetParamsV3 params = new FleetParamsV3(
+                null,
+                tap.getLocationInHyperspace(),
+                reinforcementFaction,
+                1f,
+                FleetTypes.PATROL_LARGE,
+                CRISIS_REINFORCEMENT_FP,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f);
+        params.ignoreMarketFleetSizeMult = true;
+        params.withOfficers = true;
+        params.averageSMods = 1;
+        params.maxNumShips = 18;
+        params.random = random;
+        if (Factions.LUDDIC_PATH.equals(reinforcementFaction)
+                && Global.getSector().getFaction(
+                        reinforcementFaction) != null) {
+            params.commander = Global.getSector().getFaction(
+                    reinforcementFaction).createRandomPerson(
+                            FullName.Gender.MALE, random);
+        }
+
+        CampaignFleetAPI reinforcements = FleetFactoryV3.createFleet(params);
+        if (reinforcements != null && !reinforcements.isEmpty()) {
+            applyMkIVRefit(reinforcements, reinforcementFaction);
+            for (FleetMemberAPI member
+                    : reinforcements.getFleetData().getMembersListCopy()) {
+                reinforcements.getFleetData().removeFleetMember(member);
+                guard.getFleetData().addFleetMember(member);
+            }
+            guard.getFleetData().setSyncNeeded();
+            guard.getFleetData().syncIfNeeded();
+            guard.getFleetData().sort();
+            guard.forceSync();
+        }
+
+        // The crisis scene remains valid even if a heavily modified faction
+        // could not supply reinforcements: the existing blockade is still
+        // physically attacking the structure and must be stopped.
+        guard.getMemoryWithoutUpdate().set(GUARD_CRISIS_KEY, true);
     }
 
     /**
@@ -451,6 +556,31 @@ public final class GanEdenHypershuntManager {
                 && factionId.equals(memory.getString(GUARD_FACTION_KEY));
     }
 
+    public static boolean isSecondHypershuntCrisis(
+            SectorEntityToken target) {
+        if (!(target instanceof CampaignFleetAPI)
+                || GanEdenQuestManager.getStage()
+                        != Stage.INVESTIGATE_HYPERSHUNTS) {
+            return false;
+        }
+        MemoryAPI memory = target.getMemoryWithoutUpdate();
+        return memory.getBoolean(GUARD_KEY)
+                && memory.getBoolean(GUARD_CRISIS_KEY)
+                && !memory.getBoolean(GUARD_COMMITTED_KEY);
+    }
+
+    public static boolean isSecondHypershuntCrisisIsaCaptain(
+            SectorEntityToken target) {
+        return isSecondHypershuntCrisis(target)
+                && findIsaCommandedMember() != null;
+    }
+
+    public static boolean isSecondHypershuntCrisisIsaOnBridge(
+            SectorEntityToken target) {
+        return isSecondHypershuntCrisis(target)
+                && findIsaCommandedMember() == null;
+    }
+
     public static void prepareGuard(InteractionDialogAPI dialog) {
         if (dialog == null) return;
         SectorEntityToken target = dialog.getInteractionTarget();
@@ -461,6 +591,17 @@ public final class GanEdenHypershuntManager {
             }
         }
         showIsaAsSecondPerson(dialog);
+    }
+
+    public static void prepareSecondHypershuntCrisis(
+            InteractionDialogAPI dialog) {
+        if (dialog == null) return;
+        if (dialog.getInteractionTarget() instanceof CampaignFleetAPI) {
+            recordCrisisCommandContext(
+                    (CampaignFleetAPI) dialog.getInteractionTarget());
+        }
+        dialog.getVisualPanel().hideSecondPerson();
+        showIsa(dialog);
     }
 
     public static void prepareInvestigation(InteractionDialogAPI dialog) {
@@ -507,6 +648,9 @@ public final class GanEdenHypershuntManager {
         CampaignFleetAPI fleet =
                 (CampaignFleetAPI) dialog.getInteractionTarget();
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+        if (memory.getBoolean(GUARD_CRISIS_KEY)) {
+            recordCrisisCommandContext(fleet);
+        }
         memory.set(GUARD_COMMITTED_KEY, true);
         memory.unset(MemFlags.NON_HOSTILE_OVERRIDES_MAKE_HOSTILE);
         memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE);
@@ -673,11 +817,169 @@ public final class GanEdenHypershuntManager {
         fleet.addEventListener(new GuardBattleListener());
     }
 
+    private static FleetMemberAPI findIsaCommandedMember() {
+        if (Global.getSector() == null
+                || Global.getSector().getPlayerFleet() == null) {
+            return null;
+        }
+        for (FleetMemberAPI member : Global.getSector().getPlayerFleet()
+                .getFleetData().getMembersListCopy()) {
+            PersonAPI captain = member.getCaptain();
+            if (captain != null
+                    && IsaTrophyManager.PERSON_ID.equals(captain.getId())) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    private static void recordCrisisCommandContext(CampaignFleetAPI guard) {
+        if (guard == null
+                || !guard.getMemoryWithoutUpdate()
+                        .getBoolean(GUARD_CRISIS_KEY)) {
+            return;
+        }
+        MemoryAPI memory = guard.getMemoryWithoutUpdate();
+        FleetMemberAPI member = findIsaCommandedMember();
+        memory.set(GUARD_CRISIS_CONTEXT_RECORDED_KEY, true);
+        memory.set(GUARD_CRISIS_ISA_CAPTAIN_KEY, member != null);
+        if (member == null) {
+            memory.unset(GUARD_CRISIS_ISA_SHIP_ID_KEY);
+            memory.unset(GUARD_CRISIS_ISA_SHIP_NAME_KEY);
+            return;
+        }
+        memory.set(GUARD_CRISIS_ISA_SHIP_ID_KEY, member.getId());
+        memory.set(GUARD_CRISIS_ISA_SHIP_NAME_KEY, member.getShipName());
+    }
+
+    private static FleetMemberAPI findPlayerMember(String memberId) {
+        if (memberId == null
+                || memberId.isEmpty()
+                || Global.getSector() == null
+                || Global.getSector().getPlayerFleet() == null) {
+            return null;
+        }
+        for (FleetMemberAPI member : Global.getSector().getPlayerFleet()
+                .getFleetData().getMembersListCopy()) {
+            if (memberId.equals(member.getId())) return member;
+        }
+        return null;
+    }
+
+    private static String addCrisisDMod(FleetMemberAPI member, long seed) {
+        if (member == null || member.getVariant() == null) return "";
+        Set<String> before = new HashSet<String>(
+                member.getVariant().getPermaMods());
+        try {
+            DModManager.addDMods(member, true, 1, new Random(seed));
+            member.setStatUpdateNeeded(true);
+            if (member.getFleetData() != null) {
+                member.getFleetData().setSyncNeeded();
+                member.getFleetData().syncIfNeeded();
+            }
+        } catch (RuntimeException ex) {
+            System.err.println(
+                    "Hall of Triumph: unable to add Isa's "
+                            + "hypershunt-crisis D-mod to " + member.getId()
+                            + ": " + ex.getMessage());
+            return "";
+        }
+
+        for (String hullmodId : member.getVariant().getPermaMods()) {
+            if (before.contains(hullmodId)) continue;
+            if (Global.getSettings().getHullModSpec(hullmodId) != null
+                    && Global.getSettings().getHullModSpec(hullmodId)
+                            .hasTag(Tags.HULLMOD_DMOD)) {
+                return Global.getSettings().getHullModSpec(hullmodId)
+                        .getDisplayName();
+            }
+        }
+        return "";
+    }
+
+    private static void applyCrisisConsequences(CampaignFleetAPI guard) {
+        if (guard == null || Global.getSector() == null) return;
+        MemoryAPI guardMemory = guard.getMemoryWithoutUpdate();
+        if (!guardMemory.getBoolean(GUARD_CRISIS_KEY)
+                || !guardMemory.getBoolean(
+                        GUARD_CRISIS_CONTEXT_RECORDED_KEY)
+                || guardMemory.getBoolean(
+                        GUARD_CRISIS_CONSEQUENCE_APPLIED_KEY)) {
+            return;
+        }
+        guardMemory.set(GUARD_CRISIS_CONSEQUENCE_APPLIED_KEY, true);
+
+        boolean isaWasCaptain = guardMemory.getBoolean(
+                GUARD_CRISIS_ISA_CAPTAIN_KEY);
+        String shipName = guardMemory.getString(
+                GUARD_CRISIS_ISA_SHIP_NAME_KEY);
+        String dModName = "";
+        if (isaWasCaptain) {
+            FleetMemberAPI member = findPlayerMember(guardMemory.getString(
+                    GUARD_CRISIS_ISA_SHIP_ID_KEY));
+            if (member != null) {
+                shipName = member.getShipName();
+                dModName = addCrisisDMod(
+                        member,
+                        stableKey(guard).hashCode()
+                                ^ member.getId().hashCode()
+                                ^ 0x697361646d6f64L);
+            }
+        }
+
+        MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
+        sectorMemory.set(CRISIS_REPRIMAND_PENDING_KEY, true);
+        sectorMemory.set(
+                CRISIS_REPRIMAND_ISA_CAPTAIN_KEY, isaWasCaptain);
+        sectorMemory.set(
+                CRISIS_REPRIMAND_SHIP_NAME_KEY,
+                shipName == null ? "" : shipName);
+        sectorMemory.set(CRISIS_REPRIMAND_DMOD_NAME_KEY, dModName);
+    }
+
+    public static boolean isCrisisReprimandPending() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate()
+                        .getBoolean(CRISIS_REPRIMAND_PENDING_KEY);
+    }
+
+    public static boolean wasIsaCrisisCaptain() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate()
+                        .getBoolean(CRISIS_REPRIMAND_ISA_CAPTAIN_KEY);
+    }
+
+    public static String getCrisisReprimandShipName() {
+        if (Global.getSector() == null) return "";
+        String value = Global.getSector().getMemoryWithoutUpdate().getString(
+                CRISIS_REPRIMAND_SHIP_NAME_KEY);
+        return value == null ? "" : value;
+    }
+
+    public static String getCrisisReprimandDModName() {
+        if (Global.getSector() == null) return "";
+        String value = Global.getSector().getMemoryWithoutUpdate().getString(
+                CRISIS_REPRIMAND_DMOD_NAME_KEY);
+        return value == null ? "" : value;
+    }
+
+    public static void markCrisisReprimandShown() {
+        if (Global.getSector() == null) return;
+        Global.getSector().getMemoryWithoutUpdate().unset(
+                CRISIS_REPRIMAND_PENDING_KEY);
+    }
+
     private static void markGuardDefeated(CampaignFleetAPI guard) {
         if (guard == null) return;
-        MkIVFleetIntegrationListener.unlockFaction(
-                guard.getMemoryWithoutUpdate().getString(
-                        GUARD_FACTION_KEY));
+        MemoryAPI guardMemory = guard.getMemoryWithoutUpdate();
+        if (guardMemory.getBoolean(GUARD_CRISIS_KEY)) {
+            applyCrisisConsequences(guard);
+            MkIVFleetIntegrationListener.unlockFaction(Factions.LUDDIC_PATH);
+            MkIVFleetIntegrationListener.unlockFaction(Factions.PIRATES);
+        } else {
+            MkIVFleetIntegrationListener.unlockFaction(
+                    guardMemory.getString(GUARD_FACTION_KEY));
+        }
         SectorEntityToken tap = findTapForTarget(guard);
         if (tap != null) {
             tap.getMemoryWithoutUpdate().set(
@@ -734,14 +1036,18 @@ public final class GanEdenHypershuntManager {
                 BattleAPI battle) {
             if (guard == null
                     || battle == null
-                    || primaryWinner == null
                     || !guard.getMemoryWithoutUpdate().getBoolean(GUARD_KEY)
                     || !battle.isPlayerInvolved()
                     || !battle.isInvolved(guard)
-                    || battle.onPlayerSide(guard)
-                    || !battle.onPlayerSide(primaryWinner)) {
+                    || battle.onPlayerSide(guard)) {
                 return;
             }
+            // Isa's insubordination has consequences after the first actual
+            // engagement even if the player disengages. Clearing the blockade
+            // and unlocking Mk IV hulls still require a player-side victory.
+            applyCrisisConsequences(guard);
+            if (primaryWinner == null
+                    || !battle.onPlayerSide(primaryWinner)) return;
             markGuardDefeated(guard);
         }
 

@@ -23,6 +23,7 @@ import shiptrophy.ShipTrophyRoomIds;
 public final class GanEdenQuestManager {
     public enum Stage {
         NOT_STARTED,
+        INHERITANCE_RECOVERED,
         ASK_AROUND_SHATTERED_RING,
         FIND_BLACK_MARKET_CLUE,
         INVESTIGATE_HYPERSHUNTS,
@@ -93,16 +94,27 @@ public final class GanEdenQuestManager {
         return isEpitaphFound();
     }
 
-    /** Starts the rewritten investigation at the end of Isa's homecoming. */
+    /** Starts Isa's investigation when her inherited spacer suit is returned. */
     public static void start(TextPanelAPI textPanel) {
         if (Global.getSector() == null
                 || isStarted()) {
             return;
         }
+        // The rules text presents the quest acceptance after the inheritance
+        // receipt, so create the intel silently to preserve that ordering.
+        setStage(Stage.INHERITANCE_RECOVERED, textPanel, false);
+    }
+
+    /** Advances the investigation after the suit's concealed log is read. */
+    public static void finishHomecoming(TextPanelAPI textPanel) {
+        if (Global.getSector() == null) return;
+        if (!isStarted()) start(null);
+        if (getStage() != Stage.INHERITANCE_RECOVERED) return;
+
         // The homecoming scene has already played the archive page by page.
         // File it silently so starting the quest cannot print the body again.
         GanEdenLogManager.recoverSilently(GanEdenLogSpec.PART_ONE);
-        setStage(Stage.INVESTIGATE_HYPERSHUNTS, textPanel, true);
+        setStage(Stage.INVESTIGATE_HYPERSHUNTS, textPanel, false);
         GanEdenHypershuntManager.ensureEncounters();
     }
 
@@ -134,6 +146,7 @@ public final class GanEdenQuestManager {
         if (!isStarted()
                 && IsaTrophyManager.wasShatteredRingHomecomingShown()) {
             start(null);
+            finishHomecoming(null);
         }
         if (isStarted()) ensureIntel(null, false);
         // The pre-wafer version of the quest used a unique black-market

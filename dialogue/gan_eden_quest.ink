@@ -479,14 +479,130 @@ ISAAC THOMAS LEICESTER
 VAR guarding_faction = "pather"
 // Valid preview values: "pather", "pirate"
 VAR has_story_point = true
+VAR isa_captaining_ship = true
 
 -> gan_eden_hypershunt_guard
 
 === gan_eden_hypershunt_guard ===
 
++ [second hypershunt crisis] -> gan_eden_second_hypershunt_crisis
+
 + [pather] -> gan_eden_hypershunt_pather_intro
 
 + [pirate] -> gan_eden_hypershunt_pirate_intro
+
+// ============================================================
+// SECOND HYPERSHUNT CRISIS
+// ============================================================
+
+=== gan_eden_second_hypershunt_crisis ===
+
+{ isa_captaining_ship:
+    -> gan_eden_second_hypershunt_crisis_captain
+- else:
+    -> gan_eden_second_hypershunt_crisis_bridge
+}
+
+=== gan_eden_second_hypershunt_crisis_captain ===
+
+The second hypershunt is already under attack.
+
+Pather demolition ships cling to one of the collector spines. Shaped charges crawl across the black superstructure in glittering chains while scripture floods every open frequency: condemnation of the machine and promises of cleansing fire.
+
+Across the structure, pirate cutting rigs have anchored directly to the transmission vanes. Industrial lasers bite into armor thick enough to roof cities. Salvage tugs wait behind them with their holds open, ready to carry off whatever the crews can tear loose before the Pathers bring the whole structure down.
+
+The two flotillas fire past one another, each too committed to its work to disengage.
+
+Isa sees the charge telemetry.
+
+"No."
+
+She enlarges the carrier spine, watching warning glyphs multiply across the projection.
+
+"This is the only clue we have left. If they destroy that spine, Isaac's record goes with it."
+
+The first Pather charge arms. A pirate tug wrenches a glowing section of armor away from the hypershunt.
+
+The ship carrying Isa rolls out of formation before you can answer.
+
+"Helm, bring us in. All batteries, engage. Get them away from my hypershunt."
+
++ [Follow Isa into the engagement.] -> gan_eden_hypershunt_crisis_battle
+
+=== gan_eden_second_hypershunt_crisis_bridge ===
+
+The second hypershunt is already under attack.
+
+Pather demolition ships cling to one of the collector spines. Shaped charges crawl across the black superstructure in glittering chains while scripture floods every open frequency: condemnation of the machine and promises of cleansing fire.
+
+Across the structure, pirate cutting rigs have anchored directly to the transmission vanes. Industrial lasers bite into armor thick enough to roof cities. Salvage tugs wait behind them with their holds open, ready to carry off whatever the crews can tear loose before the Pathers bring the whole structure down.
+
+The two flotillas fire past one another, each too committed to its work to disengage.
+
+Isa storms onto the bridge. Before the comm officer can stop her, she opens an all-frequency channel.
+
+"Pathers. Pirates. Back away from the hypershunt. Now."
+
+The first Pather charge arms. A pirate tug wrenches a glowing section of armor away from the transmission vane.
+
+Isa leans over the transmitter.
+
+"That is the only clue I have left. Touch it again and I will kill every last one of you."
+
+Across the display, targeting sensors snap toward your fleet. The two flotillas release their anchors and turn together.
+
+Isa closes the channel and looks at you, the fury draining from her face as battle alarms begin to sound.
+
++ [Order battle stations.] -> gan_eden_hypershunt_crisis_battle
+
+=== gan_eden_hypershunt_crisis_battle ===
+// Runtime: the existing mixed Mk IV fleet becomes hostile and engages.
+
+{ isa_captaining_ship:
+    -> gan_eden_hypershunt_crisis_reprimand_captain
+- else:
+    -> gan_eden_hypershunt_crisis_reprimand_bridge
+}
+
+=== gan_eden_hypershunt_crisis_reprimand_captain ===
+// Runtime: shown only after the player wins. Isa's commanded ship receives
+// exactly one D-mod before this scene opens.
+
+Once the hypershunt is secure, Isa reports to your bridge. The anger that carried her ship out of formation has burned down to a brittle silence.
+
+Damage control reports permanent structural damage aboard her ship.
+
+[Isa's ship has acquired a D-mod.]
+
+"You broke formation, committed the fleet without an order, and put every ship behind you in the line of fire," you tell her.
+
+Isa starts to answer. "They were destroying it."
+
+"I know exactly what they were doing. You still ask before you start a war."
+
+"You're retaining your command," you say. "But not your freedom. Three months in the brig."
+
+Her jaw works once. Then she looks away. "Understood, Captain."
+
++ ["Dismissed."] -> END
+
+=== gan_eden_hypershunt_crisis_reprimand_bridge ===
+// Runtime: shown only after the player wins. No D-mod is applied because Isa
+// was not captaining a ship when she forced the engagement.
+
+Once the hypershunt is secure, Isa returns to your bridge. The comm station she commandeered still carries the recording of her threat on its main display.
+
+"You used my bridge to issue an ultimatum and committed this fleet to battle before I gave the order," you tell her.
+
+Isa starts to answer. "They were destroying it."
+
+"I know exactly what they were doing. You still ask before you start a war."
+
+"You're retaining your command," you say. "But not your freedom. Three months in the brig."
+
+Her jaw works once. Then she looks away. "Understood, Captain."
+
++ ["Dismissed."] -> END
 
 // ============================================================
 // LUDDIC PATH
@@ -702,27 +818,35 @@ FILE: EPITAPH — PART II
 
 Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
 
-Our daughter was born there.
+Rebecca was a senior engineer in stellar-transfer architecture. The Directorate offered us joint appointments: I as Director of the Continuity Office, Rebecca as its Chief Integration Engineer.
 
-Rebecca went to God the same day.
+We intended to serve the entire tenure together, entering cryosuspension between construction phases and waking side by side whenever the work required us.
 
-A vascular condition had been identified too late for treatment. By the time the doctors understood what was happening, they could save only one of them.
+Our daughter was born shortly before the first long suspension interval. We could not bear to let her live and die between our waking periods, or surrender her to descendants we would know only as strangers. We placed her pediatric chamber beside our own.
 
-I had already been considered for the proposed Continuity Office. The appointment would require its director to spend centuries in cryosuspension, waking only when the projects required his judgment.
+We intended to wake and raise her during every active interval.
 
-Before Rebecca’s death, I had intended to refuse.
+At the first scheduled revival, I woke.
+
+Rebecca did not survive the thaw.
 
 + [Continue reading.] -> log_two_page_two
 
 === log_two_page_two ===
 
-With her gone, I thought I had no more reason to live in the present.
+Her chamber had functioned correctly. The revival sequence had remained within tolerance until vascular collapse began. By the time the medical system understood what was happening, there was nothing left to save.
 
-I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
+Our daughter's chamber remained stable. The physicians told me the pediatric thaw could proceed safely.
 
-A better world.
+I refused.
 
-That was the arrangement I made with myself.
+I told myself that one death proved the protocols were not ready. I ordered more studies. I said I would wake her during the next interval, after the Directorate had made revival safer.
+
+At the next waking, I refused again.
+
+I accepted sole leadership of the Continuity Office and promised myself that I would complete the work, resign, and wake my daughter into the world Rebecca and I had intended for her.
+
+Safe from the thaw. Safe from the centuries. Safe from every danger except me.
 
 I visited my daughter during every waking.
 
@@ -732,7 +856,9 @@ I inspected her chamber. I reviewed the medical reports. I repeated tests the te
 
 === log_two_page_three ===
 
-She remained healthy and unchanged while centuries passed beyond the glass.
+Every report said she remained healthy. Every specialist told me she could be revived.
+
+I saw Rebecca dying on the thawing table and left my daughter behind the glass.
 
 I told myself that she was safe.
 
@@ -761,7 +887,11 @@ After a long silence, she looks down at the microchip connected to her slate.
 
 She swallows.
 
-“He put her in cryosuspension.”
+“They were supposed to wake her together.”
+
+Her eyes move back over the revival report.
+
+“Rebecca died, and he never opened the other pod.”
 
 The carrier signal continues repeating beneath the silence.
 
@@ -785,7 +915,7 @@ She shakes her head.
 
 Her eyes return to the author field.
 
-“I don’t know why he put me there. Did he just abandon me? Put me to sleep and walk away?”
+“Did he mean to leave me sleeping forever? Was he ever going to stop being afraid?”
 
 She stares at the carrier trace.
 
@@ -821,6 +951,10 @@ AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — PART III
 
 My daughter remained unchanged.
+
+I made certain of it.
+
+At every waking, the physicians offered to revive her. At every waking, I refused.
 
 The Domain did not.
 

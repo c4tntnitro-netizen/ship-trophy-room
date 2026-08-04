@@ -3,6 +3,7 @@ package shiptrophy;
 import java.util.List;
 import java.util.Map;
 
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -20,6 +21,10 @@ import shiptrophy.campaign.GanEdenQuestManager;
 /** One-time scene when officer Isa is brought home to the Shattered Ring. */
 public class IsaHomecomingCMD implements CommandPlugin {
     private static final String PLAYER_RANK = "$playerRank";
+    private static final String APPROACH_ILLUSTRATION =
+            "ship_trophy_shattered_ring_approach";
+    private static final String WORKSHOP_ILLUSTRATION =
+            "ship_trophy_shattered_ring_workshop";
 
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params,
@@ -33,11 +38,16 @@ public class IsaHomecomingCMD implements CommandPlugin {
         if ("prepare".equals(command)) {
             if (!shouldShow(dialog)) return false;
             setDialogueVariables(memoryMap);
+            showApproachIllustrationAfterDialogOpens(dialog);
+            return true;
+        }
+        if ("showIsa".equals(command)) {
             showIsa(dialog);
             return true;
         }
         if ("receiveSuit".equals(command)) {
             setSuitReceived(true);
+            GanEdenQuestManager.start(dialog.getTextPanel());
             return true;
         }
         if ("shouldShowWorkshop".equals(command)) {
@@ -46,13 +56,14 @@ public class IsaHomecomingCMD implements CommandPlugin {
         if ("prepareWorkshop".equals(command)) {
             if (!shouldShowWorkshop(dialog)) return false;
             setDialogueVariables(memoryMap);
-            showIsa(dialog);
+            HallOfTriumphCompletionDialogPlugin.showLetterboxedIllustration(
+                    dialog, WORKSHOP_ILLUSTRATION);
             return true;
         }
         if ("markSeen".equals(command)) {
             setSuitReceived(false);
             IsaTrophyManager.setShatteredRingHomecomingShown();
-            GanEdenQuestManager.start(dialog.getTextPanel());
+            GanEdenQuestManager.finishHomecoming(dialog.getTextPanel());
             return true;
         }
         return false;
@@ -116,6 +127,59 @@ public class IsaHomecomingCMD implements CommandPlugin {
     private static void showIsa(InteractionDialogAPI dialog) {
         PersonAPI isa = IsaTrophyManager.getOrCreateIsa(IsaTrophyManager.findHomeMarket());
         if (isa != null) dialog.getVisualPanel().showPersonInfo(isa);
+    }
+
+    /**
+     * OpenInteractionDialog applies the target's normal visual after running
+     * rule commands. Defer this custom panel by two paused frames so the wide
+     * approach illustration wins that ordering race, just as it does once a
+     * dialogue is already open.
+     */
+    private static void showApproachIllustrationAfterDialogOpens(
+            InteractionDialogAPI dialog) {
+        if (Global.getSector() == null || dialog == null) return;
+        Global.getSector().addTransientScript(
+                new DeferredApproachIllustration(dialog));
+    }
+
+    private static final class DeferredApproachIllustration
+            implements EveryFrameScript {
+        private final InteractionDialogAPI dialog;
+        private int frames;
+        private boolean done;
+
+        private DeferredApproachIllustration(InteractionDialogAPI dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        public void advance(float amount) {
+            if (done) return;
+            frames++;
+            if (frames < 2) return;
+
+            InteractionDialogAPI current = Global.getSector() == null
+                    || Global.getSector().getCampaignUI() == null
+                    ? null
+                    : Global.getSector().getCampaignUI()
+                            .getCurrentInteractionDialog();
+            if (current == dialog) {
+                HallOfTriumphCompletionDialogPlugin
+                        .showLetterboxedIllustration(
+                                dialog, APPROACH_ILLUSTRATION);
+            }
+            done = true;
+        }
+
+        @Override
+        public boolean isDone() {
+            return done;
+        }
+
+        @Override
+        public boolean runWhilePaused() {
+            return true;
+        }
     }
 
     private static void setDialogueVariables(

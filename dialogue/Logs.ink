@@ -82,27 +82,35 @@ FILE: EPITAPH — PART II
 
 Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
 
-Our daughter was born there.
+Rebecca was a senior engineer in stellar-transfer architecture. The Directorate offered us joint appointments: I as Director of the Continuity Office, Rebecca as its Chief Integration Engineer.
 
-Rebecca went to God the same day.
+We intended to serve the entire tenure together, entering cryosuspension between construction phases and waking side by side whenever the work required us.
 
-A vascular condition had been identified too late for treatment. By the time the doctors understood what was happening, they could save only one of them.
+Our daughter was born shortly before the first long suspension interval. We could not bear to let her live and die between our waking periods, or surrender her to descendants we would know only as strangers. We placed her pediatric chamber beside our own.
 
-I had already been considered for the proposed Continuity Office. The appointment would require its director to spend centuries in cryosuspension, waking only when the projects required his judgment.
+We intended to wake and raise her during every active interval.
 
-Before Rebecca’s death, I had intended to refuse.
+At the first scheduled revival, I woke.
+
+Rebecca did not survive the thaw.
 
 + [Continue reading.] -> log_two_page_two
 
 === log_two_page_two ===
 
-With her gone, I thought I had no more reason to live in the present.
+Her chamber had functioned correctly. The revival sequence had remained within tolerance until vascular collapse began. By the time the medical system understood what was happening, there was nothing left to save.
 
-I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
+Our daughter's chamber remained stable. The physicians told me the pediatric thaw could proceed safely.
 
-A better world.
+I refused.
 
-That was the arrangement I made with myself.
+I told myself that one death proved the protocols were not ready. I ordered more studies. I said I would wake her during the next interval, after the Directorate had made revival safer.
+
+At the next waking, I refused again.
+
+I accepted sole leadership of the Continuity Office and promised myself that I would complete the work, resign, and wake my daughter into the world Rebecca and I had intended for her.
+
+Safe from the thaw. Safe from the centuries. Safe from every danger except me.
 
 I visited my daughter during every waking.
 
@@ -112,7 +120,9 @@ I inspected her chamber. I reviewed the medical reports. I repeated tests the te
 
 === log_two_page_three ===
 
-She remained healthy and unchanged while centuries passed beyond the glass.
+Every report said she remained healthy. Every specialist told me she could be revived.
+
+I saw Rebecca dying on the thawing table and left my daughter behind the glass.
 
 I told myself that she was safe.
 
@@ -134,6 +144,10 @@ AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — PART III
 
 My daughter remained unchanged.
+
+I made certain of it.
+
+At every waking, the physicians offered to revive her. At every waking, I refused.
 
 The Domain did not.
 
@@ -361,7 +375,11 @@ Rebecca wanted to name you Leah.
 
 To Leah, my beautiful daughter whom I never knew:
 
-I saved you for a future I believed I could build. I kept you asleep while I pursued that arrogant dream across centuries. Then, when the world failed to become what I had imagined, I abandoned you to your fate.
+I said I saved you for a future I believed I could build. That was only partly true.
+
+Every physician told me you could be revived. Every report said your chamber was sound. But whenever I imagined authorizing the thaw, I saw Rebecca dying on the revival table. I kept you asleep because I was afraid.
+
+I dressed that fear in duty and pursued my arrogant dream across centuries. Then, when the world failed to become what I had imagined, I abandoned you to your fate.
 
 Neither you nor God owes me forgiveness.
 

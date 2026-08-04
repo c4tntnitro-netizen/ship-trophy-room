@@ -8,7 +8,11 @@
     "removeEngineSlots": [],
     "removeBuiltInMods": ["shard_spawner"],
     "removeBuiltInWeapons": [],
-    "builtInMods": ["ship_trophy_golden_fractal"],
+    "builtInMods": [
+        "ship_trophy_golden_fractal",
+        "auxiliarythrusters",
+        "ship_trophy_cherubim_wings"
+    ],
     "tags": ["hide_in_codex"],
     "builtInWeapons": {}
 }

@@ -16,7 +16,7 @@ public final class GanEdenTransitSystemGenerator {
     public static final String SYSTEM_ID =
             "ship_trophy_gan_eden_power_transit_system";
     public static final String SYSTEM_NAME =
-            "POWER TRANSIT GATE - GAN EDEN";
+            "Power Transit Gate - Gan Eden";
     public static final String JUMP_ID =
             "ship_trophy_gan_eden_power_transit_jump";
     public static final String GRAVITY_WELL_ID =

@@ -46,28 +46,31 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
     public void createSmallDescription(
             TooltipMakerAPI info, float width, float height) {
         info.setParaInsigniaLarge();
-        info.addPara(
-                "Isa Leicester was recovered from a cryopod as an infant, "
-                        + "swaddled in a spacer suit bearing the name Isaac "
-                        + "Leicester. A concealed identification wafer in the "
-                        + "suit recovered Isaac Thomas Leicester's first "
-                        + "personal log and linked him to both surviving "
-                        + "Coronal Hypershunts.",
-                0f);
+        if (GanEdenQuestManager.getStage()
+                == Stage.INHERITANCE_RECOVERED) {
+            info.addPara(
+                    "Isa Leicester was recovered from a cryopod as an infant, "
+                            + "swaddled in a spacer suit bearing the name "
+                            + "Isaac Leicester. The Shattered Ring has "
+                            + "returned the preserved suit to her, and she "
+                            + "has taken it to her old workshop for study.",
+                    0f);
+        } else {
+            info.addPara(
+                    "Isa Leicester was recovered from a cryopod as an infant, "
+                            + "swaddled in a spacer suit bearing the name "
+                            + "Isaac Leicester. A concealed identification "
+                            + "wafer in the suit recovered Isaac Thomas "
+                            + "Leicester's first personal log and linked him "
+                            + "to both surviving Coronal Hypershunts.",
+                    0f);
+        }
         info.addSpacer(10f);
         info.addSectionHeading("Current objective",
                 com.fs.starfarer.api.ui.Alignment.MID, 0f);
         info.addPara(shortObjective(), 10f, Misc.getTextColor(),
                 Misc.getHighlightColor(), highlightedObjective());
 
-        if (GanEdenQuestManager.getStage()
-                == Stage.INVESTIGATE_HYPERSHUNTS) {
-            int surveyed = GanEdenHypershuntManager.getSurveyedCount();
-            int required = GanEdenHypershuntManager.getRequiredCount();
-            info.addPara("Hypershunt routing records recovered: %s / %s", 10f,
-                    Misc.getGrayColor(), Misc.getHighlightColor(),
-                    Integer.toString(surveyed), Integer.toString(required));
-        }
         if (GanEdenQuestManager.isCompleted()) {
             info.addSpacer(10f);
             info.addPara(
@@ -84,22 +87,23 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
 
     private String shortObjective() {
         switch (GanEdenQuestManager.getStage()) {
+            case INHERITANCE_RECOVERED:
+                return "Investigate Isa's inherited spacer suit in her old "
+                        + "workshop at the Shattered Ring.";
             case ASK_AROUND_SHATTERED_RING:
             case FIND_BLACK_MARKET_CLUE:
             case INVESTIGATE_HYPERSHUNTS:
-                return "Investigate the surviving Coronal Hypershunts for "
-                        + "clues about Isaac Leicester.";
+                return "Search the Coronal Hypershunts for clues about "
+                        + "Isaac Leicester.";
             case GAN_EDEN_REVEALED:
-                return "Travel to POWER TRANSIT GATE - GAN EDEN on the "
-                        + "northeastern edge of the Sector by Transverse Jump, "
-                        + "enter Gan Eden, and "
-                        + "recover the fourth log at the Tree of Life.";
+                return "Travel through Power Transit Gate - Gan Eden and "
+                        + "find Isaac Leicester.";
             case DEFEAT_GOLDEN_SHARDS:
                 return "Defeat Cherubim and Lahat Haharev, the golden Omega "
                         + "Shards sealing the Space Elevator.";
             case SPACE_ELEVATOR:
-                return "Approach the newly accessible Gan Eden Space Elevator "
-                        + "with Isa and recover the final record.";
+                return "Search the Gan Eden Space Elevator and find Isaac "
+                        + "Leicester.";
             case COMPLETED:
                 return "Isa's search for Isaac Leicester is complete.";
             default:
@@ -109,16 +113,18 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
 
     private String highlightedObjective() {
         switch (GanEdenQuestManager.getStage()) {
+            case INHERITANCE_RECOVERED:
+                return "old workshop";
             case ASK_AROUND_SHATTERED_RING:
             case FIND_BLACK_MARKET_CLUE:
             case INVESTIGATE_HYPERSHUNTS:
-                return "surviving Coronal Hypershunts";
+                return "Coronal Hypershunts";
             case GAN_EDEN_REVEALED:
-                return "POWER TRANSIT GATE - GAN EDEN";
+                return "Isaac Leicester";
             case DEFEAT_GOLDEN_SHARDS:
                 return "Cherubim and Lahat Haharev";
             case SPACE_ELEVATOR:
-                return "Gan Eden Space Elevator";
+                return "Isaac Leicester";
             case COMPLETED:
                 return "complete";
             default:
@@ -144,6 +150,9 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
     @Override
     public SectorEntityToken getMapLocation(SectorMapAPI map) {
         Stage stage = GanEdenQuestManager.getStage();
+        if (stage == Stage.INHERITANCE_RECOVERED) {
+            return GanEdenQuestManager.getShatteredRing();
+        }
         if (stage == Stage.ASK_AROUND_SHATTERED_RING
                 || stage == Stage.FIND_BLACK_MARKET_CLUE
                 || stage == Stage.INVESTIGATE_HYPERSHUNTS) {

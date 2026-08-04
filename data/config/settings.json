@@ -10,6 +10,8 @@
         "illustrations": {
             "ship_trophy_hall_complete": "graphics/Hall Of Triumph.png",
             "ship_trophy_letterbox_black": "graphics/ship_trophy_letterbox_black.png",
+            "ship_trophy_shattered_ring_approach": "graphics/illustrations/shattered_ring_approach.png",
+            "ship_trophy_shattered_ring_workshop": "graphics/illustrations/shattered_ring_workshop.png",
             "ship_trophy_gan_eden_log_five": "graphics/illustrations/gan_eden_log_five.png",
             "ship_trophy_gan_eden_eden_prime": "graphics/illustrations/gan_eden_eden_prime.jpg",
             "ship_trophy_gan_eden_pelagos_basin": "graphics/illustrations/gan_eden_pelagos_basin.jpg",

@@ -180,6 +180,8 @@ public final class GanEdenTransitAmbushManager {
         memory.set(MemFlags.MEMORY_KEY_NO_REP_IMPACT, true);
         memory.set(MemFlags.MEMORY_KEY_NO_JUMP, true);
         memory.unset(MemFlags.MEMORY_KEY_NO_SHIP_RECOVERY);
+        memory.unset(
+                MemFlags.MEMORY_KEY_NO_SHIP_DERELICTS_IN_POST_BATTLE_DEBRIS);
         memory.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
         memory.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
         memory.set(MemFlags.MEMORY_KEY_FORCE_TRANSPONDER_OFF, true);

@@ -34,6 +34,8 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
     public static final String ID = "ship_trophy_gan_eden_battle_creation";
     private static final String BACKGROUND =
             "graphics/planets/terran_eccentric_battle_4x.jpg";
+    private static final String ATMOSPHERIC_CLOUDS =
+            "graphics/planets/clouds_white.png";
     private static final String NATIVE_BACKGROUND =
             "graphics/backgrounds/wormhole_dest_black.jpg";
     private static final String GOLDEN_OMEGA_MUSIC_INTRO =
@@ -129,12 +131,12 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
                             ? null : context.getPlayerFleet())
                     || isInGanEden(context == null
                             ? null : context.getOtherFleet());
-            if (goldenOmega) beginGoldenOmegaMusic();
+            if (atmospheric) beginGoldenOmegaMusic();
             // Retain vanilla deployment, objectives, map size, and terrain.
             super.initBattle(context, loader);
             // super.initBattle() may claim the custom-music channel for the
             // Remnant encounter. Reassert authored ownership immediately.
-            if (goldenOmega) beginGoldenOmegaMusic();
+            if (atmospheric) beginGoldenOmegaMusic();
             if (atmospheric) {
                 // Vanilla may select one of Gan Eden's colonizable PlanetAPI
                 // anchors as combat scenery. Suppress that planet and keep
@@ -164,7 +166,7 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
                 engine.addPlugin(new IsaEncounterChatter(
                         engine, ivoryCustodians));
             }
-            if (!goldenOmega) return;
+            if (!atmospheric) return;
             // Claim music ownership now, but cue the authored intro from live
             // combat frames. Starsector starts its own combat track after this
             // callback and would otherwise overwrite an early custom stream.
@@ -438,8 +440,10 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
     }
 
     /**
-     * Keeps the Gan Eden terrain locked to the combat camera and scales it as
-     * an aspect-preserving cover image. A mission background is rendered in
+     * Keeps the Gan Eden terrain locked to the combat camera and scrolls its
+     * horizontally seamless world map from side to side. A translucent
+     * terrestrial cloud map adds atmospheric depth without introducing
+     * gameplay nebula terrain. A mission background is rendered in
      * battlefield coordinates, which makes a finite texture read as a distant
      * object as the camera moves or zooms. This layer instead recalculates its
      * world-space dimensions from the visible viewport every frame.
@@ -447,26 +451,43 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
     private static final class AtmosphericBackdrop
             extends BaseCombatLayeredRenderingPlugin {
         private static final float OVERSCAN = 1.02f;
+        private static final float SCROLL_CYCLES_PER_SECOND = 1f / 180f;
+        private static final float CLOUD_ALPHA = 0.34f;
 
         private final SpriteAPI sprite;
+        private final SpriteAPI clouds;
         private final float sourceWidth;
         private final float sourceHeight;
+        private float scrollPhase;
 
         private AtmosphericBackdrop() {
             try {
                 Global.getSettings().loadTexture(BACKGROUND);
+                Global.getSettings().loadTexture(ATMOSPHERIC_CLOUDS);
             } catch (IOException ex) {
                 throw new RuntimeException(
-                        "Unable to load Gan Eden combat background: "
-                                + BACKGROUND,
+                        "Unable to load Gan Eden atmospheric textures.",
                         ex);
             }
             sprite = Global.getSettings().getSprite(BACKGROUND);
+            clouds = Global.getSettings().getSprite(ATMOSPHERIC_CLOUDS);
             sourceWidth = Math.max(1f, sprite.getWidth());
             sourceHeight = Math.max(1f, sprite.getHeight());
             sprite.setNormalBlend();
             sprite.setColor(Color.WHITE);
             sprite.setAlphaMult(1f);
+            sprite.setAngle(0f);
+            clouds.setNormalBlend();
+            clouds.setColor(new Color(225, 238, 248));
+            clouds.setAlphaMult(CLOUD_ALPHA);
+            clouds.setAngle(0f);
+        }
+
+        @Override
+        public void advance(float amount) {
+            if (amount <= 0f) return;
+            scrollPhase += amount * SCROLL_CYCLES_PER_SECOND;
+            scrollPhase -= (float) Math.floor(scrollPhase);
         }
 
         @Override
@@ -502,9 +523,16 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
             float height = sourceHeight * coverScale * OVERSCAN;
             sprite.setSize(width, height);
             sprite.setCenter(width * 0.5f, height * 0.5f);
+            clouds.setSize(width, height);
+            clouds.setCenter(width * 0.5f, height * 0.5f);
 
             Vector2f center = viewport.getCenter();
-            sprite.renderAtCenter(center.x, center.y);
+            float offset = scrollPhase * width;
+            for (int tile = -1; tile <= 1; tile++) {
+                float x = center.x + offset + tile * width;
+                sprite.renderAtCenter(x, center.y);
+                clouds.renderAtCenter(x, center.y);
+            }
         }
     }
 }

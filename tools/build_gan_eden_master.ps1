@@ -59,7 +59,7 @@ $header = @'
 // 1. Recruit Isa as an officer and return with her to the Shattered Ring.
 // 2. Recover Personal Log 1765 from the identification wafer in Isa's suit.
 // 3. Investigate both Coronal Hypershunts and recover Epitaph Parts II-III.
-// 4. Defeat the Ivory Custodians at POWER TRANSIT GATE - GAN EDEN.
+// 4. Defeat the Ivory Custodians at Power Transit Gate - Gan Eden.
 // 5. Enter Gan Eden and recover Part IV at Tree of Life.
 // 6. Defeat Cherubim and Lahat Haharev, releasing Gan Eden's districts.
 // 7. Approach the Space Elevator with Isa and recover Epitaph Final.
@@ -109,7 +109,7 @@ $runtimeBridges = @'
 === master_power_transit_gate ===
 // Runtime interaction: shipTrophyGanEdenExternalRing
 
-POWER TRANSIT GATE - GAN EDEN hangs alone at the center of an empty, starless system. Its adamantine surface is awake. Within the aperture, impossible depth folds toward the sealed world beyond.
+Power Transit Gate - Gan Eden hangs alone at the center of an empty, starless system. Its adamantine surface is awake. Within the aperture, impossible depth folds toward the sealed world beyond.
 
 Around it drifts a silent graveyard of damaged Coronal Hypershunts and ruined Gate Haulers. None answer the fleet's approach.
 
@@ -172,7 +172,7 @@ The Shards hold until you retreat, then disappear back into the curve of the wor
 === master_internal_ring ===
 // Runtime interaction: shipTrophyGanEdenInternalRing
 
-The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its connection remains synchronized with POWER TRANSIT GATE - GAN EDEN.
+The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its connection remains synchronized with Power Transit Gate - Gan Eden.
 
 + [Traverse the Gate.] -> END
 + [Remain in Gan Eden.] -> master_gan_eden_arrival
@@ -226,6 +226,8 @@ With Cherubim and Lahat Haharev destroyed together, the Space Elevator's interdi
 Gan Eden remains parked beyond charted hyperspace, with the Power Transit Gate as its only route. The four settlement districts are released from their sealed economy groups and can participate in ordinary Sector trade.
 
 The victory is not permanent. Every ninety days, the Golden Shards reconstruct themselves with a larger escort of ivory Remnant hulls, escalating until the escort is roughly a full Ordo. Later victories reset that cycle without sealing Gan Eden again.
+
+On later visits, the Space Elevator's continuity transmitter can be used to lure the next reconstructed wave back immediately at the cost of one story point. This advances the same escalation sequence; it does not create a separate encounter.
 
 + [Approach the Gan Eden Space Elevator with Isa.] -> master_space_elevator
 + [Remain in Gan Eden.] -> master_gan_eden_arrival
@@ -327,7 +329,9 @@ She begins listing priorities: survey teams, independent settlement charters, pr
 
 === master_postquest_log_two ===
 
-"The second log hurt because it gave him a reason," Isa says. "A reason isn't an excuse. But it is a reason."
+"The second log hurt because it gave him a reason," Isa says. "Rebecca was supposed to wake with him. She died in the thaw, and after that he could never make himself open my pod."
+
+Her expression hardens. "He called it caution for centuries because admitting he was afraid would have meant admitting what that fear cost me. A reason isn't an excuse. But it is a reason."
 
 -> master_postquest_talk
 

@@ -10,7 +10,8 @@
     "removeBuiltInWeapons": [],
     "builtInMods": [
         "ship_trophy_golden_fractal",
-        "ship_trophy_flaming_sword_burden"
+        "ship_trophy_flaming_sword_burden",
+        "ship_trophy_lahat_radiance"
     ],
     "tags": ["hide_in_codex"],
     "builtInWeapons": {

@@ -42,11 +42,25 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
             GanEdenGenerator.SURFACE_OUTER_RADIUS * 2f
                     / OUTER_EDGE_INNER_RADIUS_FRACTION;
     private static final float BLACK_BACKDROP_RADIUS = 16000f;
+    private static final float SETTLEMENT_MARKER_SIZE = 88f;
+    private static final String[] SETTLEMENT_IDS = {
+        GanEdenGenerator.CINDERWAKE_ID,
+        GanEdenGenerator.RIMEWELL_ID,
+        GanEdenGenerator.TREE_OF_LIFE_ID,
+        GanEdenGenerator.PELAGOS_ID
+    };
+    private static final String[] SETTLEMENT_MARKER_PATHS = {
+        "graphics/icons/gan_eden_settlements/cinderwake.png",
+        "graphics/icons/gan_eden_settlements/rimewell.png",
+        "graphics/icons/gan_eden_settlements/tree_of_life.png",
+        "graphics/icons/gan_eden_settlements/pelagos_basin.png"
+    };
     private static final String WARNING_RECENT_KEY =
             "$shipTrophyGanEdenAltitudeWarningRecent";
 
     private transient SpriteAPI innerSurfaceTexture;
     private transient SpriteAPI outerEdgeTexture;
+    private transient SpriteAPI[] settlementMarkerTextures;
 
     public void reconfigure(SectorEntityToken center, float width, float middle) {
         if (params == null) {
@@ -146,7 +160,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public EnumSet<CampaignEngineLayers> getActiveLayers() {
-        return EnumSet.of(CampaignEngineLayers.TERRAIN_1);
+        return EnumSet.of(
+                CampaignEngineLayers.TERRAIN_1,
+                CampaignEngineLayers.ABOVE_STATIONS);
     }
 
     @Override
@@ -158,14 +174,19 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public void render(CampaignEngineLayers layer, ViewportAPI viewport) {
-        if (layer != CampaignEngineLayers.TERRAIN_1
-                || params == null
+        if (params == null
                 || params.relatedEntity == null) {
             return;
         }
 
         Vector2f center = params.relatedEntity.getLocation();
         if (!viewport.isNearViewport(center, getRenderRange())) return;
+
+        if (layer == CampaignEngineLayers.ABOVE_STATIONS) {
+            renderSettlementMarkers(viewport);
+            return;
+        }
+        if (layer != CampaignEngineLayers.TERRAIN_1) return;
 
         ensureTextures();
         float alpha = viewport.getAlphaMult();
@@ -235,6 +256,53 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
         if (outerEdgeTexture == null) {
             outerEdgeTexture = Global.getSettings().getSprite(
                     "ship_trophy_gan_eden", "outer_edge");
+        }
+        if (settlementMarkerTextures == null) {
+            settlementMarkerTextures = new SpriteAPI[
+                    SETTLEMENT_MARKER_PATHS.length];
+            for (int i = 0; i < SETTLEMENT_MARKER_PATHS.length; i++) {
+                settlementMarkerTextures[i] = Global.getSettings().getSprite(
+                        SETTLEMENT_MARKER_PATHS[i]);
+            }
+        }
+    }
+
+    /**
+     * PlanetAPI remains the interaction and colony compatibility layer, but
+     * Starsector otherwise wraps and lights its texture like a globe. That can
+     * place a compact settlement texture entirely on the night-facing side.
+     * These flat overlays make all four surface districts equally legible
+     * without adding combat scenery entities or changing their interactions.
+     */
+    private void renderSettlementMarkers(ViewportAPI viewport) {
+        if (viewport == null
+                || params == null
+                || params.relatedEntity == null
+                || params.relatedEntity.getContainingLocation() == null) {
+            return;
+        }
+
+        ensureTextures();
+        float alpha = viewport.getAlphaMult();
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(
+                GL11.GL_SRC_ALPHA,
+                GL11.GL_ONE_MINUS_SRC_ALPHA);
+        for (int i = 0; i < SETTLEMENT_IDS.length; i++) {
+            SectorEntityToken site = params.relatedEntity
+                    .getContainingLocation().getEntityById(SETTLEMENT_IDS[i]);
+            if (site == null
+                    || !viewport.isNearViewport(
+                            site.getLocation(), SETTLEMENT_MARKER_SIZE)) {
+                continue;
+            }
+            renderCenteredSprite(
+                    settlementMarkerTextures[i],
+                    site.getLocation(),
+                    SETTLEMENT_MARKER_SIZE,
+                    SETTLEMENT_MARKER_SIZE,
+                    Color.WHITE,
+                    alpha);
         }
     }
 
