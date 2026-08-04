@@ -181,6 +181,10 @@ Isa closes the case and calls for one of your crew to transfer it to her old wor
 
 [Received: Isa's inheritance.]
 
+[Quest started: A Borrowed Name]
+
+[Objective: Investigate Isa's inheritance in her old workshop.]
+
 + [Return to the Shattered Ring concourse.] -> station_shattered_ring_colony_menu
 
 === station_shattered_ring_colony_menu ===
@@ -465,9 +469,7 @@ Then she enters:
 
 ISAAC THOMAS LEICESTER
 
-[Quest started: A Borrowed Name]
-
-[Objective updated: Investigate both surviving hypershunts.]
+[Objective updated: Search the Coronal Hypershunts for clues about Isaac Leicester.]
 
 + [Return to the fleet.] -> END
 
@@ -967,6 +969,8 @@ She enlarges the projection.
 “And whatever he helped build is still there.”
 
 [The location of the Power Transit Gate has been determined.]
+
+[Objective updated: Find Isaac Leicester.]
 
 
 
