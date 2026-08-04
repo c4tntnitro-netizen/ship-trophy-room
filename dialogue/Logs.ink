@@ -33,6 +33,10 @@ The Domain therefore established a Continuity Office.
 
 Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
 
++ [Continue reading.] -> station_shattered_id_page_two
+
+=== station_shattered_id_page_two ===
+
 I was elected to lead it.
 
 I would sleep through centuries of construction, wake for design reviews, inspect the work, and approve the next phase. Each waking lasted months, sometimes years.
@@ -43,7 +47,11 @@ The engineering difficulties were substantial. We lost dozens of assembly swarms
 
 I met engineers whose grandparents had worked under people I remembered. I approved sweeping changes to systems designed by men and women who had died while I slept, sometimes erasing an entire lifetime’s work with a single decision.
 
-Humanity marched on as I slept. Problems once considered impossible became trivial. When both hypershunts became operational, the Directorate approved the work they had been built to support.
+Humanity marched on as I slept. Problems once considered impossible became trivial. When two hypershunts became operational, the Directorate approved the work they had been built to support.
+
++ [Continue reading.] -> station_shattered_id_page_three
+
+=== station_shattered_id_page_three ===
 
 It was to be the Domain’s first enclosed—
 
@@ -59,6 +67,8 @@ This device is not authorized to provide additional description of the reference
 I believed that the ability to construct such a wonder proved that the Domain deserved to continue expanding.
 
 I was wrong.
+
++ [Close the log.]
 
 -> END
 
@@ -82,6 +92,10 @@ I had already been considered for the proposed Continuity Office. The appointmen
 
 Before Rebecca’s death, I had intended to refuse.
 
++ [Continue reading.] -> log_two_page_two
+
+=== log_two_page_two ===
+
 With her gone, I thought I had no more reason to live in the present.
 
 I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
@@ -93,6 +107,10 @@ That was the arrangement I made with myself.
 I visited my daughter during every waking.
 
 I inspected her chamber. I reviewed the medical reports. I repeated tests the technicians had already completed.
+
++ [Continue reading.] -> log_two_page_three
+
+=== log_two_page_three ===
 
 She remained healthy and unchanged while centuries passed beyond the glass.
 
@@ -125,6 +143,10 @@ It had become incapable of seeing a human being standing directly before it.
 
 I met a Domain Armada veteran cleaning industrial residue from a station floor. During one of the Domain’s thousands of civil wars, radiation from a reactor leak had destroyed half his face.
 
++ [Continue reading.] -> log_three_page_two
+
+=== log_three_page_two ===
+
 His pension had been suspended because the archive containing his service record no longer existed.
 
 I offered to help.
@@ -141,19 +163,29 @@ A burden.
 
 Years blurred together. I do not know whether it was the repeated cryosuspensions or the deterioration of my own mind, but eventually I could no longer distinguish faces.
 
++ [Continue reading.] -> log_three_page_three
+
+=== log_three_page_three ===
+
 I forgot the faces of people I had worked beside.
 
 I even forgot Rebecca’s face.
 
+I remembered the facts of her: the scar at her wrist, the hymn she hummed while she worked, the way she squeezed my hand when she was frightened. But whenever I tried to assemble those memories into a face, there was only an absence where my wife had been.
+
 I began speaking publicly.
 
-At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established a commissions and councils and legislative bodys.
+At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established commissions, councils, and legislative bodies.
 
 I kept drifting through the centuries. Nothing changed.
 
 I began speaking through my faith.
 
 I said that human beings were not obsolete machinery.
+
++ [Continue reading.] -> log_three_page_four
+
+=== log_three_page_four ===
 
 I said that a civilization should be judged by those it possessed the power to help and chose not to.
 
@@ -171,7 +203,13 @@ With my mouth, I drove lambs toward the slaughter.
 
 With my hands and my work, I forged the knives the Domain plunged into their necks.
 
-Who was I to speak against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect?
+Who was I?
+
+No one.
+
+I was a worthless hypocrite.
+
+I spoke against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect.
 
 -> END
 

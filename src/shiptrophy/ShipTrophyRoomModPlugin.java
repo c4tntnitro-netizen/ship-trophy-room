@@ -8,11 +8,16 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 
 import shiptrophy.campaign.GanEdenAmbushScript;
 import shiptrophy.campaign.GanEdenBattleCreationPlugin;
+import shiptrophy.campaign.GanEdenFinalLogMusicScript;
 import shiptrophy.campaign.GanEdenGenerator;
+import shiptrophy.campaign.GanEdenHypershuntManager;
 import shiptrophy.campaign.GanEdenLogManager;
+import shiptrophy.campaign.GanEdenMusicBattleListener;
 import shiptrophy.campaign.GanEdenOrdoListener;
+import shiptrophy.campaign.GanEdenPostQuestMusicScript;
 import shiptrophy.campaign.GanEdenQuestManager;
 import shiptrophy.campaign.GanEdenQuestScript;
+import shiptrophy.campaign.MkIVFleetIntegrationListener;
 import shiptrophy.campaign.ShatteredRingGenerator;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
 
@@ -39,6 +44,14 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         GanEdenLogManager.ensureForCurrentSave();
         Global.getSector().removeScriptsOfClass(GanEdenQuestScript.class);
         Global.getSector().addScript(new GanEdenQuestScript());
+        Global.getSector().removeScriptsOfClass(
+                GanEdenFinalLogMusicScript.class);
+        GanEdenFinalLogMusicScript.resetForGameLoad();
+        Global.getSector().addScript(new GanEdenFinalLogMusicScript());
+        Global.getSector().removeScriptsOfClass(
+                GanEdenPostQuestMusicScript.class);
+        GanEdenPostQuestMusicScript.resetForGameLoad();
+        Global.getSector().addScript(new GanEdenPostQuestMusicScript());
         Global.getSector().removeScriptsOfClass(GanEdenAmbushScript.class);
         GanEdenAmbushScript.ensureFleet();
         Global.getSector().addScript(new GanEdenAmbushScript());
@@ -49,6 +62,24 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
             }
         }
         Global.getSector().addTransientListener(new GanEdenOrdoListener());
+        for (CampaignEventListener listener : new ArrayList<CampaignEventListener>(
+                Global.getSector().getAllListeners())) {
+            if (listener instanceof GanEdenMusicBattleListener) {
+                Global.getSector().removeListener(listener);
+            }
+        }
+        Global.getSector().addTransientListener(
+                new GanEdenMusicBattleListener());
+        for (CampaignEventListener listener : new ArrayList<CampaignEventListener>(
+                Global.getSector().getAllListeners())) {
+            if (listener instanceof MkIVFleetIntegrationListener) {
+                Global.getSector().removeListener(listener);
+            }
+        }
+        Global.getSector().addTransientListener(
+                new MkIVFleetIntegrationListener());
+        GanEdenHypershuntManager.restoreMkIVUnlocksForLegacySave();
+        MkIVFleetIntegrationListener.integrateExistingUnlockedFleets();
         Global.getSector().removeScriptsOfClass(StoryPointGeneratorScript.class);
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);

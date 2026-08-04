@@ -9,7 +9,12 @@
     "removeEngineSlots":[],
     "removeBuiltInMods":[],
     "removeBuiltInWeapons":[],
-    "builtInMods":[],
+    "builtInMods":[
+        "insulatedengine",
+        "fluxbreakers",
+        "solar_shielding",
+        "stabilizedshieldemitter",
+    ],
     "tags":["hide_in_codex"],
     "builtInWeapons":{},
 }

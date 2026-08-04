@@ -1,10 +1,12 @@
 package shiptrophy.campaign;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -21,9 +23,10 @@ import shiptrophy.campaign.terrain.AltitudeWarningTerrainPlugin;
 /**
  * Generates the prototype Dyson-sphere interior called Gan Eden.
  *
- * Gan Eden begins cut off from ordinary hyperspace. Isa's quest adds its
- * internal transit ring as the initial route; defeating both named Golden
- * Shards permanently stabilizes an ordinary hyperspace jump point.
+ * Gan Eden remains cut off from ordinary hyperspace. Isa's quest adds its
+ * internal transit ring as the route in and out. The four settlement districts
+ * remain usable during the Aureate siege; defeating both named Golden Shards
+ * unlocks only the Space Elevator.
  */
 public final class GanEdenGenerator {
     public static final String SYSTEM_ID = "ship_trophy_gan_eden";
@@ -54,6 +57,14 @@ public final class GanEdenGenerator {
             "ship_trophy_gan_eden_aureate_siege";
     public static final String SURFACE_SITE_TYPE =
             "ship_trophy_gan_eden_surface_site";
+    public static final String CINDERWAKE_SITE_TYPE =
+            "ship_trophy_gan_eden_cinderwake_site";
+    public static final String RIMEWELL_SITE_TYPE =
+            "ship_trophy_gan_eden_rimewell_site";
+    public static final String TREE_OF_LIFE_SITE_TYPE =
+            "ship_trophy_gan_eden_tree_of_life_site";
+    public static final String PELAGOS_SITE_TYPE =
+            "ship_trophy_gan_eden_pelagos_site";
     public static final String SURFACE_SITE_MEMORY_KEY =
             "$shipTrophyGanEdenSurfaceSite";
 
@@ -68,10 +79,6 @@ public final class GanEdenGenerator {
     private static final String WARNING_BAND_ID = "ship_trophy_gan_eden_warning_band";
     private static final String HYPERSPACE_LINK_GENERATED_KEY =
             "$shipTrophyGanEdenHyperspaceLinkGenerated";
-    // Keep Gan Eden near its Power Transit Gate without stacking two system
-    // icons on top of one another in hyperspace.
-    private static final float OPEN_HYPERSPACE_X = -42000f;
-    private static final float OPEN_HYPERSPACE_Y = -28000f;
     private static final float SEALED_HYPERSPACE_X = 100000f;
     private static final float SEALED_HYPERSPACE_Y = 100000f;
     private static final String[] SURFACE_SITE_IDS = {
@@ -103,7 +110,7 @@ public final class GanEdenGenerator {
             ensureInteriorSurface(system, star);
             ensureAltitudeWarning(system, star);
             ensureArrivalRing(system, star);
-            ensureHyperspaceAccess(system, star);
+            removeConventionalHyperspaceAccess(system);
 
         } catch (RuntimeException ex) {
             // A partially generated experimental system should never prevent
@@ -150,26 +157,14 @@ public final class GanEdenGenerator {
     }
 
     private static void configureSilo(StarSystemAPI system) {
-        boolean open = GanEdenAmbushScript.isDefeated();
-        if (open) {
-            system.removeTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
-            system.removeTag(Tags.THEME_HIDDEN);
-            system.removeTag(Tags.DO_NOT_SHOW_STRANDED_DIALOG);
-            system.removeTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
-            system.getLocation().set(
-                    OPEN_HYPERSPACE_X, OPEN_HYPERSPACE_Y);
-            system.setDoNotShowIntelFromThisLocationOnMap(false);
-            system.setMaxRadiusInHyperspace(400f);
-        } else {
-            system.addTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
-            system.addTag(Tags.THEME_HIDDEN);
-            system.addTag(Tags.DO_NOT_SHOW_STRANDED_DIALOG);
-            system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
-            system.getLocation().set(
-                    SEALED_HYPERSPACE_X, SEALED_HYPERSPACE_Y);
-            system.setDoNotShowIntelFromThisLocationOnMap(true);
-            system.setMaxRadiusInHyperspace(0f);
-        }
+        system.addTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
+        system.addTag(Tags.THEME_HIDDEN);
+        system.addTag(Tags.DO_NOT_SHOW_STRANDED_DIALOG);
+        system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
+        system.getLocation().set(
+                SEALED_HYPERSPACE_X, SEALED_HYPERSPACE_Y);
+        system.setDoNotShowIntelFromThisLocationOnMap(true);
+        system.setMaxRadiusInHyperspace(0f);
         system.addTag(Tags.THEME_MISC_SKIP);
         system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
         system.addTag(Tags.SYSTEM_ALREADY_USED_FOR_STORY);
@@ -228,31 +223,36 @@ public final class GanEdenGenerator {
             StarSystemAPI system, PlanetAPI star) {
         ensureSurfaceSite(
                 system, star, CINDERWAKE_ID, "Cinderwake",
+                CINDERWAKE_SITE_TYPE,
                 "ship_trophy_gan_eden_cinderwake", 173.2f, 1952f,
                 Conditions.HOT,
-                Conditions.ORE_ABUNDANT,
-                Conditions.RARE_ORE_MODERATE);
+                Conditions.ORE_ULTRARICH,
+                Conditions.RARE_ORE_ULTRARICH);
         ensureSurfaceSite(
                 system, star, RIMEWELL_ID, "Rimewell",
+                RIMEWELL_SITE_TYPE,
                 "ship_trophy_gan_eden_rimewell", 120.6f, 1412f,
                 Conditions.VERY_COLD,
-                Conditions.VOLATILES_ABUNDANT,
-                Conditions.RARE_ORE_SPARSE);
+                Conditions.VOLATILES_PLENTIFUL,
+                Conditions.RARE_ORE_ULTRARICH);
         ensureSurfaceSite(
                 system, star, TREE_OF_LIFE_ID, "Tree of Life",
+                TREE_OF_LIFE_SITE_TYPE,
                 "ship_trophy_gan_eden_eden_prime", 55.6f, 1082f,
                 Conditions.HABITABLE,
                 Conditions.MILD_CLIMATE,
                 Conditions.FARMLAND_BOUNTIFUL,
-                Conditions.ORGANICS_ABUNDANT);
+                Conditions.ORGANICS_PLENTIFUL);
         ensureSurfaceSite(
                 system, star, PELAGOS_ID, "Pelagos Basin",
+                PELAGOS_SITE_TYPE,
                 "ship_trophy_gan_eden_pelagos_basin", 352.5f, 1699f,
                 Conditions.HABITABLE,
                 Conditions.WATER_SURFACE,
-                Conditions.ORGANICS_ABUNDANT,
-                Conditions.VOLATILES_DIFFUSE);
+                Conditions.ORGANICS_PLENTIFUL,
+                Conditions.VOLATILES_PLENTIFUL);
 
+        removeLegacySurfaceMarkers(system);
         removeSurfaceSite(system, LEGACY_VERDANT_REACH_ID);
         ensureSanctuaryCondition(system, CINDERWAKE_ID);
         ensureSanctuaryCondition(system, RIMEWELL_ID);
@@ -317,7 +317,8 @@ public final class GanEdenGenerator {
 
         boolean open = GanEdenAmbushScript.isDefeated();
         if (open) {
-            // The stabilized jump point admits ordinary colony traffic.
+            // Victory releases the settlements economically even though the
+            // sphere itself remains reachable only through its transit Gate.
             market.setEconGroup(null);
             if (market.hasCondition(SANCTUARY_CONDITION_ID)) {
                 market.removeCondition(SANCTUARY_CONDITION_ID);
@@ -341,6 +342,7 @@ public final class GanEdenGenerator {
             PlanetAPI star,
             String id,
             String name,
+            String siteType,
             String illustrationId,
             float angle,
             float surfaceRadius,
@@ -359,23 +361,31 @@ public final class GanEdenGenerator {
             // surveying and colonization. The orbit is immediately replaced
             // by a fixed shell coordinate below.
             site = system.addPlanet(
-                    id, star, name, SURFACE_SITE_TYPE,
+                    id, star, name, siteType,
                     angle, 44f, surfaceRadius, 100000f);
         }
         if (site == null) return null;
 
-        if (!SURFACE_SITE_TYPE.equals(site.getTypeId())) {
+        if (!siteType.equals(site.getTypeId())) {
             site.changeType(
-                    SURFACE_SITE_TYPE,
+                    siteType,
                     new java.util.Random(id.hashCode()));
         }
         site.setRadius(44f);
-        site.getSpec().setPlanetColor(new Color(255, 255, 255, 0));
-        site.getSpec().setIconColor(new Color(255, 255, 255, 0));
+        site.getSpec().setPlanetColor(new Color(255, 255, 255, 255));
+        site.getSpec().setIconColor(new Color(190, 195, 200, 255));
+        site.applySpecChanges();
         site.setFixedLocation(
                 star.getLocation().x + cosDegrees(angle) * surfaceRadius,
                 star.getLocation().y + sinDegrees(angle) * surfaceRadius);
-        site.setDiscoverable(true);
+        // Surface districts are usable from the moment Gan Eden is reached.
+        // Reapplying a literal true here used to put an already-discovered
+        // site back into sensor-contact state whenever generation maintenance
+        // ran. Null is Starsector's stable, already-known state.
+        site.setDiscoverable(null);
+        site.setSensorProfile(null);
+        site.removeTag(Tags.NON_CLICKABLE);
+        site.removeTag(Tags.NO_ENTITY_TOOLTIP);
         site.setDescriptionIdOverride(SURFACE_SITE_TYPE);
         site.setInteractionImage("illustrations", illustrationId);
         site.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
@@ -392,19 +402,129 @@ public final class GanEdenGenerator {
                 market.setPlanetConditionMarketOnly(true);
             }
             market.getMemoryWithoutUpdate().set(SURFACE_SITE_MEMORY_KEY, true);
+            boolean resourcesChanged = false;
             if (created) {
                 market.setSurveyLevel(MarketAPI.SurveyLevel.NONE);
-                for (String condition : conditions) {
+            }
+            for (String condition : conditions) {
+                if (isResourceCondition(condition)) {
+                    resourcesChanged |= ensureMaximumResourceCondition(market, condition);
+                } else if (created && !market.hasCondition(condition)) {
                     market.addCondition(condition);
                 }
             }
+            if (resourcesChanged) market.reapplyConditions();
         } else {
             site.setName(name);
         }
         return site;
     }
 
-    /** Adds the remote elevator that becomes reachable after the Shard battle. */
+    /** Removes flat marker overlays created by the abandoned visibility experiment. */
+    private static void removeLegacySurfaceMarkers(StarSystemAPI system) {
+        if (system == null) return;
+        String[] markerIds = {
+            CINDERWAKE_ID + "_marker",
+            RIMEWELL_ID + "_marker",
+            TREE_OF_LIFE_ID + "_marker",
+            PELAGOS_ID + "_marker"
+        };
+        for (String markerId : markerIds) {
+            SectorEntityToken marker = system.getEntityById(markerId);
+            if (marker != null) system.removeEntity(marker);
+        }
+    }
+
+    private static boolean isResourceCondition(String condition) {
+        return resourceFamily(condition) != null;
+    }
+
+    /** Replaces lower-tier deposits in the same vanilla resource family. */
+    private static boolean ensureMaximumResourceCondition(
+            MarketAPI market, String target) {
+        String[] family = resourceFamily(target);
+        if (market == null || family == null) return false;
+
+        boolean changed = false;
+        for (String condition : family) {
+            if (!target.equals(condition) && market.hasCondition(condition)) {
+                market.removeCondition(condition);
+                changed = true;
+            }
+        }
+        if (!market.hasCondition(target)) {
+            market.addCondition(target);
+            changed = true;
+        }
+        return changed;
+    }
+
+    private static String[] resourceFamily(String condition) {
+        if (Conditions.ORE_ULTRARICH.equals(condition)) {
+            return new String[] {
+                Conditions.ORE_SPARSE, Conditions.ORE_MODERATE,
+                Conditions.ORE_ABUNDANT, Conditions.ORE_RICH,
+                Conditions.ORE_ULTRARICH
+            };
+        }
+        if (Conditions.RARE_ORE_ULTRARICH.equals(condition)) {
+            return new String[] {
+                Conditions.RARE_ORE_SPARSE, Conditions.RARE_ORE_MODERATE,
+                Conditions.RARE_ORE_ABUNDANT, Conditions.RARE_ORE_RICH,
+                Conditions.RARE_ORE_ULTRARICH
+            };
+        }
+        if (Conditions.VOLATILES_PLENTIFUL.equals(condition)) {
+            return new String[] {
+                Conditions.VOLATILES_TRACE, Conditions.VOLATILES_DIFFUSE,
+                Conditions.VOLATILES_ABUNDANT, Conditions.VOLATILES_PLENTIFUL
+            };
+        }
+        if (Conditions.ORGANICS_PLENTIFUL.equals(condition)) {
+            return new String[] {
+                Conditions.ORGANICS_TRACE, Conditions.ORGANICS_COMMON,
+                Conditions.ORGANICS_ABUNDANT, Conditions.ORGANICS_PLENTIFUL
+            };
+        }
+        if (Conditions.FARMLAND_BOUNTIFUL.equals(condition)) {
+            return new String[] {
+                Conditions.FARMLAND_POOR, Conditions.FARMLAND_ADEQUATE,
+                Conditions.FARMLAND_RICH, Conditions.FARMLAND_BOUNTIFUL
+            };
+        }
+        return null;
+    }
+
+    /**
+     * Identifies Gan Eden by its canonical location rather than SYSTEM_ID.
+     * Starsector derives a star system's runtime id from its base name, so a
+     * system created as "Gan Eden" reports "gan eden", not our content id.
+     */
+    public static boolean isGanEden(StarSystemAPI system) {
+        if (system == null) return false;
+        if (Global.getSector() != null) {
+            StarSystemAPI canonical = Global.getSector().getStarSystem(
+                    SYSTEM_NAME);
+            if (system == canonical) return true;
+        }
+        return SYSTEM_NAME.equalsIgnoreCase(system.getName())
+                || SYSTEM_NAME.equalsIgnoreCase(system.getBaseName())
+                || SYSTEM_NAME.equalsIgnoreCase(system.getId())
+                || SYSTEM_ID.equalsIgnoreCase(system.getId());
+    }
+
+    public static boolean isGanEden(LocationAPI location) {
+        return location instanceof StarSystemAPI
+                && isGanEden((StarSystemAPI) location);
+    }
+
+    public static boolean isGanEden(SectorEntityToken entity) {
+        return entity != null
+                && (isGanEden(entity.getContainingLocation())
+                        || isGanEden(entity.getStarSystem()));
+    }
+
+    /** Adds the remote elevator; its archive opens only after the Shard battle. */
     private static void ensureSpaceElevator(StarSystemAPI system) {
         SectorEntityToken elevator = system.getEntityById(SPACE_ELEVATOR_ID);
         if (elevator == null) {
@@ -430,16 +550,15 @@ public final class GanEdenGenerator {
         elevator.setFixedLocation(elevatorX, elevatorY);
         elevator.setFacing(angle + 90f);
 
-        boolean unlocked = GanEdenAmbushScript.isDefeated()
-                && GanEdenQuestManager.getStage().ordinal()
-                        >= GanEdenQuestManager.Stage.SPACE_ELEVATOR.ordinal();
-        elevator.setDiscoverable(unlocked);
-        elevator.setSensorProfile(1f);
+        boolean revealed = GanEdenQuestManager.isAtLeast(
+                GanEdenQuestManager.Stage.GAN_EDEN_REVEALED);
+        elevator.setDiscoverable(revealed ? null : true);
+        elevator.setSensorProfile(revealed ? null : 1f);
         elevator.setCustomDescriptionId(SPACE_ELEVATOR_TYPE);
         elevator.setInteractionImage("illustrations", "orbital");
         elevator.addTag(Tags.STATION);
         elevator.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
-        if (unlocked) {
+        if (revealed) {
             elevator.removeTag(Tags.NON_CLICKABLE);
             elevator.removeTag(Tags.NO_ENTITY_TOOLTIP);
             elevator.addTag(Tags.HAS_INTERACTION_DIALOG);
@@ -487,50 +606,29 @@ public final class GanEdenGenerator {
         }
     }
 
-    private static void ensureHyperspaceAccess(
-            StarSystemAPI system, PlanetAPI star) {
-        if (!GanEdenAmbushScript.isDefeated()) {
-            removeHyperspaceAnchor(system);
-            return;
-        }
-
-        JumpPointAPI jump = null;
-        SectorEntityToken existing = system.getEntityById(
+    /** Removes the short-lived conventional route from existing saves too. */
+    private static void removeConventionalHyperspaceAccess(
+            StarSystemAPI system) {
+        SectorEntityToken legacyJump = system.getEntityById(
                 HYPERSPACE_JUMP_ID);
-        if (existing instanceof JumpPointAPI) {
-            jump = (JumpPointAPI) existing;
-        } else if (existing != null) {
-            system.removeEntity(existing);
+        if (legacyJump != null) {
+            system.removeEntity(legacyJump);
         }
 
-        if (jump == null) {
-            jump = Global.getFactory().createJumpPoint(
-                    HYPERSPACE_JUMP_ID, "Gan Eden Jump-point");
-            jump.setFixedLocation(-720f, -1030f);
-            jump.setRelatedPlanet(star);
-            jump.setStandardWormholeToHyperspaceVisual();
-            jump.setDiscoverable(null);
-            jump.setSensorProfile(null);
-            system.addEntity(jump);
+        if (system.getAutogeneratedJumpPointsInHyper() != null) {
+            for (JumpPointAPI jump : new ArrayList<JumpPointAPI>(
+                    system.getAutogeneratedJumpPointsInHyper())) {
+                if (jump != null && jump.getContainingLocation() != null) {
+                    jump.getContainingLocation().removeEntity(jump);
+                }
+            }
+            system.getAutogeneratedJumpPointsInHyper().clear();
         }
+        system.getMemoryWithoutUpdate().unset(
+                HYPERSPACE_LINK_GENERATED_KEY);
 
-        boolean missingHyperEntrance =
-                system.getAutogeneratedJumpPointsInHyper() == null
-                || system.getAutogeneratedJumpPointsInHyper().isEmpty();
-        if (missingHyperEntrance
-                || !system.getMemoryWithoutUpdate().getBoolean(
-                        HYPERSPACE_LINK_GENERATED_KEY)) {
-            system.autogenerateHyperspaceJumpPoints(false, false);
-            system.getMemoryWithoutUpdate().set(
-                    HYPERSPACE_LINK_GENERATED_KEY, true);
-        }
-    }
-
-    private static void removeHyperspaceAnchor(StarSystemAPI system) {
         SectorEntityToken anchor = system.getHyperspaceAnchor();
-        if (anchor == null) return;
-
-        if (anchor.getContainingLocation() != null) {
+        if (anchor != null && anchor.getContainingLocation() != null) {
             anchor.getContainingLocation().removeEntity(anchor);
         }
         system.setHyperspaceAnchor(null);

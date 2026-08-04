@@ -1,0 +1,22 @@
+{
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": [],
+    "removeBuiltInWeapons": [],
+    "builtInWeapons": {},
+    "baseHullId": "prometheus2",
+    "skinHullId": "ship_trophy_mk4_pather_prometheus2",
+    "hullName": "Prometheus Mk.II",
+    "descriptionId": "prometheus2",
+    "descriptionPrefix": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.",
+    "tags": [
+        "hide_in_codex"
+    ],
+    "tech": "Luddic Path",
+    "builtInMods": [
+        "unstable_injector",
+        "heavyarmor"
+    ],
+    "spriteName": "graphics/ships/mk4/pather/ship_trophy_mk4_pather_prometheus2.png"
+}

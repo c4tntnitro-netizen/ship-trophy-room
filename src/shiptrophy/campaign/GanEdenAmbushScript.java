@@ -7,21 +7,24 @@ import java.util.Random;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.loading.VariantSource;
-import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec.DropData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial;
@@ -30,7 +33,7 @@ import com.fs.starfarer.api.util.Misc;
 import shiptrophy.hullmods.WhiteRemnantEscort;
 
 /**
- * Ensures Gan Eden's golden Omega fleet is parked beside the transit ring.
+ * Ensures Gan Eden's golden Omega fleet guards the Space Elevator.
  * The descendants are created by GoldenFractalCascade during combat.
  */
 public final class GanEdenAmbushScript implements EveryFrameScript {
@@ -50,14 +53,15 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             "$shipTrophyGanEdenGoldenRespawnWave";
     private static final String ESCORT_WAVE_KEY =
             "$shipTrophyGanEdenGoldenEscortWave";
-
+    private static final String GUARD_ANCHOR_KEY =
+            "$shipTrophyGanEdenGoldenGuardAnchorV1";
     private static final String SINISTRAL_VARIANT =
             "ship_trophy_golden_shard_left_Attack";
     private static final String DEXTRAL_VARIANT =
             "ship_trophy_golden_shard_right_Attack";
     private static final String SINISTRAL_NAME = "Cherubim";
     private static final String DEXTRAL_NAME = "Lahat Haharev";
-    private static final float RING_OFFSET = 350f;
+    private static final float ELEVATOR_OFFSET = 350f;
     private static final float GUARD_DURATION = 1000000f;
     private static final float RESPAWN_DAYS = 90f;
     private static final int[] ESCORT_COMBAT_POINTS =
@@ -97,15 +101,36 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
 
         CampaignFleetAPI existing = findExistingFleet(system);
-        SectorEntityToken anchor = system.getEntityById(
-                GanEdenGenerator.ARRIVAL_RING_ID);
-        if (anchor == null) anchor = system.getCenter();
+        boolean firstWaveLocked = !sectorMemory.getBoolean(DEFEATED_KEY)
+                && GanEdenQuestManager.getStage().ordinal()
+                        < GanEdenQuestManager.Stage
+                                .DEFEAT_GOLDEN_SHARDS.ordinal();
+        if (firstWaveLocked) {
+            // Pre-Part-IV builds placed the Shards in Gan Eden immediately.
+            // Remove that premature fleet without treating its disappearance
+            // as a victory. Part IV now creates the first physical wave.
+            if (existing != null) system.removeEntity(existing);
+            sectorMemory.unset(ACTIVE_KEY);
+            sectorMemory.unset(DEFEATED_KEY);
+            sectorMemory.unset(PARTIAL_SINCE_KEY);
+            sectorMemory.unset(RESPAWN_SINCE_KEY);
+            sectorMemory.unset(RESPAWN_WAVE_KEY);
+            GanEdenGenerator.updateAureateSiegeConditions(system);
+            return true;
+        }
+
+        SectorEntityToken anchor = findGuardianAnchor(system);
 
         if (existing != null && !existing.isEmpty()) {
+            // Existing saves may still have this fleet parked beside the
+            // transit ring. Move it to the elevator exactly once. Reapplying
+            // setLocation() on every maintenance pass resets campaign-map
+            // interpolation and makes the fleet icon visibly flicker.
+            boolean moved = ensureGuardianLocation(existing, anchor);
             configureGuard(existing, anchor);
             sectorMemory.set(ACTIVE_KEY, true);
             GanEdenGenerator.updateAureateSiegeConditions(system);
-            logPlacement("reused", existing);
+            if (moved) logPlacement("moved to Space Elevator", existing);
             return true;
         }
         if (existing != null) {
@@ -116,8 +141,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             return true;
         }
 
-        if (!GanEdenQuestManager.isAtLeast(
-                GanEdenQuestManager.Stage.GAN_EDEN_REVEALED)) {
+        if (!sectorMemory.getBoolean(DEFEATED_KEY)
+                && !GanEdenQuestManager.isAtLeast(
+                        GanEdenQuestManager.Stage
+                                .DEFEAT_GOLDEN_SHARDS)) {
             return true;
         }
 
@@ -152,8 +179,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
 
         system.addEntity(fleet);
         fleet.setLocation(
-                anchor.getLocation().x + RING_OFFSET,
+                anchor.getLocation().x + ELEVATOR_OFFSET,
                 anchor.getLocation().y);
+        fleet.getMemoryWithoutUpdate().set(
+                GUARD_ANCHOR_KEY, anchorKey(anchor));
         configureGuard(fleet, anchor);
         sectorMemory.set(ACTIVE_KEY, true);
         sectorMemory.unset(PARTIAL_SINCE_KEY);
@@ -198,9 +227,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             addNamedGuardian(fleet, !hasSinistral, random);
             fleet.getFleetData().sort();
             fleet.forceSync();
-            SectorEntityToken anchor = system.getEntityById(
-                    GanEdenGenerator.ARRIVAL_RING_ID);
-            if (anchor == null) anchor = system.getCenter();
+            SectorEntityToken anchor = findGuardianAnchor(system);
             configureGuard(fleet, anchor);
             logPlacement("regenerated missing guardian", fleet);
         }
@@ -228,8 +255,8 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 RESPAWN_SINCE_KEY,
                 Global.getSector().getClock().getTimestamp());
         GanEdenGenerator.updateAureateSiegeConditions(system);
-        // The first complete victory permanently opens Gan Eden to ordinary
-        // hyperspace and releases its surface markets into the Sector economy.
+        // The first complete victory releases its surface markets into the
+        // Sector economy while Gan Eden remains transit-Gate-only.
         GanEdenGenerator.ensureGenerated();
     }
 
@@ -243,6 +270,14 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             }
         }
         return null;
+    }
+
+    private static SectorEntityToken findGuardianAnchor(
+            StarSystemAPI system) {
+        SectorEntityToken anchor = system == null ? null
+                : system.getEntityById(GanEdenGenerator.SPACE_ELEVATOR_ID);
+        if (anchor == null && system != null) anchor = system.getCenter();
+        return anchor;
     }
 
     private static CampaignFleetAPI createFleet(int escortWave) {
@@ -302,25 +337,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 : support.getFleetData().getMembersListCopy()) {
             if (member == null || member.isFighterWing()) continue;
             member.setFlagship(false);
-            applyWhiteEscortHullmod(member);
+            IvoryRemnantFleetSupport.refitMember(member);
             readyMember(member);
             destination.getFleetData().addFleetMember(member);
         }
-    }
-
-    private static void applyWhiteEscortHullmod(FleetMemberAPI member) {
-        if (member == null || member.getVariant() == null) return;
-        ShipVariantAPI variant = member.getVariant().clone();
-        variant.setSource(VariantSource.REFIT);
-        String whiteHullId = WhiteRemnantEscort.getWhiteHullId(
-                variant.getHullSpec().getBaseHullId());
-        if (whiteHullId != null
-                && Global.getSettings().getHullSpec(whiteHullId) != null) {
-            variant.setHullSpecAPI(
-                    Global.getSettings().getHullSpec(whiteHullId));
-        }
-        variant.addPermaMod(WhiteRemnantEscort.HULLMOD_ID);
-        member.setVariant(variant, false, false);
     }
 
     /** Adds one of the two named Golden Shards to a Gan Eden wave. */
@@ -364,6 +384,11 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         return memory.getBoolean(ACTIVE_KEY);
     }
 
+    public static boolean isGoldenFleet(SectorEntityToken target) {
+        return target instanceof CampaignFleetAPI
+                && target.getMemoryWithoutUpdate().getBoolean(FLEET_KEY);
+    }
+
     private static PersonAPI createOmegaCore(Random random) {
         if (Misc.getAICoreOfficerPlugin(Commodities.OMEGA_CORE) == null) {
             return null;
@@ -386,21 +411,14 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
 
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         memory.set(FLEET_KEY, true);
-        boolean dormantForQuest = !isDefeated()
-                && GanEdenQuestManager.isAtLeast(
-                GanEdenQuestManager.Stage.GAN_EDEN_REVEALED)
-                && !GanEdenQuestManager.isEpitaphFound();
-        if (dormantForQuest) {
-            memory.unset(MemFlags.MEMORY_KEY_MAKE_HOSTILE);
-            memory.unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
-            memory.set(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, true);
-            memory.set(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE, true);
-        } else {
-            memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE);
-            memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE);
-            memory.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
-            memory.set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
-        }
+        fleet.removeTag(Tags.NON_CLICKABLE);
+        memory.unset(MemFlags.NON_HOSTILE_OVERRIDES_MAKE_HOSTILE);
+        memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE);
+        memory.unset(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE);
+        memory.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
+        memory.set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+        memory.set(MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE, true);
+        memory.set("$ignorePlayerCommRequests", true);
         memory.set(MemFlags.MEMORY_KEY_NO_REP_IMPACT, true);
         memory.set(MemFlags.MEMORY_KEY_NO_SHIP_RECOVERY, true);
         memory.set(
@@ -408,21 +426,65 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 true);
         memory.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
         memory.set(MemFlags.MEMORY_KEY_FORCE_TRANSPONDER_OFF, true);
+        ensureMusicCleanupListener(fleet);
         fleet.getStats().getSensorProfileMod().modifyFlat(
                 FLEET_KEY, 2000f, "Aureate guardian signature");
         ensureReward(fleet, memory);
 
-        fleet.clearAssignments();
-        fleet.addAssignment(
-                FleetAssignment.ORBIT_PASSIVE,
-                anchor,
-                GUARD_DURATION,
-                "waiting in silence");
+        FleetAssignmentDataAPI current = fleet.getAI() == null
+                ? null : fleet.getAI().getCurrentAssignment();
+        boolean correctAssignment = current != null
+                && current.getAssignment() == FleetAssignment.ORBIT_AGGRESSIVE
+                && current.getTarget() == anchor;
+        if (!correctAssignment) {
+            fleet.clearAssignments();
+            fleet.addAssignment(
+                    FleetAssignment.ORBIT_AGGRESSIVE,
+                    anchor,
+                    GUARD_DURATION,
+                    "guarding the Space Elevator");
+        }
+    }
+
+    private static void ensureMusicCleanupListener(CampaignFleetAPI fleet) {
+        for (FleetEventListener listener : fleet.getEventListeners()) {
+            if (listener instanceof GoldenMusicCleanupListener) return;
+        }
+        fleet.addEventListener(new GoldenMusicCleanupListener());
+    }
+
+    /** Ends authored combat music at the battle callback, before loot UI. */
+    public static final class GoldenMusicCleanupListener
+            implements FleetEventListener {
+        @Override
+        public void reportBattleOccurred(
+                CampaignFleetAPI fleet,
+                CampaignFleetAPI primaryWinner,
+                BattleAPI battle) {
+            if (fleet == null
+                    || battle == null
+                    || !fleet.getMemoryWithoutUpdate().getBoolean(FLEET_KEY)
+                    || !battle.isPlayerInvolved()
+                    || !battle.isInvolved(fleet)) {
+                return;
+            }
+            GanEdenBattleCreationPlugin.restoreGoldenOmegaMusic();
+        }
+
+        @Override
+        public void reportFleetDespawnedToListener(
+                CampaignFleetAPI fleet,
+                CampaignEventListener.FleetDespawnReason reason,
+                Object param) {
+            GanEdenBattleCreationPlugin.restoreGoldenOmegaMusic();
+            if (fleet != null) fleet.removeEventListener(this);
+        }
     }
 
     /** Migrates escorts spawned by builds which only applied a runtime tint. */
-    private static void ensureWhiteEscortSkins(CampaignFleetAPI fleet) {
-        if (fleet == null) return;
+    private static boolean ensureWhiteEscortSkins(CampaignFleetAPI fleet) {
+        if (fleet == null) return false;
+        boolean changed = false;
         for (FleetMemberAPI member
                 : fleet.getFleetData().getMembersListCopy()) {
             if (member == null
@@ -438,9 +500,32 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                             member.getVariant().getHullSpec().getHullId())) {
                 continue;
             }
-            applyWhiteEscortHullmod(member);
+            changed |= IvoryRemnantFleetSupport.refitMember(member);
         }
-        fleet.forceSync();
+        if (changed) fleet.forceSync();
+        return changed;
+    }
+
+    private static boolean ensureGuardianLocation(
+            CampaignFleetAPI fleet, SectorEntityToken anchor) {
+        if (fleet == null || anchor == null) return false;
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+        String key = anchorKey(anchor);
+        if (key.equals(memory.getString(GUARD_ANCHOR_KEY))) return false;
+        fleet.setLocation(
+                anchor.getLocation().x + ELEVATOR_OFFSET,
+                anchor.getLocation().y);
+        memory.set(GUARD_ANCHOR_KEY, key);
+        return true;
+    }
+
+    private static String anchorKey(SectorEntityToken anchor) {
+        if (anchor == null) return "";
+        String id = anchor.getId();
+        if (id != null && !id.isEmpty()) return id;
+        return anchor.getName() + ":"
+                + Math.round(anchor.getLocation().x) + ":"
+                + Math.round(anchor.getLocation().y);
     }
 
     private static void ensureGuardianNames(CampaignFleetAPI fleet) {

@@ -56,7 +56,17 @@ public class HallOfTriumphCompletionDialogPlugin implements InteractionDialogPlu
     }
 
     private void showIllustration() {
-        SpriteAPI illustration = Global.getSettings().getSprite(ILLUSTRATION_CATEGORY, ILLUSTRATION_ID);
+        showLetterboxedIllustration(dialog, ILLUSTRATION_ID);
+    }
+
+    /**
+     * Reuses the Hall-completion cinematic framing for other story beats.
+     */
+    public static void showLetterboxedIllustration(
+            InteractionDialogAPI dialog, String illustrationId) {
+        if (dialog == null || illustrationId == null) return;
+        SpriteAPI illustration = Global.getSettings().getSprite(
+                ILLUSTRATION_CATEGORY, illustrationId);
         SpriteAPI background = Global.getSettings().getSprite(ILLUSTRATION_CATEGORY, LETTERBOX_ID);
         dialog.getVisualPanel().showCustomPanel(
                 ILLUSTRATION_WIDTH, ILLUSTRATION_HEIGHT,

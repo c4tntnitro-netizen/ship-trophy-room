@@ -22,6 +22,7 @@ public class ShipTrophyRoomIds {
     public static final String MEMORY_ISA_FACTION_COMPLETION_SCENE = "$ship_trophy_room_isa_faction_completion_scene";
     public static final String MEMORY_ISA_FACTION_VISIT_SCENE_PREFIX = "$ship_trophy_room_isa_faction_visit_scene_";
     public static final String MEMORY_ISA_SHATTERED_RING_HOMECOMING = "$ship_trophy_room_isa_shattered_ring_homecoming";
+    public static final String MEMORY_ISA_SHATTERED_RING_SUIT_RECEIVED = "$ship_trophy_room_isa_shattered_ring_suit_received";
     public static final String MEMORY_GAN_EDEN_QUEST_STAGE = "$shipTrophyGanEdenQuestStage";
     public static final String MEMORY_GAN_EDEN_GRAVE_FOUND = "$shipTrophyGanEdenGraveFound";
     public static final String MEMORY_GAN_EDEN_EPITAPH_FOUND = MEMORY_GAN_EDEN_GRAVE_FOUND;

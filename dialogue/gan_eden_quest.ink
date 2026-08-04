@@ -37,6 +37,10 @@ Your navigator glances at the approach plot.
 
 “That traffic beacon’s been wrong since I was twelve.”
 
++ [Continue through the approach.] -> station_shattered_ring_approach
+
+=== station_shattered_ring_approach ===
+
 As if summoned by the insult, the comm channel crackles.
 
 “Approaching fleet, inbound bearing zero-three-five, elevation minus one-two. Reduce velocity and prepare to receive docking procedures—”
@@ -68,6 +72,10 @@ Isa points a finger at you.
 
 “Shut up.”
 
+-> station_shattered_ring_docking_impact
+
+=== station_shattered_ring_docking_impact ===
+
 Bay Fourteen accepts your approaching fleet with a tremendous metallic cacophony.
 
 The entire docking tube shudders as the clamps engage. Something heavy strikes the outer hull, tumbles away, and disappears beneath the berth.
@@ -80,8 +88,7 @@ Everyone on your bridge exchanges looks. The docking tube groans again. Your fla
 
 “Even more perfect.”
 
-By the time you reach the main concourse, word has spread.
-+ [Continue.] -> station_shattered_ring_docking
++ [Continue into the concourse.] -> station_shattered_ring_docking
 
 === station_shattered_ring_familiar ===
 
@@ -91,23 +98,11 @@ Isa studies the approaching station.
 
 “Mostly in Arc Two. Arc One had the good machine shops, but their gravity used to cut out whenever the ore processor started.”
 
-Bay Fourteen accepts your approaching fleet with a tremendous metallic cacophony.
-
-The entire docking tube shudders as the clamps engage. Something heavy strikes the outer hull, tumbles away, and disappears beneath the berth.
-
-Isa waits for the noise to stop.
-
-“Perfect.”
-
-Everyone on your bridge exchanges looks. The docking tube groans again. Your flagship shifts in its berth with a tremendous crunch.
-
-“Even more perfect.”
-
-By the time you reach the main concourse, word has spread.
-
-+ [Continue.] ->station_shattered_ring_docking
+-> station_shattered_ring_docking_impact
 
 === station_shattered_ring_docking ===
+
+By the time you reach the main concourse, word has spread.
 
 Dockworkers call to Isa from the overhead gantries. A food vendor reaches across his counter to press a foil-wrapped pastry into her hand. Someone shouts that the recycler on Level Six is making the drinking water taste metallic again.
 
@@ -162,6 +157,10 @@ The people passing through the concourse give the three of you a wide berth. Fin
 
 “Thanks.”
 
++ [Continue.] -> station_shattered_ring_foreman_detail
+
+=== station_shattered_ring_foreman_detail ===
+
 The foreman nods. Before leaving, he looks toward you.
 
 “She was wrapped in that when we found her. I used it as a changing mat for the first few weeks, too.”
@@ -174,8 +173,21 @@ Isa throws a glove at the man.
 
 The old man laughs, then disappears into the crowd.
 
-+ [“We can open it somewhere private.”] -> station_shattered_ring_workshop
-+ [Say nothing.] -> station_shattered_ring_workshop
++ [Let Isa take her inheritance.] -> station_shattered_ring_inheritance
+
+=== station_shattered_ring_inheritance ===
+
+Isa closes the case and calls for one of your crew to transfer it to her old workshop.
+
+[Received: Isa's inheritance.]
+
++ [Return to the Shattered Ring concourse.] -> station_shattered_ring_colony_menu
+
+=== station_shattered_ring_colony_menu ===
+
+SHATTERED RING COLONY MENU
+
++ [Investigate Isa's suit in her workshop.] -> station_shattered_ring_workshop
 
 === station_shattered_ring_workshop ===
 
@@ -192,6 +204,10 @@ At last, Isa opens an abandoned machine shop.
 Several names have been carved into the pressure door. Hers is among them, scratched low enough that whoever wrote it must have been very young.
 
 ISA LESESTER IS DA BEST.
+
++ [Open the case.] -> station_shattered_ring_workshop_case
+
+=== station_shattered_ring_workshop_case ===
 
 She sets the case on an old workbench. Inside is a child-sized bundle of pressure fabric, folded carefully beneath a transparent preservation sheet.
 
@@ -215,7 +231,7 @@ Isa gives you a smile.
 
 “I went by the name on the label until I was old enough to realize ‘Isaac’ was a man’s name.”
 
-+ [“Cryosuspension that young is almost unheard of. Standard protocols prohibit it below eight cycles.”] -> station_shattered_ring_scan
++ [“Cryosuspension that young is unheard of.”] -> station_shattered_ring_scan
 
 === station_shattered_ring_scan ===
 
@@ -253,9 +269,9 @@ You walk out with your bodyguards, leaving Isa to it.
 
 Outside the workshop, Shattered Ring creaks and groans around you. Pumps cycle behind the walls. Somewhere far below, a cargo lift begins its slow ascent through the arc.
 
-You had finally cornered Yvan in your chess match. It was going to be weeks before you rolled a Chess960 setup that good again.
-
 After a few minutes, Isa calls from the workshop.
+
+You had finally cornered Yvan in your chess match. It was going to be weeks before you rolled a Chess960 setup that good again.
 
 + [Continue.] -> station_shattered_id
 
@@ -292,6 +308,10 @@ The Domain therefore established a Continuity Office.
 
 Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
 
++ [Continue reading.] -> station_shattered_id_page_two
+
+=== station_shattered_id_page_two ===
+
 I was elected to lead it.
 
 I would sleep through centuries of construction, wake for design reviews, inspect the work, and approve the next phase. Each waking lasted months, sometimes years.
@@ -302,7 +322,11 @@ The engineering difficulties were substantial. We lost dozens of assembly swarms
 
 I met engineers whose grandparents had worked under people I remembered. I approved sweeping changes to systems designed by men and women who had died while I slept, sometimes erasing an entire lifetime’s work with a single decision.
 
-Humanity marched on as I slept. Problems once considered impossible became trivial. When both hypershunts became operational, the Directorate approved the work they had been built to support.
+Humanity marched on as I slept. Problems once considered impossible became trivial. When two hypershunts became operational, the Directorate approved the work they had been built to support.
+
++ [Continue reading.] -> station_shattered_id_page_three
+
+=== station_shattered_id_page_three ===
 
 It was to be the Domain’s first enclosed—
 
@@ -319,7 +343,7 @@ I believed that the ability to construct such a wonder proved that the Domain de
 
 I was wrong.
 
--> one_isa
++ [Close the log.] -> one_isa
 
 === one_isa ===
 
@@ -338,6 +362,13 @@ Then back at the identification wafer.
 She scrolls through the recovered file again.
 
 “Director of Engineering. Architect of the Continuity Office. Hypershunts.”
+
++ [Continue.] -> one_receipt
+
+=== one_receipt ===
+
+[Recovered Personal Log 1765.]
+[Filed under Gan Eden Archives in Intel.]
 
 // Replace these conditions with the actual runtime flags.
 + {hypershunts_reactivated > 0}
@@ -379,6 +410,10 @@ She taps the author field.
 “If there are any records left of him, that’s where they’ll be.”
 
 Isa finishes copying the surviving log and INFOSEC failures to her slate.
+
++ [Continue.] -> station_shattered_ring_hypershunts_request
+
+=== station_shattered_ring_hypershunts_request ===
 
 For a while, she says nothing. The old suit remains spread across the workbench between you, Isaac Leicester’s name blackened but still legible beneath the collar. Then she closes the file.
 
@@ -675,6 +710,10 @@ I had already been considered for the proposed Continuity Office. The appointmen
 
 Before Rebecca’s death, I had intended to refuse.
 
++ [Continue reading.] -> log_two_page_two
+
+=== log_two_page_two ===
+
 With her gone, I thought I had no more reason to live in the present.
 
 I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
@@ -686,6 +725,10 @@ That was the arrangement I made with myself.
 I visited my daughter during every waking.
 
 I inspected her chamber. I reviewed the medical reports. I repeated tests the technicians had already completed.
+
++ [Continue reading.] -> log_two_page_three
+
+=== log_two_page_three ===
 
 She remained healthy and unchanged while centuries passed beyond the glass.
 
@@ -736,11 +779,15 @@ Isa grips the edge of her slate.
 
 She shakes her head.
 
-“But that pod was opened centuries after this was recorded. I don’t know what happened between.”
+“But my pod was opened centuries after this was recorded. I don’t know what happened between.”
 
 Her eyes return to the author field.
 
-“I don’t know why he put me there.”
+“I don’t know why he put me there. Did he just abandon me? Put me to sleep and walk away?”
+
+She stares at the carrier trace.
+
+“Or was he trying to come back?”
 
 -> log_two_routing
 
@@ -781,6 +828,10 @@ It had become incapable of seeing a human being standing directly before it.
 
 I met a Domain Armada veteran cleaning industrial residue from a station floor. During one of the Domain’s thousands of civil wars, radiation from a reactor leak had destroyed half his face.
 
++ [Continue reading.] -> log_three_page_two
+
+=== log_three_page_two ===
+
 His pension had been suspended because the archive containing his service record no longer existed.
 
 I offered to help.
@@ -797,19 +848,29 @@ A burden.
 
 Years blurred together. I do not know whether it was the repeated cryosuspensions or the deterioration of my own mind, but eventually I could no longer distinguish faces.
 
++ [Continue reading.] -> log_three_page_three
+
+=== log_three_page_three ===
+
 I forgot the faces of people I had worked beside.
 
 I even forgot Rebecca’s face.
 
+I remembered the facts of her: the scar at her wrist, the hymn she hummed while she worked, the way she squeezed my hand when she was frightened. But whenever I tried to assemble those memories into a face, there was only an absence where my wife had been.
+
 I began speaking publicly.
 
-At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established a commissions and councils and legislative bodys.
+At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established commissions, councils, and legislative bodies.
 
 I kept drifting through the centuries. Nothing changed.
 
 I began speaking through my faith.
 
 I said that human beings were not obsolete machinery.
+
++ [Continue reading.] -> log_three_page_four
+
+=== log_three_page_four ===
 
 I said that a civilization should be judged by those it possessed the power to help and chose not to.
 
@@ -827,7 +888,13 @@ With my mouth, I drove lambs toward the slaughter.
 
 With my hands and my work, I forged the knives the Domain plunged into their necks.
 
-Who was I to speak against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect?
+Who was I?
+
+No one.
+
+I was a worthless hypocrite.
+
+I spoke against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect.
 
 -> log_three_isa
 
@@ -862,7 +929,7 @@ Isa rubs at one eye. She looks back at the frozen image of Isaac’s authorizati
 
 “He spent all that time building a future for his daughter, and by the end he couldn’t even remember the woman he was building it for.”
 
--> log_three_isa_continue
++ [Continue.] -> log_three_isa_continue
 
 
 === log_three_isa_tried ===
@@ -877,7 +944,7 @@ A pause.
 
 “Maybe he didn’t know either.”
 
--> log_three_isa_continue
++ [Continue.] -> log_three_isa_continue
 
 === log_three_isa_continue ===
 

@@ -22,6 +22,9 @@ Copy-Item -LiteralPath (Join-Path $PSScriptRoot "README.md") -Destination $resol
 if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "docs")) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot "docs") -Destination $resolvedModRoot -Recurse
 }
+if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "dialogue")) {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "dialogue") -Destination $resolvedModRoot -Recurse
+}
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "data") -Destination $resolvedModRoot -Recurse
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "graphics") -Destination $resolvedModRoot -Recurse
 if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "sounds")) {

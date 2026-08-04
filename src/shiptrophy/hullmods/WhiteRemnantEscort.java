@@ -8,13 +8,13 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 
 /** Gives the Remnant escorts rebuilt in Gan Eden a pale ceramic finish. */
 public final class WhiteRemnantEscort extends BaseHullMod {
     public static final String HULLMOD_ID =
             "ship_trophy_white_remnant_escort";
 
-    private static final float REFINEMENT_BONUS = 5f;
     private static final Color WEAPON_TINT = new Color(232, 237, 241);
     private static final Color VENT_CORE = new Color(245, 250, 255);
     private static final Color VENT_FRINGE = new Color(174, 205, 226);
@@ -38,18 +38,11 @@ public final class WhiteRemnantEscort extends BaseHullMod {
     @Override
     public void applyEffectsBeforeShipCreation(
             HullSize hullSize, MutableShipStatsAPI stats, String id) {
-        stats.getMaxSpeed().modifyPercent(id, REFINEMENT_BONUS);
-        stats.getAcceleration().modifyPercent(id, REFINEMENT_BONUS);
-        stats.getDeceleration().modifyPercent(id, REFINEMENT_BONUS);
-        stats.getTurnAcceleration().modifyPercent(id, REFINEMENT_BONUS);
-        stats.getMaxTurnRate().modifyPercent(id, REFINEMENT_BONUS);
-        stats.getFluxDissipation().modifyPercent(id, REFINEMENT_BONUS);
-        stats.getBallisticWeaponDamageMult().modifyPercent(
-                id, REFINEMENT_BONUS);
-        stats.getEnergyWeaponDamageMult().modifyPercent(
-                id, REFINEMENT_BONUS);
-        stats.getMissileWeaponDamageMult().modifyPercent(
-                id, REFINEMENT_BONUS);
+        // Ivory Custodians are prizes as well as gatekeepers. A large flat
+        // bonus guarantees that a disabled hull can enter the normal recovery
+        // list; Automated Ships still governs whether the player can field it.
+        stats.getDynamic().getMod(Stats.INDIVIDUAL_SHIP_RECOVERY_MOD)
+                .modifyFlat(id, 1000f);
     }
 
     @Override

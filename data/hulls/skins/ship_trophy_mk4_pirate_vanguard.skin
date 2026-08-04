@@ -1,0 +1,24 @@
+{
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": [],
+    "removeBuiltInWeapons": [],
+    "builtInWeapons": {},
+    "baseHullId": "vanguard",
+    "skinHullId": "ship_trophy_mk4_pirate_vanguard",
+    "hullName": "Vanguard (P)",
+    "descriptionId": "vanguard",
+    "descriptionPrefix": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.",
+    "tags": [
+        "hide_in_codex",
+        "special_allows_system_use",
+        "system_allows_special_use"
+    ],
+    "tech": "Pirate",
+    "builtInMods": [
+        "unstable_injector",
+        "heavyarmor"
+    ],
+    "spriteName": "graphics/ships/mk4/pirate/ship_trophy_mk4_pirate_vanguard.png"
+}

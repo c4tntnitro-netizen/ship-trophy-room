@@ -35,7 +35,58 @@ shipTrophyIsaMainUniques,ShipTrophyIsaMainOptions,,,,20:ship_trophy_isa_uniques:
 shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtypes:Ask about vanilla faction and subtype programs.,
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
 shipTrophyIsaMainModdedSubtypes,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasSubtypePrograms modded,,,50:ship_trophy_isa_modded_subtypes:Ask about modded faction and subtype programs.,
+shipTrophyIsaMainGanEden,ShipTrophyIsaMainOptions,GanEdenQuestCMD questCompleted,,,60:ship_trophy_isa_gan_eden:Talk about Gan Eden.,Post-quest conversation hub remains available through Isa's contact menu.
 shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,100:ship_trophy_isa_close:Cut the comm link.,
+shipTrophyIsaGanEdenHub,DialogOptionSelected,$option == ship_trophy_isa_gan_eden,"SetShortcut ship_trophy_isa_close ""ESCAPE""","Isa sets aside the Hall ledgers. The light from Gan Eden's inward horizon is still reflected in the photographs she brought back.","0:ship_trophy_isa_gan_eden_after:Talk about what happened.
+10:ship_trophy_isa_gan_eden_future:Talk about Gan Eden's future.
+20:ship_trophy_isa_gan_eden_log_1:Talk about Log I.
+30:ship_trophy_isa_gan_eden_log_2:Talk about Log II.
+40:ship_trophy_isa_gan_eden_log_3:Talk about Log III.
+50:ship_trophy_isa_gan_eden_log_4:Talk about Log IV.
+60:ship_trophy_isa_gan_eden_log_5:Talk about Log V.
+70:ship_trophy_isa_gan_eden_omega:Talk about the Golden Omega.
+90:ship_trophy_isa_open:Back to the Hall ledgers.
+100:ship_trophy_isa_close:Cut the comm link.",Persistent post-quest Gan Eden topic menu.
+shipTrophyIsaGanEdenAfter,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_after,"SetShortcut ship_trophy_isa_close ""ESCAPE""","Isa takes a while to answer.
+
+""I spent my whole life wondering whether that name meant I belonged to somebody. Turns out it did. It also turns out belonging to someone doesn't make their choices yours.""
+
+She taps the nameplate on her slate: ISA LEICESTER.
+
+""Isaac gave me a beginning. The Ring gave me a life. You lot gave me the rest. I can live with that.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa reflects on the completed search.
+shipTrophyIsaGanEdenFuture,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_future,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Gan Eden can't stay a mausoleum,"" Isa says. ""But it shouldn't become another company town with a pretty sky, either.""
+
+She begins listing priorities on her fingers: survey teams, independent settlement charters, protected archives, strict limits on dismantling anything that still works.
+
+""A place built for everyone ought to belong to the people willing to make a life there. We can help. We don't get to own it.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses the future of Gan Eden.
+shipTrophyIsaGanEdenLogOne,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_log_1,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""The first log made him real,"" Isa says. ""Not my father. Not yet. Just an engineer who thought a project big enough could justify anything it demanded of him.""
+
+She glances at the Hall ledgers. ""I understand that temptation better than I'd like.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses Personal Log 1765.
+shipTrophyIsaGanEdenLogTwo,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_log_2,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""The second log hurt because it gave him a reason,"" Isa says. ""Rebecca died. He panicked. He convinced himself he could postpone being a father until the universe was safe.""
+
+Her expression hardens. ""A reason isn't an excuse. But it is a reason.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses Epitaph Part II.
+shipTrophyIsaGanEdenLogThree,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_log_3,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""He woke up often enough to watch the Domain become monstrous, but never long enough to build a life inside it,"" Isa says. ""Then even Rebecca's face went. That's the part I keep coming back to.""
+
+She rubs her eyes. ""Centuries of memory, and grief was the thing that lasted.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses Epitaph Part III.
+shipTrophyIsaGanEdenLogFour,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_log_4,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""By the fourth log, he was done asking the Domain to become kinder,"" Isa says. ""He decided the only moral thing left was to destroy his life's work—and himself with it.""
+
+She shakes her head. ""He was wrong about that too. Gan Eden deserved a future he couldn't imagine.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses Epitaph Part IV.
+shipTrophyIsaGanEdenLogFive,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_log_5,"SetShortcut ship_trophy_isa_close ""ESCAPE""","Isa is quiet for several seconds.
+
+""He called me Leah,"" she says at last. ""I think he wanted to return one choice to me after making so many on my behalf.""
+
+She smiles faintly. ""It's a beautiful name. It just isn't mine.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses the final Epitaph.
+shipTrophyIsaGanEdenOmega,DialogOptionSelected,$option == ship_trophy_isa_gan_eden_omega,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Isaac thought they were angels,"" Isa says. ""Maybe Omega read that in his systems. Maybe they chose the shapes because they knew someone would understand the threat.""
+
+She pulls up the combat telemetry. ""Cherubim guarded the threshold. Lahat guarded the sentence. Whatever they were built to protect, I don't think that fight was the last word.""","0:ship_trophy_isa_gan_eden:Keep talking about Gan Eden.
+100:ship_trophy_isa_close:Cut the comm link.",Isa discusses Cherubim and Lahat Haharev.
 shipTrophyIsaMasterworkHub,DialogOptionSelected,$option == ship_trophy_isa_masterwork,"IsaContactRulesCMD prepareMasterwork
 IsaContactRulesCMD showMasterworkIntro
 IsaContactRulesCMD showMasterworkStatus
@@ -458,9 +509,8 @@ Your navigator glances at the approach plot.
 
 ""Traffic beacon’s directing us sunward.""
 
-""That traffic beacon’s been wrong since I was twelve.""
-
-As if summoned by the insult, the comm channel crackles.
+""That traffic beacon’s been wrong since I was twelve.""",0:ship_trophy_isa_homecoming_approach_continue:Continue through the approach.,The homecoming opens in a readable first beat.
+shipTrophyIsaShatteredRingHomecomingApproach,DialogOptionSelected,$option == ship_trophy_isa_homecoming_approach_continue,,"As if summoned by the insult, the comm channel crackles.
 
 ""Approaching fleet, inbound bearing zero-three-five, elevation minus one-two. Reduce velocity and prepare to receive docking procedures—""
 
@@ -507,9 +557,8 @@ Isa waits for the noise to stop.
 
 Everyone on your bridge exchanges looks. The docking tube groans again. Your flagship shifts in its berth with a tremendous crunch.
 
-""Even more perfect.""
-
-By the time you reach the main concourse, word has spread.
+""Even more perfect.""",0:ship_trophy_isa_homecoming_docking_continue:Continue into the concourse.,The docking impact is given its own readable beat.
+shipTrophyIsaShatteredRingHomecomingDockingConcourse,DialogOptionSelected,$option == ship_trophy_isa_homecoming_docking_continue,,"By the time you reach the main concourse, word has spread.
 
 Dockworkers call to Isa from the overhead gantries. A food vendor reaches across his counter to press a foil-wrapped pastry into her hand. Someone shouts that the recycler on Level Six is making the drinking water taste metallic again.
 
@@ -548,9 +597,8 @@ He holds the case toward her.
 
 The people passing through the concourse give the three of you a wide berth. Finally, Isa wipes her hands against her trousers and accepts the case.
 
-""Thanks.""
-
-The foreman nods. Before leaving, he looks toward you.
+""Thanks.""",0:ship_trophy_isa_homecoming_foreman_continue:Continue.,The foreman returns the case before explaining what it contains.
+shipTrophyIsaShatteredRingHomecomingForemanContinue,DialogOptionSelected,$option == ship_trophy_isa_homecoming_foreman_continue,,"The foreman nods. Before leaving, he looks toward you.
 
 ""She was wrapped in that when we found her. I used it as a changing mat for the first few weeks, too.""
 
@@ -560,10 +608,16 @@ Isa throws a glove at the man.
 
 ""Why not? You weren’t going to.""
 
-The old man laughs, then disappears into the crowd.","0:ship_trophy_isa_homecoming_private:""We can open it somewhere private.""
-10:ship_trophy_isa_homecoming_silent:Say nothing.",The foreman returns the suit in which Isa was found.
-shipTrophyIsaShatteredRingHomecomingPrivate,DialogOptionSelected,$option == ship_trophy_isa_homecoming_private,FireAll ShipTrophyIsaHomecomingWorkshop,,,The player suggests privacy.
-shipTrophyIsaShatteredRingHomecomingSilent,DialogOptionSelected,$option == ship_trophy_isa_homecoming_silent,FireAll ShipTrophyIsaHomecomingWorkshop,,,The player silently follows Isa.
+The old man laughs, then disappears into the crowd.",0:ship_trophy_isa_homecoming_inheritance:Let Isa take her inheritance.,The foreman returns the suit in which Isa was found.
+shipTrophyIsaShatteredRingHomecomingInheritance,DialogOptionSelected,$option == ship_trophy_isa_homecoming_inheritance,"IsaHomecomingCMD receiveSuit
+SetTextHighlightColors story
+SetTextHighlights ""Isa's inheritance""","Isa closes the case and calls for one of your crew to transfer it to her old workshop.
+
+[Received: Isa's inheritance.]",0:ship_trophy_isa_homecoming_inheritance_return:Return to the Shattered Ring concourse.,The suit becomes a persistent workshop objective before the homecoming continues.
+shipTrophyIsaShatteredRingHomecomingInheritanceReturn,DialogOptionSelected,$option == ship_trophy_isa_homecoming_inheritance_return,FireBest OpenInteractionDialog,,,Returns to the normal Shattered Ring colony menu.
+shipTrophyIsaShatteredRingHomecomingWorkshopOption,PopulateOptions,IsaHomecomingCMD shouldShowWorkshop,,,20:ship_trophy_isa_homecoming_workshop_open:Investigate Isa's suit in her workshop.,Persistent Shattered Ring colony-menu option after receiving the inheritance.
+shipTrophyIsaShatteredRingHomecomingWorkshopOpen,DialogOptionSelected,$option == ship_trophy_isa_homecoming_workshop_open,"IsaHomecomingCMD prepareWorkshop
+FireAll ShipTrophyIsaHomecomingWorkshop",,,Resumes the homecoming inside Isa's childhood workshop.
 shipTrophyIsaShatteredRingHomecomingWorkshop,ShipTrophyIsaHomecomingWorkshop,,,"Isa leads you through the station without speaking.
 
 You descend through Arc Two, past hydroponics bays and crowded habitation decks, until the finished corridors give way to exposed conduits and old pressure doors.
@@ -576,9 +630,8 @@ At last, Isa opens an abandoned machine shop.
 
 Several names have been carved into the pressure door. Hers is among them, scratched low enough that whoever wrote it must have been very young.
 
-ISA LESESTER IS DA BEST.
-
-She sets the case on an old workbench. Inside is a child-sized bundle of pressure fabric, folded carefully beneath a transparent preservation sheet.
+ISA LESESTER IS DA BEST.",0:ship_trophy_isa_homecoming_workshop_continue:Open the case.,The descent into Isa's childhood workshop is paced separately.
+shipTrophyIsaShatteredRingHomecomingWorkshopCase,DialogOptionSelected,$option == ship_trophy_isa_homecoming_workshop_continue,,"She sets the case on an old workbench. Inside is a child-sized bundle of pressure fabric, folded carefully beneath a transparent preservation sheet.
 
 The material was once white. Radiation and age have yellowed it almost to brown. Several sections have been cut from a much larger suit and crudely flextaped together, turning the spacesuit into something more like a cradle.
 
@@ -593,7 +646,7 @@ shipTrophyIsaShatteredRingHomecomingNamed,DialogOptionSelected,$option == ship_t
 
 Isa gives you a smile.
 
-""I went by the name on the label until I was old enough to realize ‘Isaac’ was a man’s name.""","0:ship_trophy_isa_homecoming_scan:""Cryosuspension that young is almost unheard of. Standard protocols prohibit it below eight cycles.""",Isa explains the borrowed name.
+""I went by the name on the label until I was old enough to realize ‘Isaac’ was a man’s name.""","0:ship_trophy_isa_homecoming_scan:""Cryosuspension that young is unheard of.""",Isa explains the borrowed name.
 shipTrophyIsaShatteredRingHomecomingScan,DialogOptionSelected,$option == ship_trophy_isa_homecoming_scan,,"""My great claim to fame,"" Isa says, smiling. ""Youngest ‘pod person’ on my Arc.""
 
 A small metal contact is visible beneath the scorched collar.
@@ -619,9 +672,9 @@ shipTrophyIsaShatteredRingHomecomingPrivacy,DialogOptionSelected,$option == ship
 
 Outside the workshop, Shattered Ring creaks and groans around you. Pumps cycle behind the walls. Somewhere far below, a cargo lift begins its slow ascent through the arc.
 
-You had finally cornered Yvan in your chess match. It was going to be weeks before you rolled a Chess960 setup that good again.
+After a few minutes, Isa calls from the workshop.
 
-After a few minutes, Isa calls from the workshop.",,The player waits outside with Wei and Yvan.
+You had finally cornered Yvan in your chess match. It was going to be weeks before you rolled a Chess960 setup that good again.",,The player hears Isa's call before regretting the abandoned Chess960 position.
 shipTrophyIsaShatteredRingHomecomingStay,DialogOptionSelected,$option == ship_trophy_isa_homecoming_stay,FireAll ShipTrophyIsaHomecomingRegistryOne,"Isa glances at you, then nods.
 
 ""Thanks, $playerRank.""
@@ -632,8 +685,10 @@ Minutes pass.
 
 Outside the workshop, Shattered Ring creaks and groans around you. Pumps cycle behind the walls. Somewhere far below, a cargo lift begins its slow ascent through the arc.",,The player remains with Isa.
 shipTrophyIsaShatteredRingHomecomingRegistryOne,ShipTrophyIsaHomecomingRegistryOne,,,"One of the windows on Isa’s slate turns green. A personal log opens.",0:ship_trophy_isa_homecoming_registry_two:Play the recovered log.,Isa opens Personal Log 1765 from the hidden wafer.
-shipTrophyIsaShatteredRingHomecomingRegistryTwo,DialogOptionSelected,$option == ship_trophy_isa_homecoming_registry_two,"GanEdenQuestCMD showInitialLog
-FireAll ShipTrophyIsaHomecomingHypershuntKnowledgeOptions","The log ends.
+shipTrophyIsaShatteredRingHomecomingRegistryTwo,DialogOptionSelected,$option == ship_trophy_isa_homecoming_registry_two,GanEdenQuestCMD showInitialLogPage 0,,0:ship_trophy_isa_homecoming_registry_page_two:Continue reading.,Plays the first page of Personal Log 1765 without filing the Intel entry.
+shipTrophyIsaShatteredRingHomecomingRegistryPageTwo,DialogOptionSelected,$option == ship_trophy_isa_homecoming_registry_page_two,GanEdenQuestCMD showInitialLogPage 1,,0:ship_trophy_isa_homecoming_registry_page_three:Continue reading.,Plays the second page of Personal Log 1765.
+shipTrophyIsaShatteredRingHomecomingRegistryPageThree,DialogOptionSelected,$option == ship_trophy_isa_homecoming_registry_page_three,GanEdenQuestCMD showInitialLogPage 2,,0:ship_trophy_isa_homecoming_registry_response:Close the log.,Plays the final page with the red INFOSEC interruption.
+shipTrophyIsaShatteredRingHomecomingRegistryResponse,DialogOptionSelected,$option == ship_trophy_isa_homecoming_registry_response,,"The log ends.
 
 Isa remains motionless, staring at the author field.
 
@@ -647,7 +702,12 @@ Then back at the identification wafer.
 
 She scrolls through the recovered file again.
 
-""Director of Engineering. Architect of the Continuity Office. Hypershunts.""",,Isa recognizes the real Isaac Leicester in the recovered log.
+""Director of Engineering. Architect of the Continuity Office. Hypershunts.""",0:ship_trophy_isa_homecoming_registry_receipt:Continue.,Isa responds only after the player reaches the end of the paginated log.
+shipTrophyIsaShatteredRingHomecomingRegistryReceipt,DialogOptionSelected,$option == ship_trophy_isa_homecoming_registry_receipt,"GanEdenQuestCMD recoverInitialLog
+SetTextHighlightColors hColor hColor
+SetTextHighlights ""Personal Log 1765"" ""Gan Eden Archives""
+FireAll ShipTrophyIsaHomecomingHypershuntKnowledgeOptions","[Recovered Personal Log 1765.]
+[Filed under Gan Eden Archives in Intel.]",,Files the Intel entry silently and displays only a compact recovery receipt.
 shipTrophyIsaShatteredRingHomecomingReal,DialogOptionSelected,$option == ship_trophy_isa_homecoming_real,FireAll ShipTrophyIsaHomecomingRealization,,,Both responses converge on Isa's realization.
 shipTrophyIsaShatteredRingHomecomingKnew,DialogOptionSelected,$option == ship_trophy_isa_homecoming_knew,FireAll ShipTrophyIsaHomecomingRealization,,,Both responses converge on Isa's realization.
 shipTrophyIsaShatteredRingHomecomingRealization,ShipTrophyIsaHomecomingRealization,,,"""Yeah.""
@@ -692,9 +752,8 @@ Isa opens the failed queries side by side.
 
 ""What are you doing?"" you ask.
 
-""Looking at how they break.""
-
-She groups the failures by their distorted output. Fields concealing the same information collapse in nearly identical ways.
+""Looking at how they break.""",0:ship_trophy_isa_homecoming_search_continue:Continue the search.,Isa begins reconstructing the INFOSEC failures.
+shipTrophyIsaShatteredRingHomecomingSearchContinue,DialogOptionSelected,$option == ship_trophy_isa_homecoming_search_continue,,"She groups the failures by their distorted output. Fields concealing the same information collapse in nearly identical ways.
 
 Isa’s agents begin finding matches.
 
@@ -789,9 +848,8 @@ She taps the author field.
 
 ""If there are any records left of him, that’s where they’ll be.""
 
-Isa finishes copying the surviving log and INFOSEC failures to her slate.
-
-For a while, she says nothing. The old suit remains spread across the workbench between you, Isaac Leicester’s name blackened but still legible beneath the collar. Then she closes the file.
+Isa finishes copying the surviving log and INFOSEC failures to her slate.",0:ship_trophy_isa_homecoming_hypershunts_continue:Continue.,Isa establishes why the hypershunts are the only surviving lead.
+shipTrophyIsaShatteredRingHomecomingHypershuntsContinue,DialogOptionSelected,$option == ship_trophy_isa_homecoming_hypershunts_continue,,"For a while, she says nothing. The old suit remains spread across the workbench between you, Isaac Leicester’s name blackened but still legible beneath the collar. Then she closes the file.
 
 ""Captain.""
 
@@ -848,7 +906,9 @@ shipTrophyIsaShatteredRingHomecomingDirectOrder,DialogOptionSelected,$option == 
 
 ""Aye-aye, $playerRank.""",,Isa accepts the direct order.
 shipTrophyIsaShatteredRingHomecomingAcceptCautious,DialogOptionSelected,$option == ship_trophy_isa_homecoming_accept_cautious,FireAll ShipTrophyIsaHomecomingPrepareSearch,"""That’s all I’m asking.""",,Cautious response to Isa's request.
-shipTrophyIsaShatteredRingHomecomingPrepareSearch,ShipTrophyIsaHomecomingPrepareSearch,,"SetShortcut ship_trophy_isa_homecoming_return ""ESCAPE""","Isa transfers the recovered log, the wafer registry number, and the INFOSEC failures into a new directory.
+shipTrophyIsaShatteredRingHomecomingPrepareSearch,ShipTrophyIsaHomecomingPrepareSearch,,"SetShortcut ship_trophy_isa_homecoming_return ""ESCAPE""
+SetTextHighlightColors story story
+SetTextHighlights ""A Borrowed Name"" ""Investigate both surviving hypershunts""","Isa transfers the recovered log, the wafer registry number, and the INFOSEC failures into a new directory.
 
 The folder remains unnamed for several seconds.
 
@@ -861,7 +921,17 @@ ISAAC THOMAS LEICESTER
 [Objective updated: Investigate both surviving hypershunts.]",0:ship_trophy_isa_homecoming_return:Return to the fleet.,The expanded homecoming starts A Borrowed Name.
 shipTrophyIsaShatteredRingHomecomingReturn,DialogOptionSelected,$option == ship_trophy_isa_homecoming_return,"IsaHomecomingCMD markSeen
 FireBest OpenInteractionDialog",,,Marks the homecoming complete and resumes normal docking.
-shipTrophyGanEdenHypershuntPatherGuard,OpenInteractionDialog,GanEdenQuestCMD isHypershuntGuard luddic_path score:70000,"GanEdenQuestCMD prepareHypershuntGuard
+shipTrophyGanEdenGoldenEncounter,BeginFleetEncounter,GanEdenQuestCMD isGoldenOmegaFightable score:90000,"FleetDesc
+$shownFleetDescAlready = true 0","The scan does not come from one direction. It blooms across every active sensor at once, measuring your fleet from two mutually impossible angles.
+
+Cherubim and Lahat Haharev pivot in exact counterpoint. No hail follows. No warning asks you to keep your distance.
+
+Your own identification packet returns instead, stripped of its header and divided into two mirrored copies.",,Adds the authored Golden Omega description without opening a comm link or mutating encounter state.
+shipTrophyGanEdenHypershuntPatherGuardEncounter,BeginFleetEncounter,GanEdenQuestCMD isHypershuntGuard luddic_path score:70000,"FleetDesc
+HailPlayer",,,Routes the Pather blockade into its quest-specific comm link instead of the standard fleet hail.
+shipTrophyGanEdenHypershuntPirateGuardEncounter,BeginFleetEncounter,GanEdenQuestCMD isHypershuntGuard pirates score:70000,"FleetDesc
+HailPlayer",,,Routes the pirate blockade into its quest-specific comm link instead of the standard fleet hail.
+shipTrophyGanEdenHypershuntPatherGuard,OpenCommLink,GanEdenQuestCMD isHypershuntGuard luddic_path score:70000,"GanEdenQuestCMD prepareHypershuntGuard
 SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","A large Pather fleet holds position between you and the hypershunt.
 
 Their commander answers your hail. He wears a scorched pressure suit marked with lines of handwritten scripture.
@@ -889,7 +959,7 @@ At last, he bows his head.
 
 ""Then go, brother. Cleanse the taint of Moloch from the heavens! For the Prophet!""
 
-The Pather fleet begins clearing the approach corridor.",0:ship_trophy_gan_eden_hypershunt_approach:Approach the hypershunt.,Spending a story point clears the Pather blockade.
+The Pather fleet begins clearing the approach corridor.",0:ship_trophy_gan_eden_hypershunt_stand_down:Return to your fleet.,Spending a story point ends the blockade encounter without starting the hypershunt survey.
 shipTrophyGanEdenHypershuntPatherFight,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pather_fight,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","The commander’s expression hardens.
 
 ""Then may Moloch lay with your dead!""
@@ -898,7 +968,7 @@ The channel closes.
 
 [The Luddic Path fleet moves to engage.]","0:ship_trophy_gan_eden_hypershunt_engage:Engage.
 100:ship_trophy_gan_eden_hypershunt_leave:Withdraw.",The Pather commander prepares for battle.
-shipTrophyGanEdenHypershuntPirateGuard,OpenInteractionDialog,GanEdenQuestCMD isHypershuntGuard pirates score:70000,"GanEdenQuestCMD prepareHypershuntGuard
+shipTrophyGanEdenHypershuntPirateGuard,OpenCommLink,GanEdenQuestCMD isHypershuntGuard pirates score:70000,"GanEdenQuestCMD prepareHypershuntGuard
 SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","A pirate fleet blocks the approach to the hypershunt.
 
 Their commander answers your hail with their boots resting on the console.
@@ -916,7 +986,9 @@ The commander grins.
 20:ship_trophy_gan_eden_hypershunt_pirate_fight:""We’ll pay in ordnance.""
 100:ship_trophy_gan_eden_hypershunt_leave:Withdraw.","Offers payment, a story point, or combat."
 shipTrophyGanEdenHypershuntPiratePayOption,ShipTrophyGanEdenHypershuntPiratePayOptions,GanEdenQuestCMD canPayHypershuntPirates,,,"0:ship_trophy_gan_eden_hypershunt_pirate_pay:Pay 250,000 credits.",Only offers payment when the player can afford it.
-shipTrophyGanEdenHypershuntPiratePay,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pirate_pay,GanEdenQuestCMD payHypershuntPirates,"You authorize the transfer.
+shipTrophyGanEdenHypershuntPiratePay,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pirate_pay,"GanEdenQuestCMD payHypershuntPirates
+SetTextHighlightColors bad
+SetTextHighlights ""[Lost 250,000 credits.]""","You authorize the transfer.
 
 The pirate commander checks the amount, then finally takes their boots off the console.
 
@@ -926,7 +998,7 @@ The pirate fleet begins clearing the approach corridor.
 
 ""Try not to break anything expensive.""
 
-[Lost 250,000 credits.]",0:ship_trophy_gan_eden_hypershunt_approach:Approach the hypershunt.,The paid resolution clears the pirate blockade.
+[Lost 250,000 credits.]",0:ship_trophy_gan_eden_hypershunt_stand_down:Return to your fleet.,The paid resolution ends the blockade encounter without starting the hypershunt survey.
 shipTrophyGanEdenHypershuntPiratePersuade,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pirate_persuade,GanEdenQuestCMD clearHypershuntGuard,"You tell them they can charge whatever they like.
 
 After your fleet docks.
@@ -943,7 +1015,7 @@ They glance toward someone outside the transmitter’s view.
 
 The pirate fleet clears the approach corridor.
 
-""Go on through.""",0:ship_trophy_gan_eden_hypershunt_approach:Approach the hypershunt.,Spending a story point clears the pirate blockade.
+""Go on through.""",0:ship_trophy_gan_eden_hypershunt_stand_down:Return to your fleet.,Spending a story point ends the blockade encounter without starting the hypershunt survey.
 shipTrophyGanEdenHypershuntPirateFight,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pirate_fight,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","The commander takes their boots off the console.
 
 ""Wrong answer.""
@@ -953,9 +1025,10 @@ The channel closes.
 [The pirate fleet moves to engage.]","0:ship_trophy_gan_eden_hypershunt_engage:Engage.
 100:ship_trophy_gan_eden_hypershunt_leave:Withdraw.",The pirate commander prepares for battle.
 shipTrophyGanEdenHypershuntEngage,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_engage,"GanEdenQuestCMD engageHypershuntGuard
-DismissDialog",,,Hands the committed blockade to the normal fleet battle interaction.
-shipTrophyGanEdenHypershuntApproach,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_approach,"GanEdenQuestCMD prepareHypershuntInvestigation
-FireAll ShipTrophyGanEdenHypershuntInvestigate",,,Continues directly from a peaceful blockade resolution into the survey.
+MakeOtherFleetHostile shipTrophyGanEden true
+MakeOtherFleetAggressiveOnce shipTrophyGanEden true
+EndConversation",,,Reinitializes the existing fleet encounter as hostile without leaving stale battle membership behind.
+shipTrophyGanEdenHypershuntStandDown,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_stand_down,DismissDialog,,,Closes a peacefully resolved fleet encounter; the player must approach the hypershunt separately.
 shipTrophyGanEdenHypershuntTapInvestigate,OpenInteractionDialog,GanEdenQuestCMD canInvestigateHypershunt score:65000,"GanEdenQuestCMD prepareHypershuntInvestigation
 FireAll ShipTrophyGanEdenHypershuntInvestigate",,,Opens the survey after a blockade is defeated in combat.
 shipTrophyGanEdenHypershuntTapBlocked,OpenInteractionDialog,GanEdenQuestCMD isBlockedHypershunt score:64000,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","A large armed fleet holds the approach corridor. Any attempt to reach the hypershunt will have to deal with the blockade first.",100:ship_trophy_gan_eden_hypershunt_leave:Leave.,Prevents the vanilla interaction from bypassing an active blockade.
@@ -977,9 +1050,9 @@ Sensor craft trace the curvature of its containment fields. Gravimetric probes m
 
 Most of the structure follows standard automated tolerances.
 
-Several sections do not.
-
-Tiny deviations recur across the hypershunt’s oldest assemblies: corrections too consistent to be random, repeated through construction phases separated by centuries.
+Several sections do not.",0:ship_trophy_gan_eden_hypershunt_records_continue:Compare the deviations.,The multi-day hypershunt survey is given its own page.
+shipTrophyGanEdenHypershuntRecordsContinue,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_records_continue,"SetTextHighlightColors ""82,88,94,255"" ""82,88,94,255"" ""82,88,94,255""
+SetTextHighlights ""DCR-2F38-CB017-6A"" ""LEICESTER, ISAAC THOMAS"" ""CONTINUITY AUTHORITY""","Tiny deviations recur across the hypershunt’s oldest assemblies: corrections too consistent to be random, repeated through construction phases separated by centuries.
 
 Isa overlays them.
 
@@ -997,8 +1070,11 @@ The same pattern appears in the hypershunt’s transmission geometry, attached t
 
 [A sealed personal log is embedded beside the routing data.]",0:ship_trophy_gan_eden_hypershunt_read_log:Open the recovered personal log.,Finds the next Epitaph entry without resolving the survey until it is read.
 shipTrophyGanEdenHypershuntReadLog,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_read_log,"GanEdenQuestCMD surveyHypershunt
-FireAll ShipTrophyGanEdenHypershuntSurveyResult",,,,Recovers Epitaph Part II at the first scanned hypershunt and Part III at the second.
-shipTrophyGanEdenHypershuntSurveyPending,ShipTrophyGanEdenHypershuntSurveyResult,GanEdenQuestCMD hypershuntSurveyPending,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","The recording terminates abruptly.
+FireAll ShipTrophyGanEdenHypershuntSurveyResult",,,Recovers Epitaph Part II at the first scanned hypershunt and Part III at the second.
+shipTrophyGanEdenHypershuntSurveyPending,ShipTrophyGanEdenHypershuntSurveyResult,GanEdenQuestCMD hypershuntSurveyPending,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""",,0:ship_trophy_gan_eden_hypershunt_log_two_page_two:Continue reading.,Epitaph Part II begins on the page rendered by surveyHypershunt.
+shipTrophyGanEdenHypershuntLogTwoPageTwo,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_two_page_two,GanEdenQuestCMD showLogPage part_two 1,,0:ship_trophy_gan_eden_hypershunt_log_two_page_three:Continue reading.,Renders Epitaph Part II page two.
+shipTrophyGanEdenHypershuntLogTwoPageThree,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_two_page_three,GanEdenQuestCMD showLogPage part_two 2,,0:ship_trophy_gan_eden_hypershunt_log_two_response:Close the recovered log.,Renders Epitaph Part II's final page.
+shipTrophyGanEdenHypershuntLogTwoResponse,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_two_response,,"The recording terminates abruptly.
 
 Isa does not move.
 
@@ -1010,9 +1086,8 @@ After a long silence, she looks down at the microchip connected to her slate.
 
 She swallows.
 
-""He put her in cryosuspension.""
-
-The carrier signal continues repeating beneath the silence.
+""He put her in cryosuspension.""",0:ship_trophy_gan_eden_hypershunt_log_two_response_continue:Continue.,Isa absorbs the first Epitaph entry in a separate story beat.
+shipTrophyGanEdenHypershuntLogTwoResponseContinue,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_two_response_continue,,"The carrier signal continues repeating beneath the silence.
 
 Isa scrolls back through the recovered fragments, reading the same lines again.
 
@@ -1026,9 +1101,13 @@ Isa grips the edge of her slate.
 
 She shakes her head.
 
-""But that pod was opened centuries after this was recorded. I don’t know what happened between. I don’t know why he put me there.""
+""But my pod was opened centuries after this was recorded. I don’t know what happened between. I don’t know why he put me there. Did he just abandon me? Put me to sleep and walk away?""
 
-Isa returns to the carrier data.
+She stares at the carrier trace.
+
+""Or was he trying to come back?""",0:ship_trophy_gan_eden_hypershunt_log_two_routing:Continue.,Isa connects the recovered daughter to her own cryopod and confronts the possibility that Isaac abandoned her.
+shipTrophyGanEdenHypershuntLogTwoRouting,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_two_routing,"SetTextHighlightColors hColor hColor
+SetTextHighlights ""Epitaph — Part II"" ""Gan Eden Archives""","Isa returns to the carrier data.
 
 ""The message is riding the same transmission geometry as the classified routing signal.""
 
@@ -1040,8 +1119,16 @@ Isa enlarges the projection and looks toward the location of the remaining hyper
 
 ""We need the other signal.""
 
-[The first hypershunt routing vector has been recovered.]",100:ship_trophy_gan_eden_hypershunt_leave:Return to the fleet.,The first survey points to the remaining hypershunt.
-shipTrophyGanEdenHypershuntSurveyComplete,ShipTrophyGanEdenHypershuntSurveyResult,GanEdenQuestCMD hypershuntSurveyComplete,,"The recording ends.
+[Recovered Epitaph — Part II.]
+[Filed under Gan Eden Archives in Intel.]
+
+[The first hypershunt routing vector has been recovered.]",100:ship_trophy_gan_eden_hypershunt_leave:Return to the fleet.,The first survey points to the remaining hypershunt without replaying the Intel body.
+shipTrophyGanEdenHypershuntSurveyComplete,ShipTrophyGanEdenHypershuntSurveyResult,GanEdenQuestCMD hypershuntSurveyComplete,,,0:ship_trophy_gan_eden_hypershunt_log_three_page_two:Continue reading.,Epitaph Part III begins on the page rendered by surveyHypershunt.
+shipTrophyGanEdenHypershuntLogThreePageTwo,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_three_page_two,GanEdenQuestCMD showLogPage part_three 1,,0:ship_trophy_gan_eden_hypershunt_log_three_page_three:Continue reading.,Renders Epitaph Part III page two.
+shipTrophyGanEdenHypershuntLogThreePageThree,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_three_page_three,GanEdenQuestCMD showLogPage part_three 2,,0:ship_trophy_gan_eden_hypershunt_log_three_page_four:Continue reading.,Renders Epitaph Part III page three.
+shipTrophyGanEdenHypershuntLogThreePageFour,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_three_page_four,GanEdenQuestCMD showLogPage part_three 3,,0:ship_trophy_gan_eden_hypershunt_log_three_response:Close the recovered log.,Renders Epitaph Part III's final page.
+shipTrophyGanEdenHypershuntLogThreeResponse,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_log_three_response,"SetTextHighlightColors hColor hColor
+SetTextHighlights ""Epitaph — Part III"" ""Gan Eden Archives""","The recording ends.
 
 Isa remains fixed on the last line.
 
@@ -1057,14 +1144,17 @@ She says it quietly.
 
 ""Mom’s.""
 
-Her fingers remain poised above the slate.","0:ship_trophy_gan_eden_log_three_damaged:""Centuries of cryosuspension damaged him.""
-10:ship_trophy_gan_eden_log_three_tried:""He tried to change things.""",Both surveys recover the final routing record.
-shipTrophyGanEdenLogThreeDamaged,DialogOptionSelected,$option == ship_trophy_gan_eden_log_three_damaged,FireAll ShipTrophyGanEdenHypershuntSurveyCompleteFinal,"""I know.""
+Her fingers remain poised above the slate.
+
+[Recovered Epitaph — Part III.]
+[Filed under Gan Eden Archives in Intel.]","0:ship_trophy_gan_eden_log_three_damaged:""Centuries of cryosuspension damaged him.""
+10:ship_trophy_gan_eden_log_three_tried:""He tried to change things.""",Both surveys recover the final routing record without replaying the Intel body.
+shipTrophyGanEdenLogThreeDamaged,DialogOptionSelected,$option == ship_trophy_gan_eden_log_three_damaged,,"""I know.""
 
 Isa rubs at one eye. She looks back at the frozen image of Isaac’s authorization header.
 
-""He spent all that time building a future for his daughter, and by the end he couldn’t even remember the woman he was building it for.""",,Isa considers the damage of centuries in cryosuspension.
-shipTrophyGanEdenLogThreeTried,DialogOptionSelected,$option == ship_trophy_gan_eden_log_three_tried,FireAll ShipTrophyGanEdenHypershuntSurveyCompleteFinal,"""He did.""
+""He spent all that time building a future for his daughter, and by the end he couldn’t even remember the woman he was building it for.""","0:ship_trophy_gan_eden_log_three_routing_continue:Continue.",Isa considers the damage of centuries in cryosuspension.
+shipTrophyGanEdenLogThreeTried,DialogOptionSelected,$option == ship_trophy_gan_eden_log_three_tried,,"""He did.""
 
 Isa looks at the final line again. She exhales through her nose.
 
@@ -1072,14 +1162,17 @@ Isa looks at the final line again. She exhales through her nose.
 
 A pause.
 
-""Maybe he didn’t know either.""",,Isa considers Isaac's attempt to change the Domain.
-shipTrophyGanEdenHypershuntSurveyCompleteFinal,ShipTrophyGanEdenHypershuntSurveyCompleteFinal,,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""","Isa returns to the carrier data.
+""Maybe he didn’t know either.""","0:ship_trophy_gan_eden_log_three_routing_continue:Continue.",Isa considers Isaac's attempt to change the Domain.
+shipTrophyGanEdenLogThreeRoutingContinue,DialogOptionSelected,$option == ship_trophy_gan_eden_log_three_routing_continue,FireAll ShipTrophyGanEdenHypershuntSurveyCompleteFinal,,,Opens the routing-vector reveal as a separate dialogue beat.
+shipTrophyGanEdenHypershuntSurveyCompleteFinal,ShipTrophyGanEdenHypershuntSurveyCompleteFinal,,"SetShortcut ship_trophy_gan_eden_hypershunt_leave ""ESCAPE""
+SetTextHighlightColors story story
+SetTextHighlights ""[The location of POWER TRANSIT GATE - GAN EDEN has been determined.]"" ""[Objective updated: Travel to the Power Transit Gate and enter Gan Eden.]""","Isa returns to the carrier data.
 
 The second hypershunt’s signal contains the same concealed routing pattern as the first, shifted by centuries of stellar drift and accumulated error.
 
 She aligns the two vectors.
 
-They intersect far beyond the charted systems of the Sector, on the northeastern rim of the Orion-Perseus Abyss.
+They intersect far beyond the charted systems of the Sector, near its northeastern edge. There is no stable jump point; reaching it will require a Transverse Jump.
 
 A destination marker appears.
 
@@ -1107,9 +1200,37 @@ shipTrophyGanEdenRingLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_
 shipTrophyGanEdenSurfaceLog,OpenInteractionDialog,GanEdenQuestCMD canRecoverSurfaceLog score:62000,"GanEdenQuestCMD prepareSurfaceLog
 SetShortcut ship_trophy_gan_eden_surface_log_leave ""ESCAPE""",,"0:ship_trophy_gan_eden_surface_log_recover:Recover the surviving record.
 100:ship_trophy_gan_eden_surface_log_leave:Leave the archive sealed.",One-time recoverable archive at each Gan Eden settlement site.
-shipTrophyGanEdenSurfaceLogRecover,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_recover,GanEdenQuestCMD recoverSurfaceLog,,0:ship_trophy_gan_eden_surface_log_continue:Continue.,Files the recovered record under Gan Eden Archives in Intel.
-shipTrophyGanEdenSurfaceLogContinue,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_continue,FireBest OpenInteractionDialog,,,Returns to the site interaction or offers the second Tree of Life record.
+shipTrophyGanEdenSurfaceLogRecover,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_recover,GanEdenQuestCMD showLogPage part_four 0,,0:ship_trophy_gan_eden_surface_log_page_two:Continue reading.,Opens Epitaph Part IV without filing it before the player reads it.
+shipTrophyGanEdenSurfaceLogPageTwo,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_page_two,GanEdenQuestCMD showLogPage part_four 1,,0:ship_trophy_gan_eden_surface_log_page_three:Continue reading.,Renders Epitaph Part IV page two.
+shipTrophyGanEdenSurfaceLogPageThree,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_page_three,GanEdenQuestCMD showLogPage part_four 2,,0:ship_trophy_gan_eden_surface_log_page_four:Continue reading.,Renders Epitaph Part IV page three.
+shipTrophyGanEdenSurfaceLogPageFour,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_page_four,GanEdenQuestCMD showLogPage part_four 3,,0:ship_trophy_gan_eden_surface_log_page_five:Continue reading.,Renders Epitaph Part IV page four.
+shipTrophyGanEdenSurfaceLogPageFive,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_page_five,GanEdenQuestCMD showLogPage part_four 4,,0:ship_trophy_gan_eden_surface_log_file:Close and file the recovered log.,Renders Epitaph Part IV's final page.
+shipTrophyGanEdenSurfaceLogFile,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_file,"GanEdenQuestCMD recoverSurfaceLog
+SetTextHighlightColors hColor hColor
+SetTextHighlights ""Epitaph — Part IV"" ""Gan Eden Archives""","[Recovered Epitaph — Part IV.]
+[Filed under Gan Eden Archives in Intel.]",0:ship_trophy_gan_eden_surface_log_continue:Continue.,Files the record only after its final page and displays a compact receipt.
+shipTrophyGanEdenSurfaceLogContinue,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_continue,"SetTextHighlightColors hColor hColor
+SetTextHighlights ""Space Elevator"" ""Cherubim and Lahat Haharev""","Isa closes the archive, but another alert is already unfolding across her slate.
+
+""One more active beacon."" She expands a second vector. It rises from the inner surface toward the Space Elevator. ""That has to be where he went after the Gate failed.""
+
+The two golden signatures return at the edge of the tactical display. This time they do not withdraw. Cherubim and Lahat Haharev turn together and begin closing on your fleet, as if they sensed your intent.
+
+[Objective updated: Defeat Cherubim and Lahat Haharev and reach the Space Elevator.]",0:ship_trophy_gan_eden_surface_log_return:Return to the fleet.,The fourth log reveals the final active beacon and unlocks the Golden Omega battle.
+shipTrophyGanEdenSurfaceLogReturn,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_return,FireBest OpenInteractionDialog,,,Returns to the Tree of Life interaction after the beacon scene.
 shipTrophyGanEdenSurfaceLogLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_surface_log_leave,DismissDialog,,,
+shipTrophyGanEdenSpaceElevatorRepelled,OpenInteractionDialog,GanEdenQuestCMD spaceElevatorRepels score:62000,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The Space Elevator rises from the inner surface into the atmosphere above Gan Eden. Its upper terminus remains dark, but the structure itself is intact.
+
+Your fleet begins a cautious approach.
+
+Two strange Omega Shards emerge from the atmospheric glare. They cross the approach corridor without hailing, their overlapping drive fields building a wall of impossible vectors ahead of you.
+
+Every attempt to advance turns into lateral acceleration. Dampers scream. Navigation gives ground before the fleet is thrown bodily into the elevator's outer superstructure.
+
+The Shards hold until you retreat, then disappear back into the curve of the world.",100:ship_trophy_gan_eden_epitaph_leave:Withdraw.,Before Part IV the unseen Golden Shards repel every approach to the Space Elevator.
+shipTrophyGanEdenSpaceElevatorGuarded,OpenInteractionDialog,GanEdenQuestCMD spaceElevatorGuarded score:62000,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The Space Elevator is exactly where the final beacon indicated. So are Cherubim and Lahat Haharev.
+
+The two golden Shards hold the approach corridor in mirrored formation. They make no attempt to communicate. Every projected route to the elevator passes through them.",100:ship_trophy_gan_eden_epitaph_leave:Break off and face the Shards in open space.,After Part IV the named Golden Omega physically seal the Space Elevator.
 shipTrophyGanEdenEpitaph,OpenInteractionDialog,GanEdenQuestCMD shouldShowEpitaph score:60000,GanEdenQuestCMD prepareEpitaph,"With Cherubim and Lahat Haharev gone, the elevator's interdiction field is silent.
 
 Isa's inherited suit transponder opens the outer doors. The lift descends through kilometers of dead infrastructure before stopping at a continuity-office archive sealed away from the inhabited surface.
@@ -1147,7 +1268,7 @@ Each waking period lasted several months, even years. I met engineers whose gran
 
 New systems joined the Gate network. Problems once considered impossible became trivial. I believed I was watching humanity mature, but I did not yet understand what was being lost.
 
-When both hypershunts became operational, the Directorate approved the project they had been built to support.
+When two hypershunts became operational, the Directorate approved the project they had been built to support.
 
 I proposed the name Gan Eden, after the sacred garden of God.
 
@@ -1207,6 +1328,8 @@ During another waking period, I met a woman who had spent years moving between p
 
 Years blurred together. I can't tell if it was the repeated cryosuspensions or my deteriorating mind, but at some point I couldn't distinguish faces. I even forgot Rebecca's face.
 
+I remembered the facts of her: the scar at her wrist, the hymn she hummed while she worked, the way she squeezed my hand when she was frightened. But whenever I tried to assemble those memories into a face, there was only an absence where my wife had been.
+
 Rebecca.
 
 You understood this before I did. You once told me that the Domain was the greatest work of man that had ever been made, and that was why it was so grotesque.
@@ -1219,7 +1342,13 @@ I said that human beings were not obsolete machinery. I said that a civilization
 
 People began gathering to hear me. The gatherings became demonstrations. Security forces were deployed. People were injured, then killed.
 
-I continued speaking, but I don't know why. With my mouth I drove lambs to the slaughter, and with my hands and my work I forged the knives the Domain of Man plunged into their necks. Who was I to speak out against the great Whore of Babylon whilst I was her greatest slave?
+I continued speaking, but I don't know why. With my mouth I drove lambs to the slaughter, and with my hands and my work I forged the knives the Domain of Man plunged into their necks.
+
+Who was I?
+
+No one. I was a worthless hypocrite.
+
+I spoke out against the great Whore of Babylon whilst I remained her greatest slave.
 
 Nothing changed.",0:ship_trophy_gan_eden_epitaph_four:Continue to Part IV.,Isaac records his break with the Domain.
 shipTrophyGanEdenEpitaphFour,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_four,GanEdenQuestCMD prepareEpitaphLog part_four,"RECOVERED PERSONAL LOG
@@ -1261,7 +1390,13 @@ Sol was gone. Telepylus was gone. There was no route back.
 I intended to die in Gan Eden.
 
 Instead, I was left alive inside it.",0:ship_trophy_gan_eden_epitaph_five:Continue to the final entry.,Isaac describes the Collapse and the shattering of Penelope's Star's ring.
-shipTrophyGanEdenEpitaphFinalDynamic,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_five,GanEdenQuestCMD showEpitaphLog final,,0:ship_trophy_gan_eden_epitaph_stay:Close the log and stay with Isa.,Displays the current Final entry directly from dialogue/Logs.ink.
+shipTrophyGanEdenEpitaphFinalDynamic,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_five,"GanEdenQuestCMD startFinalLogMusic
+GanEdenQuestCMD showLogPage final 0",,0:ship_trophy_gan_eden_epitaph_final_page_two:Continue reading.,Starts Isa's final-log music and displays the first paced page of the current Final entry from dialogue/Logs.ink.
+shipTrophyGanEdenEpitaphFinalPageTwo,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_final_page_two,GanEdenQuestCMD showLogPage final 1,,0:ship_trophy_gan_eden_epitaph_final_page_three:Continue reading.,Renders Epitaph Final page two.
+shipTrophyGanEdenEpitaphFinalPageThree,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_final_page_three,GanEdenQuestCMD showLogPage final 2,,0:ship_trophy_gan_eden_epitaph_final_page_four:Continue reading.,Renders Epitaph Final page three.
+shipTrophyGanEdenEpitaphFinalPageFour,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_final_page_four,GanEdenQuestCMD showLogPage final 3,,0:ship_trophy_gan_eden_epitaph_final_page_five:Continue reading.,Renders Epitaph Final page four.
+shipTrophyGanEdenEpitaphFinalPageFive,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_final_page_five,GanEdenQuestCMD showLogPage final 4,,0:ship_trophy_gan_eden_epitaph_final_page_six:Continue reading.,Renders Epitaph Final page five.
+shipTrophyGanEdenEpitaphFinalPageSix,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_final_page_six,GanEdenQuestCMD showLogPage final 5,,0:ship_trophy_gan_eden_epitaph_stay:Close the log and stay with Isa.,Renders Epitaph Final's closing page.
 shipTrophyGanEdenEpitaphFive,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_five_legacy_unused,GanEdenQuestCMD prepareEpitaphLog final,"RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
 FILE: EPITAPH — FINAL
@@ -1323,12 +1458,28 @@ shipTrophyGanEdenEpitaphStay,DialogOptionSelected,$option == ship_trophy_gan_ede
 GanEdenQuestCMD markEpitaph
 SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The final log ends.
 
+[Recovered Epitaph — Final.]
+[Filed under Gan Eden Archives in Intel.]
+
 The elevator observation deck looks out across the impossible inward horizon. Isa says nothing for a long time.
 
 Then she begins telling Isaac Thomas Leicester about the Shattered Ring: the wreck-farms, the revival ward, the terrible food, and every impossible ship that carried her farther than he could have imagined.
 
-No answer comes from the empty world. This time, she does not seem to need one.",0:ship_trophy_gan_eden_epitaph_leave:Return to the fleet.,The final Space Elevator record completes Isa's personal investigation.
-shipTrophyGanEdenEpitaphLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_leave,DismissDialog,,,
+No answer comes from the empty world. This time, she does not seem to need one.",0:ship_trophy_gan_eden_epitaph_talk:Talk with Isa about what happened.,The final Space Elevator record completes Isa's personal investigation.
+shipTrophyGanEdenEpitaphTalk,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_talk,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","You remain beside Isa at the observation glass.
+
+""I kept thinking I'd reach the end and find out who I was supposed to be,"" she says. ""Leah. Isaac's daughter. The Continuity Office's last loose end.""
+
+She looks down at her grease-stained hands.
+
+""But I already knew who I was. I just didn't know I was allowed to keep her.""
+
+Below, the Tree of Life turns slowly beneath the inward sun.
+
+""Gan Eden gets a future,"" Isa says. ""So do I.""
+
+[You can speak with Isa about each recovered log, the Golden Omega, and Gan Eden's future through her contact menu.]",0:ship_trophy_gan_eden_epitaph_leave:Return to the fleet.,Gives the finale a direct emotional debrief and points to the persistent topic menu.
+shipTrophyGanEdenEpitaphLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_leave,DismissDialog,,,Returns to the campaign; final-log music continues until the fleet leaves Gan Eden.
 shipTrophyGanEdenEpitaphNeedsIsa,OpenInteractionDialog,GanEdenQuestCMD epitaphNeedsIsa score:55000,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The elevator's continuity archive recognizes Isa Leicester's inherited suit transponder, but she is not present to answer its identity challenge. You will need to return with Isa in the fleet.",0:ship_trophy_gan_eden_epitaph_leave:Leave.,Prevents resolving Isa's family story without Isa.
 shipTrophyGanEdenEpitaphInspected,OpenInteractionDialog,GanEdenQuestCMD epitaphInspected score:55000,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The silent Space Elevator remains open above Gan Eden. Its final Leicester record is secure in the fleet archives.",0:ship_trophy_gan_eden_epitaph_leave:Leave.,Repeat interaction after the final archive scene.
 shipTrophyIsaFactionVisitHegemony,OpenInteractionDialog,IsaFactionVisitCMD shouldShow hegemony score:10000,"IsaFactionVisitCMD prepare hegemony
@@ -1893,3 +2044,12 @@ Isa takes the opportunity to finally get a word in. ""Accuracy decreases in... i
 
 Tech looks like they might say something, but no words come. Isa fills the silence again. ""Practically, it could only target reasonably nearby hostiles.""",ShroudedHML_talk5:Continue,Isa replaces Engineering in Shrouded Lens range dialogue.
 shipTrophyGanEdenSurfaceSiteCanColonize,PrintSystemCutOffText,$market.shipTrophyGanEdenSurfaceSite score:100000,,"Although Gan Eden is sealed from hyperspace, this fixed shell site is connected to self-contained atmosphere, power, and transit infrastructure. Establishing a colony here remains possible.",,Allows colonization of fixed Gan Eden surface sites while the prototype system is isolated.
+shipTrophyGanEdenSurfaceSiteIgnoresGuardians,PrintNearbySurveyHostilesTextIfSo,$market.shipTrophyGanEdenSurfaceSite score:100000,,,,The nearby Golden Omega fleet does not disable surveying or colonization at Gan Eden surface sites; only the Space Elevator is victory-gated.
+shipTrophyDModVendorContactOption,PopulateOptions,$id == ship_trophy_ring_dmod_vendor,,,40:ship_trophy_dmod_vendor_open:Commission deliberate D-mod installation.,Adds the Shattered Ring nanoforge engineer's custom service to their comm-directory conversation.
+shipTrophyDModVendorOpen,DialogOptionSelected,$option == ship_trophy_dmod_vendor_open,ShatteredRingDModVendorCMD open,,,Opens the deliberate D-mod installation service.
+shipTrophyDModVendorPickShip,DialogOptionSelected,$option == ship_trophy_dmod_vendor_pick_ship,ShatteredRingDModVendorCMD pickShip,,,Opens the eligible fleet-member picker.
+shipTrophyDModVendorBack,DialogOptionSelected,$option == ship_trophy_dmod_vendor_back,ShatteredRingDModVendorCMD back,,,Returns from the D-mod list to ship selection.
+shipTrophyDModVendorPrevious,DialogOptionSelected,$option == ship_trophy_dmod_vendor_prev,ShatteredRingDModVendorCMD previousPage,,,Shows the previous page of eligible D-mods.
+shipTrophyDModVendorNext,DialogOptionSelected,$option == ship_trophy_dmod_vendor_next,ShatteredRingDModVendorCMD nextPage,,,Shows the next page of eligible D-mods.
+shipTrophyDModVendorInstall,DialogOptionSelected,ShatteredRingDModVendorCMD isInstallOption,ShatteredRingDModVendorCMD installSelected,,,Installs the selected D-mod; the dynamic option itself spends one story point through Starsector's story-option handling.
+shipTrophyDModVendorLeave,DialogOptionSelected,$option == ship_trophy_dmod_vendor_leave,EndConversation,You leave the engineer to the wreck-farms.,,Closes the Shattered Ring D-mod vendor conversation.

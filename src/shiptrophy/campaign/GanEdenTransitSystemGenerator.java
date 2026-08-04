@@ -1,15 +1,17 @@
 package shiptrophy.campaign;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
+import com.fs.starfarer.api.campaign.NascentGravityWellAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 
-/** Creates the solitary power-transit Gate on the upper rim of the Abyss. */
+/** Creates the solitary power-transit Gate near the Sector's northeast edge. */
 public final class GanEdenTransitSystemGenerator {
     public static final String SYSTEM_ID =
             "ship_trophy_gan_eden_power_transit_system";
@@ -17,14 +19,19 @@ public final class GanEdenTransitSystemGenerator {
             "POWER TRANSIT GATE - GAN EDEN";
     public static final String JUMP_ID =
             "ship_trophy_gan_eden_power_transit_jump";
+    public static final String GRAVITY_WELL_ID =
+            "ship_trophy_gan_eden_power_transit_well";
 
-    // The Orion-Perseus Abyss label is centered near (-65000, -47000).
-    // This sits on its upper-right/northeastern boundary while remaining well
-    // outside the ordinary constellation field.
-    private static final float HYPERSPACE_X = -44000f;
-    private static final float HYPERSPACE_Y = -30000f;
+    // Core hyperspace is about 164k by 104k. This leaves the system barely
+    // inside its northeast edge and far outside the ordinary constellation
+    // field, while remaining a valid Transverse Jump destination.
+    private static final float HYPERSPACE_X = 70000f;
+    private static final float HYPERSPACE_Y = 42000f;
     private static final String JUMP_GENERATED_KEY =
             "$shipTrophyGanEdenPowerTransitJumpGenerated";
+    private static final String ACCESS_VERSION_KEY =
+            "$shipTrophyGanEdenPowerTransitAccessVersion";
+    private static final int ACCESS_VERSION = 2;
     private static final String DAMAGED_HYPERSHUNT_TYPE =
             "ship_trophy_damaged_coronal_hypershunt";
     private static final String DAMAGED_GATE_HAULER_TYPE =
@@ -67,16 +74,22 @@ public final class GanEdenTransitSystemGenerator {
         if (system == null) {
             system = Global.getSector().createStarSystem(SYSTEM_NAME);
             if (system == null) return null;
-            system.setName(SYSTEM_NAME);
-            system.setBaseName(SYSTEM_NAME);
-            system.getLocation().set(HYPERSPACE_X, HYPERSPACE_Y);
-            system.setLightColor(new Color(120, 130, 145, 255));
-            system.setMaxRadiusInHyperspace(350f);
-            system.addTag(Tags.THEME_SPECIAL);
-            system.addTag(Tags.THEME_UNSAFE);
-            system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
-            system.initNonStarCenter().setFixedLocation(0f, 0f);
         }
+
+        // Apply placement and access policy on every load so old saves move
+        // cleanly from the Abyss and lose their obsolete jump point.
+        system.setName(SYSTEM_NAME);
+        system.setBaseName(SYSTEM_NAME);
+        system.getLocation().set(HYPERSPACE_X, HYPERSPACE_Y);
+        system.setLightColor(new Color(120, 130, 145, 255));
+        system.setMaxRadiusInHyperspace(350f);
+        system.setDoNotShowIntelFromThisLocationOnMap(false);
+        system.setProcgen(false);
+        system.addTag(Tags.THEME_SPECIAL);
+        system.addTag(Tags.THEME_UNSAFE);
+        system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+        system.removeTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
+        system.removeTag(Tags.THEME_HIDDEN);
 
         SectorEntityToken center = system.getCenter();
         if (center == null) {
@@ -107,7 +120,7 @@ public final class GanEdenTransitSystemGenerator {
         }
 
         ensureMegastructureGraveyard(system);
-        ensureJumpPoint(system);
+        ensureTransverseOnlyAccess(system);
         return gate;
     }
 
@@ -147,26 +160,79 @@ public final class GanEdenTransitSystemGenerator {
         }
     }
 
-    private static void ensureJumpPoint(StarSystemAPI system) {
-        JumpPointAPI jump = null;
+    /**
+     * Removes all ordinary entrances, then rebuilds only the hidden anchor
+     * Transverse Jump uses to enter a system without a stable jump point.
+     */
+    private static void ensureTransverseOnlyAccess(StarSystemAPI system) {
+        boolean rebuildAnchor = system.getMemoryWithoutUpdate().getInt(
+                ACCESS_VERSION_KEY) < ACCESS_VERSION;
         SectorEntityToken existing = system.getEntityById(JUMP_ID);
-        if (existing instanceof JumpPointAPI) {
-            jump = (JumpPointAPI) existing;
+        if (existing != null) {
+            system.removeEntity(existing);
+            rebuildAnchor = true;
         }
-        if (jump == null) {
-            jump = Global.getFactory().createJumpPoint(
-                    JUMP_ID, "Power Transit Anchorage");
-            jump.setFixedLocation(0f, -2600f);
-            jump.setStandardWormholeToHyperspaceVisual();
-            jump.setDiscoverable(null);
-            jump.setSensorProfile(null);
-            system.addEntity(jump);
+
+        if (system.getAutogeneratedJumpPointsInHyper() != null
+                && !system.getAutogeneratedJumpPointsInHyper().isEmpty()) {
+            for (JumpPointAPI jump : new ArrayList<JumpPointAPI>(
+                    system.getAutogeneratedJumpPointsInHyper())) {
+                if (jump != null && jump.getContainingLocation() != null) {
+                    jump.getContainingLocation().removeEntity(jump);
+                }
+            }
+            system.getAutogeneratedJumpPointsInHyper().clear();
+            rebuildAnchor = true;
         }
-        if (!system.getMemoryWithoutUpdate().getBoolean(
-                JUMP_GENERATED_KEY)) {
-            system.autogenerateHyperspaceJumpPoints(false, false);
+        system.getMemoryWithoutUpdate().unset(JUMP_GENERATED_KEY);
+
+        SectorEntityToken anchor = system.getHyperspaceAnchor();
+        if (anchor == null) {
+            rebuildAnchor = true;
+        }
+        if (rebuildAnchor) {
+            // Recreate the anchor at the system's new coordinates. This does
+            // not create a stable jump point, but permits Transverse Jump.
+            if (anchor != null && anchor.getContainingLocation() != null) {
+                anchor.getContainingLocation().removeEntity(anchor);
+            }
+            system.setHyperspaceAnchor(null);
+            system.generateAnchorIfNeeded();
             system.getMemoryWithoutUpdate().set(
-                    JUMP_GENERATED_KEY, true);
+                    ACCESS_VERSION_KEY, ACCESS_VERSION);
+        }
+
+        ensureNascentGravityWell(system, rebuildAnchor);
+    }
+
+    /** Adds the native purple haze used by Transverse-Jump-only systems. */
+    private static void ensureNascentGravityWell(
+            StarSystemAPI system, boolean realign) {
+        SectorEntityToken gate = system.getEntityById(
+                GanEdenQuestManager.EXTERNAL_RING_ID);
+        if (gate == null) return;
+
+        SectorEntityToken existing = Global.getSector().getEntityById(
+                GRAVITY_WELL_ID);
+        NascentGravityWellAPI well = existing instanceof NascentGravityWellAPI
+                ? (NascentGravityWellAPI) existing
+                : null;
+        if (existing != null && (well == null || well.getTarget() != gate)) {
+            if (existing.getContainingLocation() != null) {
+                existing.getContainingLocation().removeEntity(existing);
+            }
+            well = null;
+        }
+
+        if (well == null) {
+            well = Global.getSector().createNascentGravityWell(gate, 50f);
+            well.setId(GRAVITY_WELL_ID);
+            Global.getSector().getHyperspace().addEntity(well);
+            realign = true;
+        }
+        if (realign) {
+            well.autoUpdateHyperLocationBasedOnInSystemEntityAtRadius(
+                    gate, 0f);
         }
     }
 

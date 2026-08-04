@@ -1,0 +1,22 @@
+{
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": [],
+    "removeBuiltInWeapons": [],
+    "builtInWeapons": {},
+    "baseHullId": "manticore",
+    "skinHullId": "ship_trophy_mk4_pirate_manticore",
+    "hullName": "Manticore (P)",
+    "descriptionId": "manticore",
+    "descriptionPrefix": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.",
+    "tags": [
+        "hide_in_codex"
+    ],
+    "tech": "Pirate",
+    "builtInMods": [
+        "unstable_injector",
+        "heavyarmor"
+    ],
+    "spriteName": "graphics/ships/mk4/pirate/ship_trophy_mk4_pirate_manticore.png"
+}

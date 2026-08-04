@@ -6,13 +6,13 @@
 // Logs.ink. Run tools/build_gan_eden_master.ps1 after changing those files.
 //
 // Runtime order:
-// 1. Complete At the Gates (or use Nexerelin's Galatia-story skip), recruit
-//    Isa as an officer, and return with her to the Shattered Ring.
+// 1. Recruit Isa as an officer and return with her to the Shattered Ring.
 // 2. Recover Personal Log 1765 from the identification wafer in Isa's suit.
 // 3. Investigate both Coronal Hypershunts and recover Epitaph Parts II-III.
-// 4. Enter POWER TRANSIT GATE - GAN EDEN and recover Part IV at Tree of Life.
-// 5. Defeat Cherubim and Lahat Haharev, opening Gan Eden to hyperspace.
-// 6. Approach the Space Elevator with Isa and recover Epitaph Final.
+// 4. Defeat the Ivory Custodians at POWER TRANSIT GATE - GAN EDEN.
+// 5. Enter Gan Eden and recover Part IV at Tree of Life.
+// 6. Defeat Cherubim and Lahat Haharev, releasing Gan Eden's districts.
+// 7. Approach the Space Elevator with Isa and recover Epitaph Final.
 
 VAR hypershunts_reactivated = 0
 VAR gan_eden_revealed = false
@@ -34,6 +34,7 @@ Complete Gan Eden quest master
 + [Review the Golden Omega confrontation.] -> master_golden_omega
 + [Review the post-battle opening of Gan Eden.] -> master_post_battle
 + [Review the Space Elevator ending.] -> master_space_elevator
++ [Review Isa's post-quest conversations.] -> master_postquest_talk
 + [Archive: Personal Log 1765 / Part I.] -> one
 + [Archive: Epitaph Part II.] -> two
 + [Archive: Epitaph Part III.] -> three
@@ -72,6 +73,10 @@ Your navigator glances at the approach plot.
 
 “That traffic beacon’s been wrong since I was twelve.”
 
++ [Continue through the approach.] -> station_shattered_ring_approach
+
+=== station_shattered_ring_approach ===
+
 As if summoned by the insult, the comm channel crackles.
 
 “Approaching fleet, inbound bearing zero-three-five, elevation minus one-two. Reduce velocity and prepare to receive docking procedures—”
@@ -103,6 +108,10 @@ Isa points a finger at you.
 
 “Shut up.”
 
+-> station_shattered_ring_docking_impact
+
+=== station_shattered_ring_docking_impact ===
+
 Bay Fourteen accepts your approaching fleet with a tremendous metallic cacophony.
 
 The entire docking tube shudders as the clamps engage. Something heavy strikes the outer hull, tumbles away, and disappears beneath the berth.
@@ -115,8 +124,7 @@ Everyone on your bridge exchanges looks. The docking tube groans again. Your fla
 
 “Even more perfect.”
 
-By the time you reach the main concourse, word has spread.
-+ [Continue.] -> station_shattered_ring_docking
++ [Continue into the concourse.] -> station_shattered_ring_docking
 
 === station_shattered_ring_familiar ===
 
@@ -126,23 +134,11 @@ Isa studies the approaching station.
 
 “Mostly in Arc Two. Arc One had the good machine shops, but their gravity used to cut out whenever the ore processor started.”
 
-Bay Fourteen accepts your approaching fleet with a tremendous metallic cacophony.
-
-The entire docking tube shudders as the clamps engage. Something heavy strikes the outer hull, tumbles away, and disappears beneath the berth.
-
-Isa waits for the noise to stop.
-
-“Perfect.”
-
-Everyone on your bridge exchanges looks. The docking tube groans again. Your flagship shifts in its berth with a tremendous crunch.
-
-“Even more perfect.”
-
-By the time you reach the main concourse, word has spread.
-
-+ [Continue.] ->station_shattered_ring_docking
+-> station_shattered_ring_docking_impact
 
 === station_shattered_ring_docking ===
+
+By the time you reach the main concourse, word has spread.
 
 Dockworkers call to Isa from the overhead gantries. A food vendor reaches across his counter to press a foil-wrapped pastry into her hand. Someone shouts that the recycler on Level Six is making the drinking water taste metallic again.
 
@@ -197,6 +193,10 @@ The people passing through the concourse give the three of you a wide berth. Fin
 
 “Thanks.”
 
++ [Continue.] -> station_shattered_ring_foreman_detail
+
+=== station_shattered_ring_foreman_detail ===
+
 The foreman nods. Before leaving, he looks toward you.
 
 “She was wrapped in that when we found her. I used it as a changing mat for the first few weeks, too.”
@@ -209,8 +209,21 @@ Isa throws a glove at the man.
 
 The old man laughs, then disappears into the crowd.
 
-+ [“We can open it somewhere private.”] -> station_shattered_ring_workshop
-+ [Say nothing.] -> station_shattered_ring_workshop
++ [Let Isa take her inheritance.] -> station_shattered_ring_inheritance
+
+=== station_shattered_ring_inheritance ===
+
+Isa closes the case and calls for one of your crew to transfer it to her old workshop.
+
+[Received: Isa's inheritance.]
+
++ [Return to the Shattered Ring concourse.] -> station_shattered_ring_colony_menu
+
+=== station_shattered_ring_colony_menu ===
+
+SHATTERED RING COLONY MENU
+
++ [Investigate Isa's suit in her workshop.] -> station_shattered_ring_workshop
 
 === station_shattered_ring_workshop ===
 
@@ -227,6 +240,10 @@ At last, Isa opens an abandoned machine shop.
 Several names have been carved into the pressure door. Hers is among them, scratched low enough that whoever wrote it must have been very young.
 
 ISA LESESTER IS DA BEST.
+
++ [Open the case.] -> station_shattered_ring_workshop_case
+
+=== station_shattered_ring_workshop_case ===
 
 She sets the case on an old workbench. Inside is a child-sized bundle of pressure fabric, folded carefully beneath a transparent preservation sheet.
 
@@ -250,7 +267,7 @@ Isa gives you a smile.
 
 “I went by the name on the label until I was old enough to realize ‘Isaac’ was a man’s name.”
 
-+ [“Cryosuspension that young is almost unheard of. Standard protocols prohibit it below eight cycles.”] -> station_shattered_ring_scan
++ [“Cryosuspension that young is unheard of.”] -> station_shattered_ring_scan
 
 === station_shattered_ring_scan ===
 
@@ -288,9 +305,9 @@ You walk out with your bodyguards, leaving Isa to it.
 
 Outside the workshop, Shattered Ring creaks and groans around you. Pumps cycle behind the walls. Somewhere far below, a cargo lift begins its slow ascent through the arc.
 
-You had finally cornered Yvan in your chess match. It was going to be weeks before you rolled a Chess960 setup that good again.
-
 After a few minutes, Isa calls from the workshop.
+
+You had finally cornered Yvan in your chess match. It was going to be weeks before you rolled a Chess960 setup that good again.
 
 + [Continue.] -> station_shattered_id
 
@@ -327,6 +344,10 @@ The Domain therefore established a Continuity Office.
 
 Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
 
++ [Continue reading.] -> station_shattered_id_page_two
+
+=== station_shattered_id_page_two ===
+
 I was elected to lead it.
 
 I would sleep through centuries of construction, wake for design reviews, inspect the work, and approve the next phase. Each waking lasted months, sometimes years.
@@ -337,7 +358,11 @@ The engineering difficulties were substantial. We lost dozens of assembly swarms
 
 I met engineers whose grandparents had worked under people I remembered. I approved sweeping changes to systems designed by men and women who had died while I slept, sometimes erasing an entire lifetime’s work with a single decision.
 
-Humanity marched on as I slept. Problems once considered impossible became trivial. When both hypershunts became operational, the Directorate approved the work they had been built to support.
+Humanity marched on as I slept. Problems once considered impossible became trivial. When two hypershunts became operational, the Directorate approved the work they had been built to support.
+
++ [Continue reading.] -> station_shattered_id_page_three
+
+=== station_shattered_id_page_three ===
 
 It was to be the Domain’s first enclosed—
 
@@ -354,7 +379,7 @@ I believed that the ability to construct such a wonder proved that the Domain de
 
 I was wrong.
 
--> one_isa
++ [Close the log.] -> one_isa
 
 === one_isa ===
 
@@ -373,6 +398,13 @@ Then back at the identification wafer.
 She scrolls through the recovered file again.
 
 “Director of Engineering. Architect of the Continuity Office. Hypershunts.”
+
++ [Continue.] -> one_receipt
+
+=== one_receipt ===
+
+[Recovered Personal Log 1765.]
+[Filed under Gan Eden Archives in Intel.]
 
 // Replace these conditions with the actual runtime flags.
 + {hypershunts_reactivated > 0}
@@ -414,6 +446,10 @@ She taps the author field.
 “If there are any records left of him, that’s where they’ll be.”
 
 Isa finishes copying the surviving log and INFOSEC failures to her slate.
+
++ [Continue.] -> station_shattered_ring_hypershunts_request
+
+=== station_shattered_ring_hypershunts_request ===
 
 For a while, she says nothing. The old suit remains spread across the workbench between you, Isaac Leicester’s name blackened but still legible beneath the collar. Then she closes the file.
 
@@ -710,6 +746,10 @@ I had already been considered for the proposed Continuity Office. The appointmen
 
 Before Rebecca’s death, I had intended to refuse.
 
++ [Continue reading.] -> log_two_page_two
+
+=== log_two_page_two ===
+
 With her gone, I thought I had no more reason to live in the present.
 
 I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
@@ -721,6 +761,10 @@ That was the arrangement I made with myself.
 I visited my daughter during every waking.
 
 I inspected her chamber. I reviewed the medical reports. I repeated tests the technicians had already completed.
+
++ [Continue reading.] -> log_two_page_three
+
+=== log_two_page_three ===
 
 She remained healthy and unchanged while centuries passed beyond the glass.
 
@@ -771,11 +815,15 @@ Isa grips the edge of her slate.
 
 She shakes her head.
 
-“But that pod was opened centuries after this was recorded. I don’t know what happened between.”
+“But my pod was opened centuries after this was recorded. I don’t know what happened between.”
 
 Her eyes return to the author field.
 
-“I don’t know why he put me there.”
+“I don’t know why he put me there. Did he just abandon me? Put me to sleep and walk away?”
+
+She stares at the carrier trace.
+
+“Or was he trying to come back?”
 
 -> log_two_routing
 
@@ -816,6 +864,10 @@ It had become incapable of seeing a human being standing directly before it.
 
 I met a Domain Armada veteran cleaning industrial residue from a station floor. During one of the Domain’s thousands of civil wars, radiation from a reactor leak had destroyed half his face.
 
++ [Continue reading.] -> log_three_page_two
+
+=== log_three_page_two ===
+
 His pension had been suspended because the archive containing his service record no longer existed.
 
 I offered to help.
@@ -832,19 +884,29 @@ A burden.
 
 Years blurred together. I do not know whether it was the repeated cryosuspensions or the deterioration of my own mind, but eventually I could no longer distinguish faces.
 
++ [Continue reading.] -> log_three_page_three
+
+=== log_three_page_three ===
+
 I forgot the faces of people I had worked beside.
 
 I even forgot Rebecca’s face.
 
+I remembered the facts of her: the scar at her wrist, the hymn she hummed while she worked, the way she squeezed my hand when she was frightened. But whenever I tried to assemble those memories into a face, there was only an absence where my wife had been.
+
 I began speaking publicly.
 
-At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established a commissions and councils and legislative bodys.
+At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established commissions, councils, and legislative bodies.
 
 I kept drifting through the centuries. Nothing changed.
 
 I began speaking through my faith.
 
 I said that human beings were not obsolete machinery.
+
++ [Continue reading.] -> log_three_page_four
+
+=== log_three_page_four ===
 
 I said that a civilization should be judged by those it possessed the power to help and chose not to.
 
@@ -862,7 +924,13 @@ With my mouth, I drove lambs toward the slaughter.
 
 With my hands and my work, I forged the knives the Domain plunged into their necks.
 
-Who was I to speak against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect?
+Who was I?
+
+No one.
+
+I was a worthless hypocrite.
+
+I spoke against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect.
 
 -> log_three_isa
 
@@ -897,7 +965,7 @@ Isa rubs at one eye. She looks back at the frozen image of Isaac’s authorizati
 
 “He spent all that time building a future for his daughter, and by the end he couldn’t even remember the woman he was building it for.”
 
--> log_three_isa_continue
++ [Continue.] -> log_three_isa_continue
 
 
 === log_three_isa_tried ===
@@ -912,7 +980,7 @@ A pause.
 
 “Maybe he didn’t know either.”
 
--> log_three_isa_continue
++ [Continue.] -> log_three_isa_continue
 
 === log_three_isa_continue ===
 
@@ -952,20 +1020,60 @@ POWER TRANSIT GATE - GAN EDEN hangs alone at the center of an empty, starless sy
 
 Around it drifts a silent graveyard of damaged Coronal Hypershunts and ruined Gate Haulers. None answer the fleet's approach.
 
+Then cool-white drive signatures ignite among the wrecks. An Ivory Remnant fleet unfolds from the graveyard and accelerates to intercept.
+
++ [Meet the Ivory interception.] -> master_ivory_ambush
++ [Leave.] -> END
+
+
+=== master_ivory_ambush ===
+// Runtime encounter: GanEdenTransitAmbushManager
+
+The Ivory Custodians carry the familiar geometry of Remnant warships beneath pale ceramic superstructures. Blue-green light shows through the white reconstruction where the old machines remain underneath.
+
+They issue no demand and accept no hail. Their formation closes around the active Gate.
+
++ [Destroy the Custodians.] -> master_power_transit_gate_cleared
++ [Retreat.] -> END
+
+
+=== master_power_transit_gate_cleared ===
+
+The last Ivory signal breaks apart. Surviving contacts vanish with it, leaving the approach to the Power Transit Gate clear.
+
 + [Enter the Power Transit Gate.] -> master_gan_eden_arrival
 + [Leave.] -> END
 
 
 === master_gan_eden_arrival ===
-// Runtime transition: GanEdenQuestCMD transitIn
+// Runtime cinematic: GanEdenArrivalDialogPlugin
 
-The Transit Ring releases the fleet beneath Gan Eden's impossible inward horizon: a living world wrapped around a warm central sun. Four dormant settlement districts remain anchored to the shell. The Tree of Life still carries a surviving Leicester continuity record.
+The Power Transit Gate closes behind the fleet. Gan Eden curves above and around you: oceans, mountain ranges, and cloud systems climbing the inside of an impossible world.
 
-Beyond it, the Gan Eden Space Elevator remains sealed behind an Omega interdiction field.
+Isa's slate erupts in warnings. She silences them one by one, then freezes over a surviving emergency channel.
+
+"Active distress beacon," she says. Her voice rises with excitement before catching on the last word. "Human format. It's pointing to a place called the Tree of Life."
+
+She sends the coordinates to navigation, smiles, and immediately checks them again. "Someone might still be here. Or something they left for us."
 
 + [Approach the Tree of Life.] -> master_tree_of_life
-+ [Review the Golden Omega guardians.] -> master_golden_omega
++ [Test the approach to the Space Elevator.] -> master_elevator_repelled
 + [Return through the Eden Transit Ring.] -> master_internal_ring
+
+
+=== master_elevator_repelled ===
+
+The Space Elevator rises from the inner surface into the atmosphere above Gan Eden. Its upper terminus remains dark, but the structure itself is intact.
+
+Your fleet begins a cautious approach.
+
+Two strange Omega Shards emerge from the atmospheric glare. They cross the approach corridor without hailing, their overlapping drive fields building a wall of impossible vectors ahead of you.
+
+Every attempt to advance turns into lateral acceleration. Dampers scream. Navigation gives ground before the fleet is thrown bodily into the elevator's outer superstructure.
+
+The Shards hold until you retreat, then disappear back into the curve of the world.
+
++ [Withdraw and follow the distress beacon.] -> master_tree_of_life
 
 
 === master_internal_ring ===
@@ -983,11 +1091,29 @@ The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its 
 A sealed municipal archive beneath Tree of Life answers the Leicester continuity credentials. One surviving personal record is available for recovery.
 
 + [Recover Epitaph - Part IV.] -> four
++ [Review what follows the recovered log.] -> master_tree_beacon
 + [Leave the archive sealed.] -> master_gan_eden_arrival
+
+
+=== master_tree_beacon ===
+
+Isa closes the archive, but another alert is already unfolding across her slate.
+
+"One more active beacon." She expands a second vector. It rises from the inner surface toward the Space Elevator. "That has to be where he went after the Gate failed."
+
+The two golden signatures return at the edge of the tactical display. This time they do not withdraw. Cherubim and Lahat Haharev turn together and begin closing on the fleet, as if they sensed your intent.
+
+[Objective updated: Defeat Cherubim and Lahat Haharev and reach the Space Elevator.]
+
++ [Face the Golden Omega.] -> master_golden_omega
 
 
 === master_golden_omega ===
 // Runtime encounter: GanEdenAmbushScript and GoldenFractalCascade
+
+The scan does not come from one direction. It blooms across every active sensor at once, measuring the fleet from two mutually impossible angles.
+
+Cherubim and Lahat Haharev pivot in exact counterpoint. No hail follows. Your own identification packet returns instead, stripped of its header and divided into two mirrored copies.
 
 Two golden Omega Shards hold the approach to the Space Elevator: Cherubim and Lahat Haharev. Neither they nor any of their descendants will retreat.
 
@@ -1004,7 +1130,7 @@ Defeating only one named Shard is not enough. The survivor reconstructs its coun
 
 With Cherubim and Lahat Haharev destroyed together, the Space Elevator's interdiction field falls silent.
 
-A conventional hyperspace jump point stabilizes beside Gan Eden. The four settlement districts are released from their sealed economy groups and can participate in ordinary Sector trade.
+Gan Eden remains parked beyond charted hyperspace, with the Power Transit Gate as its only route. The four settlement districts are released from their sealed economy groups and can participate in ordinary Sector trade.
 
 The victory is not permanent. Every ninety days, the Golden Shards reconstruct themselves with a larger escort of ivory Remnant hulls, escalating until the escort is roughly a full Ordo. Later victories reset that cycle without sealing Gan Eden again.
 
@@ -1014,6 +1140,9 @@ The victory is not permanent. Every ninety days, the Golden Shards reconstruct t
 
 === master_space_elevator ===
 // Runtime interaction: shipTrophyGanEdenEpitaph
+// Runtime visual: Hall-completion-style letterbox showing Isa at the Space Elevator archive.
+// Runtime music: begins with Epitaph Final and continues until the fleet leaves Gan Eden, yielding to combat when necessary.
+// Return-visit music: cycles Lonesome Journey, the complete Log V cue, and æ™‚ãŒçµ‚ã‚ã‚Šã«å°Žã„ã¦; combat temporarily takes priority.
 
 With Cherubim and Lahat Haharev gone, the elevator's interdiction field is silent.
 
@@ -1038,7 +1167,104 @@ Then she begins telling Isaac Thomas Leicester about the Shattered Ring: the wre
 
 No answer comes from the empty world. This time, she does not seem to need one.
 
++ [Talk with Isa about what happened.] -> master_epilogue_talk
+
+
+=== master_epilogue_talk ===
+
+You remain beside Isa at the observation glass.
+
+"I kept thinking I'd reach the end and find out who I was supposed to be," she says. "Leah. Isaac's daughter. The Continuity Office's last loose end."
+
+She looks down at her grease-stained hands.
+
+"But I already knew who I was. I just didn't know I was allowed to keep her."
+
+Below, the Tree of Life turns slowly beneath the inward sun.
+
+"Gan Eden gets a future," Isa says. "So do I."
+
++ [Review the conversations available afterward.] -> master_postquest_talk
 + [Return to the fleet.] -> END
+
+
+=== master_postquest_talk ===
+
+Isa sets aside the Hall ledgers. The light from Gan Eden's inward horizon is still reflected in the photographs she brought back.
+
++ [Talk about what happened.] -> master_postquest_after
++ [Talk about Gan Eden's future.] -> master_postquest_future
++ [Talk about Log I.] -> master_postquest_log_one
++ [Talk about Log II.] -> master_postquest_log_two
++ [Talk about Log III.] -> master_postquest_log_three
++ [Talk about Log IV.] -> master_postquest_log_four
++ [Talk about Log V.] -> master_postquest_log_five
++ [Talk about the Golden Omega.] -> master_postquest_omega
++ [End preview.] -> END
+
+
+=== master_postquest_after ===
+
+"I spent my whole life wondering whether that name meant I belonged to somebody. Turns out it did. It also turns out belonging to someone doesn't make their choices yours."
+
+Isa taps the nameplate on her slate: ISA LEICESTER.
+
+"Isaac gave me a beginning. The Ring gave me a life. You lot gave me the rest. I can live with that."
+
+-> master_postquest_talk
+
+
+=== master_postquest_future ===
+
+"Gan Eden can't stay a mausoleum," Isa says. "But it shouldn't become another company town with a pretty sky, either."
+
+She begins listing priorities: survey teams, independent settlement charters, protected archives, and strict limits on dismantling anything that still works.
+
+"A place built for everyone ought to belong to the people willing to make a life there. We can help. We don't get to own it."
+
+-> master_postquest_talk
+
+
+=== master_postquest_log_one ===
+
+"The first log made him real," Isa says. "Not my father. Not yet. Just an engineer who thought a project big enough could justify anything it demanded of him."
+
+-> master_postquest_talk
+
+
+=== master_postquest_log_two ===
+
+"The second log hurt because it gave him a reason," Isa says. "A reason isn't an excuse. But it is a reason."
+
+-> master_postquest_talk
+
+
+=== master_postquest_log_three ===
+
+"Then even Rebecca's face went. That's the part I keep coming back to. Centuries of memory, and grief was the thing that lasted."
+
+-> master_postquest_talk
+
+
+=== master_postquest_log_four ===
+
+"He decided the only moral thing left was to destroy his life's workâ€”and himself with it. He was wrong about that too. Gan Eden deserved a future he couldn't imagine."
+
+-> master_postquest_talk
+
+
+=== master_postquest_log_five ===
+
+"He called me Leah," Isa says. "It's a beautiful name. It just isn't mine."
+
+-> master_postquest_talk
+
+
+=== master_postquest_omega ===
+
+"Isaac thought they were angels," Isa says. "Maybe Omega read that in his systems. Whatever they were built to protect, I don't think that fight was the last word."
+
+-> master_postquest_talk
 
 
 // ============================================================
@@ -1063,6 +1289,10 @@ The Domain therefore established a Continuity Office.
 
 Its directors would serve across generations, entering cryosuspension between major phases of construction and returning whenever the work required their judgment.
 
++ [Continue reading.] -> station_shattered_id_page_two
+
+=== station_shattered_id_page_two ===
+
 I was elected to lead it.
 
 I would sleep through centuries of construction, wake for design reviews, inspect the work, and approve the next phase. Each waking lasted months, sometimes years.
@@ -1073,7 +1303,11 @@ The engineering difficulties were substantial. We lost dozens of assembly swarms
 
 I met engineers whose grandparents had worked under people I remembered. I approved sweeping changes to systems designed by men and women who had died while I slept, sometimes erasing an entire lifetime’s work with a single decision.
 
-Humanity marched on as I slept. Problems once considered impossible became trivial. When both hypershunts became operational, the Directorate approved the work they had been built to support.
+Humanity marched on as I slept. Problems once considered impossible became trivial. When two hypershunts became operational, the Directorate approved the work they had been built to support.
+
++ [Continue reading.] -> station_shattered_id_page_three
+
+=== station_shattered_id_page_three ===
 
 It was to be the Domain’s first enclosed—
 
@@ -1089,6 +1323,8 @@ This device is not authorized to provide additional description of the reference
 I believed that the ability to construct such a wonder proved that the Domain deserved to continue expanding.
 
 I was wrong.
+
++ [Close the log.]
 
 -> END
 
@@ -1112,6 +1348,10 @@ I had already been considered for the proposed Continuity Office. The appointmen
 
 Before Rebecca’s death, I had intended to refuse.
 
++ [Continue reading.] -> log_two_page_two
+
+=== log_two_page_two ===
+
 With her gone, I thought I had no more reason to live in the present.
 
 I placed our daughter in cryosuspension before I had properly named her. I accepted the appointment and promised myself that I would complete the work, resign, and wake her into the world Rebecca and I had intended for her.
@@ -1123,6 +1363,10 @@ That was the arrangement I made with myself.
 I visited my daughter during every waking.
 
 I inspected her chamber. I reviewed the medical reports. I repeated tests the technicians had already completed.
+
++ [Continue reading.] -> log_two_page_three
+
+=== log_two_page_three ===
 
 She remained healthy and unchanged while centuries passed beyond the glass.
 
@@ -1155,6 +1399,10 @@ It had become incapable of seeing a human being standing directly before it.
 
 I met a Domain Armada veteran cleaning industrial residue from a station floor. During one of the Domain’s thousands of civil wars, radiation from a reactor leak had destroyed half his face.
 
++ [Continue reading.] -> log_three_page_two
+
+=== log_three_page_two ===
+
 His pension had been suspended because the archive containing his service record no longer existed.
 
 I offered to help.
@@ -1171,19 +1419,29 @@ A burden.
 
 Years blurred together. I do not know whether it was the repeated cryosuspensions or the deterioration of my own mind, but eventually I could no longer distinguish faces.
 
++ [Continue reading.] -> log_three_page_three
+
+=== log_three_page_three ===
+
 I forgot the faces of people I had worked beside.
 
 I even forgot Rebecca’s face.
 
+I remembered the facts of her: the scar at her wrist, the hymn she hummed while she worked, the way she squeezed my hand when she was frightened. But whenever I tried to assemble those memories into a face, there was only an absence where my wife had been.
+
 I began speaking publicly.
 
-At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established a commissions and councils and legislative bodys.
+At first, I presented reports and projections. I documented administrative failures and proposed reforms. The Directorate thanked me for my service and established commissions, councils, and legislative bodies.
 
 I kept drifting through the centuries. Nothing changed.
 
 I began speaking through my faith.
 
 I said that human beings were not obsolete machinery.
+
++ [Continue reading.] -> log_three_page_four
+
+=== log_three_page_four ===
 
 I said that a civilization should be judged by those it possessed the power to help and chose not to.
 
@@ -1201,7 +1459,13 @@ With my mouth, I drove lambs toward the slaughter.
 
 With my hands and my work, I forged the knives the Domain plunged into their necks.
 
-Who was I to speak against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect?
+Who was I?
+
+No one.
+
+I was a worthless hypocrite.
+
+I spoke against the Domain of Man, this great Whore of Babylon, while I remained her greatest architect.
 
 -> END
 

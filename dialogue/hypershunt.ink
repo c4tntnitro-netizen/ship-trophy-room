@@ -55,7 +55,7 @@ The Pather fleet begins clearing the approach corridor.
 
 [Lost 1 story point.]
 
-+ [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
++ [Return to your fleet.] -> END
 
 === gan_eden_hypershunt_pather_fight ===
 
@@ -115,7 +115,7 @@ The pirate fleet begins clearing the approach corridor.
 
 [Lost 250,000 credits.]
 
-+ [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
++ [Return to your fleet.] -> END
 
 === gan_eden_hypershunt_pirate_persuade ===
 // Runtime effect: spend 1 story point
@@ -140,7 +140,7 @@ The pirate fleet clears the approach corridor.
 
 [Lost 1 story point.]
 
-+ [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
++ [Return to your fleet.] -> END
 
 === gan_eden_hypershunt_pirate_fight ===
 
@@ -189,6 +189,10 @@ Sensor craft trace the curvature of its containment fields. Gravimetric probes m
 Most of the structure follows standard automated tolerances.
 
 Several sections do not.
+
++ [Compare the deviations.] -> gan_eden_hypershunt_records_compare
+
+=== gan_eden_hypershunt_records_compare ===
 
 Tiny deviations recur across the hypershunt’s oldest assemblies: corrections too consistent to be random, repeated through construction phases separated by centuries.
 

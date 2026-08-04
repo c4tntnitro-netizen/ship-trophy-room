@@ -21,11 +21,6 @@ import shiptrophy.ShipTrophyRoomIds;
 
 /** Persistent state and world operations for Isa's Gan Eden quest. */
 public final class GanEdenQuestManager {
-    private static final String AT_THE_GATES_COMPLETED_KEY =
-            "$gaATG_completed";
-    private static final String AT_THE_GATES_MISSION_COMPLETED_KEY =
-            "$gaATG_missionCompleted";
-
     public enum Stage {
         NOT_STARTED,
         ASK_AROUND_SHATTERED_RING,
@@ -43,6 +38,10 @@ public final class GanEdenQuestManager {
             "ship_trophy_gan_eden_external_ring";
     public static final String CORONAL_TAP_TYPE = "coronal_tap";
     public static final String CORONAL_TAP_USABLE_KEY = "$usable";
+    private static final String ARRIVAL_SCENE_PENDING_KEY =
+            "$shipTrophyGanEdenArrivalScenePending";
+    private static final String ARRIVAL_SCENE_SHOWN_KEY =
+            "$shipTrophyGanEdenArrivalSceneShown";
     private GanEdenQuestManager() {
     }
 
@@ -89,19 +88,6 @@ public final class GanEdenQuestManager {
                 ShipTrophyRoomIds.MEMORY_GAN_EDEN_EPITAPH_FOUND);
     }
 
-    /**
-     * Vanilla uses the mission-completed flag for its post-At-the-Gates
-     * dialogue, while the final conversation also sets a second conclusion
-     * flag. Accepting either keeps the prerequisite compatible with saves
-     * produced by every legitimate ending path.
-     */
-    public static boolean isAtTheGatesCompleted() {
-        if (Global.getSector() == null) return false;
-        MemoryAPI memory = memory();
-        return memory.getBoolean(AT_THE_GATES_COMPLETED_KEY)
-                || memory.getBoolean(AT_THE_GATES_MISSION_COMPLETED_KEY);
-    }
-
     /** Compatibility alias for the first implementation of the finale. */
     public static boolean isGraveFound() {
         return isEpitaphFound();
@@ -110,11 +96,12 @@ public final class GanEdenQuestManager {
     /** Starts the rewritten investigation at the end of Isa's homecoming. */
     public static void start(TextPanelAPI textPanel) {
         if (Global.getSector() == null
-                || !isAtTheGatesCompleted()
                 || isStarted()) {
             return;
         }
-        GanEdenLogManager.recover(GanEdenLogSpec.PART_ONE, textPanel);
+        // The homecoming scene has already played the archive page by page.
+        // File it silently so starting the quest cannot print the body again.
+        GanEdenLogManager.recoverSilently(GanEdenLogSpec.PART_ONE);
         setStage(Stage.INVESTIGATE_HYPERSHUNTS, textPanel, true);
         GanEdenHypershuntManager.ensureEncounters();
     }
@@ -161,9 +148,22 @@ public final class GanEdenQuestManager {
         }
         if (isAtLeast(Stage.GAN_EDEN_REVEALED)) {
             ensureGateway();
+            GanEdenTransitAmbushManager.ensureEncounter();
             GanEdenAmbushScript.ensureFleet();
         }
+        ensureArrivalSceneForCurrentSave();
         completeIfReady();
+    }
+
+    private static void ensureArrivalSceneForCurrentSave() {
+        if (getStage() != Stage.GAN_EDEN_REVEALED
+                || memory().getBoolean(ARRIVAL_SCENE_SHOWN_KEY)
+                || Global.getSector().getPlayerFleet() == null
+                || !GanEdenGenerator.isGanEden(
+                        Global.getSector().getPlayerFleet())) {
+            return;
+        }
+        memory().set(ARRIVAL_SCENE_PENDING_KEY, true);
     }
 
     private static void migrateLegacyStage() {
@@ -212,6 +212,7 @@ public final class GanEdenQuestManager {
 
         setStage(Stage.GAN_EDEN_REVEALED, null, false);
         ensureGateway();
+        GanEdenTransitAmbushManager.ensureEncounter();
         GanEdenAmbushScript.ensureFleet();
     }
 
@@ -223,6 +224,7 @@ public final class GanEdenQuestManager {
             setStage(Stage.DEFEAT_GOLDEN_SHARDS, textPanel, false);
         }
         GanEdenGenerator.ensureGenerated();
+        GanEdenAmbushScript.ensureFleet();
     }
 
     public static void markEpitaphFound(TextPanelAPI textPanel) {
@@ -462,8 +464,30 @@ public final class GanEdenQuestManager {
     }
 
     public static void transitIntoGanEden(SectorEntityToken source) {
+        if (getStage() == Stage.GAN_EDEN_REVEALED
+                && !memory().getBoolean(ARRIVAL_SCENE_SHOWN_KEY)) {
+            memory().set(ARRIVAL_SCENE_PENDING_KEY, true);
+        }
         SectorEntityToken destination = getInternalRing();
         transition(source, destination, "Gan Eden");
+    }
+
+    public static boolean shouldShowArrivalScene() {
+        if (Global.getSector() == null
+                || !memory().getBoolean(ARRIVAL_SCENE_PENDING_KEY)
+                || memory().getBoolean(ARRIVAL_SCENE_SHOWN_KEY)
+                || getStage() != Stage.GAN_EDEN_REVEALED
+                || !IsaTrophyManager.isIsaOfficerInPlayerFleet()) {
+            return false;
+        }
+        CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+        return GanEdenGenerator.isGanEden(player);
+    }
+
+    public static void markArrivalSceneShown() {
+        if (Global.getSector() == null) return;
+        memory().set(ARRIVAL_SCENE_SHOWN_KEY, true);
+        memory().unset(ARRIVAL_SCENE_PENDING_KEY);
     }
 
     public static void transitOutOfGanEden(SectorEntityToken source) {

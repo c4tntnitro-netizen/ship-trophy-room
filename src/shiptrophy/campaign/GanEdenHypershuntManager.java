@@ -3,7 +3,9 @@ package shiptrophy.campaign;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.lwjgl.util.vector.Vector2f;
@@ -20,15 +22,20 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.loading.VariantSource;
 
 import shiptrophy.IsaTrophyManager;
 import shiptrophy.campaign.GanEdenQuestManager.Stage;
+import shiptrophy.hullmods.HypershuntMkIVPaint;
 
 /**
  * Owns the two quest-specific hypershunt blockades and survey state.
@@ -50,6 +57,8 @@ public final class GanEdenHypershuntManager {
             "$shipTrophyGanEdenHypershuntGuardTarget";
     private static final String GUARD_COMMITTED_KEY =
             "$shipTrophyGanEdenHypershuntGuardCommitted";
+    private static final String GUARD_DEFEATED_KEY =
+            "$shipTrophyGanEdenHypershuntGuardDefeated";
     private static final String TAP_GUARD_FACTION_KEY =
             "$shipTrophyGanEdenHypershuntFaction";
     private static final String TAP_GUARD_SPAWNED_KEY =
@@ -62,6 +71,32 @@ public final class GanEdenHypershuntManager {
     private static final int REQUIRED_HYPERSHUNTS = 2;
     private static final float GUARD_OFFSET = 450f;
     private static final float GUARD_DURATION = 1000000f;
+    private static final Map<String, String> PIRATE_MK_IV_SKINS;
+    private static final Map<String, String> PATHER_MK_IV_SKINS;
+
+    static {
+        Map<String, String> pirates = new HashMap<String, String>();
+        pirates.put("vanguard_pirates",
+                "ship_trophy_mk4_pirate_vanguard");
+        pirates.put("manticore_pirates",
+                "ship_trophy_mk4_pirate_manticore");
+        pirates.put("falcon_p", "ship_trophy_mk4_pirate_falcon");
+        pirates.put("eradicator_pirates",
+                "ship_trophy_mk4_pirate_eradicator");
+        pirates.put("atlas2", "ship_trophy_mk4_pirate_atlas2");
+        PIRATE_MK_IV_SKINS = Collections.unmodifiableMap(pirates);
+
+        Map<String, String> pathers = new HashMap<String, String>();
+        pathers.put("enforcer", "ship_trophy_mk4_pather_enforcer");
+        pathers.put("hammerhead", "ship_trophy_mk4_pather_hammerhead");
+        pathers.put("manticore_luddic_path",
+                "ship_trophy_mk4_pather_manticore");
+        pathers.put("eradicator", "ship_trophy_mk4_pather_eradicator");
+        pathers.put("sunder", "ship_trophy_mk4_pather_sunder");
+        pathers.put("prometheus2",
+                "ship_trophy_mk4_pather_prometheus2");
+        PATHER_MK_IV_SKINS = Collections.unmodifiableMap(pathers);
+    }
 
     private GanEdenHypershuntManager() {
     }
@@ -97,8 +132,10 @@ public final class GanEdenHypershuntManager {
 
         // Repairs a battle completed under an older build, and also provides
         // a second line of defense if another mod strips our fleet listener.
-        if (guard != null && guard.getMemoryWithoutUpdate().getBoolean(
-                MemFlags.MEMORY_KEY_RECENTLY_DEFEATED_BY_PLAYER)) {
+        if (guard != null && (guard.getMemoryWithoutUpdate().getBoolean(
+                GUARD_DEFEATED_KEY)
+                || guard.getMemoryWithoutUpdate().getBoolean(
+                        MemFlags.MEMORY_KEY_RECENTLY_DEFEATED_BY_PLAYER))) {
             markGuardDefeated(guard);
             removeGuard(guard);
             return;
@@ -106,7 +143,10 @@ public final class GanEdenHypershuntManager {
 
         if (tapMemory.getBoolean(TAP_SURVEYED_KEY)
                 || tapMemory.getBoolean(TAP_GUARD_CLEARED_KEY)) {
-            if (guard != null) removeGuard(guard);
+            // Combat victories are removed by the battle listener. A fleet
+            // persuaded or paid to stand aside is released intact instead;
+            // never turn a peaceful resolution into a synthetic defeat.
+            if (guard != null) releaseGuard(guard, tap);
             return;
         }
 
@@ -116,8 +156,9 @@ public final class GanEdenHypershuntManager {
         }
         if (guard != null) removeGuard(guard);
 
-        // A fleet that existed and is now gone was defeated. Non-combat
-        // resolutions set CLEARED before removing it and arrive here too.
+        // A fleet that existed and is now gone was defeated or otherwise
+        // removed. Peaceful resolutions set CLEARED before releasing it and
+        // therefore return above without entering this fallback.
         if (tapMemory.getBoolean(TAP_GUARD_SPAWNED_KEY)) {
             tapMemory.set(TAP_GUARD_CLEARED_KEY, true);
             return;
@@ -182,8 +223,10 @@ public final class GanEdenHypershuntManager {
             CampaignFleetAPI fleet,
             SectorEntityToken tap,
             String factionId) {
+        applyMkIVRefit(fleet, factionId);
         fleet.setName(Factions.LUDDIC_PATH.equals(factionId)
-                ? "Pather Blockade" : "Claimant Flotilla");
+                ? "Mk IV Pather Blockade"
+                : "Mk IV Claimant Flotilla");
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
         fleet.addTag(Tags.STORY_CRITICAL);
@@ -233,6 +276,165 @@ public final class GanEdenHypershuntManager {
                     Factions.LUDDIC_PATH.equals(factionId)
                             ? "guarding forbidden ground"
                             : "holding a salvage claim");
+        }
+    }
+
+    /**
+     * Converts generated and pre-existing quest guards into independent Mk IV
+     * variants. Cloning is essential: FleetFactoryV3 commonly supplies stock
+     * variants, and mutating one directly would modify unrelated faction ships.
+     */
+    private static void applyMkIVRefit(
+            CampaignFleetAPI fleet, String factionId) {
+        if (fleet == null) return;
+
+        boolean changed = false;
+        for (FleetMemberAPI member
+                : fleet.getFleetData().getMembersListCopy()) {
+            if (member == null
+                    || member.isFighterWing()
+                    || member.getVariant() == null) continue;
+            changed |= refitMemberAsMkIV(member, factionId);
+        }
+
+        if (changed) {
+            fleet.getFleetData().setSyncNeeded();
+            fleet.getFleetData().syncIfNeeded();
+        }
+    }
+
+    /** Shared by the story blockades and post-victory faction-pool rolls. */
+    static boolean refitMemberAsMkIV(
+            FleetMemberAPI member, String factionId) {
+        if (member == null || member.isFighterWing()
+                || member.getVariant() == null) return false;
+        boolean pather = Factions.LUDDIC_PATH.equals(factionId);
+        if (!pather && !Factions.PIRATES.equals(factionId)) return false;
+
+        ShipVariantAPI current = member.getVariant();
+        String currentHullId = current.getHullSpec().getHullId();
+        String mkIVHullId = getMkIVHullId(currentHullId, factionId);
+        boolean legacy = hasLegacyMkIVMarker(current);
+
+        if (mkIVHullId == null) {
+            if (!legacy) return false;
+            ShipVariantAPI cleaned = current.clone();
+            cleaned.setSource(VariantSource.REFIT);
+            removeLegacyPaint(cleaned);
+            member.setVariant(cleaned, false, false);
+            member.updateStats();
+            return true;
+        }
+        if (mkIVHullId.equals(currentHullId)
+                && isCompleteMkIV(current, factionId)
+                && !legacy) {
+            return false;
+        }
+
+        ShipVariantAPI variant = current.clone();
+        variant.setSource(VariantSource.REFIT);
+        variant.setVariantDisplayName("Mk IV");
+        variant.setHullSpecAPI(Global.getSettings().getHullSpec(mkIVHullId));
+        variant.refreshBuiltInWings();
+        removeLegacyPaint(variant);
+        ensurePlainBuiltIn(variant, HullMods.UNSTABLE_INJECTOR);
+        ensurePlainBuiltIn(variant, HullMods.HEAVYARMOR);
+        member.setVariant(variant, false, false);
+        member.updateStats();
+        return true;
+    }
+
+    static boolean canRefitMemberAsMkIV(
+            FleetMemberAPI member, String factionId) {
+        if (member == null || member.isFighterWing()
+                || member.getVariant() == null
+                || member.getVariant().getHullSpec() == null) {
+            return false;
+        }
+        return getMkIVHullId(
+                member.getVariant().getHullSpec().getHullId(), factionId)
+                != null;
+    }
+
+    static void migrateLegacyMkIVMembers(
+            CampaignFleetAPI fleet, String factionId) {
+        if (fleet == null) return;
+        boolean changed = false;
+        for (FleetMemberAPI member
+                : fleet.getFleetData().getMembersListCopy()) {
+            if (member != null && member.getVariant() != null
+                    && hasLegacyMkIVMarker(member.getVariant())) {
+                changed |= refitMemberAsMkIV(member, factionId);
+            }
+        }
+        if (changed) {
+            fleet.getFleetData().setSyncNeeded();
+            fleet.getFleetData().syncIfNeeded();
+            fleet.forceSync();
+        }
+    }
+
+    private static boolean isCompleteMkIV(
+            ShipVariantAPI variant, String factionId) {
+        String currentHullId = variant.getHullSpec().getHullId();
+        return isStaticMkIVHull(currentHullId, factionId)
+                && variant.hasHullMod(HullMods.UNSTABLE_INJECTOR)
+                && variant.hasHullMod(HullMods.HEAVYARMOR);
+    }
+
+    private static String getMkIVHullId(
+            String hullId, String factionId) {
+        if (hullId == null) return null;
+        Map<String, String> skins = Factions.LUDDIC_PATH.equals(factionId)
+                ? PATHER_MK_IV_SKINS
+                : Factions.PIRATES.equals(factionId)
+                        ? PIRATE_MK_IV_SKINS : null;
+        if (skins == null) return null;
+        if (skins.containsValue(hullId)) return hullId;
+        return skins.get(hullId);
+    }
+
+    private static boolean isStaticMkIVHull(
+            String hullId, String factionId) {
+        String mapped = getMkIVHullId(hullId, factionId);
+        return hullId != null && hullId.equals(mapped);
+    }
+
+    private static boolean hasLegacyMkIVMarker(ShipVariantAPI variant) {
+        return variant != null
+                && (variant.hasTag(HypershuntMkIVPaint.PATH_TAG)
+                        || variant.hasTag(HypershuntMkIVPaint.PIRATE_TAG)
+                        || variant.hasHullMod(
+                                HypershuntMkIVPaint.HULLMOD_ID));
+    }
+
+    private static void removeLegacyPaint(ShipVariantAPI variant) {
+        if (variant == null) return;
+        variant.removeTag(HypershuntMkIVPaint.PATH_TAG);
+        variant.removeTag(HypershuntMkIVPaint.PIRATE_TAG);
+        variant.getSMods().remove(HypershuntMkIVPaint.HULLMOD_ID);
+        variant.removePermaMod(HypershuntMkIVPaint.HULLMOD_ID);
+        if (variant.getNonBuiltInHullmods().contains(
+                HypershuntMkIVPaint.HULLMOD_ID)) {
+            variant.removeMod(HypershuntMkIVPaint.HULLMOD_ID);
+        }
+    }
+
+    /** Ensures the refit is a normal built-in, never an accidental S-mod. */
+    private static void ensurePlainBuiltIn(
+            ShipVariantAPI variant, String hullmodId) {
+        if (variant == null || hullmodId == null) return;
+        if (variant.getHullSpec().isBuiltInMod(hullmodId)) return;
+
+        if (variant.getSMods().contains(hullmodId)) {
+            variant.getSMods().remove(hullmodId);
+            variant.removePermaMod(hullmodId);
+        }
+        if (variant.getNonBuiltInHullmods().contains(hullmodId)) {
+            variant.removeMod(hullmodId);
+        }
+        if (!variant.getPermaMods().contains(hullmodId)) {
+            variant.addPermaMod(hullmodId);
         }
     }
 
@@ -290,7 +492,7 @@ public final class GanEdenHypershuntManager {
             tap.getMemoryWithoutUpdate().set(TAP_GUARD_CLEARED_KEY, true);
         }
         if (target instanceof CampaignFleetAPI) {
-            removeGuard((CampaignFleetAPI) target);
+            releaseGuard((CampaignFleetAPI) target, tap);
         }
     }
 
@@ -356,7 +558,9 @@ public final class GanEdenHypershuntManager {
         GanEdenLogSpec recovered = previousCount <= 0
                 ? GanEdenLogSpec.PART_TWO
                 : GanEdenLogSpec.PART_THREE;
-        GanEdenLogManager.recover(recovered, dialog.getTextPanel());
+        // The dialogue pages the recovered record itself. Filing it silently
+        // prevents the Intel card from dumping the entire entry a second time.
+        GanEdenLogManager.recoverSilently(recovered);
         GanEdenQuestManager.checkHypershunts();
         return recovered;
     }
@@ -446,6 +650,21 @@ public final class GanEdenHypershuntManager {
         return null;
     }
 
+    private static CampaignFleetAPI findFormerGuard(
+            SectorEntityToken tap, String factionId) {
+        if (tap == null || tap.getContainingLocation() == null) return null;
+        String targetKey = stableKey(tap);
+        for (CampaignFleetAPI fleet : tap.getContainingLocation().getFleets()) {
+            MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+            if (targetKey.equals(memory.getString(GUARD_TARGET_KEY))
+                    && factionId.equals(memory.getString(
+                            GUARD_FACTION_KEY))) {
+                return fleet;
+            }
+        }
+        return null;
+    }
+
     private static void ensureBattleListener(CampaignFleetAPI fleet) {
         if (fleet == null) return;
         for (FleetEventListener listener : fleet.getEventListeners()) {
@@ -456,6 +675,9 @@ public final class GanEdenHypershuntManager {
 
     private static void markGuardDefeated(CampaignFleetAPI guard) {
         if (guard == null) return;
+        MkIVFleetIntegrationListener.unlockFaction(
+                guard.getMemoryWithoutUpdate().getString(
+                        GUARD_FACTION_KEY));
         SectorEntityToken tap = findTapForTarget(guard);
         if (tap != null) {
             tap.getMemoryWithoutUpdate().set(
@@ -466,7 +688,40 @@ public final class GanEdenHypershuntManager {
         // the tap is already unblocked before the player can approach it.
         guard.getMemoryWithoutUpdate().set(
                 TAP_GUARD_CLEARED_KEY, true);
+        guard.getMemoryWithoutUpdate().set(GUARD_DEFEATED_KEY, true);
         guard.setNoAutoDespawn(false);
+    }
+
+    /**
+     * Recovers unlocks for saves that defeated a blockade before faction-pool
+     * propagation was introduced. Peacefully released guards remain in their
+     * original system with their target key, so they are not mistaken for a
+     * combat victory.
+     */
+    public static void restoreMkIVUnlocksForLegacySave() {
+        if (Global.getSector() == null) return;
+        for (SectorEntityToken tap : getQuestHypershunts()) {
+            MemoryAPI memory = tap.getMemoryWithoutUpdate();
+            if (!memory.getBoolean(TAP_GUARD_SPAWNED_KEY)
+                    || !memory.getBoolean(TAP_GUARD_CLEARED_KEY)) {
+                continue;
+            }
+            String factionId = memory.getString(TAP_GUARD_FACTION_KEY);
+            if (!Factions.PIRATES.equals(factionId)
+                    && !Factions.LUDDIC_PATH.equals(factionId)) {
+                continue;
+            }
+            if (MkIVFleetIntegrationListener.isUnlocked(factionId)) continue;
+
+            CampaignFleetAPI former = findFormerGuard(tap, factionId);
+            if (former == null
+                    || former.getMemoryWithoutUpdate().getBoolean(
+                            GUARD_DEFEATED_KEY)
+                    || former.getMemoryWithoutUpdate().getBoolean(
+                            MemFlags.MEMORY_KEY_RECENTLY_DEFEATED_BY_PLAYER)) {
+                MkIVFleetIntegrationListener.unlockFaction(factionId);
+            }
+        }
     }
 
     /** Clears the entire blockade when the player wins its campaign battle. */
@@ -518,6 +773,91 @@ public final class GanEdenHypershuntManager {
     private static void removeGuard(CampaignFleetAPI guard) {
         if (guard == null || guard.getContainingLocation() == null) return;
         guard.getContainingLocation().removeEntity(guard);
+    }
+
+    /**
+     * Opens the approach without deleting the peacefully resolved fleet.
+     * The ships visibly leave under their own power and despawn only after
+     * reaching a point well clear of the hypershunt.
+     */
+    private static void releaseGuard(
+            CampaignFleetAPI guard, SectorEntityToken tap) {
+        if (guard == null || tap == null
+                || guard.getContainingLocation() == null) return;
+
+        // A fleet-interaction dialog may already have assembled a campaign
+        // BattleAPI even though no tactical engagement took place. Explicitly
+        // detach both fleets before dismissing the peaceful conversation;
+        // otherwise external autoresolve listeners can continue processing
+        // that stale battle and damage the player's real fleet off-screen.
+        BattleAPI battle = guard.getBattle();
+        if (battle != null) {
+            CampaignFleetAPI player = Global.getSector() == null
+                    ? null : Global.getSector().getPlayerFleet();
+            if (player != null && player.getBattle() == battle) {
+                // Leave the player side first so removing the claimant cannot
+                // be interpreted as a player victory by battle listeners.
+                battle.leave(player, false);
+            }
+            if (guard.getBattle() == battle) {
+                battle.leave(guard, false);
+            }
+        }
+
+        for (FleetEventListener listener
+                : new ArrayList<FleetEventListener>(
+                        guard.getEventListeners())) {
+            if (listener instanceof GuardBattleListener) {
+                guard.removeEventListener(listener);
+            }
+        }
+
+        MemoryAPI memory = guard.getMemoryWithoutUpdate();
+        memory.unset(GUARD_KEY);
+        memory.unset(GUARD_COMMITTED_KEY);
+        memory.unset(MemFlags.STORY_CRITICAL);
+        memory.unset(MemFlags.MEMORY_KEY_MAKE_HOSTILE);
+        memory.unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
+        memory.unset(MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE);
+        memory.set(MemFlags.NON_HOSTILE_OVERRIDES_MAKE_HOSTILE, true);
+        memory.set(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, true);
+        memory.set(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE, true);
+        memory.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
+        memory.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
+
+        guard.removeTag(Tags.STORY_CRITICAL);
+        guard.removeTag(Tags.HAS_INTERACTION_DIALOG);
+        // Keep the peacefully resolved ships alive. They move clear and hold
+        // position as a neutral fleet rather than despawning through a path
+        // that other mods may interpret as a combat defeat.
+        guard.setNoAutoDespawn(true);
+
+        float dx = guard.getLocation().x - tap.getLocation().x;
+        float dy = guard.getLocation().y - tap.getLocation().y;
+        float length = (float) Math.sqrt(dx * dx + dy * dy);
+        if (length < 1f) {
+            dx = Factions.LUDDIC_PATH.equals(
+                    memory.getString(GUARD_FACTION_KEY)) ? -1f : 1f;
+            dy = 0f;
+            length = 1f;
+        }
+        float distance = 2400f;
+        SectorEntityToken destination = guard.getContainingLocation()
+                .createToken(
+                        tap.getLocation().x + dx / length * distance,
+                        tap.getLocation().y + dy / length * distance);
+
+        guard.clearAssignments();
+        guard.addAssignment(
+                FleetAssignment.GO_TO_LOCATION,
+                destination,
+                30f,
+                "leaving the approach corridor");
+        guard.addAssignment(
+                FleetAssignment.ORBIT_PASSIVE,
+                destination,
+                GUARD_DURATION,
+                "standing down clear of the hypershunt");
     }
 
     private static String stableKey(SectorEntityToken entity) {

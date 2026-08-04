@@ -29,6 +29,15 @@ public final class GanEdenLogManager {
         return newlyRecovered;
     }
 
+    /** Files an archive without rendering its Intel description in dialogue. */
+    public static boolean recoverSilently(GanEdenLogSpec spec) {
+        if (spec == null || Global.getSector() == null) return false;
+        boolean newlyRecovered = !isRecovered(spec);
+        memory().set(RECOVERED_PREFIX + spec.getId(), true);
+        ensureIntel(spec, null, false);
+        return newlyRecovered;
+    }
+
     /** Restores archives in old saves that already completed the Epitaph. */
     public static void ensureForCurrentSave() {
         if (Global.getSector() == null) return;

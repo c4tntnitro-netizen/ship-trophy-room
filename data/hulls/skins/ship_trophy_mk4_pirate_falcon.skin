@@ -1,0 +1,43 @@
+{
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [
+        "WS 003",
+        "WS 004"
+    ],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": [],
+    "removeBuiltInWeapons": [],
+    "builtInWeapons": {},
+    "baseHullId": "falcon",
+    "skinHullId": "ship_trophy_mk4_pirate_falcon",
+    "hullName": "Falcon (P)",
+    "descriptionId": "falcon",
+    "descriptionPrefix": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.",
+    "tags": [
+        "hide_in_codex"
+    ],
+    "tech": "Pirate",
+    "suppliesToRecover": 20,
+    "suppliesPerMonth": 20,
+    "baseValueMult": 1.25,
+    "weaponSlotChanges": {
+        "WS 005": {
+            "type": "COMPOSITE"
+        },
+        "WS 006": {
+            "type": "COMPOSITE"
+        },
+        "WS 007": {
+            "type": "MISSILE"
+        },
+        "WS 008": {
+            "type": "MISSILE"
+        }
+    },
+    "builtInMods": [
+        "augmentedengines",
+        "unstable_injector",
+        "heavyarmor"
+    ],
+    "spriteName": "graphics/ships/mk4/pirate/ship_trophy_mk4_pirate_falcon.png"
+}

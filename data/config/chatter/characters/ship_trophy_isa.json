@@ -13,7 +13,9 @@
     ],
     "start_boss":[
       {"text":"That signature is antimatter-grade trouble. Get a clean scan of it before it explodes. Or we do."},
-      {"text":"Careful with that one!"}
+      {"text":"Careful with that one!"},
+      {"text":"White or gold, those signatures are Remnant architecture rewritten by something smarter. Recording everything."},
+      {"text":"Those machines know we're here. Isa Leicester, telemetry live. Let's find out what they want."}
     ],
     "retreat":[
       {"text":"Pulling back. I can fix her up."},

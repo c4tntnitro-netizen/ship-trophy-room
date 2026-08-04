@@ -1,0 +1,26 @@
+{
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": [],
+    "removeBuiltInWeapons": [],
+    "builtInWeapons": {},
+    "baseHullId": "eradicator",
+    "skinHullId": "ship_trophy_mk4_pirate_eradicator",
+    "hullName": "Eradicator (P)",
+    "descriptionId": "eradicator",
+    "descriptionPrefix": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.",
+    "tags": [
+        "hide_in_codex"
+    ],
+    "tech": "Pirate",
+    "systemId": "burndrive",
+    "suppliesToRecover": 18,
+    "suppliesPerMonth": 18,
+    "baseValueMult": 0.75,
+    "builtInMods": [
+        "unstable_injector",
+        "heavyarmor"
+    ],
+    "spriteName": "graphics/ships/mk4/pirate/ship_trophy_mk4_pirate_eradicator.png"
+}

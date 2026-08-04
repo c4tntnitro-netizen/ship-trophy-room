@@ -119,7 +119,8 @@ public final class GanEdenLogSpec {
                 int end = ink.indexOf("-> END", start);
                 if (end < 0) continue;
                 BODY_BY_SECTION.put(
-                        spec.inkSection, ink.substring(start, end).trim());
+                        spec.inkSection,
+                        sanitizeInkBody(ink.substring(start, end)));
             }
         } catch (IOException ex) {
             System.err.println(
@@ -130,5 +131,30 @@ public final class GanEdenLogSpec {
                     "Hall of Triumph: unable to parse Gan Eden archive text.");
             ex.printStackTrace(System.err);
         }
+    }
+
+    /**
+     * Logs.ink doubles as an editable Ink proofreading document. Strip its
+     * navigation choices, knot headers, and diverts before exposing an entry
+     * to campaign dialogue or Intel.
+     */
+    private static String sanitizeInkBody(String rawBody) {
+        StringBuilder result = new StringBuilder();
+        String[] lines = rawBody.split("\\r?\\n", -1);
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (trimmed.matches(
+                    "\\+\\s*\\[[^\\]]*\\](?:\\s*->\\s*\\S+)?")) {
+                continue;
+            }
+            if (trimmed.matches("===\\s+.+?\\s+===")) {
+                continue;
+            }
+            if (trimmed.matches("->\\s*\\S+")) {
+                continue;
+            }
+            result.append(line).append('\n');
+        }
+        return result.toString().trim();
     }
 }

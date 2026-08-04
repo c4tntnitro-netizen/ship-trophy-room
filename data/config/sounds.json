@@ -6,6 +6,48 @@
                 "source":"sounds/music",
                 "volume":0.65
             }
+        ],
+        "ship_trophy_golden_omega_combat_intro":[
+            {
+                "file":"ship_trophy_strike_from_the_sky_intro.ogg",
+                "source":"sounds/music",
+                "volume":0.80
+            }
+        ],
+        "ship_trophy_golden_omega_combat_silence":[
+            {
+                "file":"ship_trophy_golden_omega_silent_channel.ogg",
+                "source":"sounds/music",
+                "volume":0.0
+            }
+        ],
+        "ship_trophy_golden_omega_combat_loop":[
+            {
+                "file":"ship_trophy_strike_from_the_sky_loop.ogg",
+                "source":"sounds/music",
+                "volume":0.80
+            }
+        ],
+        "ship_trophy_isa_final_log_intro":[
+            {
+                "file":"ship_trophy_isa_final_log_intro.ogg",
+                "source":"sounds/music",
+                "volume":0.70
+            }
+        ],
+        "ship_trophy_isa_final_log_loop":[
+            {
+                "file":"ship_trophy_isa_final_log_loop.ogg",
+                "source":"sounds/music",
+                "volume":0.70
+            }
+        ],
+        "ship_trophy_time_leads_to_the_end":[
+            {
+                "file":"ship_trophy_time_leads_to_the_end.ogg",
+                "source":"sounds/music",
+                "volume":0.70
+            }
         ]
     },
     "ship_trophy_iaido_torpedo_launch":[

@@ -45,6 +45,7 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
     @Override
     public void createSmallDescription(
             TooltipMakerAPI info, float width, float height) {
+        info.setParaInsigniaLarge();
         info.addPara(
                 "Isa Leicester was recovered from a cryopod as an infant, "
                         + "swaddled in a spacer suit bearing the name Isaac "
@@ -86,11 +87,12 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
             case ASK_AROUND_SHATTERED_RING:
             case FIND_BLACK_MARKET_CLUE:
             case INVESTIGATE_HYPERSHUNTS:
-                return "Recover the next two personal logs from both "
-                        + "surviving Coronal Hypershunts.";
+                return "Investigate the surviving Coronal Hypershunts for "
+                        + "clues about Isaac Leicester.";
             case GAN_EDEN_REVEALED:
                 return "Travel to POWER TRANSIT GATE - GAN EDEN on the "
-                        + "northeastern rim of the Abyss, enter Gan Eden, and "
+                        + "northeastern edge of the Sector by Transverse Jump, "
+                        + "enter Gan Eden, and "
                         + "recover the fourth log at the Tree of Life.";
             case DEFEAT_GOLDEN_SHARDS:
                 return "Defeat Cherubim and Lahat Haharev, the golden Omega "
@@ -110,7 +112,7 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
             case ASK_AROUND_SHATTERED_RING:
             case FIND_BLACK_MARKET_CLUE:
             case INVESTIGATE_HYPERSHUNTS:
-                return "both surviving Coronal Hypershunts";
+                return "surviving Coronal Hypershunts";
             case GAN_EDEN_REVEALED:
                 return "POWER TRANSIT GATE - GAN EDEN";
             case DEFEAT_GOLDEN_SHARDS:

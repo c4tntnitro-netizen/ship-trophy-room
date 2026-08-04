@@ -41,6 +41,7 @@ public final class ShatteredRingGenerator {
     public static final String MARKET_NAME = "The Shattered Ring";
     public static final String POD_COMMUNITY = "ship_trophy_pod_community";
     public static final String WRECK_FARMS = "ship_trophy_wreck_farms";
+    public static final String DMOD_VENDOR_ID = "ship_trophy_ring_dmod_vendor";
 
     private static final String SYSTEM_NAME = "Penelope's Star";
     private static final String SYSTEM_ID = "penelope";
@@ -92,10 +93,12 @@ public final class ShatteredRingGenerator {
             MarketAPI market = Global.getSector().getEconomy().getMarket(MARKET_ID);
             if (market == null) {
                 createMarket(ring);
+                market = Global.getSector().getEconomy().getMarket(MARKET_ID);
             } else {
                 if (ring.getMarket() == null) ring.setMarket(market);
                 if (market.getPrimaryEntity() == null) market.setPrimaryEntity(ring);
             }
+            if (market != null) ensureDModVendor(market);
 
             ensureEnvironment(system, ring);
         } catch (RuntimeException ex) {
@@ -204,6 +207,34 @@ public final class ShatteredRingGenerator {
                 "ship_trophy_ring_supplier", Ranks.SPACE_LIEUTENANT, Ranks.POST_SUPPLY_OFFICER,
                 PersonImportance.MEDIUM);
         addPerson(market, supplier);
+
+        ensureDModVendor(market);
+    }
+
+    private static void ensureDModVendor(MarketAPI market) {
+        if (market == null || Global.getSector() == null) return;
+
+        PersonAPI vendor = null;
+        for (PersonAPI person : market.getPeopleCopy()) {
+            if (person != null && DMOD_VENDOR_ID.equals(person.getId())) {
+                vendor = person;
+                break;
+            }
+        }
+
+        if (vendor == null) {
+            FactionAPI independents = Global.getSector().getFaction(Factions.INDEPENDENT);
+            if (independents == null) return;
+
+            long seed = (Global.getSector().getSeedString() + MARKET_ID + DMOD_VENDOR_ID).hashCode();
+            vendor = createPerson(independents, new Random(seed), DMOD_VENDOR_ID,
+                    Ranks.SPACE_CHIEF, Ranks.POST_NANOFORGE_ENGINEER,
+                    PersonImportance.MEDIUM);
+            vendor.getMemoryWithoutUpdate().set("$shipTrophyDModVendor", true);
+            addPerson(market, vendor);
+        } else if (market.getCommDirectory().getEntryForPerson(DMOD_VENDOR_ID) == null) {
+            market.getCommDirectory().addPerson(vendor);
+        }
     }
 
     private static PersonAPI createPerson(FactionAPI faction, Random random, String id,

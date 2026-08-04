@@ -1,0 +1,39 @@
+{
+    "restoreToBaseHull": false,
+    "removeWeaponSlots": [],
+    "removeEngineSlots": [],
+    "removeBuiltInMods": [
+        "ballistic_rangefinder"
+    ],
+    "removeBuiltInWeapons": [],
+    "builtInWeapons": {},
+    "baseHullId": "manticore",
+    "skinHullId": "ship_trophy_mk4_pather_manticore",
+    "hullName": "Manticore (LP)",
+    "descriptionId": "manticore",
+    "descriptionPrefix": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.",
+    "tags": [
+        "hide_in_codex"
+    ],
+    "tech": "Luddic Path",
+    "suppliesToRecover": 14,
+    "suppliesPerMonth": 14,
+    "weaponSlotChanges": {
+        "WS 000": {
+            "type": "MISSILE"
+        },
+        "WS 004": {
+            "type": "BALLISTIC"
+        },
+        "WS 005": {
+            "type": "BALLISTIC"
+        }
+    },
+    "builtInMods": [
+        "safetyoverrides",
+        "ill_advised",
+        "unstable_injector",
+        "heavyarmor"
+    ],
+    "spriteName": "graphics/ships/mk4/pather/ship_trophy_mk4_pather_manticore.png"
+}

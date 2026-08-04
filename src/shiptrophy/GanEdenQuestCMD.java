@@ -1,5 +1,6 @@
 package shiptrophy;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +10,12 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.CommandPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
 import shiptrophy.campaign.GanEdenGenerator;
+import shiptrophy.campaign.GanEdenFinalLogMusicScript;
+import shiptrophy.campaign.GanEdenAmbushScript;
 import shiptrophy.campaign.GanEdenHypershuntManager;
 import shiptrophy.campaign.GanEdenLogManager;
 import shiptrophy.campaign.GanEdenLogSpec;
@@ -36,6 +40,19 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return GanEdenHypershuntManager.isGuard(
                     dialog.getInteractionTarget(),
                     value(params, 1, memoryMap));
+        }
+        if ("isGoldenOmega".equals(command)) {
+            return GanEdenAmbushScript.isGoldenFleet(
+                    dialog.getInteractionTarget());
+        }
+        if ("isGoldenOmegaFightable".equals(command)) {
+            return GanEdenAmbushScript.isGoldenFleet(
+                            dialog.getInteractionTarget())
+                    && GanEdenQuestManager.isAtLeast(
+                            Stage.DEFEAT_GOLDEN_SHARDS);
+        }
+        if ("questCompleted".equals(command)) {
+            return GanEdenQuestManager.isCompleted();
         }
         if ("prepareHypershuntGuard".equals(command)) {
             GanEdenHypershuntManager.prepareGuard(dialog);
@@ -75,11 +92,7 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             GanEdenLogSpec recovered =
                     GanEdenHypershuntManager.markCurrentTapSurveyed(dialog);
             if (recovered == null) return false;
-            TextPanelAPI text = dialog.getTextPanel();
-            text.setFontSmallInsignia();
-            text.addPara(recovered.getBody());
-            text.setFontInsignia();
-            return true;
+            return showLogPage(dialog, recovered, 0);
         }
         if ("hypershuntSurveyComplete".equals(command)) {
             return GanEdenQuestManager.isAtLeast(Stage.GAN_EDEN_REVEALED);
@@ -108,16 +121,27 @@ public final class GanEdenQuestCMD implements CommandPlugin {
                     && (GanEdenQuestManager.isEpitaphFound()
                             || GanEdenQuestManager.isCompleted());
         }
+        if ("spaceElevatorRepels".equals(command)) {
+            return isSpaceElevator(dialog.getInteractionTarget())
+                    && GanEdenQuestManager.getStage()
+                            == Stage.GAN_EDEN_REVEALED;
+        }
+        if ("spaceElevatorGuarded".equals(command)) {
+            return isSpaceElevator(dialog.getInteractionTarget())
+                    && GanEdenQuestManager.getStage()
+                            == Stage.DEFEAT_GOLDEN_SHARDS
+                    && !GanEdenAmbushScript.isDefeated();
+        }
         if ("prepareEpitaph".equals(command)
                 || "prepareGrave".equals(command)) {
-            showIsa(dialog);
+            HallOfTriumphCompletionDialogPlugin.showLetterboxedIllustration(
+                    dialog, "ship_trophy_gan_eden_log_five");
             return true;
         }
         if ("markEpitaph".equals(command)
                 || "markGrave".equals(command)) {
             dialog.getTextPanel().setFontInsignia();
-            GanEdenLogManager.recover(
-                    GanEdenLogSpec.FINAL, dialog.getTextPanel());
+            GanEdenLogManager.recoverSilently(GanEdenLogSpec.FINAL);
             GanEdenQuestManager.markEpitaphFound(dialog.getTextPanel());
             return true;
         }
@@ -145,11 +169,20 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         if ("showEpitaphLog".equals(command)) {
             GanEdenLogSpec spec = GanEdenLogSpec.forId(
                     value(params, 1, memoryMap));
-            if (spec == null) return false;
-            GanEdenLogManager.recover(spec, dialog.getTextPanel());
-            dialog.getTextPanel().setFontSmallInsignia();
-            dialog.getTextPanel().addPara(spec.getBody());
-            dialog.getTextPanel().setFontInsignia();
+            return showLogPage(dialog, spec, 0);
+        }
+        if ("showLogPage".equals(command)) {
+            return showLogPage(
+                    dialog,
+                    GanEdenLogSpec.forId(value(params, 1, memoryMap)),
+                    integerValue(params, 2, memoryMap));
+        }
+        if ("startFinalLogMusic".equals(command)) {
+            GanEdenFinalLogMusicScript.start();
+            return true;
+        }
+        if ("stopFinalLogMusic".equals(command)) {
+            GanEdenFinalLogMusicScript.stop();
             return true;
         }
         if ("finishEpitaphLogs".equals(command)) {
@@ -157,11 +190,15 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return true;
         }
         if ("showInitialLog".equals(command)) {
-            TextPanelAPI text = dialog.getTextPanel();
-            GanEdenLogManager.recover(GanEdenLogSpec.PART_ONE, text);
-            text.setFontSmallInsignia();
-            text.addPara(GanEdenLogSpec.PART_ONE.getBody());
-            text.setFontInsignia();
+            // Compatibility alias for rule packs predating pagination.
+            return showInitialLogPage(dialog, 0);
+        }
+        if ("showInitialLogPage".equals(command)) {
+            return showInitialLogPage(
+                    dialog, integerValue(params, 1, memoryMap));
+        }
+        if ("recoverInitialLog".equals(command)) {
+            GanEdenLogManager.recoverSilently(GanEdenLogSpec.PART_ONE);
             return true;
         }
         if ("canTransitFromGate".equals(command)) {
@@ -231,11 +268,7 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         }
 
         TextPanelAPI text = dialog.getTextPanel();
-        GanEdenLogManager.recover(spec, text);
-        text.setFontSmallInsignia();
-        text.addPara(spec.getBody());
-        text.setFontInsignia();
-        text.addPara("[Archived in Intel: " + spec.getTitle() + "]");
+        GanEdenLogManager.recoverSilently(spec);
         if (GanEdenLogSpec.PART_FOUR.getId().equals(spec.getId())) {
             GanEdenQuestManager.markTreeLogFound(text);
         }
@@ -246,14 +279,106 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             InteractionDialogAPI dialog, String logId) {
         GanEdenLogSpec spec = GanEdenLogSpec.forId(logId);
         if (spec == null) return false;
-        GanEdenLogManager.recover(spec, dialog.getTextPanel());
-        dialog.getTextPanel().setFontSmallInsignia();
-        return true;
+        return showLogPage(dialog, spec, 0);
     }
 
     private static boolean isSpaceElevator(SectorEntityToken target) {
         return target != null
                 && GanEdenGenerator.SPACE_ELEVATOR_ID.equals(target.getId());
+    }
+
+    /**
+     * Plays Personal Log 1765 in three readable screens. The Intel entry is
+     * deliberately not created here; it is filed only after Isa responds.
+     */
+    private static boolean showInitialLogPage(
+            InteractionDialogAPI dialog, int page) {
+        return showLogPage(dialog, GanEdenLogSpec.PART_ONE, page);
+    }
+
+    /** Renders one deliberately paced page of a recovered archive. */
+    private static boolean showLogPage(
+            InteractionDialogAPI dialog, GanEdenLogSpec spec, int page) {
+        if (dialog == null || spec == null || page < 0) return false;
+        String[] paragraphs = spec.getBody().split("\\r?\\n\\s*\\r?\\n");
+        int[] breaks = pageBreaks(spec, paragraphs.length);
+        if (page + 1 >= breaks.length) return false;
+        int start = Math.min(breaks[page], paragraphs.length);
+        int end = Math.min(breaks[page + 1], paragraphs.length);
+
+        TextPanelAPI text = dialog.getTextPanel();
+        text.setFontSmallInsignia();
+        for (int i = start; i < end; i++) {
+            addArchiveParagraph(text, paragraphs[i].trim());
+        }
+        text.setFontInsignia();
+        return true;
+    }
+
+    private static int[] pageBreaks(GanEdenLogSpec spec, int paragraphCount) {
+        if (spec == GanEdenLogSpec.PART_ONE) {
+            return boundedBreaks(paragraphCount, 0, 7, 13, paragraphCount);
+        }
+        if (spec == GanEdenLogSpec.PART_TWO) {
+            return boundedBreaks(paragraphCount, 0, 7, 13, paragraphCount);
+        }
+        if (spec == GanEdenLogSpec.PART_THREE) {
+            return boundedBreaks(paragraphCount, 0, 6, 14, 22, paragraphCount);
+        }
+        if (spec == GanEdenLogSpec.PART_FOUR) {
+            return boundedBreaks(
+                    paragraphCount, 0, 7, 15, 23, 31, paragraphCount);
+        }
+        return boundedBreaks(
+                paragraphCount, 0, 9, 18, 28, 38, 47, paragraphCount);
+    }
+
+    private static int[] boundedBreaks(int paragraphCount, int... requested) {
+        int[] result = new int[requested.length];
+        int previous = 0;
+        for (int i = 0; i < requested.length; i++) {
+            int value = Math.max(previous, Math.min(requested[i], paragraphCount));
+            result[i] = value;
+            previous = value;
+        }
+        return result;
+    }
+
+    private static void addArchiveParagraph(
+            TextPanelAPI text, String paragraph) {
+        if (paragraph == null || paragraph.length() <= 0) return;
+        if (paragraph.startsWith(
+                "DOMAIN INFOSEC VIOLATION THRESHOLD WARNING")) {
+            for (String line : paragraph.split("\\r?\\n")) {
+                text.addPara(line, Misc.getNegativeHighlightColor());
+            }
+            return;
+        }
+        if (paragraph.startsWith("FATAL ACCESS ERROR")) {
+            text.addPara(paragraph, Misc.getNegativeHighlightColor());
+            return;
+        }
+        if (paragraph.startsWith("This device is not authorized")) {
+            text.addPara(
+                    paragraph,
+                    new Color(82, 88, 94),
+                    Misc.getNegativeHighlightColor(),
+                    "not authorized",
+                    "Domain Information Security Standards");
+            return;
+        }
+        text.addPara(paragraph);
+    }
+
+    private static int integerValue(
+            List<Token> params,
+            int index,
+            Map<String, MemoryAPI> memoryMap) {
+        try {
+            return Integer.parseInt(value(params, index, memoryMap));
+        } catch (NumberFormatException ex) {
+            return -1;
+        }
     }
 
     private static boolean isTarget(
