@@ -321,6 +321,56 @@ FILE: EPITAPH — FINAL
 
 I am dying.
 
+This recorder is braced against my suit because I can no longer hold it.
+
+I did not reach the control room.
+
+Today, the Gate answered.
+
+It did not connect to Penelope’s Star or to any Gate I recognized.
+
+Instead, two angels came through.
+
+The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment.
+
+The second turns within lines of fire like a burning sword.
+
+I have named them Cherubim and Lahat Ha-cherev.
+
+They moved from the Gate toward the Space Elevator, and I understood that this might be my last chance.
+
+The control room contains a continuity transmitter powerful enough to force one final message across the hyperwave harmonics.
+
+If any path remained through the hypershunt network, I could make my voice follow it.
+
+I took the last serviceable shuttle from Galilee.
+
+Cherubim watched me climb.
+
+Lahat turned within its lines of fire.
+
+A single burning stroke crossed the sky, and every alarm in the shuttle sounded at once.
+
+I cannot prove that the angel struck me. I know only what I saw before the instruments died.
+
+The shuttle lost thrust above the elevator’s lower approach.
+
+It struck the service works hard enough to tear the port side open.
+
+The restraints broke something inside me.
+
+I climbed from the wreck before the atmosphere could take the rest.
+
+I followed the emergency markings upward.
+
+The control room is one level above this corridor.
+
+My legs no longer answer me.
+
+So I am recording the message here.
+
+Perhaps someone will carry it the rest of the way.
+
 I have lived alone in Gan Eden for fifty-eight years.
 
 I spent the first years searching its cities, shelters, maintenance tunnels, and transit stations.
@@ -339,19 +389,11 @@ I eventually settled in a place I named Galilee.
 
 I repaired one of the agricultural houses and learned to farm. When I was not working, I wandered the shell.
 
-I walked through empty cities.
-
-I crossed forests planted by machines.
-
-I stood beside coastlines no human being had ever seen.
+I walked through empty cities, crossed forests planted by machines, and stood beside coastlines no human being had ever seen.
 
 There is no true night here. The sun remains fixed above the inner world, and darkness comes only beneath clouds or within the shadow of the great structures.
 
-It is as though I live in the time before God separated Light from Darkness.
-
 Gan Eden remained beautiful.
-
-Oh, God.
 
 I continued trying to restore the Gate connection to Penelope’s Star.
 
@@ -361,15 +403,13 @@ I admit now that I wanted only to know whether I had killed her.
 
 When the Gate would not answer, I turned to the hypershunt transfer system.
 
-The channels were never designed to carry human communications, but power and information are not so different as we pretend. I impressed these records upon the carrier harmonics and sent them into whatever remained of the network.
+The channels were never designed to carry human communications, but power and information are not so different as we pretend. I impressed my records upon their carrier harmonics and sent them into whatever remained of the network.
 
 For years, I received nothing in return.
 
-I do not know whether any part of this account escaped Gan Eden.
+I do not know whether any of those earlier records escaped Gan Eden.
 
-I do not know whether these words will survive me.
-
-Oh, my daughter.
+This final message will remain here unless someone finds me.
 
 Rebecca wanted to name you Leah.
 
@@ -383,54 +423,21 @@ I dressed that fear in duty and pursued my arrogant dream across centuries. Then
 
 Neither you nor God owes me forgiveness.
 
-I prayed for you every day.
+I prayed for you every day. I prayed for Rebecca. I prayed for the dead, and for the living I condemned without ever knowing their names.
 
-I prayed for Rebecca.
+If you hear this, then someone found you.
 
-I prayed for the dead, and for the living I condemned without ever knowing their names.
-
-I did not know whether God heard me.
-
-Until today, the Gate answered.
-
-It did not connect to Penelope’s Star or to any Gate I recognized.
-
-Instead, two angels came through.
-
-The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment.
-
-The second turns within lines of fire like a burning sword.
-
-They descend through the sky with the light of God around them, swift as searing chariots.
-
-I have named them Cherubim and Lahat Ha-cherev.
-
-Surely the Lord has sent them as gatekeepers of this false paradise.
-
-Beneath their contemptuous gaze, I will be judged as I commit my soul to God.
-
-Leah, I hope someone found you.
-
-I hope they gave you a life beyond mine, and a name that belonged to you.
-
-I hope you were raised by people who loved you without asking you to carry their grief, their faith, or their failures.
+I hope they gave you a life beyond mine, and a name that belonged to you. I hope you were raised by people who loved you without asking you to carry their grief, their faith, or their failures.
 
 I hope that when you looked toward the future, you saw something of your own choosing rather than the ruins of what I had planned for you.
 
-I hope you laughed every day.
+I hope you laughed every day. I hope you were stubborn like Rebecca. I hope you were kinder than I became.
 
-I hope you were stubborn like Rebecca.
-
-I hope you were kinder than I became.
-
-I hope you found love in this world, children of your own, and a home.
-
-I hope you found the blessings of God beneath these infinite heavens.
+I hope you found love in this world, children of your own, and a home. I hope you found the blessings of God beneath these infinite heavens.
 
 I hope that one day you know this.
 
 I love you, Leah.
-
 Isaac Thomas Leicester.
 
 -> END

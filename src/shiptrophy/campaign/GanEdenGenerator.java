@@ -23,10 +23,10 @@ import shiptrophy.campaign.terrain.AltitudeWarningTerrainPlugin;
 /**
  * Generates the prototype Dyson-sphere interior called Gan Eden.
  *
- * Gan Eden remains cut off from ordinary hyperspace. Isa's quest adds its
- * internal transit ring as the route in and out. The four settlement districts
- * remain usable during the Aureate siege; defeating both named Golden Shards
- * unlocks only the Space Elevator.
+ * Gan Eden begins cut off from ordinary hyperspace. Isa's quest adds its
+ * internal transit ring as the initial route in and out. The first complete
+ * defeat of the Golden Shards permanently opens a conventional jump point;
+ * later guardian waves never seal it again.
  */
 public final class GanEdenGenerator {
     public static final String SYSTEM_ID = "ship_trophy_gan_eden";
@@ -38,6 +38,9 @@ public final class GanEdenGenerator {
     public static final String ARRIVAL_RING_TYPE = "ship_trophy_gan_eden_arrival_ring";
     public static final String HYPERSPACE_JUMP_ID =
             "ship_trophy_gan_eden_hyperspace_jump";
+    public static final String HEAVENS_SCAR_TYPE =
+            "ship_trophy_gan_eden_heavens_scar";
+    public static final String HEAVENS_SCAR_NAME = "Heavens Scar";
     public static final String SPACE_ELEVATOR_ID =
             "ship_trophy_gan_eden_space_elevator";
     public static final String SPACE_ELEVATOR_TYPE =
@@ -58,15 +61,17 @@ public final class GanEdenGenerator {
     public static final String SURFACE_SITE_TYPE =
             "ship_trophy_gan_eden_surface_site";
     public static final String CINDERWAKE_SITE_TYPE =
-            "ship_trophy_gan_eden_cinderwake_site";
+            "ship_trophy_gan_eden_volcanic_cinderwake_site";
     public static final String RIMEWELL_SITE_TYPE =
-            "ship_trophy_gan_eden_rimewell_site";
+            "ship_trophy_gan_eden_frozen_rimewell_site";
     public static final String TREE_OF_LIFE_SITE_TYPE =
-            "ship_trophy_gan_eden_tree_of_life_site";
+            "ship_trophy_gan_eden_terran_tree_of_life_site";
     public static final String PELAGOS_SITE_TYPE =
-            "ship_trophy_gan_eden_pelagos_site";
+            "ship_trophy_gan_eden_water_pelagos_site";
     public static final String SURFACE_SITE_MEMORY_KEY =
             "$shipTrophyGanEdenSurfaceSite";
+    private static final String ECONOMY_RELEASED_MEMORY_KEY =
+            "$shipTrophyGanEdenEconomyReleased";
 
     public static final float WARNING_INNER_RADIUS = 1650f;
     public static final float HARD_SURFACE_RADIUS = 2050f;
@@ -79,8 +84,14 @@ public final class GanEdenGenerator {
     private static final String WARNING_BAND_ID = "ship_trophy_gan_eden_warning_band";
     private static final String HYPERSPACE_LINK_GENERATED_KEY =
             "$shipTrophyGanEdenHyperspaceLinkGenerated";
-    private static final float SEALED_HYPERSPACE_X = 100000f;
-    private static final float SEALED_HYPERSPACE_Y = 100000f;
+    private static final String HYPERSPACE_PLACEMENT_VERSION_KEY =
+            "$shipTrophyGanEdenHyperspacePlacementVersion";
+    private static final int HYPERSPACE_PLACEMENT_VERSION = 1;
+    private static final float TRANSIT_OFFSET_X_FRACTION = 0.06f;
+    private static final float TRANSIT_OFFSET_Y_FRACTION = 0.06f;
+    private static final float MIN_TRANSIT_OFFSET_X = 6000f;
+    private static final float MIN_TRANSIT_OFFSET_Y = 4500f;
+    private static final float OPEN_HYPERSPACE_RADIUS = 3500f;
     private static final String[] SURFACE_SITE_IDS = {
         CINDERWAKE_ID,
         RIMEWELL_ID,
@@ -101,7 +112,9 @@ public final class GanEdenGenerator {
             }
             if (system == null) return;
 
-            configureSilo(system);
+            boolean conventionalAccessOpen =
+                    GanEdenAmbushScript.isDefeated();
+            configureSystem(system, conventionalAccessOpen);
             PlanetAPI star = ensureStar(system);
             if (star == null) return;
 
@@ -110,7 +123,12 @@ public final class GanEdenGenerator {
             ensureInteriorSurface(system, star);
             ensureAltitudeWarning(system, star);
             ensureArrivalRing(system, star);
-            removeConventionalHyperspaceAccess(system);
+            if (conventionalAccessOpen) {
+                ensureConventionalHyperspaceAccess(system, star);
+            } else {
+                removeConventionalHyperspaceAccess(system);
+                ensureHeavensScar(system, star);
+            }
 
         } catch (RuntimeException ex) {
             // A partially generated experimental system should never prevent
@@ -141,11 +159,9 @@ public final class GanEdenGenerator {
         StarSystemAPI system = Global.getSector().createStarSystem(SYSTEM_NAME);
         if (system == null) return null;
 
-        // This location is not used for travel; it merely keeps a transient
-        // anchor, should another mod force one to be created, away from the
-        // playable Sector until removeHyperspaceAnchor() runs.
-        system.getLocation().set(
-                SEALED_HYPERSPACE_X, SEALED_HYPERSPACE_Y);
+        // configureSystem() assigns a sector-relative position. Keeping the
+        // initial token at the origin avoids baking vanilla map dimensions
+        // into saves created by sector-overhaul mods.
         system.setBaseName(SYSTEM_NAME);
         system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setLightColor(new Color(255, 238, 190));
@@ -156,15 +172,31 @@ public final class GanEdenGenerator {
         return system;
     }
 
-    private static void configureSilo(StarSystemAPI system) {
-        system.addTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
-        system.addTag(Tags.THEME_HIDDEN);
-        system.addTag(Tags.DO_NOT_SHOW_STRANDED_DIALOG);
+    private static void configureSystem(
+            StarSystemAPI system, boolean conventionalAccessOpen) {
+        boolean placementChanged = ensureHyperspacePlacement(system);
+        if (placementChanged) {
+            clearAutogeneratedHyperspaceLinks(system);
+            system.getMemoryWithoutUpdate().set(
+                    HYPERSPACE_PLACEMENT_VERSION_KEY,
+                    HYPERSPACE_PLACEMENT_VERSION);
+        }
+        if (conventionalAccessOpen) {
+            system.removeTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
+            system.removeTag(Tags.DO_NOT_SHOW_STRANDED_DIALOG);
+            system.removeTag(Tags.THEME_HIDDEN);
+            system.addTag(Tags.THEME_SPECIAL);
+            system.setDoNotShowIntelFromThisLocationOnMap(false);
+            system.setMaxRadiusInHyperspace(OPEN_HYPERSPACE_RADIUS);
+        } else {
+            system.addTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
+            system.addTag(Tags.DO_NOT_SHOW_STRANDED_DIALOG);
+            system.addTag(Tags.THEME_HIDDEN);
+            system.removeTag(Tags.THEME_SPECIAL);
+            system.setDoNotShowIntelFromThisLocationOnMap(true);
+            system.setMaxRadiusInHyperspace(0f);
+        }
         system.addTag(Tags.DO_NOT_RESPAWN_PLAYER_IN);
-        system.getLocation().set(
-                SEALED_HYPERSPACE_X, SEALED_HYPERSPACE_Y);
-        system.setDoNotShowIntelFromThisLocationOnMap(true);
-        system.setMaxRadiusInHyperspace(0f);
         system.addTag(Tags.THEME_MISC_SKIP);
         system.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
         system.addTag(Tags.SYSTEM_ALREADY_USED_FOR_STORY);
@@ -173,6 +205,28 @@ public final class GanEdenGenerator {
         system.setBackgroundTextureFilename("graphics/backgrounds/wormhole_dest_black.jpg");
         system.setMapGridWidthOverride(6500f);
         system.setMapGridHeightOverride(6500f);
+    }
+
+    /** Places Gan Eden near, but not on top of, its northeast transit system. */
+    private static boolean ensureHyperspacePlacement(StarSystemAPI system) {
+        if (system.getMemoryWithoutUpdate().getInt(
+                HYPERSPACE_PLACEMENT_VERSION_KEY)
+                >= HYPERSPACE_PLACEMENT_VERSION) {
+            return false;
+        }
+
+        float width = GanEdenTransitSystemGenerator
+                .getConfiguredSectorWidth();
+        float height = GanEdenTransitSystemGenerator
+                .getConfiguredSectorHeight();
+        float x = GanEdenTransitSystemGenerator.getTargetHyperspaceX()
+                - Math.max(MIN_TRANSIT_OFFSET_X,
+                        width * TRANSIT_OFFSET_X_FRACTION);
+        float y = GanEdenTransitSystemGenerator.getTargetHyperspaceY()
+                - Math.max(MIN_TRANSIT_OFFSET_Y,
+                        height * TRANSIT_OFFSET_Y_FRACTION);
+        system.getLocation().set(x, y);
+        return true;
     }
 
     private static PlanetAPI ensureStar(StarSystemAPI system) {
@@ -317,9 +371,14 @@ public final class GanEdenGenerator {
 
         boolean open = GanEdenAmbushScript.isDefeated();
         if (open) {
-            // Victory releases the settlements economically even though the
-            // sphere itself remains reachable only through its transit Gate.
-            market.setEconGroup(null);
+            // Release the quest-owned economy silo once. After that, do not
+            // overwrite a grouping assigned by a colony overhaul on load.
+            if (!market.getMemoryWithoutUpdate().getBoolean(
+                    ECONOMY_RELEASED_MEMORY_KEY)) {
+                market.setEconGroup(null);
+                market.getMemoryWithoutUpdate().set(
+                        ECONOMY_RELEASED_MEMORY_KEY, true);
+            }
             if (market.hasCondition(SANCTUARY_CONDITION_ID)) {
                 market.removeCondition(SANCTUARY_CONDITION_ID);
             }
@@ -328,6 +387,8 @@ public final class GanEdenGenerator {
             // economy group gives this colony no eligible import/export
             // partners, including the other sealed Gan Eden colony sites.
             market.setEconGroup(market.getId());
+            market.getMemoryWithoutUpdate().unset(
+                    ECONOMY_RELEASED_MEMORY_KEY);
             if (!market.hasCondition(SANCTUARY_CONDITION_ID)) {
                 market.addCondition(SANCTUARY_CONDITION_ID);
             }
@@ -366,15 +427,24 @@ public final class GanEdenGenerator {
         }
         if (site == null) return null;
 
-        if (!siteType.equals(site.getTypeId())) {
+        MarketAPI initialMarket = site.getMarket();
+        boolean establishedColony = initialMarket != null
+                && !initialMarket.isPlanetConditionMarketOnly();
+
+        // Migrate unclaimed sites to the biome-bearing compatibility types,
+        // but never undo a type change made to an established colony by AotD,
+        // TASC, DIY Planets, or another terraforming system.
+        if (!establishedColony && !siteType.equals(site.getTypeId())) {
             site.changeType(
                     siteType,
                     new java.util.Random(id.hashCode()));
         }
         site.setRadius(44f);
-        site.getSpec().setPlanetColor(new Color(255, 255, 255, 255));
-        site.getSpec().setIconColor(new Color(190, 195, 200, 255));
-        site.applySpecChanges();
+        if (!establishedColony || isManagedSurfaceType(site.getTypeId())) {
+            site.getSpec().setPlanetColor(new Color(255, 255, 255, 255));
+            site.getSpec().setIconColor(new Color(190, 195, 200, 255));
+            site.applySpecChanges();
+        }
         site.setFixedLocation(
                 star.getLocation().x + cosDegrees(angle) * surfaceRadius,
                 star.getLocation().y + sinDegrees(angle) * surfaceRadius);
@@ -396,7 +466,7 @@ public final class GanEdenGenerator {
             // to false. Never flip it back or overwrite the player's name on
             // a later load; only the still-unclaimed surface site is a
             // planet-condition-only market.
-            boolean establishedColony = !market.isPlanetConditionMarketOnly();
+            establishedColony = !market.isPlanetConditionMarketOnly();
             if (!establishedColony) {
                 site.setName(name);
                 market.setPlanetConditionMarketOnly(true);
@@ -406,11 +476,14 @@ public final class GanEdenGenerator {
             if (created) {
                 market.setSurveyLevel(MarketAPI.SurveyLevel.NONE);
             }
-            for (String condition : conditions) {
-                if (isResourceCondition(condition)) {
-                    resourcesChanged |= ensureMaximumResourceCondition(market, condition);
-                } else if (created && !market.hasCondition(condition)) {
-                    market.addCondition(condition);
+            if (!establishedColony) {
+                for (String condition : conditions) {
+                    if (isResourceCondition(condition)) {
+                        resourcesChanged |= ensureMaximumResourceCondition(
+                                market, condition);
+                    } else if (created && !market.hasCondition(condition)) {
+                        market.addCondition(condition);
+                    }
                 }
             }
             if (resourcesChanged) market.reapplyConditions();
@@ -418,6 +491,19 @@ public final class GanEdenGenerator {
             site.setName(name);
         }
         return site;
+    }
+
+    private static boolean isManagedSurfaceType(String typeId) {
+        if (typeId == null) return false;
+        return SURFACE_SITE_TYPE.equals(typeId)
+                || CINDERWAKE_SITE_TYPE.equals(typeId)
+                || RIMEWELL_SITE_TYPE.equals(typeId)
+                || TREE_OF_LIFE_SITE_TYPE.equals(typeId)
+                || PELAGOS_SITE_TYPE.equals(typeId)
+                || "ship_trophy_gan_eden_cinderwake_site".equals(typeId)
+                || "ship_trophy_gan_eden_rimewell_site".equals(typeId)
+                || "ship_trophy_gan_eden_tree_of_life_site".equals(typeId)
+                || "ship_trophy_gan_eden_pelagos_site".equals(typeId);
     }
 
     /** Removes flat marker overlays created by the abandoned visibility experiment. */
@@ -606,14 +692,65 @@ public final class GanEdenGenerator {
         }
     }
 
-    /** Removes the short-lived conventional route from existing saves too. */
+    /**
+     * Permanently opens Gan Eden after the first complete Golden Omega win.
+     * The defeated flag is never cleared by the repeat-wave scheduler, so the
+     * route remains present while later guardian fleets respawn.
+     */
+    private static void ensureConventionalHyperspaceAccess(
+            StarSystemAPI system, PlanetAPI star) {
+        SectorEntityToken existing = system.getEntityById(
+                HYPERSPACE_JUMP_ID);
+        JumpPointAPI jump = existing instanceof JumpPointAPI
+                ? (JumpPointAPI) existing
+                : null;
+        if (existing != null && jump == null) {
+            system.removeEntity(existing);
+        }
+
+        if (jump == null) {
+            jump = Global.getFactory().createJumpPoint(
+                    HYPERSPACE_JUMP_ID, HEAVENS_SCAR_NAME);
+            jump.setRelatedPlanet(star);
+            jump.setStandardWormholeToHyperspaceVisual();
+            system.addEntity(jump);
+        }
+        jump.setName(HEAVENS_SCAR_NAME);
+        jump.setCustomDescriptionId(HEAVENS_SCAR_TYPE);
+        jump.setCircularOrbit(star, 215f, 1250f, 100000f);
+        jump.setDiscoverable(null);
+        jump.setSensorProfile(null);
+        jump.addTag(Tags.STORY_CRITICAL);
+        jump.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+
+        boolean hasHyperspaceSide =
+                system.getAutogeneratedJumpPointsInHyper() != null
+                && !system.getAutogeneratedJumpPointsInHyper().isEmpty();
+        if (!hasHyperspaceSide
+                || !system.getMemoryWithoutUpdate().getBoolean(
+                        HYPERSPACE_LINK_GENERATED_KEY)) {
+            system.autogenerateHyperspaceJumpPoints(true, false);
+            system.getMemoryWithoutUpdate().set(
+                    HYPERSPACE_LINK_GENERATED_KEY, true);
+        }
+    }
+
+    /** Removes conventional access until the first guardian victory. */
     private static void removeConventionalHyperspaceAccess(
             StarSystemAPI system) {
         SectorEntityToken legacyJump = system.getEntityById(
                 HYPERSPACE_JUMP_ID);
-        if (legacyJump != null) {
+        if (legacyJump instanceof JumpPointAPI) {
             system.removeEntity(legacyJump);
         }
+
+        clearAutogeneratedHyperspaceLinks(system);
+    }
+
+    /** Clears only the hyperspace-side link and anchor, not in-system POIs. */
+    private static void clearAutogeneratedHyperspaceLinks(
+            StarSystemAPI system) {
+        if (system == null) return;
 
         if (system.getAutogeneratedJumpPointsInHyper() != null) {
             for (JumpPointAPI jump : new ArrayList<JumpPointAPI>(
@@ -632,6 +769,37 @@ public final class GanEdenGenerator {
             anchor.getContainingLocation().removeEntity(anchor);
         }
         system.setHyperspaceAnchor(null);
+    }
+
+    /**
+     * Keeps the shell rupture visible before it stabilizes into a jump point.
+     * The POI and its post-victory jump share an id, name, orbit, and
+     * description so the transition reads as a change of state rather than a
+     * second object appearing nearby.
+     */
+    private static void ensureHeavensScar(
+            StarSystemAPI system, PlanetAPI star) {
+        SectorEntityToken scar = system.getEntityById(HYPERSPACE_JUMP_ID);
+        if (scar instanceof JumpPointAPI) {
+            system.removeEntity(scar);
+            scar = null;
+        }
+        if (scar == null) {
+            scar = system.addCustomEntity(
+                    HYPERSPACE_JUMP_ID,
+                    HEAVENS_SCAR_NAME,
+                    HEAVENS_SCAR_TYPE,
+                    Factions.NEUTRAL);
+        }
+        if (scar == null) return;
+
+        scar.setName(HEAVENS_SCAR_NAME);
+        scar.setCustomDescriptionId(HEAVENS_SCAR_TYPE);
+        scar.setCircularOrbit(star, 215f, 1250f, 100000f);
+        scar.setDiscoverable(null);
+        scar.setSensorProfile(null);
+        scar.addTag(Tags.STORY_CRITICAL);
+        scar.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
     }
 
     private static void ensureArrivalRing(StarSystemAPI system, PlanetAPI star) {

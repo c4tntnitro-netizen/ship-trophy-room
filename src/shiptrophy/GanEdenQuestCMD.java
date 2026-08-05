@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
@@ -41,20 +42,6 @@ public final class GanEdenQuestCMD implements CommandPlugin {
                     dialog.getInteractionTarget(),
                     value(params, 1, memoryMap));
         }
-        if ("isSecondHypershuntCrisis".equals(command)) {
-            return GanEdenHypershuntManager.isSecondHypershuntCrisis(
-                    dialog.getInteractionTarget());
-        }
-        if ("isSecondHypershuntCrisisIsaCaptain".equals(command)) {
-            return GanEdenHypershuntManager
-                    .isSecondHypershuntCrisisIsaCaptain(
-                            dialog.getInteractionTarget());
-        }
-        if ("isSecondHypershuntCrisisIsaOnBridge".equals(command)) {
-            return GanEdenHypershuntManager
-                    .isSecondHypershuntCrisisIsaOnBridge(
-                            dialog.getInteractionTarget());
-        }
         if ("isGoldenOmega".equals(command)) {
             return GanEdenAmbushScript.isGoldenFleet(
                     dialog.getInteractionTarget());
@@ -70,10 +57,6 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         }
         if ("prepareHypershuntGuard".equals(command)) {
             GanEdenHypershuntManager.prepareGuard(dialog);
-            return true;
-        }
-        if ("prepareSecondHypershuntCrisis".equals(command)) {
-            GanEdenHypershuntManager.prepareSecondHypershuntCrisis(dialog);
             return true;
         }
         if ("canPayHypershuntPirates".equals(command)) {
@@ -232,6 +215,12 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return GanEdenQuestManager.canTransitFromGate(
                     dialog.getInteractionTarget());
         }
+        if ("canUseJanusGate".equals(command)) {
+            return canUseJanusGate();
+        }
+        if ("lacksUsableJanusGate".equals(command)) {
+            return !canUseJanusGate();
+        }
         if ("isExternalRing".equals(command)) {
             return GanEdenQuestManager.isAtLeast(Stage.GAN_EDEN_REVEALED)
                     && isTarget(dialog, GanEdenQuestManager.EXTERNAL_RING_ID);
@@ -243,6 +232,7 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return isTarget(dialog, GanEdenGenerator.ARRIVAL_RING_ID);
         }
         if ("transitIn".equals(command)) {
+            if (!canUseJanusGate()) return false;
             GanEdenQuestManager.transitIntoGanEden(
                     dialog.getInteractionTarget());
             return true;
@@ -253,6 +243,14 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return true;
         }
         return false;
+    }
+
+    /** Mirrors vanilla Gate access: acquired Janus Device plus integration. */
+    private static boolean canUseJanusGate() {
+        if (Global.getSector() == null) return false;
+        MemoryAPI global = Global.getSector().getMemoryWithoutUpdate();
+        return global.getBoolean("$gatesActive")
+                && global.getBoolean("$playerCanUseGates");
     }
 
     private static void showIsa(InteractionDialogAPI dialog) {

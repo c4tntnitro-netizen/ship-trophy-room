@@ -48,6 +48,14 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
             (long) (5d * 1_000_000_000d);
     private static final long GOLDEN_OMEGA_INTRO_DURATION_NANOS =
             (long) (11.6d * 1_000_000_000d);
+    private static final long GOLDEN_OMEGA_MUSIC_RETRY_NANOS =
+            (long) (0.75d * 1_000_000_000d);
+    private static final String GOLDEN_OMEGA_SILENCE_FILE =
+            "ship_trophy_golden_omega_silent_channel.ogg";
+    private static final String GOLDEN_OMEGA_INTRO_FILE =
+            "ship_trophy_strike_from_the_sky_intro.ogg";
+    private static final String GOLDEN_OMEGA_LOOP_FILE =
+            "ship_trophy_strike_from_the_sky_loop.ogg";
     private static final String ATMOSPHERIC_FLOW_ID =
             "ship_trophy_gan_eden_atmospheric_flow";
     private static final String ATMOSPHERIC_FLOW_NAME =
@@ -131,12 +139,17 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
                             ? null : context.getPlayerFleet())
                     || isInGanEden(context == null
                             ? null : context.getOtherFleet());
-            if (atmospheric) beginGoldenOmegaMusic();
+            if (atmospheric) {
+                // Reserve ownership before vanilla builds the battle. The
+                // campaign music scripts can advance once during the
+                // confirmation-dialog -> combat transition; without this
+                // early, side-effect-free reservation they may briefly start
+                // the Log V loop after vanilla's encounter track but before
+                // afterDefinitionLoad() installs the authored handoff.
+                reserveGoldenOmegaMusic();
+            }
             // Retain vanilla deployment, objectives, map size, and terrain.
             super.initBattle(context, loader);
-            // super.initBattle() may claim the custom-music channel for the
-            // Remnant encounter. Reassert authored ownership immediately.
-            if (atmospheric) beginGoldenOmegaMusic();
             if (atmospheric) {
                 // Vanilla may select one of Gan Eden's colonizable PlanetAPI
                 // anchors as combat scenery. Suppress that planet and keep
@@ -152,7 +165,12 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
         @Override
         public void afterDefinitionLoad(CombatEngineAPI engine) {
             super.afterDefinitionLoad(engine);
+            boolean musicReady = false;
             if (atmospheric) {
+                // Establish a single owner after vanilla has completed battle
+                // setup. Repeated pre-setup pause/restart calls can leave the
+                // sound engine with several queued streams and no active one.
+                musicReady = beginGoldenOmegaMusic();
                 GanEdenFinalLogMusicScript.suspendForCombat();
                 GanEdenPostQuestMusicScript.suspendForCombat();
                 engine.setRenderStarfield(false);
@@ -166,11 +184,10 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
                 engine.addPlugin(new IsaEncounterChatter(
                         engine, ivoryCustodians));
             }
-            if (!atmospheric) return;
+            if (!atmospheric || !musicReady) return;
             // Claim music ownership now, but cue the authored intro from live
             // combat frames. Starsector starts its own combat track after this
             // callback and would otherwise overwrite an early custom stream.
-            if (!beginGoldenOmegaMusic()) return;
             engine.addPlugin(new GoldenOmegaMusic(engine));
         }
     }
@@ -219,11 +236,9 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
     }
 
     private static boolean beginGoldenOmegaMusic() {
-        goldenOmegaMusicActive = true;
+        reserveGoldenOmegaMusic();
         try {
             Global.getSoundPlayer().setSuspendDefaultMusicPlayback(true);
-            Global.getSoundPlayer().pauseCustomMusic();
-            Global.getSoundPlayer().pauseMusic();
             return true;
         } catch (RuntimeException ex) {
             System.err.println(
@@ -233,6 +248,20 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
             restoreGoldenOmegaMusic();
             return false;
         }
+    }
+
+    /**
+     * Marks the campaign music channel as spoken for without touching the
+     * asynchronous sound engine. Actual stream replacement remains deferred
+     * until vanilla has finished battle construction.
+     */
+    private static void reserveGoldenOmegaMusic() {
+        goldenOmegaMusicActive = true;
+    }
+
+    /** True while atmospheric combat owns Starsector's global music channel. */
+    public static boolean isGoldenOmegaMusicActive() {
+        return goldenOmegaMusicActive;
     }
 
     /**
@@ -343,12 +372,15 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
     private static final class GoldenOmegaMusic
             extends BaseEveryFrameCombatPlugin {
         private final CombatEngineAPI engine;
-        private boolean introPlayed;
-        private boolean loopPlayed;
-        private boolean silenceClaimed;
+        private boolean introRequested;
+        private boolean loopRequested;
+        private boolean silenceRequested;
+        private boolean silenceActive;
+        private boolean introActive;
         private boolean restored;
-        private final long battleStartedAt = System.nanoTime();
+        private long silenceStartedAt = -1L;
         private long introStartedAt = -1L;
+        private long lastMusicRequestAt = -1L;
 
         private GoldenOmegaMusic(CombatEngineAPI engine) {
             this.engine = engine;
@@ -362,56 +394,123 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
                 return;
             }
 
-            if (!silenceClaimed) {
-                silenceClaimed = true;
+            // Audio stream replacement is asynchronous. Request each phase
+            // once, return control to Starsector's audio thread, and do not
+            // start that phase's clock until getCurrentMusicId() confirms the
+            // exact OGG is active. This is important on repeat encounters,
+            // where a prior Gan Eden custom stream may still occupy the
+            // channel when combat is constructed.
+            long now = System.nanoTime();
+            if (!silenceRequested) {
+                silenceRequested = true;
                 // An inaudible custom music set occupies the same channel as
                 // vanilla Remnant music. This preserves the five-second cue
                 // without allowing the default track to leak into it.
-                if (!playMusic(
+                requestMusic(
+                        now,
                         GOLDEN_OMEGA_MUSIC_SILENCE,
-                        true,
-                        0,
-                        "silent cue")) {
-                    restored = true;
-                    restoreGoldenOmegaMusic();
-                    return;
-                }
+                        "silent cue");
+                return;
             }
 
             // Audio continues while the deployment screen or combat is
             // paused, so music transitions must use wall-clock time rather
             // than unpaused simulation time.
-            long now = System.nanoTime();
+            if (!silenceActive) {
+                if (isCurrentMusic(GOLDEN_OMEGA_SILENCE_FILE)) {
+                    silenceActive = true;
+                    silenceStartedAt = now;
+                } else {
+                    retryMusic(
+                            now,
+                            GOLDEN_OMEGA_MUSIC_SILENCE,
+                            GOLDEN_OMEGA_SILENCE_FILE,
+                            "silent cue");
+                    return;
+                }
+            }
 
-            if (!introPlayed) {
-                if (now - battleStartedAt
+            if (!introRequested) {
+                if (now - silenceStartedAt
                         < GOLDEN_OMEGA_INTRO_CUE_NANOS) return;
-                introPlayed = true;
-                introStartedAt = now;
-                if (!playMusic(
+                introRequested = true;
+                requestMusic(
+                        now,
                         GOLDEN_OMEGA_MUSIC_INTRO,
                         // Starsector releases a non-looping music stream
                         // roughly 0.9 seconds before this OGG's sample-true
                         // endpoint. Retain channel ownership; the dedicated
                         // loop replaces it at exactly 11.6 seconds below.
-                        true,
-                        0,
-                        "intro")) {
-                    restored = true;
-                    restoreGoldenOmegaMusic();
-                }
+                        "intro");
                 return;
             }
 
-            if (loopPlayed
-                    || now - introStartedAt
-                            < GOLDEN_OMEGA_INTRO_DURATION_NANOS) return;
+            if (!introActive) {
+                if (isCurrentMusic(GOLDEN_OMEGA_INTRO_FILE)) {
+                    introActive = true;
+                    introStartedAt = now;
+                } else {
+                    retryMusic(
+                            now,
+                            GOLDEN_OMEGA_MUSIC_INTRO,
+                            GOLDEN_OMEGA_INTRO_FILE,
+                            "intro");
+                    return;
+                }
+            }
 
-            loopPlayed = true;
-            if (!playMusic(
-                    GOLDEN_OMEGA_MUSIC_LOOP, true, 0, "loop")) {
+            if (!loopRequested) {
+                if (now - introStartedAt
+                        < GOLDEN_OMEGA_INTRO_DURATION_NANOS) return;
+
+                loopRequested = true;
+                requestMusic(
+                        now, GOLDEN_OMEGA_MUSIC_LOOP, "loop");
+                return;
+            }
+
+            // Music-switcher mods and late encounter callbacks can replace a
+            // custom stream after it was requested. Confirm the loop really
+            // owns the channel and reassert it at a bounded rate if needed.
+            if (!isCurrentMusic(GOLDEN_OMEGA_LOOP_FILE)) {
+                retryMusic(
+                        now,
+                        GOLDEN_OMEGA_MUSIC_LOOP,
+                        GOLDEN_OMEGA_LOOP_FILE,
+                        "loop");
+            }
+        }
+
+        private void retryMusic(
+                long now,
+                String musicSet,
+                String expectedFile,
+                String phase) {
+            if (isCurrentMusic(expectedFile)) return;
+            if (lastMusicRequestAt >= 0L
+                    && now - lastMusicRequestAt
+                            < GOLDEN_OMEGA_MUSIC_RETRY_NANOS) {
+                return;
+            }
+            requestMusic(now, musicSet, phase);
+        }
+
+        private void requestMusic(
+                long now, String musicSet, String phase) {
+            lastMusicRequestAt = now;
+            if (!playMusic(musicSet, true, 0, phase)) {
                 restored = true;
                 restoreGoldenOmegaMusic();
+            }
+        }
+
+        private boolean isCurrentMusic(String expectedFile) {
+            if (expectedFile == null) return false;
+            try {
+                return expectedFile.equals(
+                        Global.getSoundPlayer().getCurrentMusicId());
+            } catch (RuntimeException ex) {
+                return false;
             }
         }
 
@@ -421,6 +520,7 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
                 int fadeInSeconds,
                 String phase) {
             try {
+                Global.getSoundPlayer().setSuspendDefaultMusicPlayback(true);
                 Global.getSoundPlayer().playCustomMusic(
                         0, fadeInSeconds, musicSet, loop);
                 return true;

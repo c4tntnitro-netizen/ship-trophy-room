@@ -18,11 +18,12 @@ public final class GanEdenQuestScript implements EveryFrameScript {
     private static final Color ISA_COMMS_COLOR =
             new Color(244, 163, 79);
     private static final String[] ISA_ENTRY_COMMS = {
-        "Isa: \"...oh.\"",
-        "Isa: \"Oh! Oh, look at it!\"",
         "Isa: \"Captain, it's beautiful.\"",
-        "Isa: \"It's so beautiful.\"",
     };
+    private static final String ISA_TRANSIT_COMMS =
+            "Isa: \"Are these... all broken Hypershunts?\"";
+    private static final String ISA_TRANSIT_COMMS_SHOWN_KEY =
+            "$shipTrophyIsaPowerTransitCommsShown";
 
     private float interval;
     private boolean locationInitialized;
@@ -52,9 +53,36 @@ public final class GanEdenQuestScript implements EveryFrameScript {
         GanEdenQuestManager.ensureForCurrentSave();
         GanEdenQuestManager.checkHypershunts();
         GanEdenQuestManager.completeIfReady();
-        tryShowHypershuntReprimand();
+        tryShowTransitEntryComms();
         tryShowArrivalScene();
         advanceIsaEntryComms(elapsed);
+    }
+
+    private void tryShowTransitEntryComms() {
+        if (Global.getSector().getPlayerFleet() == null
+                || Global.getSector().getPlayerFleet()
+                        .getContainingLocation()
+                        != GanEdenTransitSystemGenerator.findSystem()
+                || !IsaTrophyManager.isIsaOfficerInPlayerFleet()
+                || Global.getSector().getMemoryWithoutUpdate()
+                        .getBoolean(ISA_TRANSIT_COMMS_SHOWN_KEY)) {
+            return;
+        }
+
+        CampaignUIAPI ui = Global.getSector().getCampaignUI();
+        if (ui == null
+                || ui.isShowingDialog()
+                || ui.isShowingMenu()
+                || ui.getCurrentCoreTab() != null) {
+            return;
+        }
+
+        ui.addMessage(
+                new IsaEntryCommsMessage(
+                        ISA_TRANSIT_COMMS, isaPortrait()),
+                MessageClickAction.NOTHING);
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ISA_TRANSIT_COMMS_SHOWN_KEY, true);
     }
 
     private void advanceIsaEntryComms(float amount) {
@@ -161,28 +189,4 @@ public final class GanEdenQuestScript implements EveryFrameScript {
         }
     }
 
-    private void tryShowHypershuntReprimand() {
-        if (!GanEdenHypershuntManager.isCrisisReprimandPending()
-                || Global.getSector().getPlayerFleet() == null) {
-            return;
-        }
-        CampaignUIAPI ui = Global.getSector().getCampaignUI();
-        if (ui == null
-                || ui.isShowingDialog()
-                || ui.isShowingMenu()
-                || ui.getCurrentCoreTab() != null) {
-            return;
-        }
-        GanEdenIsaReprimandDialogPlugin plugin =
-                new GanEdenIsaReprimandDialogPlugin(
-                        GanEdenHypershuntManager.wasIsaCrisisCaptain(),
-                        GanEdenHypershuntManager
-                                .getCrisisReprimandShipName(),
-                        GanEdenHypershuntManager
-                                .getCrisisReprimandDModName());
-        if (ui.showInteractionDialog(
-                plugin, Global.getSector().getPlayerFleet())) {
-            GanEdenHypershuntManager.markCrisisReprimandShown();
-        }
-    }
 }

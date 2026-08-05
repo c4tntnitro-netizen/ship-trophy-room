@@ -21,17 +21,28 @@ public final class GanEdenTransitSystemGenerator {
             "ship_trophy_gan_eden_power_transit_jump";
     public static final String GRAVITY_WELL_ID =
             "ship_trophy_gan_eden_power_transit_well";
+    public static final String ARRIVAL_ANCHOR_ID =
+            "ship_trophy_gan_eden_power_transit_arrival";
 
-    // Core hyperspace is about 164k by 104k. This leaves the system barely
-    // inside its northeast edge and far outside the ordinary constellation
-    // field, while remaining a valid Transverse Jump destination.
-    private static final float HYPERSPACE_X = 70000f;
-    private static final float HYPERSPACE_Y = 42000f;
+    // Preserve the authored vanilla placement as a fraction of the configured
+    // sector dimensions. Nexerelin and other sector overhauls may replace the
+    // 164k-by-104k map with a substantially different one.
+    private static final float DEFAULT_SECTOR_WIDTH = 164000f;
+    private static final float DEFAULT_SECTOR_HEIGHT = 104000f;
+    private static final float HYPERSPACE_X_FRACTION = 70000f / 164000f;
+    private static final float HYPERSPACE_Y_FRACTION = 42000f / 104000f;
     private static final String JUMP_GENERATED_KEY =
             "$shipTrophyGanEdenPowerTransitJumpGenerated";
     private static final String ACCESS_VERSION_KEY =
             "$shipTrophyGanEdenPowerTransitAccessVersion";
-    private static final int ACCESS_VERSION = 2;
+    private static final int ACCESS_VERSION = 5;
+    // Put transverse arrivals beyond the entire megastructure graveyard and
+    // on the far side of the Gate from the parked Ivory Ordo. At this bearing
+    // the nearest authored ruin is still several thousand units away, while
+    // the guardian has room to make a visible approach rather than opening an
+    // interaction on top of the arriving fleet.
+    private static final float ARRIVAL_ANGLE = 210f;
+    private static final float ARRIVAL_DISTANCE = 9000f;
     private static final String DAMAGED_HYPERSHUNT_TYPE =
             "ship_trophy_damaged_coronal_hypershunt";
     private static final String DAMAGED_GATE_HAULER_TYPE =
@@ -76,11 +87,16 @@ public final class GanEdenTransitSystemGenerator {
             if (system == null) return null;
         }
 
-        // Apply placement and access policy on every load so old saves move
-        // cleanly from the Abyss and lose their obsolete jump point.
+        // Migrate placement once per access-layout version. Reasserting an
+        // absolute position on every load would fight sector-map overhauls or
+        // a save-specific relocation performed by another mod.
         system.setName(SYSTEM_NAME);
         system.setBaseName(SYSTEM_NAME);
-        system.getLocation().set(HYPERSPACE_X, HYPERSPACE_Y);
+        if (system.getMemoryWithoutUpdate().getInt(
+                ACCESS_VERSION_KEY) < ACCESS_VERSION) {
+            system.getLocation().set(
+                    getTargetHyperspaceX(), getTargetHyperspaceY());
+        }
         system.setLightColor(new Color(120, 130, 145, 255));
         system.setMaxRadiusInHyperspace(350f);
         system.setDoNotShowIntelFromThisLocationOnMap(false);
@@ -122,6 +138,39 @@ public final class GanEdenTransitSystemGenerator {
         ensureMegastructureGraveyard(system);
         ensureTransverseOnlyAccess(system);
         return gate;
+    }
+
+    static float getTargetHyperspaceX() {
+        return configuredSectorDimension(
+                "sectorWidth", DEFAULT_SECTOR_WIDTH)
+                * HYPERSPACE_X_FRACTION;
+    }
+
+    static float getTargetHyperspaceY() {
+        return configuredSectorDimension(
+                "sectorHeight", DEFAULT_SECTOR_HEIGHT)
+                * HYPERSPACE_Y_FRACTION;
+    }
+
+    static float getConfiguredSectorWidth() {
+        return configuredSectorDimension(
+                "sectorWidth", DEFAULT_SECTOR_WIDTH);
+    }
+
+    static float getConfiguredSectorHeight() {
+        return configuredSectorDimension(
+                "sectorHeight", DEFAULT_SECTOR_HEIGHT);
+    }
+
+    private static float configuredSectorDimension(
+            String settingId, float fallback) {
+        try {
+            float value = Global.getSettings().getFloat(settingId);
+            if (value > 0f) return value;
+        } catch (RuntimeException ignored) {
+            // An overhaul may omit the vanilla setting; retain safe defaults.
+        }
+        return fallback;
     }
 
     private static void ensureMegastructureGraveyard(
@@ -208,16 +257,16 @@ public final class GanEdenTransitSystemGenerator {
     /** Adds the native purple haze used by Transverse-Jump-only systems. */
     private static void ensureNascentGravityWell(
             StarSystemAPI system, boolean realign) {
-        SectorEntityToken gate = system.getEntityById(
-                GanEdenQuestManager.EXTERNAL_RING_ID);
-        if (gate == null) return;
-
         SectorEntityToken existing = Global.getSector().getEntityById(
                 GRAVITY_WELL_ID);
         NascentGravityWellAPI well = existing instanceof NascentGravityWellAPI
                 ? (NascentGravityWellAPI) existing
                 : null;
-        if (existing != null && (well == null || well.getTarget() != gate)) {
+        SectorEntityToken arrival = ensureArrivalAnchor(system, well);
+        if (arrival == null) return;
+
+        if (existing != null
+                && (well == null || well.getTarget() != arrival)) {
             if (existing.getContainingLocation() != null) {
                 existing.getContainingLocation().removeEntity(existing);
             }
@@ -225,15 +274,53 @@ public final class GanEdenTransitSystemGenerator {
         }
 
         if (well == null) {
-            well = Global.getSector().createNascentGravityWell(gate, 50f);
+            well = Global.getSector().createNascentGravityWell(arrival, 50f);
             well.setId(GRAVITY_WELL_ID);
             Global.getSector().getHyperspace().addEntity(well);
             realign = true;
         }
         if (realign) {
             well.autoUpdateHyperLocationBasedOnInSystemEntityAtRadius(
-                    gate, 0f);
+                    arrival, 0f);
         }
+    }
+
+    /**
+     * Keeps Transverse Jump arrivals clear of both the Gate and its guardian.
+     *
+     * The token is intentionally invisible and non-interactive. The nascent
+     * gravity well targets it instead of the Gate, so Starsector places an
+     * arriving fleet in open space while preserving the usual transverse-
+     * jump presentation and mechanics.
+     */
+    private static SectorEntityToken ensureArrivalAnchor(
+            StarSystemAPI system, NascentGravityWellAPI existingWell) {
+        SectorEntityToken arrival = system.getEntityById(ARRIVAL_ANCHOR_ID);
+        if (arrival == null && existingWell != null) {
+            SectorEntityToken target = existingWell.getTarget();
+            if (target != null
+                    && ARRIVAL_ANCHOR_ID.equals(target.getId())
+                    && target.getContainingLocation() == system) {
+                arrival = target;
+            }
+        }
+        if (arrival == null) {
+            arrival = system.createToken(0f, 0f);
+            if (arrival == null) return null;
+            arrival.setId(ARRIVAL_ANCHOR_ID);
+        }
+
+        float radians = (float) Math.toRadians(ARRIVAL_ANGLE);
+        arrival.setFixedLocation(
+                (float) Math.cos(radians) * ARRIVAL_DISTANCE,
+                (float) Math.sin(radians) * ARRIVAL_DISTANCE);
+        arrival.setName("");
+        arrival.setDiscoverable(null);
+        arrival.setSensorProfile(null);
+        arrival.addTag(Tags.NON_CLICKABLE);
+        arrival.addTag(Tags.NO_ENTITY_TOOLTIP);
+        arrival.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+        return arrival;
     }
 
     public static StarSystemAPI findSystem() {

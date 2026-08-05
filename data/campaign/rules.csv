@@ -905,7 +905,7 @@ She hesitates.
 10:ship_trophy_isa_homecoming_accept_cautious:""We’ll visit the hypershunts. We’ll see where they lead.""",Isa formally asks for the player's help.
 shipTrophyIsaShatteredRingHomecomingAcceptCommand,DialogOptionSelected,$option == ship_trophy_isa_homecoming_accept_command,,"Isa gives you a small, crooked smile.
 
-""That a direct order?""","0:ship_trophy_isa_homecoming_direct_order:""Don't make your commanding officer repeat themself.""",Commanding response to Isa's request.
+""That a direct order?""","0:ship_trophy_isa_homecoming_direct_order:""Don't make your CO repeat themself.""",Commanding response to Isa's request.
 shipTrophyIsaShatteredRingHomecomingDirectOrder,DialogOptionSelected,$option == ship_trophy_isa_homecoming_direct_order,FireAll ShipTrophyIsaHomecomingPrepareSearch,"She snaps a salute.
 
 ""Aye-aye, $playerRank.""",,Isa accepts the direct order.
@@ -1238,9 +1238,13 @@ She enlarges the projection.
 
 [Objective updated: Find Isaac Leicester.]",100:ship_trophy_gan_eden_hypershunt_leave:Set a course.,Both routing vectors reveal the isolated physical Power Transit Gate.
 shipTrophyGanEdenHypershuntLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_leave,DismissDialog,,,
-shipTrophyGanEdenExternalRing,OpenInteractionDialog,GanEdenQuestCMD isExternalRing score:50000,"SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","Power Transit Gate - Gan Eden hangs alone at the center of an empty, starless system. Its adamantine surface is awake. Within the aperture, impossible depth folds toward the sealed world beyond.","0:ship_trophy_gan_eden_ring_enter:Enter the Power Transit Gate.
+shipTrophyGanEdenExternalRingLocked,OpenInteractionDialog,"GanEdenQuestCMD isExternalRing score:51000
+GanEdenQuestCMD lacksUsableJanusGate","SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","Power Transit Gate - Gan Eden hangs alone at the center of an empty starless system. Impossible depth shifts within the aperture but the Gate does not answer your fleet. Traversal requires a Janus Device integrated with the fleet.",100:ship_trophy_gan_eden_ring_leave:Leave.,Blocks entry until the Janus Device has been acquired and integrated.
+shipTrophyGanEdenExternalRing,OpenInteractionDialog,"GanEdenQuestCMD isExternalRing score:50000
+GanEdenQuestCMD canUseJanusGate","SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","Power Transit Gate - Gan Eden hangs alone at the center of an empty, starless system. Its adamantine surface is awake. Within the aperture, impossible depth folds toward the sealed world beyond.","0:ship_trophy_gan_eden_ring_enter:Enter the Power Transit Gate.
 100:ship_trophy_gan_eden_ring_leave:Leave.",Quest-gated entrance to Gan Eden.
-shipTrophyGanEdenExternalRingEnter,DialogOptionSelected,$option == ship_trophy_gan_eden_ring_enter,"GanEdenQuestCMD transitIn
+shipTrophyGanEdenExternalRingEnter,DialogOptionSelected,"$option == ship_trophy_gan_eden_ring_enter
+GanEdenQuestCMD canUseJanusGate","GanEdenQuestCMD transitIn
 DismissDialog",,,Transfers the player into Gan Eden.
 shipTrophyGanEdenInternalRing,OpenInteractionDialog,GanEdenQuestCMD isInternalRing score:50000,"SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its connection remains synchronized with Power Transit Gate - Gan Eden.","0:ship_trophy_gan_eden_ring_exit:Traverse the Gate.
 100:ship_trophy_gan_eden_ring_leave:Remain in Gan Eden.",Permanent exit from Gan Eden to the isolated Power Transit Gate.

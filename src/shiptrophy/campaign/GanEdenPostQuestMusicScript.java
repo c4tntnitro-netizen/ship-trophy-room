@@ -43,16 +43,6 @@ public final class GanEdenPostQuestMusicScript implements EveryFrameScript {
     public static void suspendForCombat() {
         if (!active || suspendedForCombat) return;
         suspendedForCombat = true;
-        try {
-            Global.getSoundPlayer().pauseCustomMusic();
-            Global.getSoundPlayer().setSuspendDefaultMusicPlayback(false);
-            Global.getSoundPlayer().restartCurrentMusic();
-        } catch (RuntimeException ex) {
-            System.err.println(
-                    "Hall of Triumph: failed to yield the Gan Eden playlist "
-                            + "to combat.");
-            ex.printStackTrace(System.err);
-        }
     }
 
     @Override
@@ -74,6 +64,15 @@ public final class GanEdenPostQuestMusicScript implements EveryFrameScript {
                 && !GanEdenFinalLogMusicScript.isActive();
         if (!eligible || !isPlayerInGanEden()) {
             if (active) stop();
+            return;
+        }
+
+        // Do this before start(): on an immediate or repeat encounter the
+        // campaign playlist may not have acquired the channel yet, so there
+        // is no active instance for suspendForCombat() to mark. It must still
+        // decline ownership until the battle controller releases it.
+        if (GanEdenBattleCreationPlugin.isGoldenOmegaMusicActive()) {
+            if (active) suspendedForCombat = true;
             return;
         }
 

@@ -479,130 +479,14 @@ ISAAC THOMAS LEICESTER
 VAR guarding_faction = "pather"
 // Valid preview values: "pather", "pirate"
 VAR has_story_point = true
-VAR isa_captaining_ship = true
 
 -> gan_eden_hypershunt_guard
 
 === gan_eden_hypershunt_guard ===
 
-+ [second hypershunt crisis] -> gan_eden_second_hypershunt_crisis
-
 + [pather] -> gan_eden_hypershunt_pather_intro
 
 + [pirate] -> gan_eden_hypershunt_pirate_intro
-
-// ============================================================
-// SECOND HYPERSHUNT CRISIS
-// ============================================================
-
-=== gan_eden_second_hypershunt_crisis ===
-
-{ isa_captaining_ship:
-    -> gan_eden_second_hypershunt_crisis_captain
-- else:
-    -> gan_eden_second_hypershunt_crisis_bridge
-}
-
-=== gan_eden_second_hypershunt_crisis_captain ===
-
-The second hypershunt is already under attack.
-
-Pather demolition ships cling to one of the collector spines. Shaped charges crawl across the black superstructure in glittering chains while scripture floods every open frequency: condemnation of the machine and promises of cleansing fire.
-
-Across the structure, pirate cutting rigs have anchored directly to the transmission vanes. Industrial lasers bite into armor thick enough to roof cities. Salvage tugs wait behind them with their holds open, ready to carry off whatever the crews can tear loose before the Pathers bring the whole structure down.
-
-The two flotillas fire past one another, each too committed to its work to disengage.
-
-Isa sees the charge telemetry.
-
-"No."
-
-She enlarges the carrier spine, watching warning glyphs multiply across the projection.
-
-"This is the only clue we have left. If they destroy that spine, Isaac's record goes with it."
-
-The first Pather charge arms. A pirate tug wrenches a glowing section of armor away from the hypershunt.
-
-The ship carrying Isa rolls out of formation before you can answer.
-
-"Helm, bring us in. All batteries, engage. Get them away from my hypershunt."
-
-+ [Follow Isa into the engagement.] -> gan_eden_hypershunt_crisis_battle
-
-=== gan_eden_second_hypershunt_crisis_bridge ===
-
-The second hypershunt is already under attack.
-
-Pather demolition ships cling to one of the collector spines. Shaped charges crawl across the black superstructure in glittering chains while scripture floods every open frequency: condemnation of the machine and promises of cleansing fire.
-
-Across the structure, pirate cutting rigs have anchored directly to the transmission vanes. Industrial lasers bite into armor thick enough to roof cities. Salvage tugs wait behind them with their holds open, ready to carry off whatever the crews can tear loose before the Pathers bring the whole structure down.
-
-The two flotillas fire past one another, each too committed to its work to disengage.
-
-Isa storms onto the bridge. Before the comm officer can stop her, she opens an all-frequency channel.
-
-"Pathers. Pirates. Back away from the hypershunt. Now."
-
-The first Pather charge arms. A pirate tug wrenches a glowing section of armor away from the transmission vane.
-
-Isa leans over the transmitter.
-
-"That is the only clue I have left. Touch it again and I will kill every last one of you."
-
-Across the display, targeting sensors snap toward your fleet. The two flotillas release their anchors and turn together.
-
-Isa closes the channel and looks at you, the fury draining from her face as battle alarms begin to sound.
-
-+ [Order battle stations.] -> gan_eden_hypershunt_crisis_battle
-
-=== gan_eden_hypershunt_crisis_battle ===
-// Runtime: the existing mixed Mk IV fleet becomes hostile and engages.
-
-{ isa_captaining_ship:
-    -> gan_eden_hypershunt_crisis_reprimand_captain
-- else:
-    -> gan_eden_hypershunt_crisis_reprimand_bridge
-}
-
-=== gan_eden_hypershunt_crisis_reprimand_captain ===
-// Runtime: shown only after the player wins. Isa's commanded ship receives
-// exactly one D-mod before this scene opens.
-
-Once the hypershunt is secure, Isa reports to your bridge. The anger that carried her ship out of formation has burned down to a brittle silence.
-
-Damage control reports permanent structural damage aboard her ship.
-
-[Isa's ship has acquired a D-mod.]
-
-"You broke formation, committed the fleet without an order, and put every ship behind you in the line of fire," you tell her.
-
-Isa starts to answer. "They were destroying it."
-
-"I know exactly what they were doing. You still ask before you start a war."
-
-"You're retaining your command," you say. "But not your freedom. Three months in the brig."
-
-Her jaw works once. Then she looks away. "Understood, Captain."
-
-+ ["Dismissed."] -> END
-
-=== gan_eden_hypershunt_crisis_reprimand_bridge ===
-// Runtime: shown only after the player wins. No D-mod is applied because Isa
-// was not captaining a ship when she forced the engagement.
-
-Once the hypershunt is secure, Isa returns to your bridge. The comm station she commandeered still carries the recording of her threat on its main display.
-
-"You used my bridge to issue an ultimatum and committed this fleet to battle before I gave the order," you tell her.
-
-Isa starts to answer. "They were destroying it."
-
-"I know exactly what they were doing. You still ask before you start a war."
-
-"You're retaining your command," you say. "But not your freedom. Three months in the brig."
-
-Her jaw works once. Then she looks away. "Understood, Captain."
-
-+ ["Dismissed."] -> END
 
 // ============================================================
 // LUDDIC PATH
@@ -765,6 +649,8 @@ With the approach corridor clear, your fleet closes on the hypershunt.
 The structure grows across the forward display until it no longer resembles a machine. Black towers rise through the stellar corona, joined by collector vanes and transmission spines large enough to eclipse cities. Streams of plasma bend around it in slow, incandescent arches.
 
 Isa stands beside the sensor station, slate in hand.
+
+“A Hypershunt... The Engineering of the Gods.”
 
 “We’ll need to map the whole thing.”
 

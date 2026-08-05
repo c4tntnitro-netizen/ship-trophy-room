@@ -172,6 +172,8 @@ The structure grows across the forward display until it no longer resembles a ma
 
 Isa stands beside the sensor station, slate in hand.
 
+“A Hypershunt... The Engineering of the Gods.”
+
 “We’ll need to map the whole thing.”
 
 She begins assigning survey patterns across the fleet.

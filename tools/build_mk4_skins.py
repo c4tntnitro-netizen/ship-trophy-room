@@ -9,13 +9,25 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageEnhance
 
 
 REPO = Path(__file__).resolve().parents[1]
 CORE = Path(r"C:\Program Files (x86)\Fractal Softworks\Starsector\starsector-core")
 OUTPUT_SPRITES = REPO / "graphics" / "ships" / "mk4"
 OUTPUT_SKINS = REPO / "data" / "hulls" / "skins"
+
+
+# Mk IV hulls use a near-black undercoat so the field markings remain legible
+# at campaign-map scale. The overlay tuning is faction-specific: pirate paint
+# stays hot orange and graphic, while the Path's stains remain dark blood-red
+# but gain enough opacity and saturation to read against the blackened armor.
+BASE_BRIGHTNESS = 0.62
+BASE_CONTRAST = 1.14
+OVERLAY_TUNING = {
+    "pirate": {"alpha": 1.30, "brightness": 1.08, "saturation": 1.22, "contrast": 1.10},
+    "pather": {"alpha": 1.75, "brightness": 1.28, "saturation": 1.35, "contrast": 1.18},
+}
 
 
 COMMON = {
@@ -219,14 +231,35 @@ SPECS = [
 ]
 
 
-def render_sprite(source: Path, overlay: Path, output: Path) -> None:
+def render_sprite(
+    source: Path, overlay: Path, output: Path, faction: str
+) -> None:
     base = Image.open(source).convert("RGBA")
+    base_alpha = base.getchannel("A")
+    darkened_rgb = ImageEnhance.Brightness(base.convert("RGB")).enhance(
+        BASE_BRIGHTNESS
+    )
+    darkened_rgb = ImageEnhance.Contrast(darkened_rgb).enhance(BASE_CONTRAST)
+    darkened = darkened_rgb.convert("RGBA")
+    darkened.putalpha(base_alpha)
+
     paint = Image.open(overlay).convert("RGBA").resize(
         base.size, Image.Resampling.LANCZOS
     )
-    paint.putalpha(ImageChops.multiply(paint.getchannel("A"), base.getchannel("A")))
-    rendered = Image.alpha_composite(base, paint)
-    rendered.putalpha(base.getchannel("A"))
+    tuning = OVERLAY_TUNING[faction]
+    paint_alpha = paint.getchannel("A").point(
+        lambda value: min(255, round(value * tuning["alpha"]))
+    )
+    paint_rgb = ImageEnhance.Brightness(paint.convert("RGB")).enhance(
+        tuning["brightness"]
+    )
+    paint_rgb = ImageEnhance.Color(paint_rgb).enhance(tuning["saturation"])
+    paint_rgb = ImageEnhance.Contrast(paint_rgb).enhance(tuning["contrast"])
+    paint = paint_rgb.convert("RGBA")
+    paint.putalpha(ImageChops.multiply(paint_alpha, base_alpha))
+
+    rendered = Image.alpha_composite(darkened, paint)
+    rendered.putalpha(base_alpha)
     output.parent.mkdir(parents=True, exist_ok=True)
     rendered.save(output, optimize=True)
 
@@ -246,6 +279,7 @@ def main() -> None:
             CORE / spec["source"],
             overlays[faction],
             REPO / relative_sprite,
+            faction,
         )
         skin_path = OUTPUT_SKINS / f"{skin_id}.skin"
         skin_path.write_text(json.dumps(skin, indent=4) + "\n", encoding="utf-8")

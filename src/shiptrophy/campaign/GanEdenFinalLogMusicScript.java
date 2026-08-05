@@ -88,15 +88,6 @@ public final class GanEdenFinalLogMusicScript implements EveryFrameScript {
     public static void suspendForCombat() {
         if (!active || suspendedForCombat) return;
         suspendedForCombat = true;
-        try {
-            Global.getSoundPlayer().pauseCustomMusic();
-            Global.getSoundPlayer().setSuspendDefaultMusicPlayback(false);
-            Global.getSoundPlayer().restartCurrentMusic();
-        } catch (RuntimeException ex) {
-            System.err.println(
-                    "Hall of Triumph: failed to yield final-log music to combat.");
-            ex.printStackTrace(System.err);
-        }
     }
 
     public static boolean isActive() {
@@ -245,6 +236,15 @@ public final class GanEdenFinalLogMusicScript implements EveryFrameScript {
 
         if (!isPlayerInGanEden()) {
             stop();
+            return;
+        }
+
+        // Battle construction normally sets this flag directly, but retain
+        // the ownership check here as well. A combat entered on the same
+        // campaign frame as a music-script state change must never let the
+        // Log V owner reacquire the channel from Strike.
+        if (GanEdenBattleCreationPlugin.isGoldenOmegaMusicActive()) {
+            suspendedForCombat = true;
             return;
         }
 

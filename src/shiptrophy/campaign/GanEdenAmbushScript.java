@@ -262,7 +262,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 Global.getSector().getClock().getTimestamp());
         GanEdenGenerator.updateAureateSiegeConditions(system);
         // The first complete victory releases its surface markets into the
-        // Sector economy while Gan Eden remains transit-Gate-only.
+        // Sector economy and permanently opens conventional hyperspace access.
         GanEdenGenerator.ensureGenerated();
     }
 
