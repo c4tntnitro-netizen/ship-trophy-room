@@ -82,17 +82,17 @@ public class TrophySubtypeRegistry {
 
     private static void addFallbackSubtypes() {
         add(new TrophySubtypeSpec("xiv", "XIV Battlegroup", "XIV Battlegroup", "ship_trophy_xiv_legacy",
-                "", 60f, "low-tech", "_xiv|xiv_", "", "xiv|14th|fourteenth", "(xiv)|xiv", "", ""));
+                "", 40f, "low-tech", "_xiv|xiv_", "", "xiv|14th|fourteenth", "(xiv)|xiv", "", ""));
         add(new TrophySubtypeSpec("lp", "Luddic Path", "Luddic Path", "ship_trophy_lp_zeal",
-                "", 60f, "low-tech", "luddic_path|pather", "", "luddic path", "(lp)|luddic path", "", ""));
+                "", 40f, "low-tech", "luddic_path|pather", "", "luddic path", "(lp)|luddic path", "", ""));
         add(new TrophySubtypeSpec("lg", "Lion's Guard", "Lion's Guard", "ship_trophy_lg_pageantry",
-                "", 60f, "midline", "_lg|lg_|executor", "", "lion's guard|lions guard", "(lg)|lion|executor", "", ""));
+                "", 40f, "midline", "_lg|lg_|executor", "", "lion's guard|lions guard", "(lg)|lion|executor", "", ""));
         add(new TrophySubtypeSpec("tt", "Tri-Tachyon", "Tri-Tachyon", "ship_trophy_tt_optimization",
-                "", 60f, "high-tech", "tritachyon|_tt|tt_", "", "tri-tachyon|tritachyon|high tech|high-tech", "(tt)|tri-tachyon", "", ""));
+                "", 40f, "high-tech", "tritachyon|_tt|tt_", "", "tri-tachyon|tritachyon|high tech|high-tech", "(tt)|tri-tachyon", "", ""));
         add(new TrophySubtypeSpec("remnant", "Remnant", "Remnant", "ship_trophy_humanity",
-                "", 60f, "any", "", "", "remnant", "", "", ""));
+                "", 40f, "any", "", "", "remnant", "", "", ""));
         add(new TrophySubtypeSpec("domain_derelict", "Domain Derelicts", "Explorarium", "ship_trophy_memory",
-                "", 40f, "any", "", "", "explorarium|derelict", "", "", ""));
+                "", 20f, "any", "", "", "explorarium|derelict", "", "", ""));
     }
 
     private static void add(TrophySubtypeSpec spec) {

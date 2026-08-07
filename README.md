@@ -18,14 +18,14 @@ Adds a player-colony structure called **Hall of Triumph**.
 
 ## Doctrine unlocks
 
-Showcasing 60 unique DP worth of a doctrine's ships across the Hall of Triumph network teaches the player a 0 OP hullmod:
+Vanilla doctrine unlocks require showcasing 40 unique DP worth of that doctrine's ships across the Hall of Triumph network unless noted otherwise. Optional mod integrations retain their configured thresholds:
 
 - **Legacy**: unlocked by XIV Battlegroup ships; installable on low-tech ships. Adds 100 armor, reduces speed and maneuverability by 8%, and improves flux capacity and dissipation by 5%.
 - **Zeal**: unlocked by Luddic Path ships; installable on low-tech ships. Same speed/range/fighter replacement tradeoff as Unstable Injector, increases crew casualties by 30%, and is incompatible with Unstable Injector. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations.
 - **Pageantry**: unlocked by Lion's Guard ships; installable on midline ships. Acts like Energy Bolt Coherer: +100 energy projectile range, -100 beam range, +25% crew casualties. Its tooltip notes that it counts as a D-mod for calculations such as Derelict Operations, and it is incompatible with Energy Bolt Coherer.
 - **Optimization**: unlocked by Tri-Tachyon/high-tech ships; installable on high-tech ships. Reduces sensor profile by 15 and adds 200 hull integrity. Incompatible with Insulated Engine Assembly.
-- **Humanity**: unlocked by showcasing 60 unique DP of Remnant ships. Reduces the ship's deployment cost to 0 DP, reduces ballistic, energy, and missile fire rate and top speed by 80%, reduces fighter engagement range by 90%, functions as Neural Interface, and is incompatible with Neural Interface.
-- **Memory**: unlocked by showcasing 40 unique DP of Domain Derelict/Explorarium ships and installable only on those ships. Adds 80% hull integrity, 300 armor, and 25/20/15/15 top speed by hull size. Incompatible with Unstable Injector.
+- **Humanity**: unlocked by showcasing 40 unique DP of Remnant ships. Reduces the ship's deployment cost to 0 DP, reduces ballistic, energy, and missile fire rate and top speed by 80%, reduces fighter engagement range by 90%, functions as Neural Interface, and is incompatible with Neural Interface.
+- **Memory**: unlocked by showcasing 20 unique DP of Domain Derelict/Explorarium ships and installable only on those ships. Adds 80% hull integrity, 300 armor, and 25/20/15/15 top speed by hull size. Incompatible with Unstable Injector.
 - **Awe**: unlocked through Isa's five-capital showcase: Onslaught XIV, Paragon, Invictus, Conquest, and Executor. Doubles positive S-mod bonus effects from built-in hullmods; S-mod penalties are not doubled.
 
 Only one Hall of Triumph hullmod can be installed on a ship at a time.

@@ -25,7 +25,7 @@ import shiptrophy.hullmods.LionGuardPageantry;
 import shiptrophy.hullmods.LuddicPathZeal;
 
 public class TrophyNetwork {
-    public static final float DOCTRINE_UNLOCK_DP = 60f;
+    public static final float DOCTRINE_UNLOCK_DP = 40f;
     public static final int UNIQUE_HULLS_FOR_FULL_BONUS = 12;
     public static final int DP_FOR_FULL_BONUS = 240;
 
