@@ -29,7 +29,7 @@ The Ring is Isa's birthplace: salvagers recovered her there as an infant in a cr
 
 After Isa joins the player's officer roster, bringing her to the Shattered Ring triggers a one-time homecoming scene and begins **A Borrowed Name**. An old foreman returns the spacer suit in which she was found, and Isa discovers an identification wafer hidden beneath its scorched name strip. The wafer opens Isaac Thomas Leicester's first surviving personal log and links his work to both surviving Coronal Hypershunts.
 
-The `.ink` files under `dialogue/` are composition and proofreading material only; the mod never loads them at runtime. `data/campaign/rules.csv` is the sole dialogue authority. After reconciling drafted changes into `rules.csv`, run `tools/build_gan_eden_master.ps1` to regenerate the three rules-derived Gan Eden proofreading volumes. `dialogue/shattered_ring.ink` preserves additional Ring setting material.
+The `.ink` files under `dialogue/` are composition and proofreading material only; the mod never loads them at runtime. `data/campaign/rules.csv` is the sole dialogue authority. Run `tools/build_rules_ink.ps1` to regenerate the complete single-file `dialogue/rules.ink` catalog. After reconciling drafted changes into `rules.csv`, run `tools/build_gan_eden_master.ps1` to regenerate the three rules-derived Gan Eden proofreading volumes. `dialogue/shattered_ring.ink` preserves additional Ring setting material.
 
 ## Gan Eden
 
