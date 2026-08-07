@@ -41,7 +41,7 @@ public final class GanEdenClueListener extends BaseCampaignEventListener {
         GanEdenClueManager.consumePlayerClue();
         if (Global.getSector() != null) {
             Global.getSector().getCampaignUI().addMessage(
-                    "Gate receiver decoded: Epitaph — Part I");
+                    "Gate receiver decoded: Log — Part I");
         }
     }
 }

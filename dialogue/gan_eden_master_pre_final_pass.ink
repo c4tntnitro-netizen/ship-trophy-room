@@ -1,18 +1,18 @@
 // Hall of Triumph - A Borrowed Name / Gan Eden Quest Master
 //
-// Standalone proofreading and editing copy of the complete quest line.
-// Runtime dialogue remains implemented by data/campaign/rules.csv and Java.
-// Focused source copies remain in gan_eden_quest.ink, hypershunt.ink, and
-// Logs.ink. Run tools/build_gan_eden_master.ps1 after changing those files.
+// Legacy standalone composition and proofreading copy of the complete quest.
+// Runtime dialogue is implemented by data/campaign/rules.csv and Java; no Ink
+// file is loaded by the mod. Reconcile drafted changes into rules.csv, then run
+// tools/build_gan_eden_master.ps1 to regenerate the rules-derived proof copies.
 //
 // Runtime order:
 // 1. Recruit Isa as an officer and return with her to the Shattered Ring.
 // 2. Recover Personal Log 1765 from the identification wafer in Isa's suit.
-// 3. Investigate both Coronal Hypershunts and recover Epitaph Parts II-III.
+// 3. Investigate both Coronal Hypershunts and recover Log Parts II-III.
 // 4. Defeat the Ivory Custodians at Power Transit Gate - Gan Eden.
 // 5. Enter Gan Eden and recover Part IV at Tree of Life.
 // 6. Defeat Cherubim and Lahat Haharev, releasing Gan Eden's districts.
-// 7. Approach the Space Elevator with Isa and recover Epitaph Final.
+// 7. Approach the Space Elevator with Isa and recover Log Final.
 
 VAR hypershunts_reactivated = 0
 VAR gan_eden_revealed = false
@@ -34,12 +34,12 @@ Complete Gan Eden quest master
 + [Review the Golden Omega confrontation.] -> master_golden_omega
 + [Review the post-battle opening of Gan Eden.] -> master_post_battle
 + [Review the Space Elevator ending.] -> master_space_elevator
-+ [Review Isa's post-quest conversations.] -> master_postquest_talk
++ [Review Isa's conversation about Isaac.] -> master_postquest_talk
 + [Archive: Personal Log 1765 / Part I.] -> one
-+ [Archive: Epitaph Part II.] -> two
-+ [Archive: Epitaph Part III.] -> three
-+ [Archive: Epitaph Part IV.] -> four
-+ [Archive: Epitaph Final.] -> five
++ [Archive: Log Part II.] -> two
++ [Archive: Log Part III.] -> three
++ [Archive: Log Part IV.] -> four
++ [Archive: Log Final.] -> five
 + [End preview.] -> END
 
 
@@ -547,11 +547,11 @@ The commander shakes his head.
 
 “You will not approach.”
 
-+ {has_story_point} [Use a story point to speak to him as one of the faithful.] -> gan_eden_hypershunt_pather_persuade
++ {has_story_point} [Speak to him as one of the faithful.] -> gan_eden_hypershunt_pather_persuade
 + [“Then we’ll go through you.”] -> gan_eden_hypershunt_pather_fight
 
 === gan_eden_hypershunt_pather_persuade ===
-// Runtime effect: spend 1 story point
+// Runtime effect: consume the special-option cost
 
 You lower your voice.
 
@@ -567,7 +567,7 @@ At last, he bows his head.
 
 The Pather fleet begins clearing the approach corridor.
 
-[Lost 1 story point.]
+[The Pather blockade stands down.]
 
 + [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
 
@@ -611,7 +611,7 @@ The commander grins.
 “You can have whatever you like after you pay the docking fee.”
 
 + [Pay 250,000 credits.] -> gan_eden_hypershunt_pirate_pay
-+ [Use a story point to negotiate like a pirate.] -> gan_eden_hypershunt_pirate_persuade
++ [Negotiate like a pirate.] -> gan_eden_hypershunt_pirate_persuade
 + [“We’ll pay in ordnance.”] -> gan_eden_hypershunt_pirate_fight
 
 === gan_eden_hypershunt_pirate_pay ===
@@ -632,7 +632,7 @@ The pirate fleet begins clearing the approach corridor.
 + [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
 
 === gan_eden_hypershunt_pirate_persuade ===
-// Runtime effect: spend 1 story point
+// Runtime effect: consume the special-option cost
 
 You tell them they can charge whatever they like.
 
@@ -652,7 +652,7 @@ The pirate fleet clears the approach corridor.
 
 “Go on through.”
 
-[Lost 1 story point.]
+[The pirate blockade stands down.]
 
 + [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
 
@@ -733,7 +733,7 @@ A recording emerges.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART II
+FILE: LOG — PART II
 
 
 Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
@@ -854,7 +854,7 @@ She looks toward the location of the remaining hypershunt.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART III
+FILE: LOG — PART III
 
 My daughter remained unchanged.
 
@@ -1094,7 +1094,7 @@ The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its 
 
 A sealed municipal archive beneath Tree of Life answers the Leicester continuity credentials. One surviving personal record is available for recovery.
 
-+ [Recover Epitaph - Part IV.] -> four
++ [Recover Log - Part IV.] -> four
 + [Review what follows the recovered log.] -> master_tree_beacon
 + [Leave the archive sealed.] -> master_gan_eden_arrival
 
@@ -1138,7 +1138,7 @@ Gan Eden remains parked beyond charted hyperspace, with the Power Transit Gate a
 
 The victory is not permanent. Every ninety days, the Golden Shards reconstruct themselves with a larger escort of ivory Remnant hulls, escalating until the escort is roughly a full Ordo. Later victories reset that cycle without sealing Gan Eden again.
 
-On later visits, the Space Elevator's continuity transmitter can be used to lure the next reconstructed wave back immediately at the cost of one story point. This advances the same escalation sequence; it does not create a separate encounter.
+On later visits, the Space Elevator's continuity transmitter can lure the next reconstructed wave back immediately through a special option. This advances the same escalation sequence; it does not create a separate encounter.
 
 + [Approach the Gan Eden Space Elevator with Isa.] -> master_space_elevator
 + [Remain in Gan Eden.] -> master_gan_eden_arrival
@@ -1147,7 +1147,7 @@ On later visits, the Space Elevator's continuity transmitter can be used to lure
 === master_space_elevator ===
 // Runtime interaction: shipTrophyGanEdenEpitaph
 // Runtime visual: Hall-completion-style letterbox showing Isa at the Space Elevator archive.
-// Runtime music: begins with Epitaph Final and continues until the fleet leaves Gan Eden, yielding to combat when necessary.
+// Runtime music: begins with Log Final and continues until the fleet leaves Gan Eden, yielding to combat when necessary.
 // Return-visit music: cycles Lonesome Journey, the complete Log V cue, and æ™‚ãŒçµ‚ã‚ã‚Šã«å°Žã„ã¦; combat temporarily takes priority.
 
 With Cherubim and Lahat Haharev gone, the elevator's interdiction field is silent.
@@ -1156,14 +1156,14 @@ Isa's inherited suit transponder opens the outer doors. The lift descends throug
 
 Four recovered records authenticate in sequence. A fifth file unlocks beneath them:
 
-EPITAPH - FINAL
+LOG - FINAL
 
 + [Open the final entry with Isa.] -> five
 + [Leave.] -> END
 
 
 === master_epilogue ===
-// Runtime resolution after Epitaph Final
+// Runtime resolution after Log Final
 
 The final log ends.
 
@@ -1190,92 +1190,289 @@ Below, the Tree of Life turns slowly beneath the inward sun.
 
 "Gan Eden gets a future," Isa says. "So do I."
 
-+ [Review the conversations available afterward.] -> master_postquest_talk
++ [Review the conversation available afterward.] -> master_postquest_talk
 + [Return to the fleet.] -> END
 
 
 === master_postquest_talk ===
 
-Isa sets aside the Hall ledgers. The light from Gan Eden's inward horizon is still reflected in the photographs she brought back.
-
-+ [Talk about what happened.] -> master_postquest_after
-+ [Talk about Gan Eden's future.] -> master_postquest_future
-+ [Talk about Log I.] -> master_postquest_log_one
-+ [Talk about Log II.] -> master_postquest_log_two
-+ [Talk about Log III.] -> master_postquest_log_three
-+ [Talk about Log IV.] -> master_postquest_log_four
-+ [Talk about Log V.] -> master_postquest_log_five
-+ [Talk about the Golden Omega.] -> master_postquest_omega
-+ [End preview.] -> END
++ ["...so. Isaac Leicester. He was Ludd."] -> master_postquest_contact_2
 
 
-=== master_postquest_after ===
+=== master_postquest_contact_2 ===
 
-"I spent my whole life wondering whether that name meant I belonged to somebody. Turns out it did. It also turns out belonging to someone doesn't make their choices yours."
+"Yeah."
 
-Isa taps the nameplate on her slate: ISA LEICESTER.
+Isa leans back in her chair.
 
-"Isaac gave me a beginning. The Ring gave me a life. You lot gave me the rest. I can live with that."
+For once, she does not immediately have something clever to add.
 
--> master_postquest_talk
-
-
-=== master_postquest_future ===
-
-"Gan Eden can't stay a mausoleum," Isa says. "But it shouldn't become another company town with a pretty sky, either."
-
-She begins listing priorities: survey teams, independent settlement charters, protected archives, and strict limits on dismantling anything that still works.
-
-"A place built for everyone ought to belong to the people willing to make a life there. We can help. We don't get to own it."
-
--> master_postquest_talk
++ ["How are you processing that?"] -> master_postquest_process
++ ["I never knew the Prophet had a daughter."] -> master_postquest_luddic
++ ["Should I curtsey and call you princess now?"] -> master_postquest_princess
 
 
-=== master_postquest_log_one ===
+=== master_postquest_process ===
 
-"The first log made him real," Isa says. "Not my father. Not yet. Just an engineer who thought a project big enough could justify anything it demanded of him."
+Isa exhales.
 
--> master_postquest_talk
+"Badly? Weirdly?"
 
+She turns her slate over in her hands.
 
-=== master_postquest_log_two ===
+"I spent most of my life wondering if Isaac Leicester was my father. I figured maybe he was some spacer. Engineer, if I was lucky. Maybe somebody who got caught in the Collapse and shoved his kid into the safest cryopod he could find."
 
-"The second log hurt because it gave him a reason," Isa says. "A reason isn't an excuse. But it is a reason."
+She gives a small shrug.
 
--> master_postquest_talk
+"Turns out he built the hypershunts, built Gan Eden, started a religious revolution, disappeared through a Gate, and spent the rest of his life alone inside a world the size of a solar system."
 
+A pause.
 
-=== master_postquest_log_three ===
+"So I've adjusted my expectations a little."
 
-"Then even Rebecca's face went. That's the part I keep coming back to. Centuries of memory, and grief was the thing that lasted."
-
--> master_postquest_talk
-
-
-=== master_postquest_log_four ===
-
-"He decided the only moral thing left was to destroy his life's workâ€”and himself with it. He was wrong about that too. Gan Eden deserved a future he couldn't imagine."
-
--> master_postquest_talk
++ ["Does it change anything?"] -> master_postquest_process_change
++ ["You seem to be taking it pretty well."] -> master_postquest_process_well
 
 
-=== master_postquest_log_five ===
+=== master_postquest_process_change ===
 
-"He called me Leah," Isa says. "It's a beautiful name. It just isn't mine."
+"About me?"
 
--> master_postquest_talk
+Isa shakes her head.
+
+"No."
+
+Then she thinks about it.
+
+"I mean, yes. Obviously. I'm going to be unpacking this until I'm eighty."
+
+She taps her chest.
+
+"But I'm still me."
+
+A faint smile.
+
+"Isa. Chief Engineer. Occasional genius. Terrible influence on your bodyguards."
+
+-> master_postquest_end
 
 
-=== master_postquest_omega ===
+=== master_postquest_process_well ===
 
-"Isaac thought they were angels," Isa says. "Maybe Omega read that in his systems. Whatever they were built to protect, I don't think that fight was the last word."
+"I'm not."
 
--> master_postquest_talk
+Isa smiles.
+
+"I'm just very talented."
+
+She lets that sit for a beat.
+
+"At engineering. This part I'm improvising."
+
+-> master_postquest_end
+
+
+=== master_postquest_luddic ===
+
+Isa looks down at her slate.
+
+"Neither did anybody else."
+
+For a moment, she says nothing.
+
+"You read the same logs I did."
+
++ ["He lived the life of a saint."] -> master_postquest_saint
+
+
+=== master_postquest_saint ===
+
+Isa looks at you.
+
+"Even after all that?"
+
++ ["Saints are still human."] -> master_postquest_saint_2
+
+
+=== master_postquest_saint_2 ===
+
+Isa is quiet for a while.
+
+"Yeah."
+
+She turns the slate over in her hands.
+
+Then she looks at you.
+
+"So what happens to your faith now?"
+
++ ["I have questions."] -> master_postquest_faith_questions
++ ["My faith is unshaken."] -> master_postquest_faith_unshaken
++ ["I want to know the God that Ludd knew."] -> master_postquest_faith_god
+
+
+=== master_postquest_faith_questions ===
+
+Isa gives you a small smile.
+
+"I figured."
+
+A pause.
+
+"About him?"
+
++ ["About everything."] -> master_postquest_faith_questions_2
+
+
+=== master_postquest_faith_questions_2 ===
+
+She nods.
+
+"Probably healthy."
+
+A pause.
+
+"Dad could've used more of those."
+
+-> master_postquest_luddic_end
+
+
+=== master_postquest_faith_unshaken ===
+
+Isa studies your face.
+
+"Really?"
+
++ ["I believed in God, not in Isaac Leicester."] -> master_postquest_faith_unshaken_2
+
+
+=== master_postquest_faith_unshaken_2 ===
+
+That seems to surprise her.
+
+Then she smiles.
+
+"Okay."
+
+She looks down at the slate again.
+
+"I think Dad would've liked that answer."
+
+-> master_postquest_luddic_end
+
+
+=== master_postquest_faith_god ===
+
+Isa goes very still.
+
+Not offended. Not amused.
+
+Just listening.
+
++ ["Whatever he saw, it made him believe every person mattered."] -> master_postquest_faith_god_2
+
+
+=== master_postquest_faith_god_2 ===
+
+Isa looks away.
+
+"He believed that right to the end."
+
+A long pause.
+
+"Even when he couldn't believe it about himself."
+
+She presses her thumb against the edge of the slate.
+
+"If you find Him..."
+
+A faint smile.
+
+"Ask Him what He saw in my dad."
+
+-> master_postquest_luddic_end
+
+
+=== master_postquest_luddic_end ===
+
+Isa leans back in her chair.
+
+"I still don't know what I'm supposed to call him in my head."
+
+She looks toward you.
+
+"Prophet sounds ridiculous."
+
+A beat.
+
+"Dad feels worse."
+
+-> master_postquest_end
+
+
+=== master_postquest_princess ===
+
+Isa stares at you.
+
+"You know, I've been wondering something."
+
+She snaps her fingers.
+
+Wei and Yvan kick you at the same time.
+
++ ["Et tu, Wei?"] -> master_postquest_princess_wei
+
+
+=== master_postquest_princess_wei ===
+
+Wei looks away.
+
+Yvan does not.
+
+Isa folds her arms.
+
+"Anything else, Commander?"
+
++ ["Your Highness."] -> master_postquest_princess_again
++ ["No, ma'am."] -> master_postquest_princess_surrender
+
+
+=== master_postquest_princess_again ===
+
+Isa snaps her fingers again.
+
+You attempt to flee.
+
+Your bodyguards are faster.
+
+-> master_postquest_end
+
+
+=== master_postquest_princess_surrender ===
+
+"Good."
+
+Isa smiles sweetly.
+
+"You're learning."
+
+-> master_postquest_end
+
+
+=== master_postquest_end ===
+
+For a little while, neither of you says anything.
+
+Whatever history eventually decides Isaac Thomas Leicester was, Isa seems content to leave him there.
+
+Her father.
+
++ [Leave.] -> END
 
 
 // ============================================================
 // CANONICAL RECOVERED LOG ARCHIVE
-// Loaded at runtime from dialogue/Logs.ink.
+// Runtime text is owned by data/campaign/rules.csv.
 // ============================================================
 
 === one ===
@@ -1339,7 +1536,7 @@ I was wrong.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART II
+FILE: LOG — PART II
 
 
 Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
@@ -1393,7 +1590,7 @@ I hate myself—
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART III
+FILE: LOG — PART III
 
 My daughter remained unchanged.
 
@@ -1480,7 +1677,7 @@ I spoke against the Domain of Man, this great Whore of Babylon, while I remained
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART IV
+FILE: LOG — PART IV
 
 
 The Domain arrested me for insurrection.
@@ -1564,7 +1761,7 @@ Instead, I was imprisoned inside it.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — FINAL
+FILE: LOG — FINAL
 
 
 I am dying.

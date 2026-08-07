@@ -1,5 +1,7 @@
 $ErrorActionPreference = "Stop"
 
+& (Join-Path $PSScriptRoot "tools\validate_rules.ps1")
+
 $packageRoot = Join-Path $PSScriptRoot "dist"
 $modRoot = Join-Path $packageRoot "HallOfTriumph"
 
@@ -19,6 +21,9 @@ New-Item -ItemType Directory -Force -Path $resolvedModRoot | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "mod_info.json") -Destination $resolvedModRoot
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "README.md") -Destination $resolvedModRoot
+if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "CHANGELOG.md")) {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "CHANGELOG.md") -Destination $resolvedModRoot
+}
 if (Test-Path -LiteralPath (Join-Path $PSScriptRoot "docs")) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot "docs") -Destination $resolvedModRoot -Recurse
 }

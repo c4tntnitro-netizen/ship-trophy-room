@@ -92,6 +92,10 @@ public class IsaHomecomingCMD implements CommandPlugin {
             return false;
         }
         SectorEntityToken target = dialog.getInteractionTarget();
+        // PopulateOptions also fires while a comm-directory person is active.
+        // Keep this station-level objective out of individual NPC menus such
+        // as the Shattered Ring's D-mod vendor conversation.
+        if (target != null && target.getActivePerson() != null) return false;
         MarketAPI market = target == null ? null : target.getMarket();
         return isShatteredRing(target, market);
     }

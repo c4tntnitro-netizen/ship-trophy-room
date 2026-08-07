@@ -106,6 +106,12 @@ Isa points a finger at you.
 
 "No questions. No jokes. No telling the bodyguards."
 
+Behind you, one of your bodyguards discreetly opens a note on their slate.
+
+Isa points at them too.
+
+"Wei. I can see you."
+
 + [Continue.] -> rule_shipTrophyIsaShatteredRingHomecomingFamiliar
 
 // ============================================================
@@ -201,7 +207,7 @@ Isa looks back from the ladder.
 
 She returns to the light panel.
 
-"This is the oblige part."
+"This is where you play the part."
 
 + ["My favorite part of being royalty. Noblesse oblige."] -> rule_shipTrophyIsaShatteredRingHomecomingNoblesse
 
@@ -275,7 +281,7 @@ The old man laughs, then disappears into the crowd.
 // Runtime script:
 // IsaHomecomingCMD receiveSuit
 // SetTextHighlightColors story story story
-// SetTextHighlights "Isa's inheritance" "A Borrowed Name" "Investigate Isa's inheritance in her old workshop"
+// SetTextHighlights "[Received: Isa's inheritance.]" "[Quest started: A Borrowed Name]" "[Objective: Investigate Isa's inheritance in her old workshop.]"
 
 Isa closes the case and calls for one of your crew to transfer it to her old workshop.
 
@@ -561,7 +567,7 @@ She scrolls through the recovered file again.
 // Runtime script:
 // GanEdenQuestCMD recoverInitialLog
 // SetTextHighlightColors hColor hColor
-// SetTextHighlights "Personal Log 1765" "Gan Eden Archives"
+// SetTextHighlights "[Recovered Personal Log 1765.]" "[Filed under Gan Eden Archives in Intel.]"
 // FireAll ShipTrophyIsaHomecomingHypershuntKnowledgeOptions
 
 [Recovered Personal Log 1765.]
@@ -991,7 +997,7 @@ Isa gives you a small, crooked smile.
 
 "That a direct order?"
 
-+ ["Don't make your commanding officer repeat themself."] -> rule_shipTrophyIsaShatteredRingHomecomingDirectOrder
++ ["Don't make your CO repeat themself."] -> rule_shipTrophyIsaShatteredRingHomecomingDirectOrder
 
 // ============================================================
 === rule_shipTrophyIsaShatteredRingHomecomingDirectOrder ===
@@ -1031,7 +1037,7 @@ She snaps a salute.
 // Runtime script:
 // SetShortcut ship_trophy_isa_homecoming_return "ESCAPE"
 // SetTextHighlightColors story
-// SetTextHighlights "Search the Coronal Hypershunts for clues about Isaac Leicester"
+// SetTextHighlights "[Objective updated: Search the Coronal Hypershunts for clues about Isaac Leicester.]"
 
 Isa transfers the recovered log, the wafer registry number, and the INFOSEC failures into a new directory.
 
@@ -1072,7 +1078,7 @@ ISAAC THOMAS LEICESTER
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART I
+FILE: LOG — PART I
 
 My name is Isaac Thomas Leicester, Director of Engineering for Heliostructural Systems in the Persean Sector.
 
@@ -1104,13 +1110,20 @@ When two hypershunts became operational, the Directorate approved the project th
 
 I proposed the name Gan Eden, after the sacred garden of God.
 
-I should have named it Babel.
+It was to be the Domain’s first enclosed—
 
-It was to be the Domain’s first enclosed star: a Dyson world built around a select yellow star found on the far outskirts of the Persean Sector. The internal surface would hold continents, oceans, cities, farms, and wilderness. At planned density, it could support several quintillion people.
+DOMAIN INFOSEC VIOLATION THRESHOLD WARNING
+// datastream resetting...
 
-I believed that the ability to construct such a world proved that the Domain deserved to continue expanding.
+—constructed around a yellow sun on the far outskirts of the Persean Sector. At its intended capacity, it could shelter several quintillion human li—
 
-I was wrong. It was an affront to God.
+FATAL ACCESS ERROR //
+
+This device is not authorized to provide additional description of the referenced project, destination, or design objective. Please upgrade your data permission level in compliance with Domain Information Security Standards.
+
+I believed that the ability to construct such a wonder proved that the Domain deserved to continue expanding.
+
+I was wrong.
 
 // Runtime destination outside this volume: shipTrophyGanEdenEpitaphTwo
 + [Continue to Part II.] -> END

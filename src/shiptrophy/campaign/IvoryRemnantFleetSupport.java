@@ -37,7 +37,11 @@ public final class IvoryRemnantFleetSupport {
         }
         if (whiteHullId.equals(current.getHullSpec().getHullId())
                 && current.hasHullMod(WhiteRemnantEscort.HULLMOD_ID)
-                && !current.hasTag(Tags.UNRECOVERABLE)) {
+                && !current.hasTag(Tags.UNRECOVERABLE)
+                && !current.hasTag(Tags.VARIANT_UNBOARDABLE)
+                && current.hasTag(Tags.AUTOMATED_RECOVERABLE)
+                && current.hasTag(Tags.VARIANT_ALWAYS_RECOVERABLE)
+                && current.hasTag(Tags.SHIP_RECOVERABLE)) {
             return false;
         }
 
@@ -47,6 +51,10 @@ public final class IvoryRemnantFleetSupport {
         variant.setSource(VariantSource.REFIT);
         variant.setHullSpecAPI(Global.getSettings().getHullSpec(whiteHullId));
         variant.removeTag(Tags.UNRECOVERABLE);
+        variant.removeTag(Tags.VARIANT_UNBOARDABLE);
+        variant.addTag(Tags.AUTOMATED_RECOVERABLE);
+        variant.addTag(Tags.VARIANT_ALWAYS_RECOVERABLE);
+        variant.addTag(Tags.SHIP_RECOVERABLE);
         variant.addPermaMod(WhiteRemnantEscort.HULLMOD_ID);
         member.setVariant(variant, false, false);
         return true;

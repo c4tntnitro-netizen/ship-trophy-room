@@ -33,10 +33,10 @@ $output = @"
 // Runtime recovery map:
 //
 // Spacer-suit identification wafer: Personal Log 1765 / Part I.
-// First hypershunt scanned: Epitaph Part II.
-// Second hypershunt scanned: Epitaph Part III and the Power Transit Gate.
-// Tree of Life: Epitaph Part IV.
-// Space Elevator: Epitaph Final after the Golden Shards are defeated.
+// First hypershunt scanned: Log Part II.
+// Second hypershunt scanned: Log Part III and the Power Transit Gate.
+// Tree of Life: Log Part IV.
+// Space Elevator: Log Final after the Golden Shards are defeated.
 //
 // Every recovered entry is retained under the Gan Eden Archives Intel tag.
 

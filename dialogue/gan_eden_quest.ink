@@ -511,11 +511,11 @@ The commander shakes his head.
 
 “You will not approach.”
 
-+ {has_story_point} [Use a story point to speak to him as one of the faithful.] -> gan_eden_hypershunt_pather_persuade
++ {has_story_point} [Speak to him as one of the faithful.] -> gan_eden_hypershunt_pather_persuade
 + [“Then we’ll go through you.”] -> gan_eden_hypershunt_pather_fight
 
 === gan_eden_hypershunt_pather_persuade ===
-// Runtime effect: spend 1 story point
+// Runtime effect: consume the special-option cost
 
 You lower your voice.
 
@@ -531,7 +531,7 @@ At last, he bows his head.
 
 The Pather fleet begins clearing the approach corridor.
 
-[Lost 1 story point.]
+[The Pather blockade stands down.]
 
 + [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
 
@@ -575,7 +575,7 @@ The commander grins.
 “You can have whatever you like after you pay the docking fee.”
 
 + [Pay 250,000 credits.] -> gan_eden_hypershunt_pirate_pay
-+ [Use a story point to negotiate like a pirate.] -> gan_eden_hypershunt_pirate_persuade
++ [Negotiate like a pirate.] -> gan_eden_hypershunt_pirate_persuade
 + [“We’ll pay in ordnance.”] -> gan_eden_hypershunt_pirate_fight
 
 === gan_eden_hypershunt_pirate_pay ===
@@ -596,7 +596,7 @@ The pirate fleet begins clearing the approach corridor.
 + [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
 
 === gan_eden_hypershunt_pirate_persuade ===
-// Runtime effect: spend 1 story point
+// Runtime effect: consume the special-option cost
 
 You tell them they can charge whatever they like.
 
@@ -616,7 +616,7 @@ The pirate fleet clears the approach corridor.
 
 “Go on through.”
 
-[Lost 1 story point.]
+[The pirate blockade stands down.]
 
 + [Approach the hypershunt.] -> gan_eden_hypershunt_investigate
 
@@ -699,7 +699,7 @@ A recording emerges.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART II
+FILE: LOG — PART II
 
 
 Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
@@ -834,7 +834,7 @@ She looks toward the location of the remaining hypershunt.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART III
+FILE: LOG — PART III
 
 My daughter remained unchanged.
 

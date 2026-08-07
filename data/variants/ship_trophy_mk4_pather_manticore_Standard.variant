@@ -1,0 +1,39 @@
+{
+    "displayName": "Mk IV",
+    "fluxCapacitors": 11,
+    "fluxVents": 11,
+    "goalVariant": true,
+    "hullId": "ship_trophy_mk4_pather_manticore",
+    "hullMods": [
+        "armoredweapons"
+    ],
+    "permaMods": [],
+    "sMods": [],
+    "variantId": "ship_trophy_mk4_pather_manticore_Standard",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 004": "arbalest",
+                "WS 005": "arbalest"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 000": "hammerrack"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "lightdualmg",
+                "WS 002": "lightdualmg",
+                "WS 003": "lightdualmg"
+            }
+        }
+    ]
+}

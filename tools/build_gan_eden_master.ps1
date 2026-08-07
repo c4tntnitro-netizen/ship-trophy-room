@@ -6,6 +6,8 @@ param(
 $ErrorActionPreference = "Stop"
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 
+& (Join-Path $PSScriptRoot "validate_rules.ps1") -RulesPath $RulesPath
+
 function Read-Utf8([string]$Path) {
     return [System.IO.File]::ReadAllText(
         (Resolve-Path -LiteralPath $Path), $utf8)
@@ -235,7 +237,7 @@ Write-QuestPart `
         [PSCustomObject]@{label='Review the Golden Omega encounter.'; id='shipTrophyGanEdenGoldenEncounter'},
         [PSCustomObject]@{label='Read the complete fourth log.'; id=$logFourId},
         [PSCustomObject]@{label='Read the complete final log.'; id=$logFiveId},
-        [PSCustomObject]@{label='Review Isa post-quest conversations.'; id='shipTrophyIsaGanEdenHub'}
+        [PSCustomObject]@{label='Review Isa''s conversation about Isaac.'; id='shipTrophyIsaGanEdenHub'}
     ) `
     $optionTargets `
     $OutputDirectory

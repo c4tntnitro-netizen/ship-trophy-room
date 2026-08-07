@@ -20,6 +20,21 @@ Part II - The Coronal Hypershunts
 + [End preview.] -> END
 
 // ============================================================
+=== rule_shipTrophyGanEdenSecondHypershuntCrisisEncounter ===
+// rules.csv id: shipTrophyGanEdenSecondHypershuntCrisisEncounter
+// Trigger:
+// BeginFleetEncounter
+// Conditions:
+// GanEdenQuestCMD isSecondHypershuntCrisis score:75000
+// Runtime script:
+// FleetDesc
+// HailPlayer
+
+// No literal text in rules.csv; the runtime script supplies this beat.
+
++ [Continue.] -> rule_shipTrophyGanEdenHypershuntPatherGuardEncounter
+
+// ============================================================
 === rule_shipTrophyGanEdenHypershuntPatherGuardEncounter ===
 // rules.csv id: shipTrophyGanEdenHypershuntPatherGuardEncounter
 // Trigger:
@@ -47,7 +62,75 @@ Part II - The Coronal Hypershunts
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
-+ [Continue.] -> rule_shipTrophyGanEdenHypershuntPatherGuard
++ [Continue.] -> rule_shipTrophyGanEdenSecondHypershuntCrisisIsaCaptain
+
+// ============================================================
+=== rule_shipTrophyGanEdenSecondHypershuntCrisisIsaCaptain ===
+// rules.csv id: shipTrophyGanEdenSecondHypershuntCrisisIsaCaptain
+// Trigger:
+// OpenCommLink
+// Conditions:
+// GanEdenQuestCMD isSecondHypershuntCrisisIsaCaptain score:75010
+// Runtime script:
+// GanEdenQuestCMD prepareSecondHypershuntCrisis
+
+The second hypershunt is already under attack.
+
+Pather demolition ships cling to one of the collector spines. Shaped charges crawl across the black superstructure in glittering chains while scripture floods every open frequency: condemnation of the machine and promises of cleansing fire.
+
+Across the structure, pirate cutting rigs have anchored directly to the transmission vanes. Industrial lasers bite into armor thick enough to roof cities. Salvage tugs wait behind them with their holds open, ready to carry off whatever the crews can tear loose before the Pathers bring the whole structure down.
+
+The two flotillas fire past one another, each too committed to its work to disengage.
+
+Isa sees the charge telemetry.
+
+"No."
+
+She enlarges the carrier spine, watching warning glyphs multiply across the projection.
+
+"This is the only clue we have left. If they destroy that spine, Isaac's record goes with it."
+
+The first Pather charge arms. A pirate tug wrenches a glowing section of armor away from the hypershunt.
+
+The ship carrying Isa rolls out of formation before you can answer.
+
+"Helm, bring us in. All batteries, engage. Get them away from my hypershunt."
+
++ [Follow Isa into the engagement.] -> rule_shipTrophyGanEdenHypershuntEngage
+
+// ============================================================
+=== rule_shipTrophyGanEdenSecondHypershuntCrisisIsaBridge ===
+// rules.csv id: shipTrophyGanEdenSecondHypershuntCrisisIsaBridge
+// Trigger:
+// OpenCommLink
+// Conditions:
+// GanEdenQuestCMD isSecondHypershuntCrisisIsaOnBridge score:75000
+// Runtime script:
+// GanEdenQuestCMD prepareSecondHypershuntCrisis
+
+The second hypershunt is already under attack.
+
+Pather demolition ships cling to one of the collector spines. Shaped charges crawl across the black superstructure in glittering chains while scripture floods every open frequency: condemnation of the machine and promises of cleansing fire.
+
+Across the structure, pirate cutting rigs have anchored directly to the transmission vanes. Industrial lasers bite into armor thick enough to roof cities. Salvage tugs wait behind them with their holds open, ready to carry off whatever the crews can tear loose before the Pathers bring the whole structure down.
+
+The two flotillas fire past one another, each too committed to its work to disengage.
+
+Isa storms onto the bridge. Before the comm officer can stop her, she opens an all-frequency channel.
+
+"Pathers. Pirates. Back away from the hypershunt. Now."
+
+The first Pather charge arms. A pirate tug wrenches a glowing section of armor away from the transmission vane.
+
+Isa leans over the transmitter.
+
+"That is the only clue I have left. Touch it again and I will kill every last one of you."
+
+Across the display, targeting sensors snap toward your fleet. The two flotillas release their anchors and turn together.
+
+Isa closes the channel and looks at you, the fury draining from her face as battle alarms begin to sound.
+
++ [Order battle stations.] -> rule_shipTrophyGanEdenHypershuntEngage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPatherGuard ===
@@ -58,7 +141,7 @@ Part II - The Coronal Hypershunts
 // GanEdenQuestCMD isHypershuntGuard luddic_path score:70000
 // Runtime script:
 // GanEdenQuestCMD prepareHypershuntGuard
-// SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 A large Pather fleet holds position between you and the hypershunt.
 
@@ -68,7 +151,7 @@ Their commander answers your hail. He wears a scorched pressure suit marked with
 
 + ["We only need access to the hypershunt’s records."] -> rule_shipTrophyGanEdenHypershuntPatherRefusal
 + ["Move aside."] -> rule_shipTrophyGanEdenHypershuntPatherFight
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntLeave
++ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPatherRefusal ===
@@ -79,7 +162,7 @@ Their commander answers your hail. He wears a scorched pressure suit marked with
 // $option == ship_trophy_gan_eden_hypershunt_pather_records
 // Runtime script:
 // SetStoryOption ship_trophy_gan_eden_hypershunt_pather_persuade 1 shipTrophyGanEdenPatherPersuade technology "Persuaded the Pather blockade to stand aside"
-// SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 "Knowledge is another form of temptation."
 
@@ -87,9 +170,9 @@ The commander shakes his head.
 
 "You will not approach."
 
-+ [Use a story point to speak to him as one of the faithful.] -> rule_shipTrophyGanEdenHypershuntPatherPersuade
++ [Speak to him as one of the faithful.] -> rule_shipTrophyGanEdenHypershuntPatherPersuade
 + ["Then we’ll go through you."] -> rule_shipTrophyGanEdenHypershuntPatherFight
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntLeave
++ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPatherPersuade ===
@@ -109,9 +192,9 @@ You speak of false wonders, poisoned knowledge, and the duty of the faithful to 
 
 The commander studies you for a long moment.
 
-At last, he bows his head.
+At last, he nods.
 
-"Then go, brother. Cleanse the taint of Moloch from the heavens! For the Prophet!"
+"Then go, brother. For the Prophet’s sake, go."
 
 The Pather fleet begins clearing the approach corridor.
 
@@ -125,7 +208,9 @@ The Pather fleet begins clearing the approach corridor.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_pather_fight
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
+// SetTextHighlightColors bad
+// SetTextHighlights "[The Luddic Path fleet moves to engage.]"
 
 The commander’s expression hardens.
 
@@ -136,7 +221,7 @@ The channel closes.
 [The Luddic Path fleet moves to engage.]
 
 + [Engage.] -> rule_shipTrophyGanEdenHypershuntEngage
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntLeave
++ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPirateGuard ===
@@ -147,7 +232,7 @@ The channel closes.
 // GanEdenQuestCMD isHypershuntGuard pirates score:70000
 // Runtime script:
 // GanEdenQuestCMD prepareHypershuntGuard
-// SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 A pirate fleet blocks the approach to the hypershunt.
 
@@ -157,7 +242,7 @@ Their commander answers your hail with their boots resting on the console.
 
 + ["We only need access to its records."] -> rule_shipTrophyGanEdenHypershuntPiratePrice
 + ["Move your fleet."] -> rule_shipTrophyGanEdenHypershuntPirateFight
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntLeave
++ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPiratePrice ===
@@ -169,7 +254,7 @@ Their commander answers your hail with their boots resting on the console.
 // Runtime script:
 // SetStoryOption ship_trophy_gan_eden_hypershunt_pirate_persuade 1 shipTrophyGanEdenPiratePersuade technology "Negotiated professional courtesy from the pirate blockade"
 // FireAll ShipTrophyGanEdenHypershuntPiratePayOptions
-// SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 "Sure. Records."
 
@@ -177,9 +262,9 @@ The commander grins.
 
 "You can have whatever you like after you pay the docking fee."
 
-+ [Use a story point to negotiate like a pirate.] -> rule_shipTrophyGanEdenHypershuntPiratePersuade
++ [Negotiate like a pirate.] -> rule_shipTrophyGanEdenHypershuntPiratePersuade
 + ["We’ll pay in ordnance."] -> rule_shipTrophyGanEdenHypershuntPirateFight
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntLeave
++ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPiratePayOption ===
@@ -257,7 +342,9 @@ The pirate fleet clears the approach corridor.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_pirate_fight
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
+// SetTextHighlightColors bad
+// SetTextHighlights "[The pirate fleet moves to engage.]"
 
 The commander takes their boots off the console.
 
@@ -268,7 +355,7 @@ The channel closes.
 [The pirate fleet moves to engage.]
 
 + [Engage.] -> rule_shipTrophyGanEdenHypershuntEngage
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntLeave
++ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntEngage ===
@@ -285,6 +372,21 @@ The channel closes.
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
++ [Continue.] -> rule_shipTrophyGanEdenHypershuntDisengage
+
+// ============================================================
+=== rule_shipTrophyGanEdenHypershuntDisengage ===
+// rules.csv id: shipTrophyGanEdenHypershuntDisengage
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_gan_eden_hypershunt_disengage
+// Runtime script:
+// ShowDefaultVisual
+// EndConversation NO_CONTINUE
+
+// No literal text in rules.csv; the runtime script supplies this beat.
+
 + [Continue.] -> rule_shipTrophyGanEdenHypershuntStandDown
 
 // ============================================================
@@ -295,7 +397,8 @@ The channel closes.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_stand_down
 // Runtime script:
-// DismissDialog
+// ShowDefaultVisual
+// EndConversation NO_CONTINUE
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -356,8 +459,6 @@ The structure grows across the forward display until it no longer resembles a ma
 
 Isa stands beside the sensor station, slate in hand.
 
-"A Hypershunt... The Engineering of the Gods."
-
 "We’ll need to map the whole thing."
 
 She begins assigning survey patterns across the fleet.
@@ -392,8 +493,8 @@ Several sections do not.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_records_continue
 // Runtime script:
-// SetTextHighlightColors "82,88,94,255" "82,88,94,255" "82,88,94,255"
-// SetTextHighlights "DCR-2F38-CB017-6A" "LEICESTER, ISAAC THOMAS" "CONTINUITY AUTHORITY"
+// SetTextHighlightColors "82,88,94,255" "82,88,94,255" "82,88,94,255" story
+// SetTextHighlights "DCR-2F38-CB017-6A" "LEICESTER, ISAAC THOMAS" "CONTINUITY AUTHORITY" "[A sealed personal log is embedded beside the routing data.]"
 
 Tiny deviations recur across the hypershunt’s oldest assemblies: corrections too consistent to be random, repeated through construction phases separated by centuries.
 
@@ -518,11 +619,11 @@ Isa scrolls back through the recovered fragments, reading the same lines again.
 
 Isa grips the edge of her slate.
 
-"The suit. His identification. This chip."
+"The suit. His identification. This log, somehow encoded within the Hypershunt. All of it was meant to be a message to... to me."
 
 She shakes her head.
 
-"But my pod was opened centuries after this was recorded. I don’t know what happened between. Did he mean to leave me sleeping forever? Was he ever going to stop being afraid?"
+"But my pod was opened centuries after this was recorded. I don’t know what happened between."
 
 She stares at the carrier trace.
 
@@ -538,8 +639,8 @@ She stares at the carrier trace.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_log_two_routing
 // Runtime script:
-// SetTextHighlightColors hColor hColor
-// SetTextHighlights "Epitaph — Part II" "Gan Eden Archives"
+// SetTextHighlightColors hColor hColor story
+// SetTextHighlights "[Recovered Log — Part II.]" "[Filed under Gan Eden Archives in Intel.]" "[The first hypershunt routing vector has been recovered.]"
 
 Isa returns to the carrier data.
 
@@ -553,7 +654,7 @@ Isa enlarges the projection and looks toward the location of the remaining hyper
 
 "We need the other signal."
 
-[Recovered Epitaph — Part II.]
+[Recovered Log — Part II.]
 [Filed under Gan Eden Archives in Intel.]
 
 [The first hypershunt routing vector has been recovered.]
@@ -623,7 +724,7 @@ Isa enlarges the projection and looks toward the location of the remaining hyper
 // $option == ship_trophy_gan_eden_hypershunt_log_three_response
 // Runtime script:
 // SetTextHighlightColors hColor hColor
-// SetTextHighlights "Epitaph — Part III" "Gan Eden Archives"
+// SetTextHighlights "[Recovered Log — Part III.]" "[Filed under Gan Eden Archives in Intel.]"
 
 The recording ends.
 
@@ -639,11 +740,11 @@ Isa stops the playback.
 
 She says it quietly.
 
-"Mom’s."
+"Rebecca's. My mother's."
 
 Her fingers remain poised above the slate.
 
-[Recovered Epitaph — Part III.]
+[Recovered Log — Part III.]
 [Filed under Gan Eden Archives in Intel.]
 
 // Runtime destination outside this volume: shipTrophyGanEdenLogThreeDamaged
@@ -711,7 +812,7 @@ She enlarges the projection.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART II
+FILE: LOG — PART II
 
 Before the continuity office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
 
@@ -721,15 +822,15 @@ We intended to serve the entire tenure together, entering cryosuspension between
 
 Our daughter was born shortly before the first long suspension interval. We placed her pediatric chamber beside our own, intending to wake and raise her during every active interval.
 
-At the first scheduled revival, I woke. Rebecca did not survive the thaw.
+At the first scheduled revival, I woke.
 
-Our daughter’s chamber remained stable. The physicians told me the pediatric thaw could proceed safely. I refused.
+Rebecca did not survive the thaw.
 
-I told myself that one death proved the protocols were not ready. I ordered more studies. At the next waking, I refused again.
+Complications from cryosuspension caused a permanent psychosomatic rupture. I had her euthanized the day I got the prognosis.
 
-I accepted sole leadership, promising that I would finish the work and wake my daughter into the world Rebecca and I had intended for her. Every report said she remained healthy. Every specialist told me she could be revived.
+From then on, I accepted sole leadership, promising that I would finish the work and wake my daughter into the world Rebecca and I had intended for her.
 
-I saw Rebecca dying on the thawing table and left my daughter behind the glass.
+I vowed to forever keep my daughter safe. Not until I, with my own hands, could ensure the world could not take her away from me like God did Rebecca.
 
 I hate myself.
 
@@ -751,7 +852,7 @@ I hate myself—
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART III
+FILE: LOG — PART III
 
 My daughter remained unchanged. I made certain of it.
 

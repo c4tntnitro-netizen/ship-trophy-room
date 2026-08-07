@@ -39,6 +39,7 @@ public final class GanEdenQuestManager {
             "ship_trophy_gan_eden_external_ring";
     public static final String CORONAL_TAP_TYPE = "coronal_tap";
     public static final String CORONAL_TAP_USABLE_KEY = "$usable";
+    private static final long COMPLETION_XP = 1_000_000L;
     private static final String ARRIVAL_SCENE_PENDING_KEY =
             "$shipTrophyGanEdenArrivalScenePending";
     private static final String ARRIVAL_SCENE_SHOWN_KEY =
@@ -166,6 +167,7 @@ public final class GanEdenQuestManager {
         }
         ensureArrivalSceneForCurrentSave();
         completeIfReady();
+        synchronizeExternalGatewayInteraction();
     }
 
     private static void ensureArrivalSceneForCurrentSave() {
@@ -247,7 +249,14 @@ public final class GanEdenQuestManager {
             return;
         }
         memory().set(ShipTrophyRoomIds.MEMORY_GAN_EDEN_EPITAPH_FOUND, true);
+        Global.getSector().getPlayerStats().addXP(COMPLETION_XP, textPanel);
         complete(textPanel);
+        if (textPanel != null && Global.getSoundPlayer() != null) {
+            // The quest has no reputation payout to trigger vanilla's usual
+            // success cue, so play that positive completion chime explicitly.
+            // The stage guard above keeps archived/repeat Log V reads silent.
+            Global.getSoundPlayer().playUISound("ui_rep_raise", 1f, 1f);
+        }
     }
 
     /** Compatibility alias retained for older rule packs and saves. */
@@ -400,6 +409,27 @@ public final class GanEdenQuestManager {
         if (Global.getSector() == null) return null;
         StarSystemAPI system = GanEdenTransitSystemGenerator.findSystem();
         return system == null ? null : system.getEntityById(EXTERNAL_RING_ID);
+    }
+
+    public static boolean hasBothHypershuntLogs() {
+        return GanEdenLogManager.isRecovered(GanEdenLogSpec.PART_TWO)
+                && GanEdenLogManager.isRecovered(GanEdenLogSpec.PART_THREE);
+    }
+
+    /**
+     * Keeps a Gate left behind by an older save inert until the two routing
+     * records have actually been recovered.
+     */
+    public static void synchronizeExternalGatewayInteraction() {
+        SectorEntityToken gate = getExternalRing();
+        if (gate == null) return;
+        if (hasBothHypershuntLogs()) {
+            gate.addTag(Tags.HAS_INTERACTION_DIALOG);
+            gate.removeTag(Tags.NON_CLICKABLE);
+        } else {
+            gate.removeTag(Tags.HAS_INTERACTION_DIALOG);
+            gate.addTag(Tags.NON_CLICKABLE);
+        }
     }
 
     public static boolean canTransitFromGate(SectorEntityToken source) {

@@ -1,5 +1,7 @@
 $ErrorActionPreference = "Stop"
 
+& (Join-Path $PSScriptRoot "tools\validate_rules.ps1")
+
 $starsector = "C:\Program Files (x86)\Fractal Softworks\Starsector"
 $core = Join-Path $starsector "starsector-core"
 $javac = Join-Path $starsector "jdk-23+7\bin\javac.exe"

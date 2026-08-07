@@ -31,7 +31,6 @@ import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.loading.VariantSource;
 
 import shiptrophy.IsaTrophyManager;
 import shiptrophy.campaign.GanEdenQuestManager.Stage;
@@ -59,6 +58,8 @@ public final class GanEdenHypershuntManager {
             "$shipTrophyGanEdenHypershuntGuardCommitted";
     private static final String GUARD_DEFEATED_KEY =
             "$shipTrophyGanEdenHypershuntGuardDefeated";
+    private static final String GUARD_SIGNATURE_APPLIED_KEY =
+            "$shipTrophyGanEdenHypershuntSignatureApplied";
     private static final String TAP_GUARD_FACTION_KEY =
             "$shipTrophyGanEdenHypershuntFaction";
     private static final String TAP_GUARD_SPAWNED_KEY =
@@ -71,6 +72,16 @@ public final class GanEdenHypershuntManager {
     private static final int REQUIRED_HYPERSHUNTS = 2;
     private static final float GUARD_OFFSET = 450f;
     private static final float GUARD_DURATION = 1000000f;
+    private static final String PATHER_GUARD_NAME = "Order of Sanguinius";
+    private static final String PIRATE_GUARD_NAME = "Tiger Shark Raiders";
+    private static final String PATHER_SIGNATURE_HULL =
+            "ship_trophy_mk4_pather_prometheus2";
+    private static final String PATHER_SIGNATURE_VARIANT =
+            PATHER_SIGNATURE_HULL + "_Standard";
+    private static final String PIRATE_SIGNATURE_HULL =
+            "ship_trophy_mk4_pirate_atlas2";
+    private static final String PIRATE_SIGNATURE_VARIANT =
+            PIRATE_SIGNATURE_HULL + "_Standard";
     private static final Map<String, String> PIRATE_MK_IV_SKINS;
     private static final Map<String, String> PATHER_MK_IV_SKINS;
 
@@ -203,6 +214,12 @@ public final class GanEdenHypershuntManager {
         params.averageSMods = 1;
         params.maxNumShips = 30;
         params.random = random;
+        // Put the authored capital through FleetFactoryV3's normal flagship
+        // path. Vanilla applies the requested variant before it performs its
+        // final fleet-wide readiness/provisioning pass; appending this ship
+        // after createFleet() left it outside that initialization.
+        params.flagshipVariantId = Factions.LUDDIC_PATH.equals(factionId)
+                ? PATHER_SIGNATURE_VARIANT : PIRATE_SIGNATURE_VARIANT;
         if (Factions.LUDDIC_PATH.equals(factionId)
                 && Global.getSector().getFaction(factionId) != null) {
             params.commander = Global.getSector().getFaction(factionId)
@@ -224,17 +241,27 @@ public final class GanEdenHypershuntManager {
             CampaignFleetAPI fleet,
             SectorEntityToken tap,
             String factionId) {
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         applyMkIVRefit(fleet, factionId);
+        if (!memory.getBoolean(GUARD_SIGNATURE_APPLIED_KEY)
+                && ensureSignatureMkIV(fleet, factionId)) {
+            // Do not replenish battle losses. This key guarantees the authored
+            // starting composition once and also upgrades older saved fleets.
+            memory.set(GUARD_SIGNATURE_APPLIED_KEY, true);
+        }
         fleet.setName(Factions.LUDDIC_PATH.equals(factionId)
-                ? "Mk IV Pather Blockade"
-                : "Mk IV Claimant Flotilla");
+                ? PATHER_GUARD_NAME : PIRATE_GUARD_NAME);
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
+        // These story fleets hold position inside a stellar corona for an
+        // arbitrary length of time. Use vanilla's scripted-fleet exemption
+        // so they enter combat at their intended readiness instead of being
+        // drained to 0 CR while orbiting the hypershunt.
+        fleet.addTag(Tags.FLEET_IGNORES_CORONA);
         fleet.addTag(Tags.STORY_CRITICAL);
         fleet.addTag(Tags.HAS_INTERACTION_DIALOG);
         ensureBattleListener(fleet);
 
-        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         memory.set(GUARD_KEY, true);
         memory.set(GUARD_FACTION_KEY, factionId);
         memory.set(GUARD_TARGET_KEY, stableKey(tap));
@@ -280,11 +307,7 @@ public final class GanEdenHypershuntManager {
         }
     }
 
-    /**
-     * Converts generated and pre-existing quest guards into independent Mk IV
-     * variants. Cloning is essential: FleetFactoryV3 commonly supplies stock
-     * variants, and mutating one directly would modify unrelated faction ships.
-     */
+    /** Selects only predeclared Mk IV variants for quest guards. */
     private static void applyMkIVRefit(
             CampaignFleetAPI fleet, String factionId) {
         if (fleet == null) return;
@@ -304,6 +327,52 @@ public final class GanEdenHypershuntManager {
         }
     }
 
+    /** Adds the faction's pre-rendered capital Mk IV exactly once. */
+    private static boolean ensureSignatureMkIV(
+            CampaignFleetAPI fleet, String factionId) {
+        if (fleet == null) return false;
+        boolean pather = Factions.LUDDIC_PATH.equals(factionId);
+        if (!pather && !Factions.PIRATES.equals(factionId)) return false;
+
+        String hullId = pather
+                ? PATHER_SIGNATURE_HULL : PIRATE_SIGNATURE_HULL;
+        String variantId = pather
+                ? PATHER_SIGNATURE_VARIANT : PIRATE_SIGNATURE_VARIANT;
+        for (FleetMemberAPI member
+                : fleet.getFleetData().getMembersListCopy()) {
+            if (member != null
+                    && !member.isFighterWing()
+                    && member.getVariant() != null
+                    && member.getVariant().getHullSpec() != null
+                    && hullId.equals(member.getVariant()
+                            .getHullSpec().getHullId())) {
+                return true;
+            }
+        }
+
+        // Use only the predeclared variant tied to a static .skin hull.
+        if (Global.getSettings().getVariant(variantId) == null) {
+            System.err.println(
+                    "Hall of Triumph: missing signature Mk IV variant "
+                            + variantId + ".");
+            return false;
+        }
+        FleetMemberAPI member = fleet.getFleetData().addFleetMember(variantId);
+        if (member == null) return false;
+        member.getRepairTracker().setMothballed(false);
+        // This is only the compatibility fallback for a guard already stored
+        // in an older save. Refresh stats before querying the new member's
+        // maximum CR, matching the ordering expected by the repair tracker.
+        member.updateStats();
+        member.getRepairTracker().setCR(
+                member.getRepairTracker().getMaxCR());
+        fleet.getFleetData().sort();
+        fleet.getFleetData().setSyncNeeded();
+        fleet.getFleetData().syncIfNeeded();
+        fleet.forceSync();
+        return true;
+    }
+
     /** Shared by the story blockades and post-victory faction-pool rolls. */
     static boolean refitMemberAsMkIV(
             FleetMemberAPI member, String factionId) {
@@ -315,32 +384,19 @@ public final class GanEdenHypershuntManager {
         ShipVariantAPI current = member.getVariant();
         String currentHullId = current.getHullSpec().getHullId();
         String mkIVHullId = getMkIVHullId(currentHullId, factionId);
+        String mkIVVariantId = getMkIVVariantId(currentHullId, factionId);
         boolean legacy = hasLegacyMkIVMarker(current);
 
-        if (mkIVHullId == null) {
-            if (!legacy) return false;
-            ShipVariantAPI cleaned = current.clone();
-            cleaned.setSource(VariantSource.REFIT);
-            removeLegacyPaint(cleaned);
-            member.setVariant(cleaned, false, false);
-            member.updateStats();
-            return true;
-        }
+        if (mkIVHullId == null || mkIVVariantId == null) return false;
         if (mkIVHullId.equals(currentHullId)
                 && isCompleteMkIV(current, factionId)
                 && !legacy) {
             return false;
         }
 
-        ShipVariantAPI variant = current.clone();
-        variant.setSource(VariantSource.REFIT);
-        variant.setVariantDisplayName("Mk IV");
-        variant.setHullSpecAPI(Global.getSettings().getHullSpec(mkIVHullId));
-        variant.refreshBuiltInWings();
-        removeLegacyPaint(variant);
-        ensurePlainBuiltIn(variant, HullMods.UNSTABLE_INJECTOR);
-        ensurePlainBuiltIn(variant, HullMods.HEAVYARMOR);
-        member.setVariant(variant, false, false);
+        ShipVariantAPI preset = Global.getSettings().getVariant(mkIVVariantId);
+        if (preset == null) return false;
+        member.setVariant(preset.clone(), false, false);
         member.updateStats();
         return true;
     }
@@ -401,42 +457,18 @@ public final class GanEdenHypershuntManager {
         return hullId != null && hullId.equals(mapped);
     }
 
+    private static String getMkIVVariantId(
+            String hullId, String factionId) {
+        String mappedHullId = getMkIVHullId(hullId, factionId);
+        return mappedHullId == null ? null : mappedHullId + "_Standard";
+    }
+
     private static boolean hasLegacyMkIVMarker(ShipVariantAPI variant) {
         return variant != null
                 && (variant.hasTag(HypershuntMkIVPaint.PATH_TAG)
                         || variant.hasTag(HypershuntMkIVPaint.PIRATE_TAG)
                         || variant.hasHullMod(
                                 HypershuntMkIVPaint.HULLMOD_ID));
-    }
-
-    private static void removeLegacyPaint(ShipVariantAPI variant) {
-        if (variant == null) return;
-        variant.removeTag(HypershuntMkIVPaint.PATH_TAG);
-        variant.removeTag(HypershuntMkIVPaint.PIRATE_TAG);
-        variant.getSMods().remove(HypershuntMkIVPaint.HULLMOD_ID);
-        variant.removePermaMod(HypershuntMkIVPaint.HULLMOD_ID);
-        if (variant.getNonBuiltInHullmods().contains(
-                HypershuntMkIVPaint.HULLMOD_ID)) {
-            variant.removeMod(HypershuntMkIVPaint.HULLMOD_ID);
-        }
-    }
-
-    /** Ensures the refit is a normal built-in, never an accidental S-mod. */
-    private static void ensurePlainBuiltIn(
-            ShipVariantAPI variant, String hullmodId) {
-        if (variant == null || hullmodId == null) return;
-        if (variant.getHullSpec().isBuiltInMod(hullmodId)) return;
-
-        if (variant.getSMods().contains(hullmodId)) {
-            variant.getSMods().remove(hullmodId);
-            variant.removePermaMod(hullmodId);
-        }
-        if (variant.getNonBuiltInHullmods().contains(hullmodId)) {
-            variant.removeMod(hullmodId);
-        }
-        if (!variant.getPermaMods().contains(hullmodId)) {
-            variant.addPermaMod(hullmodId);
-        }
     }
 
     public static boolean isGuard(
@@ -786,25 +818,11 @@ public final class GanEdenHypershuntManager {
         if (guard == null || tap == null
                 || guard.getContainingLocation() == null) return;
 
-        // A fleet-interaction dialog may already have assembled a campaign
-        // BattleAPI even though no tactical engagement took place. Explicitly
-        // detach both fleets before dismissing the peaceful conversation;
-        // otherwise external autoresolve listeners can continue processing
-        // that stale battle and damage the player's real fleet off-screen.
-        BattleAPI battle = guard.getBattle();
-        if (battle != null) {
-            CampaignFleetAPI player = Global.getSector() == null
-                    ? null : Global.getSector().getPlayerFleet();
-            if (player != null && player.getBattle() == battle) {
-                // Leave the player side first so removing the claimant cannot
-                // be interpreted as a player victory by battle listeners.
-                battle.leave(player, false);
-            }
-            if (guard.getBattle() == battle) {
-                battle.leave(guard, false);
-            }
-        }
-
+        // Do not mutate guard.getBattle() here. The vanilla fleet-interaction
+        // plugin owns that BattleAPI and calls cleanUpBattle() after the rule
+        // conversation returns to its encounter menu. Leaving either side by
+        // hand creates a half-detached battle that can be reused as a ghost
+        // encounter on the next contact.
         for (FleetEventListener listener
                 : new ArrayList<FleetEventListener>(
                         guard.getEventListeners())) {

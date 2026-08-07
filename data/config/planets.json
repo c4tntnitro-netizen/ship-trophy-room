@@ -3,7 +3,11 @@
     # survey/colony UI remains available, but it is drawn as a compact fixed
     # installation rather than as a free-floating world.
     "ship_trophy_gan_eden_surface_site":{
-        "name":"Dyson Sphere Surface Site",
+        # Campaign tooltips prepend the PlanetAPI's proper name and append
+        # "World" to this type label. Keep the label descriptive rather than
+        # repeating the settlement name (for example, "Tree of Life, Terran
+        # World" instead of "Tree of Life, Tree of Life ... World").
+        "name":"Artificial",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -20,7 +24,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_cinderwake_site":{
-        "name":"Cinderwake Surface Settlement",
+        "name":"Volcanic",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -37,7 +41,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_rimewell_site":{
-        "name":"Rimewell Surface Settlement",
+        "name":"Frozen",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -54,7 +58,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_tree_of_life_site":{
-        "name":"Tree of Life Surface Settlement",
+        "name":"Terran",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -71,7 +75,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_pelagos_site":{
-        "name":"Pelagos Basin Surface Settlement",
+        "name":"Water",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -92,7 +96,7 @@
     # above remain valid so existing saves can load before the generator
     # migrates their PlanetAPI instances with changeType().
     "ship_trophy_gan_eden_volcanic_cinderwake_site":{
-        "name":"Cinderwake Surface Settlement",
+        "name":"Volcanic",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -109,7 +113,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_frozen_rimewell_site":{
-        "name":"Rimewell Surface Settlement",
+        "name":"Frozen",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -126,7 +130,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_terran_tree_of_life_site":{
-        "name":"Tree of Life Surface Settlement",
+        "name":"Terran",
         "tilt":0,
         "pitch":0,
         "rotation":0,
@@ -143,7 +147,7 @@
         "lightPosition":[0,0,10],
     },
     "ship_trophy_gan_eden_water_pelagos_site":{
-        "name":"Pelagos Basin Surface Settlement",
+        "name":"Water",
         "tilt":0,
         "pitch":0,
         "rotation":0,

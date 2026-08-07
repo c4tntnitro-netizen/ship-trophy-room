@@ -442,6 +442,10 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         memory.set(MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE, true);
         memory.set("$ignorePlayerCommRequests", true);
         memory.set(MemFlags.MEMORY_KEY_NO_REP_IMPACT, true);
+        // This is an unaffiliated Omega story encounter. Keep the mechanical
+        // no-reputation-impact protection, but suppress vanilla's transponder
+        // paragraph about reduced reputation consequences.
+        memory.set(MemFlags.MEMORY_KEY_SKIP_TRANSPONDER_STATUS_INFO, true);
         // Golden hulls are intrinsically unboardable, while Ivory Remnants
         // carry auto-recovery hull tags and a large individual recovery
         // bonus. Do not suppress recovery at fleet level or the escorts can

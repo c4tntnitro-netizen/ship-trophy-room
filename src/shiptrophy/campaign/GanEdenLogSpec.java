@@ -7,7 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fs.starfarer.api.Global;
 
@@ -17,24 +19,24 @@ public final class GanEdenLogSpec {
 
     public static final GanEdenLogSpec PART_ONE = new GanEdenLogSpec(
             "part_one", "Personal Log 1765", ShatteredRingGenerator.ENTITY_ID,
-            "The Shattered Ring", "one");
+            "The Shattered Ring", "shipTrophyGanEdenEpitaphOne");
     public static final GanEdenLogSpec PART_TWO = new GanEdenLogSpec(
-            "part_two", "Epitaph — Part II", null,
-            "the first Coronal Hypershunt", "two");
+            "part_two", "Log — Part II", null,
+            "the first Coronal Hypershunt", "shipTrophyGanEdenEpitaphTwo");
     public static final GanEdenLogSpec PART_THREE = new GanEdenLogSpec(
-            "part_three", "Epitaph — Part III", null,
-            "the second Coronal Hypershunt", "three");
+            "part_three", "Log — Part III", null,
+            "the second Coronal Hypershunt", "shipTrophyGanEdenEpitaphThree");
     public static final GanEdenLogSpec PART_FOUR = new GanEdenLogSpec(
-            "part_four", "Epitaph — Part IV", GanEdenGenerator.TREE_OF_LIFE_ID,
-            "Tree of Life", "four");
+            "part_four", "Log — Part IV", GanEdenGenerator.TREE_OF_LIFE_ID,
+            "Tree of Life", "shipTrophyGanEdenEpitaphFour");
     public static final GanEdenLogSpec FINAL = new GanEdenLogSpec(
-            "final", "Epitaph — Final", GanEdenGenerator.SPACE_ELEVATOR_ID,
-            "the Gan Eden Space Elevator", "five");
+            "final", "Log — Final", GanEdenGenerator.SPACE_ELEVATOR_ID,
+            "the Gan Eden Space Elevator", "shipTrophyGanEdenEpitaphFive");
 
     private static final List<GanEdenLogSpec> ORDERED =
             Collections.unmodifiableList(Arrays.asList(
                     PART_ONE, PART_TWO, PART_THREE, PART_FOUR, FINAL));
-    private static final Map<String, String> BODY_BY_SECTION =
+    private static final Map<String, String> BODY_BY_RULE_ID =
             new LinkedHashMap<String, String>();
     private static boolean bodiesLoaded;
 
@@ -42,19 +44,19 @@ public final class GanEdenLogSpec {
     private final String title;
     private final String siteId;
     private final String siteName;
-    private final String inkSection;
+    private final String ruleId;
 
     private GanEdenLogSpec(
             String id,
             String title,
             String siteId,
             String siteName,
-            String inkSection) {
+            String ruleId) {
         this.id = id;
         this.title = title;
         this.siteId = siteId;
         this.siteName = siteName;
-        this.inkSection = inkSection;
+        this.ruleId = ruleId;
     }
 
     public String getId() {
@@ -75,7 +77,7 @@ public final class GanEdenLogSpec {
 
     public String getBody() {
         ensureBodiesLoaded();
-        String body = BODY_BY_SECTION.get(inkSection);
+        String body = BODY_BY_RULE_ID.get(ruleId);
         if (body == null || body.trim().isEmpty()) {
             return "[Archive data unavailable: " + title + "]";
         }
@@ -109,52 +111,30 @@ public final class GanEdenLogSpec {
         if (bodiesLoaded) return;
         bodiesLoaded = true;
         try {
-            String ink = Global.getSettings().loadText(
-                    "dialogue/Logs.ink", "ship_trophy_room");
-            for (GanEdenLogSpec spec : ORDERED) {
-                String marker = "=== " + spec.inkSection + " ===";
-                int start = ink.indexOf(marker);
-                if (start < 0) continue;
-                start += marker.length();
-                int end = ink.indexOf("-> END", start);
-                if (end < 0) continue;
-                BODY_BY_SECTION.put(
-                        spec.inkSection,
-                        sanitizeInkBody(ink.substring(start, end)));
+            JSONArray rows = Global.getSettings().loadCSV(
+                    "data/campaign/rules.csv", "ship_trophy_room");
+            for (int i = 0; i < rows.length(); i++) {
+                JSONObject row = rows.getJSONObject(i);
+                String id = row.optString("id", "").trim();
+                if (id.length() <= 0) continue;
+                for (GanEdenLogSpec spec : ORDERED) {
+                    if (!spec.ruleId.equals(id)) continue;
+                    String text = row.optString("text", "").trim();
+                    if (text.length() > 0) {
+                        BODY_BY_RULE_ID.put(spec.ruleId, text);
+                    }
+                    break;
+                }
             }
         } catch (IOException ex) {
             System.err.println(
-                    "Hall of Triumph: unable to load Gan Eden archive text.");
+                    "Hall of Triumph: unable to load Gan Eden rules.csv text.");
             ex.printStackTrace(System.err);
         } catch (JSONException ex) {
             System.err.println(
-                    "Hall of Triumph: unable to parse Gan Eden archive text.");
+                    "Hall of Triumph: unable to parse Gan Eden rules.csv text.");
             ex.printStackTrace(System.err);
         }
     }
 
-    /**
-     * Logs.ink doubles as an editable Ink proofreading document. Strip its
-     * navigation choices, knot headers, and diverts before exposing an entry
-     * to campaign dialogue or Intel.
-     */
-    private static String sanitizeInkBody(String rawBody) {
-        StringBuilder result = new StringBuilder();
-        String[] lines = rawBody.split("\\r?\\n", -1);
-        for (String line : lines) {
-            String trimmed = line.trim();
-            if (trimmed.matches(
-                    "\\+\\s*\\[[^\\]]*\\](?:\\s*->\\s*\\S+)?")) {
-                continue;
-            }
-            if (trimmed.matches("===\\s+.+?\\s+===")) {
-                continue;
-            }
-            if (trimmed.matches("->\\s*\\S+")) {
-                continue;
-            }
-            result.append(line).append('\n');
-        }
-        return result.toString().trim();
-    }
 }

@@ -85,8 +85,7 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
                 + "the wreck-farms. The gantries around it are equally suited to careful restoration "
                 + "and carefully planned damage.");
         text.addPara("\"Most yards promise to take the scars out,\" the engineer says. \"I can put "
-                + "exactly the right scar back in. One story point per defect. You name the ship and "
-                + "the compromise.\"");
+                + "exactly the right scar back in. You name the ship and the compromise.\"");
         text.addPara("This service installs one eligible D-mod of your choice. A ship may not exceed "
                 + "the normal limit of %s D-mods.", Misc.getTextColor(), Misc.getHighlightColor(),
                 "one eligible D-mod", String.valueOf(DModManager.MAX_DMODS_FROM_COMBAT));
@@ -96,7 +95,7 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
         OptionPanelAPI options = dialog.getOptionPanel();
         options.clearOptions();
         options.addOption("Select a ship for commissioned damage.", PICK_SHIP,
-                "Choose a ship, then choose the exact D-mod to install for one story point.");
+                "Choose a ship, then choose the exact D-mod to commission.");
         options.addOption("Leave.", LEAVE);
         dialog.setOptionOnEscape("Leave.", LEAVE);
     }
@@ -171,9 +170,9 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
             String optionId = INSTALL_PREFIX + spec.getId();
             String description = spec.getDescription(member.getVariant().getHullSize());
             if (description == null || description.trim().isEmpty()) {
-                description = "Install this D-mod for one story point.";
+                description = "Install this D-mod.";
             }
-            options.addOption(spec.getDisplayName() + " (1 story point)", optionId, description);
+            options.addOption(spec.getDisplayName(), optionId, description);
             dialog.makeStoryOption(optionId, 1, 1f, Sounds.STORY_POINT_SPEND);
         }
 

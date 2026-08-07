@@ -38,6 +38,11 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
             boolean isUpdate,
             Color tc,
             float initPad) {
+        if (isUpdate && GanEdenQuestManager.isCompleted()) {
+            info.addPara("Quest completed: %s", initPad, tc,
+                    Misc.getPositiveHighlightColor(), "A Borrowed Name");
+            return;
+        }
         info.addPara(shortObjective(), initPad, tc,
                 Misc.getHighlightColor(), highlightedObjective());
     }
@@ -75,7 +80,7 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
             info.addSpacer(10f);
             info.addPara(
                     "Five scattered records reconstructed Isaac Thomas "
-                            + "Leicester's Epitaph. Isa recovered the final "
+                            + "Leicester's logs. Isa recovered the final "
                             + "entry from Gan Eden's Space Elevator after "
                             + "Cherubim and Lahat Haharev were destroyed—"
                             + "though ordinary Omega Shards and Facets have "

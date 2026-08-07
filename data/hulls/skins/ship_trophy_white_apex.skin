@@ -15,6 +15,6 @@
         "solar_shielding",
         "stabilizedshieldemitter",
     ],
-    "tags":["hide_in_codex"],
+    "tags":["hide_in_codex", "auto_rec"],
     "builtInWeapons":{},
 }

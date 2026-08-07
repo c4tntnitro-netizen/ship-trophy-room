@@ -223,6 +223,7 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         }
         if ("isExternalRing".equals(command)) {
             return GanEdenQuestManager.isAtLeast(Stage.GAN_EDEN_REVEALED)
+                    && GanEdenQuestManager.hasBothHypershuntLogs()
                     && isTarget(dialog, GanEdenQuestManager.EXTERNAL_RING_ID);
         }
         if ("isInternalRing".equals(command)) {
@@ -232,7 +233,10 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return isTarget(dialog, GanEdenGenerator.ARRIVAL_RING_ID);
         }
         if ("transitIn".equals(command)) {
-            if (!canUseJanusGate()) return false;
+            if (!canUseJanusGate()
+                    || !GanEdenQuestManager.hasBothHypershuntLogs()) {
+                return false;
+            }
             GanEdenQuestManager.transitIntoGanEden(
                     dialog.getInteractionTarget());
             return true;
@@ -342,29 +346,27 @@ public final class GanEdenQuestCMD implements CommandPlugin {
 
     private static int[] pageBreaks(GanEdenLogSpec spec, int paragraphCount) {
         if (spec == GanEdenLogSpec.PART_ONE) {
-            return boundedBreaks(paragraphCount, 0, 7, 13, paragraphCount);
+            return distributedBreaks(paragraphCount, 3);
         }
         if (spec == GanEdenLogSpec.PART_TWO) {
-            return boundedBreaks(paragraphCount, 0, 7, 15, paragraphCount);
+            return distributedBreaks(paragraphCount, 3);
         }
         if (spec == GanEdenLogSpec.PART_THREE) {
-            return boundedBreaks(paragraphCount, 0, 6, 14, 22, paragraphCount);
+            return distributedBreaks(paragraphCount, 4);
         }
         if (spec == GanEdenLogSpec.PART_FOUR) {
-            return boundedBreaks(
-                    paragraphCount, 0, 7, 15, 23, 31, paragraphCount);
+            return distributedBreaks(paragraphCount, 5);
         }
-        return boundedBreaks(
-                paragraphCount, 0, 9, 18, 28, 38, 47, paragraphCount);
+        return distributedBreaks(paragraphCount, 6);
     }
 
-    private static int[] boundedBreaks(int paragraphCount, int... requested) {
-        int[] result = new int[requested.length];
-        int previous = 0;
-        for (int i = 0; i < requested.length; i++) {
-            int value = Math.max(previous, Math.min(requested[i], paragraphCount));
-            result[i] = value;
-            previous = value;
+    /** Keeps fixed dialogue option chains usable as rules.csv prose evolves. */
+    private static int[] distributedBreaks(int paragraphCount, int pages) {
+        int safePages = Math.max(1, Math.min(pages, paragraphCount));
+        int[] result = new int[safePages + 1];
+        for (int i = 0; i <= safePages; i++) {
+            result[i] = Math.round(
+                    paragraphCount * (i / (float) safePages));
         }
         return result;
     }

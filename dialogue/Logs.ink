@@ -1,10 +1,10 @@
 // Runtime recovery map:
 //
 // Spacer-suit identification wafer: Personal Log 1765 / Part I.
-// First hypershunt scanned: Epitaph Part II.
-// Second hypershunt scanned: Epitaph Part III and the Power Transit Gate.
-// Tree of Life: Epitaph Part IV.
-// Space Elevator: Epitaph Final after the Golden Shards are defeated.
+// First hypershunt scanned: Log Part II.
+// Second hypershunt scanned: Log Part III and the Power Transit Gate.
+// Tree of Life: Log Part IV.
+// Space Elevator: Log Final after the Golden Shards are defeated.
 //
 // Every recovered entry is retained under the Gan Eden Archives Intel tag.
 
@@ -77,7 +77,7 @@ I was wrong.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART II
+FILE: LOG — PART II
 
 
 Before the Continuity Office was established, I lived at Telepylus Station with my wife, Rebecca Anne Sarai.
@@ -141,7 +141,7 @@ I hate myself—
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART III
+FILE: LOG — PART III
 
 My daughter remained unchanged.
 
@@ -232,7 +232,7 @@ I spoke against the Domain of Man, this great Whore of Babylon, while I remained
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — PART IV
+FILE: LOG — PART IV
 
 
 The Domain arrested me for insurrection.
@@ -316,7 +316,7 @@ Instead, I was imprisoned inside it.
 
 RECOVERED PERSONAL LOG
 AUTHOR: LEICESTER, ISAAC THOMAS
-FILE: EPITAPH — FINAL
+FILE: LOG — FINAL
 
 
 I am dying.

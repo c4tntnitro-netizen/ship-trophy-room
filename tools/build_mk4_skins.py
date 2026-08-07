@@ -1,7 +1,7 @@
-"""Pre-render the finite Mk IV hull-skin set used by Hall of Triumph.
+"""Pre-render the finite Mk IV hull and variant set used by Hall of Triumph.
 
 This is a development-time asset builder. The game never generates or paints
-Mk IV hull sprites at runtime.
+Mk IV hull sprites or loadouts at runtime.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ REPO = Path(__file__).resolve().parents[1]
 CORE = Path(r"C:\Program Files (x86)\Fractal Softworks\Starsector\starsector-core")
 OUTPUT_SPRITES = REPO / "graphics" / "ships" / "mk4"
 OUTPUT_SKINS = REPO / "data" / "hulls" / "skins"
+OUTPUT_VARIANTS = REPO / "data" / "variants"
 
 
 # Mk IV hulls use a near-black undercoat so the field markings remain legible
@@ -27,6 +28,12 @@ BASE_CONTRAST = 1.14
 OVERLAY_TUNING = {
     "pirate": {"alpha": 1.30, "brightness": 1.08, "saturation": 1.22, "contrast": 1.10},
     "pather": {"alpha": 1.75, "brightness": 1.28, "saturation": 1.35, "contrast": 1.18},
+}
+# Apply this after faction tuning and alpha clamping. Pirate tiger stripes are
+# half as opaque as their previous render; Pather blood markings are unchanged.
+PAINT_OPACITY = {
+    "pirate": 0.25,
+    "pather": 0.50,
 }
 
 
@@ -43,6 +50,7 @@ COMMON = {
 SPECS = [
     {
         "source": "graphics/ships/vanguard/vanguard_pirate.png",
+        "variant": "data/variants/vanguard/vanguard_pirates_Attack.variant",
         "overlay": "pirate",
         "skin": {
             **COMMON,
@@ -58,6 +66,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/manticore/manticore_pirate.png",
+        "variant": "data/variants/manticore/manticore_pirates_Assault.variant",
         "overlay": "pirate",
         "skin": {
             **COMMON,
@@ -73,6 +82,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/falcon/falcon_p.png",
+        "variant": "data/variants/falcon/falcon_p_Strike.variant",
         "overlay": "pirate",
         "skin": {
             **COMMON,
@@ -98,6 +108,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/eradicator/eradicator_pirate.png",
+        "variant": "data/variants/eradicator/eradicator_pirates_Attack.variant",
         "overlay": "pirate",
         "skin": {
             **COMMON,
@@ -117,12 +128,13 @@ SPECS = [
     },
     {
         "source": "graphics/ships/atlas/atlas_mk2_base.png",
+        "variant": "data/variants/atlas2_Standard.variant",
         "overlay": "pirate",
         "skin": {
             **COMMON,
             "baseHullId": "atlas2",
             "skinHullId": "ship_trophy_mk4_pirate_atlas2",
-            "hullName": "Atlas Mk.II",
+            "hullName": "Atlas Mk IV",
             "descriptionId": "atlas2",
             "descriptionPrefix": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.",
             "tags": ["hide_in_codex"],
@@ -132,6 +144,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/enforcer/enforcer_base.png",
+        "variant": "data/variants/enforcer/enforcer_Overdriven.variant",
         "overlay": "pather",
         "skin": {
             **COMMON,
@@ -147,6 +160,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/hammerhead/hammerhead_base.png",
+        "variant": "data/variants/hammerhead/hammerhead_Balanced.variant",
         "overlay": "pather",
         "skin": {
             **COMMON,
@@ -162,6 +176,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/manticore/manticore_pather.png",
+        "variant": "data/variants/manticore/manticore_luddic_path_Strike.variant",
         "overlay": "pather",
         "skin": {
             **COMMON,
@@ -185,6 +200,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/eradicator/eradicator_base.png",
+        "variant": "data/variants/eradicator/eradicator_Overdriven.variant",
         "overlay": "pather",
         "skin": {
             **COMMON,
@@ -200,6 +216,7 @@ SPECS = [
     },
     {
         "source": "graphics/ships/sunder/sunder.png",
+        "variant": "data/variants/sunder/sunder_Assault.variant",
         "overlay": "pather",
         "skin": {
             **COMMON,
@@ -215,12 +232,13 @@ SPECS = [
     },
     {
         "source": "graphics/ships/prometheus/prometheus2_base.png",
+        "variant": "data/variants/prometheus2_Standard.variant",
         "overlay": "pather",
         "skin": {
             **COMMON,
             "baseHullId": "prometheus2",
             "skinHullId": "ship_trophy_mk4_pather_prometheus2",
-            "hullName": "Prometheus Mk.II",
+            "hullName": "Prometheus Mk IV",
             "descriptionId": "prometheus2",
             "descriptionPrefix": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.",
             "tags": ["hide_in_codex"],
@@ -248,7 +266,9 @@ def render_sprite(
     )
     tuning = OVERLAY_TUNING[faction]
     paint_alpha = paint.getchannel("A").point(
-        lambda value: min(255, round(value * tuning["alpha"]))
+        lambda value: round(
+            min(255, value * tuning["alpha"]) * PAINT_OPACITY[faction]
+        )
     )
     paint_rgb = ImageEnhance.Brightness(paint.convert("RGB")).enhance(
         tuning["brightness"]
@@ -283,6 +303,26 @@ def main() -> None:
         )
         skin_path = OUTPUT_SKINS / f"{skin_id}.skin"
         skin_path.write_text(json.dumps(skin, indent=4) + "\n", encoding="utf-8")
+
+        variant = json.loads((CORE / spec["variant"]).read_text(encoding="utf-8"))
+        variant_id = f"{skin_id}_Standard"
+        variant["hullId"] = skin_id
+        variant["variantId"] = variant_id
+        variant["displayName"] = "Mk IV"
+        # These are properties of the static Mk IV hull itself. Leaving them
+        # in the loadout as ordinary mods can make the refit screen treat them
+        # as removable duplicates.
+        for field in ("hullMods", "permaMods", "sMods"):
+            variant[field] = [
+                mod
+                for mod in variant.get(field, [])
+                if mod not in {"unstable_injector", "heavyarmor"}
+            ]
+        OUTPUT_VARIANTS.mkdir(parents=True, exist_ok=True)
+        variant_path = OUTPUT_VARIANTS / f"{variant_id}.variant"
+        variant_path.write_text(
+            json.dumps(variant, indent=4) + "\n", encoding="utf-8"
+        )
         print(f"generated {skin_id}")
 
 
