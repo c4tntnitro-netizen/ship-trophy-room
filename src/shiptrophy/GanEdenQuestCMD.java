@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.CommandPlugin;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -137,6 +138,10 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             return isSpaceElevator(dialog.getInteractionTarget())
                     && GanEdenQuestManager.isCompleted()
                     && GanEdenAmbushScript.canLureNextWave();
+        }
+        if ("prepareGoldenOmegaRespawnTimer".equals(command)) {
+            prepareGoldenOmegaRespawnTimer(memoryMap);
+            return true;
         }
         if ("lureGoldenOmega".equals(command)) {
             return isSpaceElevator(dialog.getInteractionTarget())
@@ -314,6 +319,26 @@ public final class GanEdenQuestCMD implements CommandPlugin {
     private static boolean isSpaceElevator(SectorEntityToken target) {
         return target != null
                 && GanEdenGenerator.SPACE_ELEVATOR_ID.equals(target.getId());
+    }
+
+    private static void prepareGoldenOmegaRespawnTimer(
+            Map<String, MemoryAPI> memoryMap) {
+        MemoryAPI local = memoryMap == null
+                ? null : memoryMap.get(MemKeys.LOCAL);
+        if (local == null) return;
+        int days = GanEdenAmbushScript.getRespawnDaysRemaining();
+        String status;
+        if (days < 0) {
+            status = "Space Elevator telemetry reports that Cherubim and "
+                    + "Lahat Haharev have already reconstructed.";
+        } else {
+            String remaining = days == 0
+                    ? "less than one day"
+                    : days + (days == 1 ? " day" : " days");
+            status = "Space Elevator telemetry estimates that Cherubim and "
+                    + "Lahat Haharev will reconstruct in " + remaining + ".";
+        }
+        local.set("$shipTrophyGanEdenRespawnStatus", status, 0f);
     }
 
     /**

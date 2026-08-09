@@ -64,7 +64,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
     private static final String DEXTRAL_NAME = "Lahat Haharev";
     private static final float ELEVATOR_OFFSET = 350f;
     private static final float GUARD_DURATION = 1000000f;
-    private static final float RESPAWN_DAYS = 90f;
+    private static final float RESPAWN_DAYS = 365f;
     private static final int[] ESCORT_COMBAT_POINTS =
             new int[] {0, 45, 90, 150, 240};
     private static final long LOOT_SEED = 0x617572656174654cL;
@@ -97,6 +97,24 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
      */
     public static boolean ensureFleet() {
         return ensureFleet(false);
+    }
+
+    /**
+     * Returns whole campaign days until the defeated Golden Omega return.
+     * A negative value means that no reconstruction countdown is active.
+     */
+    public static int getRespawnDaysRemaining() {
+        if (Global.getSector() == null) return -1;
+        MemoryAPI memory = Global.getSector().getMemoryWithoutUpdate();
+        if (!memory.getBoolean(DEFEATED_KEY)
+                || memory.getBoolean(ACTIVE_KEY)
+                || !memory.contains(RESPAWN_SINCE_KEY)) {
+            return -1;
+        }
+        long since = memory.getLong(RESPAWN_SINCE_KEY);
+        float elapsed = Global.getSector().getClock()
+                .getElapsedDaysSince(since);
+        return Math.max(0, (int) Math.ceil(RESPAWN_DAYS - elapsed));
     }
 
     private static boolean ensureFleet(boolean forceRespawn) {

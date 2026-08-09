@@ -1136,7 +1136,7 @@ With Cherubim and Lahat Haharev destroyed together, the Space Elevator's interdi
 
 Gan Eden remains parked beyond charted hyperspace, with the Power Transit Gate as its only route. The four settlement districts are released from their sealed economy groups and can participate in ordinary Sector trade.
 
-The victory is not permanent. Every ninety days, the Golden Shards reconstruct themselves with a larger escort of ivory Remnant hulls, escalating until the escort is roughly a full Ordo. Later victories reset that cycle without sealing Gan Eden again.
+The victory is not permanent. Every year, the Golden Shards reconstruct themselves with a larger escort of ivory Remnant hulls, escalating until the escort is roughly a full Ordo. Later victories reset that cycle without sealing Gan Eden again.
 
 On later visits, the Space Elevator's continuity transmitter can lure the next reconstructed wave back immediately through a special option. This advances the same escalation sequence; it does not create a separate encounter.
 
