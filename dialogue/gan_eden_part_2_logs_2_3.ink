@@ -768,7 +768,7 @@ The second hypershunt’s signal contains the same concealed routing pattern as 
 
 She aligns the two vectors.
 
-They intersect far beyond the charted systems of the Sector, near its northeastern edge. There is no stable jump point; reaching it will require a Transverse Jump.
+They intersect far beyond the charted systems of the Sector, near its northeastern edge.
 
 A destination marker appears.
 

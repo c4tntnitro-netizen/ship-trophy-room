@@ -886,7 +886,7 @@ Until today.
 
 Today, God finally answered.
 
-It did not connect to Penelope’s Star or any other Gate I knew. Instead, two angels arrived through the Gate and began descending toward Gan Eden.
+It did not connect to Penelope’s Star or any other Gate I knew. Instead, two angels arrived through the the Earth and began ascending toward the Space Elevator.
 
 The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment. The second turns within lines of fire like a burning sword. They burn with the light of God and race through the sky like searing chariots.
 
