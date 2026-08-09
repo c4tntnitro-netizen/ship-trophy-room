@@ -6347,8 +6347,8 @@ The elevator's continuity archive recognizes Isa Leicester's inherited suit tran
 // OpenInteractionDialog
 // Conditions:
 // GanEdenQuestCMD epitaphInspected score:55000
-// Runtime script:
 // GanEdenQuestCMD prepareGoldenOmegaRespawnTimer
+// Runtime script:
 // SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
 // FireAll ShipTrophyGanEdenLureOptions
 // Notes:
