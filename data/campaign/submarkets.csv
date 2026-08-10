@@ -1,3 +1,4 @@
 id,name,faction,desc,script,icon,order
 ship_trophy_room_storage,"Hall of
 Triumph",player,"A curated ship vault attached to a colony Hall of Triumph. Ships stored here remain mothballed and secure, and displayed hulls help the Hall of Triumph generate story points.",shiptrophy.TrophyRoomSubmarketPlugin,graphics/factions/storage.png,1002
+ship_trophy_room_sort_controls,"Hall Sort Controls",player,"Choose the primary and secondary categories used to arrange ships in Hall of Triumph storage. This base-mod interface does not require LunaLib.",shiptrophy.HallSortControlsSubmarketPlugin,graphics/icons/industry/trophy_room.png,1003

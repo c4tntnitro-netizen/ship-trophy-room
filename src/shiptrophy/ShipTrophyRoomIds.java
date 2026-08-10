@@ -3,6 +3,9 @@ package shiptrophy;
 public class ShipTrophyRoomIds {
     public static final String INDUSTRY = "ship_trophy_room";
     public static final String SUBMARKET = "ship_trophy_room_storage";
+    public static final String SORT_CONTROLS_SUBMARKET = "ship_trophy_room_sort_controls";
+    public static final String MEMORY_STORAGE_PRIMARY_SORT = "$ship_trophy_room_storage_primary_sort";
+    public static final String MEMORY_STORAGE_SECONDARY_SORT = "$ship_trophy_room_storage_secondary_sort";
     public static final String MEMORY_UNIQUE_HULLS = "$ship_trophy_room_unique_hulls";
     public static final String MEMORY_UNIQUE_HULL_COUNT = "$ship_trophy_room_unique_hull_count";
     public static final String MEMORY_COLLECTION_DP = "$ship_trophy_room_collection_dp";

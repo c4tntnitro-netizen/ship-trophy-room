@@ -33,11 +33,16 @@ public class TrophyRoomIndustry extends BaseIndustry {
     }
 
     private void ensureTrophyStorage() {
-        if (market == null || market.hasSubmarket(ShipTrophyRoomIds.SUBMARKET)) return;
-        market.addSubmarket(ShipTrophyRoomIds.SUBMARKET);
+        if (market == null) return;
+        if (!market.hasSubmarket(ShipTrophyRoomIds.SUBMARKET)) {
+            market.addSubmarket(ShipTrophyRoomIds.SUBMARKET);
+        }
         if (market.getSubmarket(ShipTrophyRoomIds.SUBMARKET).getPlugin() instanceof StoragePlugin) {
             StoragePlugin plugin = (StoragePlugin) market.getSubmarket(ShipTrophyRoomIds.SUBMARKET).getPlugin();
             plugin.setPlayerPaidToUnlock(true);
+        }
+        if (!market.hasSubmarket(ShipTrophyRoomIds.SORT_CONTROLS_SUBMARKET)) {
+            market.addSubmarket(ShipTrophyRoomIds.SORT_CONTROLS_SUBMARKET);
         }
     }
 

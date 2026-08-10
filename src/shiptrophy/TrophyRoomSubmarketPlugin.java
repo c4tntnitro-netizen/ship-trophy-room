@@ -13,29 +13,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
+import shiptrophy.HallStorageSortPreferences.SortKey;
 
 public class TrophyRoomSubmarketPlugin extends StoragePlugin {
-    private enum SortKey {
-        HULL_NAME("Hull Name"),
-        FACTION("Faction"),
-        SIZE("Size"),
-        DP_COST("DP Cost");
-
-        private final String label;
-
-        SortKey(String label) {
-            this.label = label;
-        }
-
-        private static SortKey fromSetting(String value, SortKey fallback) {
-            if (value != null) {
-                for (SortKey key : values()) {
-                    if (key.label.equalsIgnoreCase(value.trim())) return key;
-                }
-            }
-            return fallback;
-        }
-    }
 
     @Override
     public void init(com.fs.starfarer.api.campaign.econ.SubmarketAPI submarket) {
@@ -81,13 +61,13 @@ public class TrophyRoomSubmarketPlugin extends StoragePlugin {
         super.createTooltipAfterDescription(tooltip, expanded);
         SortKey primary = getPrimarySort();
         SortKey secondary = getSecondarySort();
-        tooltip.addPara("Ship display order: %s, then %s. Configure both categories in Hall of Triumph's LunaLib settings.",
+        tooltip.addPara("Ship display order: %s, then %s. Use the Hall Sort Controls beside this storage tab to change both categories; LunaLib is not required.",
                 10f, com.fs.starfarer.api.util.Misc.getHighlightColor(),
-                primary.label, secondary.label);
+                primary.getLabel(), secondary.getLabel());
         tooltip.addPara("Stored ships are preserved even if the Hall of Triumph is disrupted, but this tab can only be opened while the structure is functional.", 10f);
     }
 
-    private void sortStoredShips() {
+    public void sortStoredShips() {
         if (getCargo() == null || getCargo().getMothballedShips() == null) return;
         FleetDataAPI ships = getCargo().getMothballedShips();
         List<FleetMemberAPI> ordered = ships.getMembersListCopy();
@@ -112,13 +92,11 @@ public class TrophyRoomSubmarketPlugin extends StoragePlugin {
     }
 
     private SortKey getPrimarySort() {
-        return SortKey.fromSetting(
-                HallOfTriumphFeatures.getPrimaryStorageSort(), SortKey.HULL_NAME);
+        return HallStorageSortPreferences.getPrimary();
     }
 
     private SortKey getSecondarySort() {
-        return SortKey.fromSetting(
-                HallOfTriumphFeatures.getSecondaryStorageSort(), SortKey.FACTION);
+        return HallStorageSortPreferences.getSecondary();
     }
 
     private static int compareBy(FleetMemberAPI left, FleetMemberAPI right, SortKey key) {
