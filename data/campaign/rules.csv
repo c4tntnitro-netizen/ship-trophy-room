@@ -36,7 +36,47 @@ shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtype
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
 shipTrophyIsaMainModdedSubtypes,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasSubtypePrograms modded,,,50:ship_trophy_isa_modded_subtypes:Ask about modded faction and subtype programs.,
 shipTrophyIsaMainGanEden,ShipTrophyIsaMainOptions,GanEdenQuestCMD questCompleted,,,"60:ship_trophy_isa_isaac:""...so. Isaac Leicester. He was Ludd.""",The full post-quest conversation about Isaac Leicester remains available through Isa's contact menu.
+shipTrophyIsaMainShatteredRing,ShipTrophyIsaMainOptions,IsaContactRulesCMD alreadyJoined,,,70:ship_trophy_isa_shattered_ring:Ask Isa about the Shattered Ring.,Post-recruitment conversation about Isa's childhood home.
 shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,100:ship_trophy_isa_close:Cut the comm link.,
+shipTrophyIsaShatteredRingHub,DialogOptionSelected,$option == ship_trophy_isa_shattered_ring,"IsaContactRulesCMD prepare
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""The Shattered Ring?""
+
+Isa's expression softens.
+
+""That's home. Three broken arcs, bad gravity, worse food, and enough salvaged machinery to keep all of it alive long after common sense said it should fall apart.""
+
+She turns the spanner over in her hand.
+
+""What do you want to know?""","0:ship_trophy_isa_shattered_ring_childhood:""What was it like growing up there?""
+10:ship_trophy_isa_shattered_ring_miss:""Do you miss it?""
+90:ship_trophy_isa_open:Back to the Hall ledgers.
+100:ship_trophy_isa_close:Cut the comm link.",Post-recruitment hub for Isa's Shattered Ring conversation.
+shipTrophyIsaShatteredRingChildhood,DialogOptionSelected,$option == ship_trophy_isa_shattered_ring_childhood,,"""Arc Two, mostly,"" Isa says. ""That was where the habitation decks were. Arc One had the good machine shops, but their gravity used to cut out whenever the ore processor started.""
+
+She smiles at the memory.
+
+""You learned to keep one hand near a railing and never put a tool down without clipping it to something. The wreck-farms supplied whatever the station couldn't make, and every broken machine became three working machines if you gave the mechanics enough time.""
+
+Isa rests the spanner against her shoulder.
+
+""People say a place like that teaches you how to survive. Mostly, it teaches you that almost anything can be repaired if enough people are willing to hold it together.""","0:ship_trophy_isa_shattered_ring:Ask something else about the Shattered Ring.
+90:ship_trophy_isa_open:Back to the Hall ledgers.
+100:ship_trophy_isa_close:Cut the comm link.",Isa describes growing up in Arc Two and learning engineering from the Ring's culture of repair.
+shipTrophyIsaShatteredRingMiss,DialogOptionSelected,$option == ship_trophy_isa_shattered_ring_miss,,"""Of course not.""
+
+Isa answers too quickly.
+
+""I don't miss the recycler alarms, or the gravity failures, or food that tasted like somebody had described vegetables to a nutrient printer.""
+
+She looks past the comm pickup for a moment.
+
+""I miss knowing every voice on the maintenance channel. I miss people shouting repair advice through three decks of open conduit. I miss knowing that if one bulkhead failed, half the Ring would arrive with welding torches before the pressure alarm finished sounding.""
+
+Her gaze returns to you.
+
+""It's still home. This fleet is too. Don't make that expression; I'm not saying it twice.""","0:ship_trophy_isa_shattered_ring:Ask something else about the Shattered Ring.
+90:ship_trophy_isa_open:Back to the Hall ledgers.
+100:ship_trophy_isa_close:Cut the comm link.",Isa admits what she misses about the Shattered Ring and calls the fleet another home.
 shipTrophyIsaGanEdenHub,DialogOptionSelected,$option == ship_trophy_isa_isaac,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Yeah.""
 
 Isa leans back in her chair.
