@@ -1,19 +1,9 @@
 package shiptrophy;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-
-import com.fs.starfarer.api.campaign.FleetDataAPI;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.CoreUIAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
-import shiptrophy.HallStorageSortPreferences.SortKey;
 
 public class TrophyRoomSubmarketPlugin extends StoragePlugin {
 
@@ -27,18 +17,6 @@ public class TrophyRoomSubmarketPlugin extends StoragePlugin {
     @Override
     public boolean isEnabled(CoreUIAPI ui) {
         return hasFunctionalTrophyRoom();
-    }
-
-    @Override
-    public void updateCargoPrePlayerInteraction() {
-        super.updateCargoPrePlayerInteraction();
-        sortStoredShips();
-    }
-
-    @Override
-    public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
-        super.reportPlayerMarketTransaction(transaction);
-        sortStoredShips();
     }
 
     @Override
@@ -59,93 +37,7 @@ public class TrophyRoomSubmarketPlugin extends StoragePlugin {
     @Override
     protected void createTooltipAfterDescription(TooltipMakerAPI tooltip, boolean expanded) {
         super.createTooltipAfterDescription(tooltip, expanded);
-        SortKey primary = getPrimarySort();
-        SortKey secondary = getSecondarySort();
-        tooltip.addPara("Ship display order: %s, then %s. Use the Hall Sort Controls beside this storage tab to change both categories; LunaLib is not required.",
-                10f, com.fs.starfarer.api.util.Misc.getHighlightColor(),
-                primary.getLabel(), secondary.getLabel());
         tooltip.addPara("Stored ships are preserved even if the Hall of Triumph is disrupted, but this tab can only be opened while the structure is functional.", 10f);
-    }
-
-    public void sortStoredShips() {
-        if (getCargo() == null || getCargo().getMothballedShips() == null) return;
-        FleetDataAPI ships = getCargo().getMothballedShips();
-        List<FleetMemberAPI> ordered = ships.getMembersListCopy();
-        if (ordered.size() < 2) return;
-
-        final SortKey primary = getPrimarySort();
-        final SortKey secondary = getSecondarySort();
-        Collections.sort(ordered, new Comparator<FleetMemberAPI>() {
-            @Override
-            public int compare(FleetMemberAPI left, FleetMemberAPI right) {
-                int result = compareBy(left, right, primary);
-                if (result == 0 && secondary != primary) {
-                    result = compareBy(left, right, secondary);
-                }
-                if (result == 0) result = compareText(hullName(left), hullName(right));
-                if (result == 0) result = compareText(faction(left), faction(right));
-                if (result == 0) result = compareText(shipName(left), shipName(right));
-                return result;
-            }
-        });
-        ships.sortToMatchOrder(ordered);
-    }
-
-    private SortKey getPrimarySort() {
-        return HallStorageSortPreferences.getPrimary();
-    }
-
-    private SortKey getSecondarySort() {
-        return HallStorageSortPreferences.getSecondary();
-    }
-
-    private static int compareBy(FleetMemberAPI left, FleetMemberAPI right, SortKey key) {
-        if (key == SortKey.FACTION) return compareText(faction(left), faction(right));
-        if (key == SortKey.SIZE) return Integer.compare(sizeRank(left), sizeRank(right));
-        if (key == SortKey.DP_COST) {
-            return Float.compare(dpCost(left), dpCost(right));
-        }
-        return compareText(hullName(left), hullName(right));
-    }
-
-    private static String hullName(FleetMemberAPI member) {
-        return member == null || member.getHullSpec() == null
-                ? "" : member.getHullSpec().getHullName();
-    }
-
-    private static String faction(FleetMemberAPI member) {
-        return member == null || member.getHullSpec() == null
-                ? "" : member.getHullSpec().getManufacturer();
-    }
-
-    private static String shipName(FleetMemberAPI member) {
-        return member == null ? "" : member.getShipName();
-    }
-
-    private static float dpCost(FleetMemberAPI member) {
-        return member == null ? Float.MAX_VALUE : member.getDeploymentPointsCost();
-    }
-
-    private static int sizeRank(FleetMemberAPI member) {
-        if (member == null || member.getHullSpec() == null) return Integer.MAX_VALUE;
-        ShipAPI.HullSize size = member.getHullSpec().getHullSize();
-        if (size == ShipAPI.HullSize.FIGHTER) return 0;
-        if (size == ShipAPI.HullSize.FRIGATE) return 1;
-        if (size == ShipAPI.HullSize.DESTROYER) return 2;
-        if (size == ShipAPI.HullSize.CRUISER) return 3;
-        if (size == ShipAPI.HullSize.CAPITAL_SHIP) return 4;
-        return 5;
-    }
-
-    private static int compareText(String left, String right) {
-        String a = normalize(left);
-        String b = normalize(right);
-        return a.compareTo(b);
-    }
-
-    private static String normalize(String value) {
-        if (value == null || value.trim().isEmpty()) return "\uffff";
-        return value.trim().toLowerCase(Locale.ROOT);
     }
 
     private boolean hasFunctionalTrophyRoom() {

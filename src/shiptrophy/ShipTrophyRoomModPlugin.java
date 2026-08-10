@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 
 import shiptrophy.campaign.GanEdenAmbushScript;
 import shiptrophy.campaign.GanEdenBattleCreationPlugin;
@@ -20,6 +21,7 @@ import shiptrophy.campaign.GanEdenQuestScript;
 import shiptrophy.campaign.MkIVFleetIntegrationListener;
 import shiptrophy.campaign.ShatteredRingGenerator;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
+import shiptrophy.gallery.ShipGalleryCoreScript;
 
 public class ShipTrophyRoomModPlugin extends BaseModPlugin {
     @Override
@@ -37,6 +39,7 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         Global.getSector().unregisterPlugin(GanEdenBattleCreationPlugin.ID);
         Global.getSector().registerPlugin(new GanEdenBattleCreationPlugin());
         TrophySubtypeRegistry.reload();
+        removeLegacySortControls();
         ConfigurableTrophyHullMod.reload();
         ShatteredRingGenerator.ensureGenerated();
         GanEdenGenerator.ensureGenerated();
@@ -84,6 +87,8 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);
         Global.getSector().addScript(new IsaTrophyScript());
+        Global.getSector().removeTransientScriptsOfClass(ShipGalleryCoreScript.class);
+        Global.getSector().addTransientScript(new ShipGalleryCoreScript());
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);
@@ -93,5 +98,15 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         }
         IsaTrophyManager.refreshIsaHullmod();
         IsaTrophyManager.refreshIsaOfficerSkills();
+    }
+
+    private void removeLegacySortControls() {
+        if (Global.getSector().getEconomy() == null) return;
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (market != null && market.hasSubmarket(
+                    ShipTrophyRoomIds.LEGACY_SORT_CONTROLS_SUBMARKET)) {
+                market.removeSubmarket(ShipTrophyRoomIds.LEGACY_SORT_CONTROLS_SUBMARKET);
+            }
+        }
     }
 }
