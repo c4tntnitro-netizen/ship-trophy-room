@@ -41,17 +41,21 @@ public class IsaTrophyProvenance extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return IsaTrophyManager.isMasterworkComplete()
+        return TrophyHullModUtil.areEffectsEnabled()
+                && IsaTrophyManager.isMasterworkComplete()
                 && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, IsaTrophyManager.PROVENANCE_HULLMOD_ID);
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return IsaTrophyManager.isMasterworkComplete();
+        return TrophyHullModUtil.areEffectsEnabled() && IsaTrophyManager.isMasterworkComplete();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            return "Trophy hullmod effects are disabled in LunaLib settings";
+        }
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, IsaTrophyManager.PROVENANCE_HULLMOD_ID);
         if (other != null) return "Incompatible with " + other;
         return "Requires Onslaught XIV, Paragon, Invictus, Conquest, and Executor displays in the Hall of Triumph network";
@@ -59,7 +63,8 @@ public class IsaTrophyProvenance extends BaseHullMod {
 
     @Override
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
-        if (!IsaTrophyManager.isMasterworkComplete() || stats == null || stats.getVariant() == null) return;
+        if (!TrophyHullModUtil.areEffectsEnabled() || !IsaTrophyManager.isMasterworkComplete()
+                || stats == null || stats.getVariant() == null) return;
         for (String sMod : getSMods(stats.getVariant())) {
             applyExtraSModBonus(sMod, hullSize, stats, ID_PREFIX + sMod);
         }
@@ -133,7 +138,10 @@ public class IsaTrophyProvenance extends BaseHullMod {
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
-        if (ship != null && ship.getVariant() != null) {
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
+                    opad, Misc.getNegativeHighlightColor(), "disabled");
+        } else if (ship != null && ship.getVariant() != null) {
             List<String> bonuses = getExtraSModBonusDescriptions(ship, hullSize);
             List<String> capped = getCappedSModBonusDescriptions(ship);
             if (bonuses.isEmpty()) {
@@ -311,7 +319,8 @@ public class IsaTrophyProvenance extends BaseHullMod {
     }
 
     private boolean isActiveOn(ShipAPI ship) {
-        return IsaTrophyManager.isMasterworkComplete()
+        return TrophyHullModUtil.areEffectsEnabled()
+                && IsaTrophyManager.isMasterworkComplete()
                 && ship != null
                 && ship.getVariant() != null;
     }
@@ -420,6 +429,7 @@ public class IsaTrophyProvenance extends BaseHullMod {
         @Override
         public String modifyDamageDealt(Object param, CombatEntityAPI target, DamageAPI damage,
                 Vector2f point, boolean shieldHit) {
+            if (!TrophyHullModUtil.areEffectsEnabled()) return null;
             if (damage == null || damage.getModifier() == null) return null;
             mirrorPositiveSourceModifiers(damage.getModifier(), GULA_ID, GULA_MIRROR_ID);
             return null;
@@ -436,7 +446,7 @@ public class IsaTrophyProvenance extends BaseHullMod {
 
         @Override
         public void advance(float amount) {
-            if (installed || fighter == null) return;
+            if (!TrophyHullModUtil.areEffectsEnabled() || installed || fighter == null) return;
             installed = true;
             if (!fighter.hasListenerOfClass(GulaDamageMirror.class)) {
                 fighter.addListener(new GulaDamageMirror());

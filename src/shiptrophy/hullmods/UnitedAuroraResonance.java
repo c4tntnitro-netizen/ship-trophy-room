@@ -63,7 +63,8 @@ public class UnitedAuroraResonance extends BaseTrophyDoctrineHullMod {
 
     @Override
     public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-        if (!isUnlocked() || ship == null || ship.isFighter()
+        if (!TrophyHullModUtil.areEffectsEnabled() || !isUnlocked()
+                || ship == null || ship.isFighter()
                 || ship.hasListenerOfClass(ResonanceCombatListener.class)) {
             return;
         }
@@ -147,7 +148,8 @@ public class UnitedAuroraResonance extends BaseTrophyDoctrineHullMod {
 
         @Override
         public void advance(float amount) {
-            if (ship == null || ship.isHulk() || amount <= 0f) return;
+            if (!TrophyHullModUtil.areEffectsEnabled()
+                    || ship == null || ship.isHulk() || amount <= 0f) return;
 
             CombatEngineAPI engine = Global.getCombatEngine();
             if (engine == null || engine.isPaused()) return;

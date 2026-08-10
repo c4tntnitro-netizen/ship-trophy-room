@@ -18,16 +18,20 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return isUnlocked() && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, getHullModId());
+        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked()
+                && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, getHullModId());
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return isUnlocked();
+        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            return "Trophy hullmod effects are disabled in LunaLib settings";
+        }
         if (!isUnlocked()) {
             return "Requires the " + getRequiredShowcaseName() + " in the Hall of Triumph network";
         }
@@ -38,7 +42,8 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
 
     @Override
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
-        syncDiscountForVariant(stats == null ? null : stats.getVariant(), isUnlocked());
+        syncDiscountForVariant(stats == null ? null : stats.getVariant(),
+                TrophyHullModUtil.areEffectsEnabled() && isUnlocked());
     }
 
 
@@ -46,6 +51,11 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
+
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
+                    opad, Misc.getNegativeHighlightColor(), "disabled");
+        }
 
         ShipVariantAPI variant = ship == null ? null : ship.getVariant();
         if (variant != null && variant.hasHullMod(getHullModId())) {

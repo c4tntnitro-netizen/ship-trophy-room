@@ -12,6 +12,7 @@ public class IronShellSystemHandler extends BaseHullMod {
         if (stats == null || stats.getVariant() == null) return;
 
         boolean shouldUseIaido = stats.getVariant().hasHullMod(IronShellDiscipline.HULLMOD_ID)
+                && TrophyHullModUtil.areEffectsEnabled()
                 && TrophyNetwork.isSubtypeUnlocked(IronShellDiscipline.SUBTYPE_ID)
                 && IronShellDiscipline.isIronShellHull(stats.getVariant().getHullSpec());
 

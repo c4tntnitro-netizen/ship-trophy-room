@@ -20,16 +20,20 @@ public abstract class BaseUniqueShowcaseHullMod extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return isUnlocked() && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, getHullModId());
+        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked()
+                && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, getHullModId());
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return isUnlocked();
+        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            return "Trophy hullmod effects are disabled in LunaLib settings";
+        }
         if (!isUnlocked()) return "Requires " + getRequiredShowcaseName() + " in the Hall of Triumph network";
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getHullModId());
         if (other != null) return "Incompatible with " + other;
@@ -40,6 +44,10 @@ public abstract class BaseUniqueShowcaseHullMod extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
+                    opad, Misc.getNegativeHighlightColor(), "disabled");
+        }
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 }

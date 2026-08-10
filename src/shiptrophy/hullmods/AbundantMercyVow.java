@@ -26,6 +26,7 @@ public class AbundantMercyVow extends BaseUniqueShowcaseHullMod {
 
     @Override
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
+        if (!TrophyHullModUtil.areEffectsEnabled() || stats == null) return;
         stats.getCrewLossMult().modifyMult(id, 1f - CREW_CASUALTY_REDUCTION * 0.01f);
         stats.getFighterRefitTimeMult().modifyMult(id, 1f - FIGHTER_REFIT_REDUCTION * 0.01f);
     }

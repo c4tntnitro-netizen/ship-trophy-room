@@ -32,7 +32,10 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
     public static final String IRON_SHELL_MOD_ID = "timid_xiv";
 
     public static final float TORPEDO_SPEED_MULT = 3f;
-    public static final float KINETIC_DAMAGE_FRACTION = 0.50f;
+    public static final float KINETIC_DAMAGE_FRACTION_FRIGATE = 0.50f;
+    public static final float KINETIC_DAMAGE_FRACTION_DESTROYER = 0.35f;
+    public static final float KINETIC_DAMAGE_FRACTION_CRUISER = 0.25f;
+    public static final float KINETIC_DAMAGE_FRACTION_CAPITAL = 0.15f;
 
     private static final String ORIGINAL_SYSTEM_TAG_PREFIX = "ship_trophy_iaido_original_system:";
     private static final String NO_SYSTEM_SENTINEL = "__none__";
@@ -62,7 +65,8 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return isUnlocked() && isValidIronShellCombatShip(ship);
+        return TrophyHullModUtil.areEffectsEnabled()
+                && isUnlocked() && isValidIronShellCombatShip(ship);
     }
 
     @Override
@@ -80,8 +84,14 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
     }
 
     @Override
+    protected void removeDisabledArtifacts(MutableShipStatsAPI stats) {
+        restoreOriginalSystemIfNeeded(stats);
+    }
+
+    @Override
     public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-        if (!isUnlocked() || !isValidIronShellCombatShip(ship) || ship.getSystem() == null
+        if (!TrophyHullModUtil.areEffectsEnabled() || !isUnlocked()
+                || !isValidIronShellCombatShip(ship) || ship.getSystem() == null
                 || !IAIDO_SYSTEM_ID.equals(ship.getSystem().getId())
                 || ship.hasListenerOfClass(IaidoTorpedoListener.class)) {
             return;
@@ -95,7 +105,10 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
         if (index == 1) return "50%";
         if (index == 2) return "50%";
         if (index == 3) return Math.round((TORPEDO_SPEED_MULT - 1f) * 100f) + "%";
-        if (index == 4) return Math.round(KINETIC_DAMAGE_FRACTION * 100f) + "%";
+        if (index == 4) return Math.round(KINETIC_DAMAGE_FRACTION_FRIGATE * 100f) + "%";
+        if (index == 5) return Math.round(KINETIC_DAMAGE_FRACTION_DESTROYER * 100f) + "%";
+        if (index == 6) return Math.round(KINETIC_DAMAGE_FRACTION_CRUISER * 100f) + "%";
+        if (index == 7) return Math.round(KINETIC_DAMAGE_FRACTION_CAPITAL * 100f) + "%";
         return null;
     }
 
@@ -143,6 +156,13 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
             }
         }
         return false;
+    }
+
+    public static float getKineticDamageFraction(ShipAPI.HullSize hullSize) {
+        if (hullSize == ShipAPI.HullSize.FRIGATE) return KINETIC_DAMAGE_FRACTION_FRIGATE;
+        if (hullSize == ShipAPI.HullSize.DESTROYER) return KINETIC_DAMAGE_FRACTION_DESTROYER;
+        if (hullSize == ShipAPI.HullSize.CRUISER) return KINETIC_DAMAGE_FRACTION_CRUISER;
+        return KINETIC_DAMAGE_FRACTION_CAPITAL;
     }
 
     public static void installIaido(MutableShipStatsAPI stats) {
@@ -222,7 +242,8 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
 
         @Override
         public void advance(float amount) {
-            if (ship == null || ship.isHulk() || amount <= 0f) return;
+            if (!TrophyHullModUtil.areEffectsEnabled()
+                    || ship == null || ship.isHulk() || amount <= 0f) return;
 
             CombatEngineAPI engine = Global.getCombatEngine();
             if (engine == null || engine.isPaused()) return;
@@ -249,6 +270,7 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
         @Override
         public String modifyDamageDealt(Object param, CombatEntityAPI target, DamageAPI damage,
                 Vector2f point, boolean shieldHit) {
+            if (!TrophyHullModUtil.areEffectsEnabled()) return null;
             if (!(param instanceof MissileAPI) || target == null) return null;
             MissileAPI missile = (MissileAPI) param;
             Object stored = missile.getCustomData().remove(KINETIC_DAMAGE_KEY);
@@ -292,7 +314,8 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
                 missile.getVelocity().set(boostedVelocity);
             }
 
-            float kineticDamage = missile.getDamageAmount() * KINETIC_DAMAGE_FRACTION;
+            float kineticDamage = missile.getDamageAmount()
+                    * getKineticDamageFraction(ship.getHullSize());
             missile.setCustomData(KINETIC_DAMAGE_KEY, Float.valueOf(Math.max(0f, kineticDamage)));
 
             engine.addSmoothParticle(

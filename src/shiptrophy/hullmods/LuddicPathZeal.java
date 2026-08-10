@@ -47,6 +47,11 @@ public class LuddicPathZeal extends BaseTrophyDoctrineHullMod {
     }
 
     @Override
+    protected void removeDisabledArtifacts(MutableShipStatsAPI stats) {
+        removeHiddenMarker(stats, DMOD_MARKER);
+    }
+
+    @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
         if (index == 0) return "" + Math.round(SPEED_BONUS_FRIGATE);
         if (index == 1) return "" + Math.round(SPEED_BONUS_DESTROYER);

@@ -46,8 +46,13 @@ public class LionGuardPageantry extends BaseTrophyDoctrineHullMod {
     }
 
     @Override
+    protected void removeDisabledArtifacts(MutableShipStatsAPI stats) {
+        removeHiddenMarker(stats, DMOD_MARKER);
+    }
+
+    @Override
     public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-        if (!isUnlocked()) return;
+        if (!TrophyHullModUtil.areEffectsEnabled() || !isUnlocked()) return;
         if (hasBoltCoherer(ship)) return;
         ship.addListener(new NonEnergyBeamRangeFix());
     }
@@ -83,6 +88,7 @@ public class LionGuardPageantry extends BaseTrophyDoctrineHullMod {
 
         @Override
         public float getWeaponBaseRangeFlatMod(ShipAPI ship, WeaponAPI weapon) {
+            if (!TrophyHullModUtil.areEffectsEnabled()) return 0f;
             if (weapon == null || weapon.getSpec() == null) return 0f;
             if (weapon instanceof BeamAPI && weapon.getSpec().getType() != WeaponAPI.WeaponType.ENERGY) {
                 return PULSE_RANGE_BONUS;

@@ -4,9 +4,11 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.util.IntervalUtil;
 
+import shiptrophy.hullmods.TrophyHullModUtil;
+
 public class StoryPointGeneratorScript implements EveryFrameScript {
     private final IntervalUtil interval = new IntervalUtil(1f, 1f);
-    private float progress;
+    private final IntervalUtil settingInterval = new IntervalUtil(0.25f, 0.25f);
 
     @Override
     public boolean isDone() {
@@ -22,6 +24,11 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
     public void advance(float amount) {
         if (Global.getSector() == null || Global.getSector().getEconomy() == null) return;
 
+        settingInterval.advance(amount);
+        if (settingInterval.intervalElapsed()) {
+            TrophyHullModUtil.refreshPlayerFleetEffectsIfSettingChanged();
+        }
+
         interval.advance(Global.getSector().getClock().convertToDays(amount));
         if (!interval.intervalElapsed()) return;
 
@@ -33,14 +40,43 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
         TrophyNetwork.refreshPlayerHullmodUnlocks(stats);
         IsaTrophyManager.refreshIsaHullmod();
 
-        if (dailyProduction <= 0f) return;
+        if (!Float.isFinite(dailyProduction) || dailyProduction <= 0f) return;
+        float progress = loadProgress();
         progress += dailyProduction * interval.getIntervalDuration();
 
+        if (!Float.isFinite(progress) || progress < 0f) {
+            progress = 0f;
+        }
+
         int points = (int) progress;
-        if (points <= 0) return;
+        if (points <= 0) {
+            saveProgress(progress);
+            return;
+        }
 
         progress -= points;
+        saveProgress(progress);
         Global.getSector().getPlayerStats().addStoryPoints(points);
+        if (Global.getSector().getCampaignUI() != null) {
+            Global.getSector().getCampaignUI().addMessage(
+                    "Hall of Triumph generated " + points + " story point"
+                            + (points == 1 ? "." : "s."));
+        }
+    }
+
+    private float loadProgress() {
+        if (!Global.getSector().getMemoryWithoutUpdate().contains(
+                ShipTrophyRoomIds.MEMORY_STORY_POINT_PROGRESS)) return 0f;
+        Object raw = Global.getSector().getMemoryWithoutUpdate().get(
+                ShipTrophyRoomIds.MEMORY_STORY_POINT_PROGRESS);
+        if (!(raw instanceof Number)) return 0f;
+        float stored = ((Number) raw).floatValue();
+        return Float.isFinite(stored) && stored >= 0f && stored < 1f ? stored : 0f;
+    }
+
+    private void saveProgress(float value) {
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_STORY_POINT_PROGRESS, value);
     }
 
     private float getDailyStoryPointProgress(TrophyNetwork.NetworkStats stats) {
@@ -51,7 +87,8 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
         float dpBonus = stats.uniqueDeploymentPoints / TrophyNetwork.DP_FOR_FULL_BONUS;
         float productionMult = roomBonus + uniqueBonus + dpBonus;
 
-        return productionMult / TrophyRoomIndustry.BASE_DAYS_PER_STORY_POINT;
+        return productionMult * PermanentStoryPointBoosts.getMultiplier(stats)
+                / TrophyRoomIndustry.BASE_DAYS_PER_STORY_POINT;
     }
 
     private void rememberStats(TrophyNetwork.NetworkStats stats) {

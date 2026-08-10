@@ -13,6 +13,8 @@ public class ShipTrophyRoomIds {
     public static final String MEMORY_NETWORK_ROOM_COUNT = "$ship_trophy_room_network_room_count";
     public static final String MEMORY_NETWORK_DOCTRINE_DP = "$ship_trophy_room_network_doctrine_dp";
     public static final String MEMORY_NETWORK_SUBTYPE_DP = "$ship_trophy_room_network_subtype_dp";
+    public static final String MEMORY_STORY_POINT_PROGRESS = "$ship_trophy_room_story_point_progress";
+    public static final String MEMORY_PERMANENT_STORY_REWARDS = "$ship_trophy_room_permanent_story_rewards";
     public static final String MEMORY_ISA_INTRODUCED = "$ship_trophy_room_isa_introduced";
     public static final String MEMORY_ISA_HOME_MARKET = "$ship_trophy_room_isa_home_market";
     public static final String MEMORY_ISA_MASTERWORK_BRIEFED = "$ship_trophy_room_isa_masterwork_briefed";

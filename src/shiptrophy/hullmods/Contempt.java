@@ -26,8 +26,8 @@ public class Contempt extends BaseUniqueTrophyHullMod {
     public static final String HULLMOD_ID = "ship_trophy_contempt";
     public static final String REQUIRED_BASE_HULL_ID = "onslaught_mk1";
     public static final String DISCOUNT_PREFIX = "ship_trophy_contempt_op_discount_";
-    public static final float DAMAGE_BONUS = 25f;
-    public static final float FLUX_REDUCTION = 0.10f;
+    public static final float DAMAGE_BONUS = 20f;
+    public static final float FLUX_REDUCTION = 0.05f;
     public static final float HULL_DAMAGE_BONUS = 5f;
 
     private static final String DAMAGE_MOD_ID = HULLMOD_ID + "_pd_damage";
@@ -45,6 +45,19 @@ public class Contempt extends BaseUniqueTrophyHullMod {
     @Override
     protected boolean isUnlocked() {
         return TrophyNetwork.isOnslaughtMkIShowcased();
+    }
+
+    @Override
+    public boolean isApplicableToShip(ShipAPI ship) {
+        return !isOnslaughtMkI(ship) && super.isApplicableToShip(ship);
+    }
+
+    @Override
+    public String getUnapplicableReason(ShipAPI ship) {
+        if (isOnslaughtMkI(ship)) {
+            return "Cannot be installed on the Onslaught Mk.I used to unlock Contempt";
+        }
+        return super.getUnapplicableReason(ship);
     }
 
     @Override
@@ -72,12 +85,16 @@ public class Contempt extends BaseUniqueTrophyHullMod {
     @Override
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
         super.applyEffectsBeforeShipCreation(hullSize, stats, id);
-        if (stats != null) stats.getDamageToTargetHullMult().modifyPercent(id, HULL_DAMAGE_BONUS);
+        if (TrophyHullModUtil.areEffectsEnabled() && stats != null
+                && !isOnslaughtMkI(stats.getVariant())) {
+            stats.getDamageToTargetHullMult().modifyPercent(id, HULL_DAMAGE_BONUS);
+        }
     }
 
     @Override
     public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-        if (ship == null || ship.hasListenerOfClass(ContemptCombatListener.class)) return;
+        if (!TrophyHullModUtil.areEffectsEnabled() || isOnslaughtMkI(ship)
+                || ship == null || ship.hasListenerOfClass(ContemptCombatListener.class)) return;
         ship.addListener(new ContemptCombatListener(ship));
     }
 
@@ -85,6 +102,10 @@ public class Contempt extends BaseUniqueTrophyHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
+                    opad, Misc.getNegativeHighlightColor(), "disabled");
+        }
         tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
     }
 
@@ -113,6 +134,16 @@ public class Contempt extends BaseUniqueTrophyHullMod {
         return target instanceof ShipAPI && ((ShipAPI) target).isFighter();
     }
 
+    private static boolean isOnslaughtMkI(ShipAPI ship) {
+        return ship != null && isOnslaughtMkI(ship.getVariant());
+    }
+
+    private static boolean isOnslaughtMkI(ShipVariantAPI variant) {
+        if (variant == null || variant.getHullSpec() == null) return false;
+        return REQUIRED_BASE_HULL_ID.equalsIgnoreCase(variant.getHullSpec().getHullId())
+                || REQUIRED_BASE_HULL_ID.equalsIgnoreCase(variant.getHullSpec().getBaseHullId());
+    }
+
     public static class ContemptCombatListener implements DamageDealtModifier, AdvanceableListener {
         private final ShipAPI ship;
         private final Map<WeaponAPI, Float> previousCooldown = new HashMap<WeaponAPI, Float>();
@@ -127,6 +158,7 @@ public class Contempt extends BaseUniqueTrophyHullMod {
         @Override
         public String modifyDamageDealt(Object param, CombatEntityAPI target, DamageAPI damage,
                 Vector2f point, boolean shieldHit) {
+            if (!TrophyHullModUtil.areEffectsEnabled()) return null;
             WeaponAPI weapon = getSourceWeapon(param);
             if (!isPointDefense(weapon) || !isFighterOrMissile(target) || damage == null) return null;
             damage.getModifier().modifyPercent(DAMAGE_MOD_ID, DAMAGE_BONUS);
@@ -135,7 +167,8 @@ public class Contempt extends BaseUniqueTrophyHullMod {
 
         @Override
         public void advance(float amount) {
-            if (ship == null || amount <= 0f || ship.isHulk()) return;
+            if (!TrophyHullModUtil.areEffectsEnabled()
+                    || ship == null || amount <= 0f || ship.isHulk()) return;
 
             float refund = 0f;
             for (WeaponAPI weapon : ship.getAllWeapons()) {

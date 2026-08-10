@@ -23,7 +23,7 @@ public class HumanityTransferNotifier extends BaseEveryFrameCombatPlugin {
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
-        if (engine == null) return;
+        if (!TrophyHullModUtil.areEffectsEnabled() || engine == null) return;
 
         ShipAPI currentPlayerShip = engine.getPlayerShip();
         if (currentPlayerShip == previousPlayerShip) return;

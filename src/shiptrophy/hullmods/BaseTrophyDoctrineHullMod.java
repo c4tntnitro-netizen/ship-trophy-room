@@ -24,16 +24,21 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return isUnlocked() && matchesStyle(ship) && hasNoOtherTrophyHullMod(ship);
+        return TrophyHullModUtil.areEffectsEnabled()
+                && isUnlocked() && matchesStyle(ship)
+                && hasNoOtherTrophyHullMod(ship);
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return isUnlocked();
+        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            return "Trophy hullmod effects are disabled in LunaLib settings";
+        }
         if (!isUnlocked()) {
             TrophySubtypeSpec subtype = getSubtype();
             String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
@@ -55,16 +60,27 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
 
     @Override
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            removeDisabledArtifacts(stats);
+            return;
+        }
         if (!isUnlocked()) return;
         applyDoctrineEffects(hullSize, stats, id);
     }
 
     protected abstract void applyDoctrineEffects(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id);
 
+    protected void removeDisabledArtifacts(MutableShipStatsAPI stats) {
+    }
+
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
+        if (!TrophyHullModUtil.areEffectsEnabled()) {
+            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
+                    opad, Misc.getNegativeHighlightColor(), "disabled");
+        }
         String dmodNote = getDModCalculationNote();
         if (dmodNote != null) {
             tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");

@@ -106,15 +106,19 @@ public class TrophyNetwork {
 
         for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getAllSubtypes()) {
             if (!subtype.hasHullModUnlock() || !hullModExists(subtype.hullModId)) continue;
-            boolean unlocked = subtype.isActive() && stats.getSubtypeDp(subtype.id) >= subtype.unlockDp;
+            boolean unlocked = subtype.isActive()
+                    && stats.getSubtypeDp(subtype.id) >= subtype.unlockDp;
             setKnownHullMod(player, subtype.hullModId, unlocked);
         }
 
-        setKnownHullMod(player, Gaze.HULLMOD_ID, hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID));
-        setKnownHullMod(player, Contempt.HULLMOD_ID, hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID));
+        setKnownHullMod(player, Gaze.HULLMOD_ID,
+                hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID));
+        setKnownHullMod(player, Contempt.HULLMOD_ID,
+                hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID));
         for (TrophyUniqueShowcases.ShowcaseSpec showcase : TrophyUniqueShowcases.getAllShowcases()) {
             if (hullModExists(showcase.hullModId)) {
-                setKnownHullMod(player, showcase.hullModId, showcase.isActive() && hasShowcasedHull(stats, showcase.hullId));
+                setKnownHullMod(player, showcase.hullModId, showcase.isActive()
+                        && hasShowcasedHull(stats, showcase.hullId));
             }
         }
     }
@@ -161,14 +165,16 @@ public class TrophyNetwork {
         ShipVariantAPI variant = member.getVariant();
 
         TrophySubtypeSpec lp = TrophySubtypeRegistry.getSubtype(TrophyDoctrine.LP);
-        boolean lpCounts = lp != null
+        boolean lpCounts = HallOfTriumphFeatures.areTrophyHullmodsEnabled()
+                && lp != null
                 && stats.getSubtypeDp(lp.id) >= lp.unlockDp
                 && variant.hasHullMod(TrophyDoctrine.LP.hullModId)
                 && !variant.hasHullMod(HullMods.UNSTABLE_INJECTOR);
         setMarker(variant, LuddicPathZeal.DMOD_MARKER, lpCounts);
 
         TrophySubtypeSpec lg = TrophySubtypeRegistry.getSubtype(TrophyDoctrine.LG);
-        boolean lgCounts = lg != null
+        boolean lgCounts = HallOfTriumphFeatures.areTrophyHullmodsEnabled()
+                && lg != null
                 && stats.getSubtypeDp(lg.id) >= lg.unlockDp
                 && variant.hasHullMod(TrophyDoctrine.LG.hullModId)
                 && !variant.hasHullMod(LionGuardPageantry.ENERGY_BOLT_COHERER)

@@ -1,0 +1,5 @@
+id,name,description,tooltip,script,image,spoilerLevel,rarity
+ship_trophy_room_first_exhibit,The First Exhibit,Displayed the first unique ship in a Hall of Triumph.,,shiptrophy.achievements.HallOfTriumphAchievement,graphics/icons/industry/trophy_room.png,VISIBLE,COMMON
+ship_trophy_room_doctrine_archive,Doctrine of Triumph,Completed all six vanilla doctrine showcase programs.,,shiptrophy.achievements.HallOfTriumphAchievement,graphics/hullmods/ship_trophy_legacy.png,VISIBLE,RARE
+ship_trophy_room_isa_masterwork,Awe-Inspiring,Completed Isa Leicester's five-capital masterwork.,,shiptrophy.achievements.HallOfTriumphAchievement,graphics/hullmods/awe.png,SPOILER,EPIC
+ship_trophy_room_gan_eden,The Domain's Greatest Achievement,Completed A Borrowed Name and opened Gan Eden's future.,,shiptrophy.achievements.HallOfTriumphAchievement,graphics/icons/ship_trophy_heavens_scar.png,SPOILER,LEGENDARY

@@ -26,6 +26,7 @@ public class BlackLionInheritance extends BaseUniqueShowcaseHullMod {
 
     @Override
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
+        if (!TrophyHullModUtil.areEffectsEnabled() || stats == null) return;
         stats.getEnergyWeaponDamageMult().modifyPercent(id, ENERGY_DAMAGE_BONUS);
         stats.getEnergyWeaponFluxCostMod().modifyPercent(id, -ENERGY_FLUX_REDUCTION);
     }

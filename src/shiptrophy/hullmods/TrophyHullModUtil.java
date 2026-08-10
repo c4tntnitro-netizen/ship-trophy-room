@@ -3,13 +3,40 @@ package shiptrophy.hullmods;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.loading.HullModSpecAPI;
 
+import shiptrophy.HallOfTriumphFeatures;
 import shiptrophy.IsaTrophyManager;
 import shiptrophy.TrophySubtypeRegistry;
 import shiptrophy.TrophySubtypeSpec;
 
 public class TrophyHullModUtil {
+    private static Boolean lastEffectsEnabled;
+
+    public static boolean areEffectsEnabled() {
+        return HallOfTriumphFeatures.areTrophyHullmodsEnabled();
+    }
+
+    public static void refreshPlayerFleetEffectsIfSettingChanged() {
+        boolean enabled = areEffectsEnabled();
+        if (lastEffectsEnabled != null
+                && lastEffectsEnabled.booleanValue() == enabled) {
+            return;
+        }
+        lastEffectsEnabled = Boolean.valueOf(enabled);
+        if (Global.getSector() == null
+                || Global.getSector().getPlayerFleet() == null) {
+            return;
+        }
+        for (FleetMemberAPI member : Global.getSector().getPlayerFleet()
+                .getFleetData().getMembersListCopy()) {
+            member.updateStats();
+        }
+        Global.getSector().getPlayerFleet().getFleetData().setSyncNeeded();
+        Global.getSector().getPlayerFleet().forceSync();
+    }
+
     public static boolean hasOtherTrophyHullMod(ShipAPI ship, String currentHullModId) {
         return getOtherTrophyHullModId(ship, currentHullModId) != null;
     }

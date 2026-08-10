@@ -1,4 +1,8 @@
 {
+    "shipTrophyHullmodsEnabled": true,
+    "shipTrophyNexAchievementsEnabled": true,
+    "shipTrophyPrimaryStorageSort": "Hull Name",
+    "shipTrophySecondaryStorageSort": "Faction",
     "ruleCommandPackages": [
         "shiptrophy"
     ],
