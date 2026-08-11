@@ -97,6 +97,23 @@ public final class GalleryTourLauncher {
         // otherwise automatic synchronization step.
         shuttle.getCargo().addCrew((int) Math.ceil(kite.getMinCrew()));
 
+        // Some optional campaign plugins inspect every proposed opponent
+        // before Starsector chooses a BattleCreationPlugin, and assume that a
+        // CampaignFleet always has a flagship. Keep this harmless proxy in
+        // the detached campaign fleet, but deliberately do not add it to the
+        // MissionDefinition; it never appears in the Gallery combat map.
+        FleetMemberAPI hallIndex = Global.getFactory().createFleetMember(
+                FleetMemberType.SHIP, KITE_VARIANT);
+        if (hallIndex == null) return;
+        hallIndex.setShipName("Gallery Exhibit Index");
+        hallIndex.setOwner(1);
+        hallIndex.setFlagship(true);
+        hallIndex.getRepairTracker().setMothballed(false);
+        hallIndex.getRepairTracker().setCR(1f);
+        hall.getFleetData().addFleetMember(hallIndex);
+        hall.getFleetData().setFlagship(hallIndex);
+        hall.getCargo().addCrew((int) Math.ceil(hallIndex.getMinCrew()));
+
         Session session = new Session(exhibits, kite);
         hall.getMemoryWithoutUpdate().set(MARKER_KEY, true);
         hall.getMemoryWithoutUpdate().set(SESSION_KEY, session);
@@ -501,9 +518,12 @@ public final class GalleryTourLauncher {
                 try {
                     dialog.startBattle(context);
                 } catch (Throwable ex) {
+                    System.err.println(
+                            "[Hall of Triumph] Gallery tour launch failed.");
+                    ex.printStackTrace(System.err);
                     cleanup();
                     dialog.getTextPanel().addPara(
-                            "The gallery shuttle fails to launch.");
+                            "The gallery shuttle fails to launch. See starsector.log for details.");
                 }
                 return;
             }
