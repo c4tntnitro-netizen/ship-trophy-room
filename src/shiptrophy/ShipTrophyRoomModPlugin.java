@@ -36,6 +36,9 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
 
     private void ensureScript() {
         if (Global.getSector() == null) return;
+        Global.getSector().removeTransientScriptsOfClass(ShipGalleryCoreScript.class);
+        Global.getSector().addTransientScript(new ShipGalleryCoreScript());
+        System.out.println("Hall of Triumph: registered independent Ship Gallery script");
         Global.getSector().unregisterPlugin(GanEdenBattleCreationPlugin.ID);
         Global.getSector().registerPlugin(new GanEdenBattleCreationPlugin());
         TrophySubtypeRegistry.reload();
@@ -87,8 +90,6 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);
         Global.getSector().addScript(new IsaTrophyScript());
-        Global.getSector().removeTransientScriptsOfClass(ShipGalleryCoreScript.class);
-        Global.getSector().addTransientScript(new ShipGalleryCoreScript());
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);
