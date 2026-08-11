@@ -9,13 +9,11 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
 import shiptrophy.ShipTrophyRoomIds;
-import shiptrophy.TrophyRoomIndustry;
 
 final class ShipGalleryData {
     enum SortKey {
@@ -85,8 +83,7 @@ final class ShipGalleryData {
         }
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
             if (market == null || !market.isPlayerOwned()) continue;
-            Industry hall = market.getIndustry(ShipTrophyRoomIds.INDUSTRY);
-            if (!TrophyRoomIndustry.isFunctionalTrophyRoom(hall)) continue;
+            if (market.getIndustry(ShipTrophyRoomIds.INDUSTRY) == null) continue;
             if (!market.hasSubmarket(ShipTrophyRoomIds.SUBMARKET)) continue;
             if (market.getSubmarket(ShipTrophyRoomIds.SUBMARKET).getCargo() == null
                     || market.getSubmarket(ShipTrophyRoomIds.SUBMARKET).getCargo()

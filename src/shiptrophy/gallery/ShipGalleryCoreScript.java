@@ -1,8 +1,6 @@
 package shiptrophy.gallery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.EveryFrameScript;
@@ -20,14 +18,11 @@ import com.fs.starfarer.api.util.Misc;
 /** Injects the Ship Gallery into the vanilla Command screen. */
 public final class ShipGalleryCoreScript implements EveryFrameScript {
     private static final String TAB_NAME = "Ship Gallery";
-    private static final String AOTD_TRACKER = "data.kaysaar.aotd.vok.scripts.CoreUITracker";
-    private static final String AOTD_TAB_MEMORY = "$aotd_outpost_state";
 
     private transient UIPanelAPI root;
     private transient ButtonAPI galleryButton;
     private transient CustomPanelAPI galleryPanel;
-    private transient ButtonAPI currentButton;
-    private transient Map<ButtonAPI, Object> panelMap;
+    private transient boolean galleryActive;
     private transient boolean loggedFailure;
 
     @Override
@@ -57,12 +52,9 @@ public final class ShipGalleryCoreScript implements EveryFrameScript {
                 root = activeRoot;
                 inject();
             }
-            if (galleryButton == null || panelMap == null) return;
+            if (galleryButton == null) return;
             repositionAfterRightmostTab();
-
-            Object aotd = findAotdTracker();
-            if (aotd != null && linkIntoAotd(aotd)) return;
-            handleTabsWithoutAotd();
+            handleGalleryTab();
         } catch (Throwable ex) {
             if (!loggedFailure) {
                 loggedFailure = true;
@@ -72,34 +64,29 @@ public final class ShipGalleryCoreScript implements EveryFrameScript {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void inject() {
         ButtonAPI income = findButton("income");
         ButtonAPI colonies = findButton("colonies");
         if (income == null || colonies == null) return;
 
         Object rawMap = UiReflection.invoke(root, "getButtonToTab");
-        if (!(rawMap instanceof Map<?, ?>)) return;
-        panelMap = (Map<ButtonAPI, Object>) rawMap;
-
-        Object incomePanel = panelMap.get(income);
-        if (!(incomePanel instanceof UIComponentAPI)) return;
+        Object incomePanel = rawMap instanceof Map<?, ?>
+                ? ((Map<?, ?>) rawMap).get(income) : null;
         float contentWidth = Math.max(700f,
                 Global.getSettings().getScreenWidth() - colonies.getPosition().getX());
-        float contentHeight = Math.max(500f,
-                ((UIComponentAPI) incomePanel).getPosition().getHeight());
+        float contentHeight = Math.max(500f, incomePanel instanceof UIComponentAPI
+                ? ((UIComponentAPI) incomePanel).getPosition().getHeight()
+                : root.getPosition().getHeight() - income.getPosition().getHeight());
 
         ShipGalleryPanelPlugin plugin = new ShipGalleryPanelPlugin(contentWidth, contentHeight);
         galleryPanel = Global.getSettings().createCustom(contentWidth, contentHeight, plugin);
         plugin.init(galleryPanel);
-        galleryButton = createTabButton(150f, income.getPosition().getHeight());
+        galleryButton = createTabButton(140f, income.getPosition().getHeight());
         root.addComponent(galleryButton);
         repositionAfterRightmostTab();
         root.bringComponentToTop(galleryButton);
-        panelMap.put(galleryButton, galleryPanel);
-
-        currentButton = findHighlightedButton();
-        if (currentButton == null) currentButton = income;
+        System.out.println("Hall of Triumph: attached independent Ship Gallery "
+                + "tab to the Command screen");
     }
 
     private ButtonAPI createTabButton(float width, float height) {
@@ -114,11 +101,11 @@ public final class ShipGalleryCoreScript implements EveryFrameScript {
 
     private void repositionAfterRightmostTab() {
         if (root == null || galleryButton == null) return;
-        ButtonAPI income = findButton("income");
-        if (income == null) return;
-        float baseline = income.getPosition().getX();
+        ButtonAPI colonies = findButton("colonies");
+        if (colonies == null) return;
+        float baseline = colonies.getPosition().getX();
         float right = baseline;
-        float targetY = income.getPosition().getY();
+        float targetY = colonies.getPosition().getY();
         for (UIComponentAPI component : UiReflection.children(root)) {
             if (!(component instanceof ButtonAPI) || component == galleryButton) continue;
             ButtonAPI button = (ButtonAPI) component;
@@ -142,81 +129,57 @@ public final class ShipGalleryCoreScript implements EveryFrameScript {
         return null;
     }
 
-    private ButtonAPI findHighlightedButton() {
-        if (panelMap == null) return null;
-        for (ButtonAPI button : new ArrayList<ButtonAPI>(panelMap.keySet())) {
-            if (button != null && button.isHighlighted()) return button;
+    private void handleGalleryTab() {
+        if (galleryButton.isChecked()) {
+            galleryButton.setChecked(false);
+            galleryActive = true;
         }
-        return null;
-    }
 
-    private Object findAotdTracker() {
-        if (Global.getSector() == null) return null;
-        List<EveryFrameScript> scripts = new ArrayList<EveryFrameScript>();
-        scripts.addAll(Global.getSector().getTransientScripts());
-        scripts.addAll(Global.getSector().getScripts());
-        for (EveryFrameScript script : scripts) {
-            if (script != null && AOTD_TRACKER.equals(script.getClass().getName())) return script;
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean linkIntoAotd(Object tracker) {
-        Object rawMap = UiReflection.getField(tracker, "panelMap");
-        if (!(rawMap instanceof HashMap<?, ?>)) return false;
-        Map<ButtonAPI, Object> aotdMap = (Map<ButtonAPI, Object>) rawMap;
-        aotdMap.put(galleryButton, galleryPanel);
-        return true;
-    }
-
-    private void handleTabsWithoutAotd() {
-        if (currentButton == null) currentButton = findHighlightedButton();
-        for (ButtonAPI button : new ArrayList<ButtonAPI>(panelMap.keySet())) {
-            if (button == null || !button.isChecked()) continue;
-            button.setChecked(false);
-            if (button == currentButton) continue;
-            Object oldPanel = currentButton == null ? null : panelMap.get(currentButton);
-            if (oldPanel instanceof UIComponentAPI
-                    && UiReflection.children(root).contains(oldPanel)) {
-                root.removeComponent((UIComponentAPI) oldPanel);
-            }
-            currentButton = button;
-            Object newPanel = panelMap.get(currentButton);
-            if (newPanel instanceof UIComponentAPI
-                    && !UiReflection.children(root).contains(newPanel)) {
-                root.addComponent((UIComponentAPI) newPanel);
+        for (UIComponentAPI component : UiReflection.children(root)) {
+            if (!(component instanceof ButtonAPI) || component == galleryButton) continue;
+            ButtonAPI button = (ButtonAPI) component;
+            if (button.isChecked()) {
+                galleryActive = false;
+                removeGalleryPanel();
+                galleryButton.unhighlight();
+                return;
             }
         }
-        if (currentButton == null) return;
-        for (ButtonAPI button : new ArrayList<ButtonAPI>(panelMap.keySet())) {
-            if (button == currentButton) button.highlight();
-            else button.unhighlight();
+
+        if (!galleryActive) return;
+        removeContentPanelsExceptGallery();
+        if (!UiReflection.children(root).contains(galleryPanel)) {
+            root.addComponent(galleryPanel);
+        }
+        for (UIComponentAPI component : UiReflection.children(root)) {
+            if (component instanceof ButtonAPI && component != galleryButton) {
+                ((ButtonAPI) component).unhighlight();
+            }
+        }
+        galleryButton.highlight();
+    }
+
+    private void removeContentPanelsExceptGallery() {
+        for (UIComponentAPI component : new ArrayList<UIComponentAPI>(
+                UiReflection.children(root))) {
+            if (!(component instanceof ButtonAPI) && component != galleryPanel) {
+                root.removeComponent(component);
+            }
+        }
+    }
+
+    private void removeGalleryPanel() {
+        if (root != null && galleryPanel != null
+                && UiReflection.children(root).contains(galleryPanel)) {
+            root.removeComponent(galleryPanel);
         }
     }
 
     private void reset() {
-        resetAotdReopenState();
         root = null;
         galleryButton = null;
         galleryPanel = null;
-        currentButton = null;
-        panelMap = null;
+        galleryActive = false;
         loggedFailure = false;
-    }
-
-    private void resetAotdReopenState() {
-        if (Global.getSector() == null) return;
-        try {
-            if (Global.getSector().getMemoryWithoutUpdate().contains(AOTD_TAB_MEMORY)) {
-                String value = Global.getSector().getMemoryWithoutUpdate()
-                        .getString(AOTD_TAB_MEMORY);
-                if (value != null && value.toLowerCase().contains("ship gallery")) {
-                    Global.getSector().getMemoryWithoutUpdate()
-                            .set(AOTD_TAB_MEMORY, "income");
-                }
-            }
-        } catch (Throwable ignored) {
-        }
     }
 }
