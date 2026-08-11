@@ -28,6 +28,7 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 
 import shiptrophy.IsaTrophyManager;
+import shiptrophy.gallery.GalleryTourLauncher;
 
 /** Supplies controlled battle layouts for Gan Eden's quest encounters. */
 public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
@@ -78,6 +79,14 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
     public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(
             SectorEntityToken opponent) {
         if (!(opponent instanceof CampaignFleetAPI)) return null;
+
+        BattleCreationPlugin galleryTour =
+                GalleryTourLauncher.pickBattleCreationPlugin(
+                        (CampaignFleetAPI) opponent);
+        if (galleryTour != null) {
+            return new PluginPick<BattleCreationPlugin>(
+                    galleryTour, PickPriority.HIGHEST);
+        }
 
         boolean goldenOmega = opponent.getMemoryWithoutUpdate().getBoolean(
                 GanEdenAmbushScript.FLEET_KEY);

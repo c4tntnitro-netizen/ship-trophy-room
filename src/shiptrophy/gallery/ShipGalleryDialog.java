@@ -23,13 +23,17 @@ public final class ShipGalleryDialog {
                 Global.getSettings().getScreenWidth() - SCREEN_MARGIN_X));
         float height = Math.max(500f, Math.min(MAX_HEIGHT,
                 Global.getSettings().getScreenHeight() - SCREEN_MARGIN_Y));
-        dialog.showCustomDialog(width, height, new GalleryDelegate(width, height));
+        dialog.showCustomDialog(width, height,
+                new GalleryDelegate(dialog, width, height));
     }
 
     private static final class GalleryDelegate extends BaseCustomDialogDelegate {
+        private final InteractionDialogAPI dialog;
         private final ShipGalleryPanelPlugin plugin;
 
-        private GalleryDelegate(float width, float height) {
+        private GalleryDelegate(
+                InteractionDialogAPI dialog, float width, float height) {
+            this.dialog = dialog;
             plugin = new ShipGalleryPanelPlugin(width, height);
         }
 
@@ -40,7 +44,23 @@ public final class ShipGalleryDialog {
 
         @Override
         public String getConfirmText() {
+            return "Fly this row";
+        }
+
+        @Override
+        public boolean hasCancelButton() {
+            return true;
+        }
+
+        @Override
+        public String getCancelText() {
             return "Return to Isa";
+        }
+
+        @Override
+        public void customDialogConfirm() {
+            GalleryTourLauncher.launch(
+                    dialog, plugin.getVisibleWindowSnapshot());
         }
 
         @Override

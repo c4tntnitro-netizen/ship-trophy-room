@@ -1,6 +1,7 @@
 package shiptrophy.gallery;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -95,6 +96,15 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         rebuild();
     }
 
+    /** Returns the exact ordered slice currently shown in the filmstrip. */
+    List<FleetMemberAPI> getVisibleWindowSnapshot() {
+        if (visibleShips.isEmpty()) return Collections.emptyList();
+        int start = getWindowStart();
+        int count = getWindowCount();
+        return Collections.unmodifiableList(new ArrayList<FleetMemberAPI>(
+                visibleShips.subList(start, start + count)));
+    }
+
     private void rebuild() {
         if (panel == null) return;
         removeUi();
@@ -107,9 +117,10 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             header.addPara("A read-only catalog of the vessels preserved across your Halls of Triumph.",
                     4f, Misc.getGrayColor(), "read-only");
         } else {
-            header.addPara("Select a hull in the filmstrip, or scroll over it to browse. Showing %s of %s stored ships.",
+            header.addPara("Select a hull or scroll over the filmstrip. Showing %s of %s stored ships. "
+                            + "%s tours the visible ships in an unarmed Kite.",
                     4f, Misc.getHighlightColor(), Integer.toString(visibleShips.size()),
-                    Integer.toString(allShips.size()));
+                    Integer.toString(allShips.size()), "Fly this row");
         }
         panel.addUIElement(header).inTL(OUTER_PAD, 8f);
 
