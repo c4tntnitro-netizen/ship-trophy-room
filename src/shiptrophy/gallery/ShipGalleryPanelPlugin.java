@@ -3,7 +3,9 @@ package shiptrophy.gallery;
 import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -11,13 +13,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
+import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
+import com.fs.starfarer.api.ui.TextFieldAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
@@ -43,11 +48,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final float HEADER_HEIGHT = 62f;
     private static final float SIDEBAR_TOP = 76f;
     private static final float CONTROLS_HEIGHT = 168f;
-    private static final float DETAILS_HEIGHT = 136f;
+    private static final float SIDEBAR_GAP = 8f;
+    private static final float SEARCH_HEIGHT = 52f;
+    private static final float SEARCH_RESULTS_GAP = 4f;
     private static final float RAIL_BOTTOM = 16f;
     private static final float RAIL_HEIGHT = 96f;
     private static final float RAIL_SIDE_PAD = 58f;
     private static final float ICON_SLOT = 82f;
+    private static final float HERO_MAX_NATIVE_SCALE = 1.35f;
 
     private static final Color VOID = new Color(5, 11, 15);
     private static final Color STAGE = new Color(9, 20, 26);
@@ -62,6 +70,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private TooltipMakerAPI header;
     private TooltipMakerAPI controls;
     private TooltipMakerAPI details;
+    private TooltipMakerAPI factionSearchPanel;
+    private TooltipMakerAPI factionResults;
+    private TextFieldAPI factionSearch;
     private TooltipMakerAPI emptyState;
     private TooltipMakerAPI previousControl;
     private TooltipMakerAPI nextControl;
@@ -70,6 +81,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private List<FleetMemberAPI> visibleShips = Collections.emptyList();
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
+    private boolean factionDropdownOpen;
+    private String factionQuery = "";
+    private String renderedFactionQuery = "";
 
     ShipGalleryPanelPlugin(float width, float height) {
         this.width = width;
@@ -101,7 +115,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
         buildControls();
 
-        if (allShips.isEmpty()) {
+        if (factionDropdownOpen) {
+            buildFactionPicker();
+        } else if (allShips.isEmpty()) {
             buildEmptyState("No ships are currently stored in a Hall of Triumph.", false);
         } else if (visibleShips.isEmpty()) {
             buildEmptyState("No displayed ships match the active filters.", true);
@@ -132,15 +148,81 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         controls = panel.createUIElement(sidebarWidth, CONTROLS_HEIGHT, false);
         controls.addSectionHeading("Catalog order", Misc.getBasePlayerColor(),
                 Misc.getDarkPlayerColor(), Alignment.MID, 0f);
-        controls.addPara("Each control cycles through its available values.", 4f,
-                Misc.getGrayColor(), "cycles");
+        controls.addPara("Sort and size cycle; faction opens a search menu.", 4f,
+                Misc.getGrayColor(), "search");
         addControl("Primary: " + getPrimary().label, PRIMARY_ID, sidebarWidth);
         addControl("Then by: " + getSecondary().label, SECONDARY_ID, sidebarWidth);
         addControl("Hull size: " + getSizeFilter().label, SIZE_ID, sidebarWidth);
         String manufacturer = getManufacturer();
-        addControl("Faction: " + (manufacturer.isEmpty() ? "All" : manufacturer),
+        String factionLabel = "Faction [search]: "
+                + (manufacturer.isEmpty() ? "All" : manufacturer);
+        addControl(controls.shortenString(factionLabel, Math.max(210f, sidebarWidth - 18f)),
                 FACTION_ID, sidebarWidth);
         panel.addUIElement(controls).inTR(OUTER_PAD, SIDEBAR_TOP);
+    }
+
+    private void buildFactionPicker() {
+        float sidebarWidth = getSidebarWidth();
+        float pickerTop = getSidebarContentTop();
+
+        factionSearchPanel = panel.createUIElement(sidebarWidth, SEARCH_HEIGHT, false);
+        factionSearchPanel.setForceProcessInput(true);
+        factionSearchPanel.addSectionHeading("Search factions", Misc.getBasePlayerColor(),
+                Misc.getDarkPlayerColor(), Alignment.MID, 0f);
+        factionSearch = factionSearchPanel.addTextField(Math.max(210f, sidebarWidth - 4f), 3f);
+        factionSearch.setText(factionQuery);
+        factionSearch.setMaxChars(80);
+        factionSearch.setLimitByStringWidth(true);
+        factionSearch.setHandleCtrlV(true);
+        factionSearch.setUndoOnEscape(false);
+        factionSearch.setColor(Misc.getTextColor());
+        factionSearch.setBgColor(VOID);
+        factionSearch.setBorderColor(Misc.getBasePlayerColor());
+        panel.addUIElement(factionSearchPanel).inTR(OUTER_PAD, pickerTop);
+        panel.bringComponentToTop(factionSearchPanel);
+        factionSearch.grabFocus(false);
+
+        renderedFactionQuery = normalizeQuery(factionQuery);
+        rebuildFactionResults();
+    }
+
+    private void rebuildFactionResults() {
+        remove(factionResults);
+        factionResults = null;
+        if (!factionDropdownOpen || panel == null) return;
+
+        float sidebarWidth = getSidebarWidth();
+        float resultsHeight = Math.max(64f,
+                getSidebarContentHeight() - SEARCH_HEIGHT - SEARCH_RESULTS_GAP);
+        factionResults = panel.createUIElement(sidebarWidth, resultsHeight, true);
+        factionResults.setForceProcessInput(true);
+        factionResults.setBgAlpha(0.98f);
+
+        addFactionChoice("All factions", "", sidebarWidth);
+        int matches = 0;
+        String query = normalizeQuery(factionQuery);
+        for (String manufacturer : ShipGalleryData.getManufacturers(allShips)) {
+            if (!query.isEmpty()
+                    && !manufacturer.toLowerCase(Locale.ROOT).contains(query)) continue;
+            addFactionChoice(manufacturer, manufacturer, sidebarWidth);
+            matches++;
+        }
+        if (matches == 0 && !query.isEmpty()) {
+            factionResults.addPara("No matching factions.", 6f,
+                    Misc.getNegativeHighlightColor(), "No matching factions");
+        }
+
+        panel.addUIElement(factionResults).inTR(OUTER_PAD,
+                getSidebarContentTop() + SEARCH_HEIGHT + SEARCH_RESULTS_GAP);
+        panel.bringComponentToTop(factionResults);
+    }
+
+    private void addFactionChoice(String label, String manufacturer, float sidebarWidth) {
+        ButtonAPI button = factionResults.addButton(label, new FactionChoice(manufacturer),
+                Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(),
+                Math.max(205f, sidebarWidth - 16f), 24f, 2f);
+        button.setButtonPressedSound("ui_button_pressed");
+        button.setChecked(manufacturer.equalsIgnoreCase(getManufacturer()));
     }
 
     private void buildDetails() {
@@ -148,7 +230,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (selected == null || selected.getHullSpec() == null) return;
 
         float sidebarWidth = getSidebarWidth();
-        details = panel.createUIElement(sidebarWidth, DETAILS_HEIGHT, false);
+        details = panel.createUIElement(sidebarWidth, getSidebarContentHeight(), true);
+        details.setBgAlpha(0.92f);
         details.addTitle(displayShipName(selected), Misc.getBasePlayerColor());
         details.addPara(selected.getHullSpec().getHullNameWithDashClass(), 2f,
                 Misc.getGrayColor(), selected.getHullSpec().getHullName());
@@ -158,8 +241,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         details.addToGrid(0, 2, "Deployment points", displayDp(selected));
         details.addToGrid(0, 3, "Gallery status", "Preserved", Misc.getHighlightColor());
         details.addGrid(4f);
+        addCodexDescription(details, selected.getHullSpec());
         panel.addUIElement(details).inTR(OUTER_PAD,
-                SIDEBAR_TOP + CONTROLS_HEIGHT + 8f);
+                getSidebarContentTop());
     }
 
     private void buildNavigation() {
@@ -199,12 +283,17 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         remove(header);
         remove(controls);
         remove(details);
+        remove(factionSearchPanel);
+        remove(factionResults);
         remove(emptyState);
         remove(previousControl);
         remove(nextControl);
         header = null;
         controls = null;
         details = null;
+        factionSearchPanel = null;
+        factionResults = null;
+        factionSearch = null;
         emptyState = null;
         previousControl = null;
         nextControl = null;
@@ -223,14 +312,24 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     @Override
     public void buttonPressed(Object buttonId) {
-        if (PRIMARY_ID.equals(buttonId)) {
+        if (buttonId instanceof FactionChoice) {
+            setMemory(FACTION_MEMORY, ((FactionChoice) buttonId).manufacturer);
+            factionDropdownOpen = false;
+            factionQuery = "";
+            rebuild();
+            return;
+        } else if (PRIMARY_ID.equals(buttonId)) {
             setMemory(PRIMARY_MEMORY, getPrimary().next().label);
+            factionDropdownOpen = false;
         } else if (SECONDARY_ID.equals(buttonId)) {
             setMemory(SECONDARY_MEMORY, getSecondary().next().label);
+            factionDropdownOpen = false;
         } else if (SIZE_ID.equals(buttonId)) {
             setMemory(SIZE_MEMORY, getSizeFilter().next().label);
+            factionDropdownOpen = false;
         } else if (FACTION_ID.equals(buttonId)) {
-            cycleManufacturer();
+            factionDropdownOpen = !factionDropdownOpen;
+            factionQuery = "";
         } else if (PREVIOUS_ID.equals(buttonId)) {
             selectRelative(-1);
             return;
@@ -241,19 +340,6 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             return;
         }
         rebuild();
-    }
-
-    private void cycleManufacturer() {
-        List<String> manufacturers = ShipGalleryData.getManufacturers(
-                ShipGalleryData.getAllShips());
-        String current = validateManufacturer(getManufacturer(), manufacturers);
-        if (current.isEmpty()) {
-            setMemory(FACTION_MEMORY, manufacturers.isEmpty() ? "" : manufacturers.get(0));
-            return;
-        }
-        int index = manufacturers.indexOf(current);
-        setMemory(FACTION_MEMORY,
-                index < 0 || index + 1 >= manufacturers.size() ? "" : manufacturers.get(index + 1));
     }
 
     private void selectRelative(int amount) {
@@ -295,6 +381,15 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private float getStageWidth() {
         return Math.max(260f, width - getSidebarWidth() - OUTER_PAD * 3f);
+    }
+
+    private float getSidebarContentTop() {
+        return SIDEBAR_TOP + CONTROLS_HEIGHT + SIDEBAR_GAP;
+    }
+
+    private float getSidebarContentHeight() {
+        float railClearance = RAIL_BOTTOM + RAIL_HEIGHT + 14f;
+        return Math.max(116f, height - getSidebarContentTop() - railClearance);
     }
 
     private int getVisibleSlotCount() {
@@ -364,6 +459,82 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         return String.format(java.util.Locale.ROOT, "%.1f", value);
     }
 
+    private static void addCodexDescription(TooltipMakerAPI tooltip, ShipHullSpecAPI spec) {
+        tooltip.addSectionHeading("Codex entry", Misc.getBasePlayerColor(),
+                Misc.getDarkPlayerColor(), Alignment.MID, 8f);
+        if (spec == null) {
+            tooltip.addPara("No Codex entry is available for this hull.",
+                    Misc.getGrayColor(), 6f);
+            return;
+        }
+
+        String prefix = safe(spec.getDescriptionPrefix());
+        if (!prefix.isEmpty()) tooltip.addPara(prefix, 6f);
+
+        Description description = findShipDescription(spec);
+        if (description == null) {
+            tooltip.addPara("No Codex entry is available for this hull.",
+                    Misc.getGrayColor(), 6f);
+            return;
+        }
+        boolean added = false;
+        for (String paragraph : description.getText1Paras()) {
+            String text = safe(paragraph);
+            if (text.isEmpty()) continue;
+            tooltip.addPara(text, added || !prefix.isEmpty() ? 8f : 6f);
+            added = true;
+        }
+        if (!added && prefix.isEmpty()) {
+            tooltip.addPara("No Codex entry is available for this hull.",
+                    Misc.getGrayColor(), 6f);
+        }
+    }
+
+    private static Description findShipDescription(ShipHullSpecAPI spec) {
+        if (spec == null) return null;
+        Description description = getShipDescription(spec.getDescriptionId());
+        if (description != null) return description;
+
+        try {
+            description = getShipDescription(spec.getDParentHull() == null
+                    ? null : spec.getDParentHull().getDescriptionId());
+            if (description != null) return description;
+        } catch (Throwable ignored) {
+        }
+        try {
+            description = getShipDescription(spec.getBaseHull() == null
+                    ? null : spec.getBaseHull().getDescriptionId());
+            if (description != null) return description;
+        } catch (Throwable ignored) {
+        }
+        description = getHullSpecDescription(spec.getRestoredToHullId());
+        if (description != null) return description;
+        description = getHullSpecDescription(spec.getBaseHullId());
+        if (description != null) return description;
+        return getShipDescription(spec.getHullId());
+    }
+
+    private static Description getHullSpecDescription(String hullId) {
+        if (hullId == null || hullId.trim().isEmpty()) return null;
+        try {
+            ShipHullSpecAPI hull = Global.getSettings().getHullSpec(hullId.trim());
+            return hull == null ? null : getShipDescription(hull.getDescriptionId());
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    private static Description getShipDescription(String id) {
+        if (id == null || id.trim().isEmpty()) return null;
+        try {
+            Description description = Global.getSettings().getDescription(
+                    id.trim(), Description.Type.SHIP);
+            return description != null && description.hasText1() ? description : null;
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
     private static String getMemory(String key) {
         try {
             MemoryAPI memory = Global.getSector().getMemoryWithoutUpdate();
@@ -428,7 +599,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         renderShip(selected, stageX + stageWidth * 0.5f,
                 stageY + stageHeight * 0.52f,
                 Math.max(80f, stageWidth - 54f),
-                Math.max(80f, stageHeight - 42f), alphaMult);
+                Math.max(80f, stageHeight - 42f), alphaMult, true);
 
         int start = getWindowStart();
         int count = getWindowCount();
@@ -441,7 +612,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             float centerX = left + slot * ICON_SLOT + ICON_SLOT * 0.5f;
             renderShip(visibleShips.get(index), centerX,
                     centerY + (selectedIcon ? 4f : 0f), iconSize, iconSize,
-                    alphaMult * (selectedIcon ? 1f : 0.64f));
+                    alphaMult * (selectedIcon ? 1f : 0.64f), false);
         }
     }
 
@@ -469,7 +640,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private static void renderShip(FleetMemberAPI member, float centerX, float centerY,
-                                   float maxWidth, float maxHeight, float alpha) {
+                                   float maxWidth, float maxHeight, float alpha,
+                                   boolean preserveRelativeScale) {
         if (member == null || member.getHullSpec() == null || alpha <= 0f) return;
         String spriteName = safe(member.getSpriteOverride());
         if (spriteName.isEmpty()) spriteName = safe(member.getHullSpec().getSpriteName());
@@ -505,6 +677,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             if (sourceWidth <= 0f || sourceHeight <= 0f) return;
 
             float scale = Math.min(maxWidth / sourceWidth, maxHeight / sourceHeight);
+            if (preserveRelativeScale) {
+                scale = Math.min(scale, HERO_MAX_NATIVE_SCALE);
+            }
             sprite.setSize(sourceWidth * scale, sourceHeight * scale);
             sprite.setAngle(0f);
             sprite.setColor(Color.WHITE);
@@ -566,6 +741,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     @Override
     public void advance(float amount) {
+        if (!factionDropdownOpen || factionSearch == null) return;
+        String current = factionSearch.getText();
+        factionQuery = current == null ? "" : current;
+        String normalized = normalizeQuery(factionQuery);
+        if (!normalized.equals(renderedFactionQuery)) {
+            renderedFactionQuery = normalized;
+            rebuildFactionResults();
+        }
     }
 
     @Override
@@ -573,6 +756,25 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (position == null) return;
         for (InputEventAPI event : events) {
             if (event == null || event.isConsumed()) continue;
+            if (factionDropdownOpen && event.isKeyDownEvent()
+                    && event.getEventValue() == Keyboard.KEY_ESCAPE) {
+                factionDropdownOpen = false;
+                factionQuery = "";
+                rebuild();
+                event.consume();
+                return;
+            }
+            if (factionDropdownOpen && event.isMouseDownEvent()
+                    && event.getEventValue() == 0
+                    && !containsEvent(factionSearchPanel, event)
+                    && !containsEvent(factionResults, event)
+                    && !containsEvent(controls, event)) {
+                factionDropdownOpen = false;
+                factionQuery = "";
+                rebuild();
+                event.consume();
+                return;
+            }
             if (visibleShips.isEmpty()) continue;
             int iconIndex = iconAt(event.getX(), event.getY());
             if (event.isMouseMoveEvent()) {
@@ -605,5 +807,22 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (x < left || x >= left + count * ICON_SLOT) return -1;
         int slot = (int) ((x - left) / ICON_SLOT);
         return getWindowStart() + slot;
+    }
+
+    private static boolean containsEvent(TooltipMakerAPI component, InputEventAPI event) {
+        return component != null && component.getPosition() != null
+                && component.getPosition().containsEvent(event);
+    }
+
+    private static String normalizeQuery(String value) {
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private static final class FactionChoice {
+        private final String manufacturer;
+
+        private FactionChoice(String manufacturer) {
+            this.manufacturer = manufacturer == null ? "" : manufacturer;
+        }
     }
 }
