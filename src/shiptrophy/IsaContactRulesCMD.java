@@ -23,6 +23,7 @@ import shiptrophy.hullmods.AbundantMercyVow;
 import shiptrophy.hullmods.BlackLionInheritance;
 import shiptrophy.hullmods.Contempt;
 import shiptrophy.hullmods.Gaze;
+import shiptrophy.gallery.ShipGalleryDialog;
 
 /** Dynamic data and state actions used by Isa's rules.csv dialogue. */
 public class IsaContactRulesCMD implements CommandPlugin {
@@ -56,6 +57,10 @@ public class IsaContactRulesCMD implements CommandPlugin {
         }
         if ("prepareMain".equals(command)) {
             prepareMain(dialog, local);
+            return true;
+        }
+        if ("showGallery".equals(command)) {
+            ShipGalleryDialog.show(dialog);
             return true;
         }
         if ("refreshStats".equals(command)) {

@@ -26,12 +26,6 @@ import shiptrophy.gallery.ShipGalleryData.SortKey;
 
 /** Cover Flow-style, read-only browser for ships displayed in every Hall. */
 final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
-    interface NavigationListener {
-        boolean isForeignTabAt(float x, float y);
-
-        void foreignTabPressed();
-    }
-
     private static final String PRIMARY_ID = "ship_gallery_primary";
     private static final String SECONDARY_ID = "ship_gallery_secondary";
     private static final String SIZE_ID = "ship_gallery_size";
@@ -62,7 +56,6 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private final float width;
     private final float height;
-    private final NavigationListener navigationListener;
     private CustomPanelAPI panel;
     private PositionAPI position;
 
@@ -78,11 +71,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
 
-    ShipGalleryPanelPlugin(float width, float height,
-                           NavigationListener navigationListener) {
+    ShipGalleryPanelPlugin(float width, float height) {
         this.width = width;
         this.height = height;
-        this.navigationListener = navigationListener;
     }
 
     void init(CustomPanelAPI panel) {
@@ -99,7 +90,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 HEADER_HEIGHT, false);
         header.addTitle("Ship Gallery", Misc.getBasePlayerColor());
         if (allShips.isEmpty()) {
-            header.addPara("A read-only catalog of the vessels preserved across your functional Halls of Triumph.",
+            header.addPara("A read-only catalog of the vessels preserved across your Halls of Triumph.",
                     4f, Misc.getGrayColor(), "read-only");
         } else {
             header.addPara("Select a hull in the filmstrip, or scroll over it to browse. Showing %s of %s stored ships.",
@@ -111,7 +102,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         buildControls();
 
         if (allShips.isEmpty()) {
-            buildEmptyState("No ships are currently stored in a functional Hall of Triumph.", false);
+            buildEmptyState("No ships are currently stored in a Hall of Triumph.", false);
         } else if (visibleShips.isEmpty()) {
             buildEmptyState("No displayed ships match the active filters.", true);
         } else {
@@ -582,12 +573,6 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (position == null) return;
         for (InputEventAPI event : events) {
             if (event == null || event.isConsumed()) continue;
-            if (event.isMouseDownEvent() && event.getEventValue() == 0
-                    && navigationListener != null
-                    && navigationListener.isForeignTabAt(event.getX(), event.getY())) {
-                navigationListener.foreignTabPressed();
-                return;
-            }
             if (visibleShips.isEmpty()) continue;
             int iconIndex = iconAt(event.getX(), event.getY());
             if (event.isMouseMoveEvent()) {

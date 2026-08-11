@@ -31,6 +31,7 @@ SetTextHighlights $shipTrophyIsaRooms $shipTrophyIsaUniqueHulls $shipTrophyIsaUn
 shipTrophyIsaMainJoin,ShipTrophyIsaMainOptions,IsaContactRulesCMD canJoin,"SetOptionColor ship_trophy_isa_join_fleet highlight
 SetTooltip ship_trophy_isa_join_fleet ""Every vanilla Hall of Triumph ledger is complete. Isa can now join your officer roster.""",,0:ship_trophy_isa_join_fleet:Isa is ready to join the fleet.,
 shipTrophyIsaMainMasterwork,ShipTrophyIsaMainOptions,,IsaContactOptionsCMD populateMasterworkOption,,,
+shipTrophyIsaMainGallery,ShipTrophyIsaMainOptions,IsaContactRulesCMD alreadyJoined,,,15:ship_trophy_isa_gallery:View the Ship Gallery.,Post-recruitment access to the Ship Gallery.
 shipTrophyIsaMainUniques,ShipTrophyIsaMainOptions,,,,20:ship_trophy_isa_uniques:Ask about unique hulls.,
 shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtypes:Ask about vanilla faction and subtype programs.,
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
@@ -38,6 +39,7 @@ shipTrophyIsaMainModdedSubtypes,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasS
 shipTrophyIsaMainGanEden,ShipTrophyIsaMainOptions,GanEdenQuestCMD questCompleted,,,"60:ship_trophy_isa_isaac:""...so. Isaac Leicester. He was Ludd.""",The full post-quest conversation about Isaac Leicester remains available through Isa's contact menu.
 shipTrophyIsaMainShatteredRing,ShipTrophyIsaMainOptions,IsaContactRulesCMD alreadyJoined,,,70:ship_trophy_isa_shattered_ring:Ask Isa about the Shattered Ring.,Post-recruitment conversation about Isa's childhood home.
 shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,100:ship_trophy_isa_close:Cut the comm link.,
+shipTrophyIsaGalleryOpen,DialogOptionSelected,$option == ship_trophy_isa_gallery,IsaContactRulesCMD showGallery,,,Opens the Ship Gallery from Isa's contact dialogue.
 shipTrophyIsaShatteredRingHub,DialogOptionSelected,$option == ship_trophy_isa_shattered_ring,"IsaContactRulesCMD prepare
 SetShortcut ship_trophy_isa_close ""ESCAPE""","""The Shattered Ring?""
 

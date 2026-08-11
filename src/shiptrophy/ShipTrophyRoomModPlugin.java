@@ -21,7 +21,6 @@ import shiptrophy.campaign.GanEdenQuestScript;
 import shiptrophy.campaign.MkIVFleetIntegrationListener;
 import shiptrophy.campaign.ShatteredRingGenerator;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
-import shiptrophy.gallery.ShipGalleryCoreScript;
 
 public class ShipTrophyRoomModPlugin extends BaseModPlugin {
     @Override
@@ -36,10 +35,6 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
 
     private void ensureScript() {
         if (Global.getSector() == null) return;
-        Global.getSector().removeTransientScriptsOfClass(ShipGalleryCoreScript.class);
-        Global.getSector().addTransientScript(new ShipGalleryCoreScript());
-        Global.getLogger(ShipTrophyRoomModPlugin.class).info(
-                "Hall of Triumph: registered independent Ship Gallery script");
         Global.getSector().unregisterPlugin(GanEdenBattleCreationPlugin.ID);
         Global.getSector().registerPlugin(new GanEdenBattleCreationPlugin());
         TrophySubtypeRegistry.reload();
