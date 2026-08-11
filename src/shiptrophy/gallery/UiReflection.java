@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CoreUIAPI;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.ui.UIPanelAPI;
 
@@ -16,8 +15,12 @@ final class UiReflection {
     }
 
     static UIPanelAPI getCurrentCorePanel() {
-        Object core = invoke(Global.getSector().getCampaignUI(), "getCore");
-        if (!(core instanceof CoreUIAPI) || !(core instanceof UIPanelAPI)) return null;
+        Object campaignUi = Global.getSector().getCampaignUI();
+        Object dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+        Object core = dialog == null
+                ? invoke(campaignUi, "getCore")
+                : invoke(dialog, "getCoreUI");
+        if (!(core instanceof UIPanelAPI)) return null;
         Object tab = invoke(core, "getCurrentTab");
         return tab instanceof UIPanelAPI ? (UIPanelAPI) tab : null;
     }
@@ -36,6 +39,14 @@ final class UiReflection {
 
     static Object invoke(Object target, String name, Object... args) {
         if (target == null) return null;
+        for (Method method : target.getClass().getMethods()) {
+            if (!method.getName().equals(name)
+                    || method.getParameterTypes().length != args.length) continue;
+            try {
+                return method.invoke(target, args);
+            } catch (Throwable ignored) {
+            }
+        }
         Class<?> type = target.getClass();
         while (type != null) {
             for (Method method : type.getDeclaredMethods()) {

@@ -26,6 +26,12 @@ import shiptrophy.gallery.ShipGalleryData.SortKey;
 
 /** Cover Flow-style, read-only browser for ships displayed in every Hall. */
 final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
+    interface NavigationListener {
+        boolean isForeignTabAt(float x, float y);
+
+        void foreignTabPressed();
+    }
+
     private static final String PRIMARY_ID = "ship_gallery_primary";
     private static final String SECONDARY_ID = "ship_gallery_secondary";
     private static final String SIZE_ID = "ship_gallery_size";
@@ -56,6 +62,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private final float width;
     private final float height;
+    private final NavigationListener navigationListener;
     private CustomPanelAPI panel;
     private PositionAPI position;
 
@@ -71,9 +78,11 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
 
-    ShipGalleryPanelPlugin(float width, float height) {
+    ShipGalleryPanelPlugin(float width, float height,
+                           NavigationListener navigationListener) {
         this.width = width;
         this.height = height;
+        this.navigationListener = navigationListener;
     }
 
     void init(CustomPanelAPI panel) {
@@ -570,9 +579,16 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     @Override
     public void processInput(List<InputEventAPI> events) {
-        if (position == null || visibleShips.isEmpty()) return;
+        if (position == null) return;
         for (InputEventAPI event : events) {
             if (event == null || event.isConsumed()) continue;
+            if (event.isMouseDownEvent() && event.getEventValue() == 0
+                    && navigationListener != null
+                    && navigationListener.isForeignTabAt(event.getX(), event.getY())) {
+                navigationListener.foreignTabPressed();
+                return;
+            }
+            if (visibleShips.isEmpty()) continue;
             int iconIndex = iconAt(event.getX(), event.getY());
             if (event.isMouseMoveEvent()) {
                 hoveredIndex = iconIndex;
