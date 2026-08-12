@@ -78,6 +78,22 @@ public final class GalleryTourLauncher {
             return;
         }
 
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return;
+
+        // customDialogConfirm() runs before Starsector clears the custom
+        // modal from its parent dialog. A fleet picker requested from inside
+        // that callback is silently ignored as a nested modal. Defer it until
+        // the following campaign frame, after the Gallery has fully closed.
+        sector.addTransientScript(new OpenShuttlePickerScript(
+                dialog,
+                new ArrayList<FleetMemberAPI>(currentWindow)));
+    }
+
+    private static void showShuttlePicker(
+            final InteractionDialogAPI dialog,
+            final List<FleetMemberAPI> currentWindow) {
+
         final List<FleetMemberAPI> eligible = getEligibleShuttles();
         if (eligible.isEmpty()) {
             dialog.getTextPanel().addPara(
@@ -115,6 +131,41 @@ public final class GalleryTourLauncher {
                         // The Gallery has already closed; Isa's menu remains open.
                     }
                 });
+    }
+
+    private static final class OpenShuttlePickerScript
+            implements EveryFrameScript {
+        private final InteractionDialogAPI dialog;
+        private final List<FleetMemberAPI> currentWindow;
+        private boolean waitedOneFrame;
+        private boolean done;
+
+        private OpenShuttlePickerScript(
+                InteractionDialogAPI dialog,
+                List<FleetMemberAPI> currentWindow) {
+            this.dialog = dialog;
+            this.currentWindow = currentWindow;
+        }
+
+        @Override
+        public boolean isDone() {
+            return done;
+        }
+
+        @Override
+        public boolean runWhilePaused() {
+            return true;
+        }
+
+        @Override
+        public void advance(float amount) {
+            if (!waitedOneFrame) {
+                waitedOneFrame = true;
+                return;
+            }
+            done = true;
+            showShuttlePicker(dialog, currentWindow);
+        }
     }
 
     private static List<FleetMemberAPI> getEligibleShuttles() {
