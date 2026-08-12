@@ -15,7 +15,6 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleCreationPlugin;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -36,7 +35,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
@@ -73,7 +71,8 @@ public final class GalleryTourLauncher {
 
     static void launch(
             final InteractionDialogAPI dialog,
-            final List<FleetMemberAPI> currentWindow) {
+            final List<FleetMemberAPI> currentWindow,
+            final FleetMemberAPI selectedShuttle) {
         if (dialog == null || currentWindow == null || currentWindow.isEmpty()) {
             return;
         }
@@ -81,70 +80,30 @@ public final class GalleryTourLauncher {
         SectorAPI sector = Global.getSector();
         if (sector == null) return;
 
-        // customDialogConfirm() runs before Starsector clears the custom
-        // modal from its parent dialog. A fleet picker requested from inside
-        // that callback is silently ignored as a nested modal. Defer it until
-        // the following campaign frame, after the Gallery has fully closed.
-        sector.addTransientScript(new OpenShuttlePickerScript(
+        // customDialogConfirm() runs before Starsector clears the Gallery
+        // modal. Defer the direct launch until the following campaign frame,
+        // then close Isa's contact screen through the supported return path.
+        sector.addTransientScript(new LaunchTourAfterGalleryScript(
                 dialog,
-                new ArrayList<FleetMemberAPI>(currentWindow)));
+                new ArrayList<FleetMemberAPI>(currentWindow),
+                selectedShuttle));
     }
 
-    private static void showShuttlePicker(
-            final InteractionDialogAPI dialog,
-            final List<FleetMemberAPI> currentWindow) {
-
-        final List<FleetMemberAPI> eligible = getEligibleShuttles();
-        if (eligible.isEmpty()) {
-            dialog.getTextPanel().addPara(
-                    "A gallery tour requires a frigate in your fleet with "
-                            + "Civilian-grade Hull. No eligible shuttle is available.");
-            return;
-        }
-
-        int columns = Math.max(4, Math.min(8, eligible.size()));
-        dialog.showFleetMemberPickerDialog(
-                "Choose a gallery shuttle (civilian frigates only)",
-                "Launch tour",
-                "Cancel",
-                2,
-                columns,
-                88f,
-                true,
-                false,
-                eligible,
-                new FleetMemberPickerListener() {
-                    @Override
-                    public void pickedFleetMembers(List<FleetMemberAPI> members) {
-                        if (members == null || members.isEmpty()) return;
-                        FleetMemberAPI selected = members.get(0);
-                        if (!isEligibleShuttle(selected)) {
-                            dialog.getTextPanel().addPara(
-                                    "That ship is no longer an eligible gallery shuttle.");
-                            return;
-                        }
-                        launchSelected(dialog, currentWindow, selected);
-                    }
-
-                    @Override
-                    public void cancelledFleetMemberPicking() {
-                        // The Gallery has already closed; Isa's menu remains open.
-                    }
-                });
-    }
-
-    private static final class OpenShuttlePickerScript
+    private static final class LaunchTourAfterGalleryScript
             implements EveryFrameScript {
         private final InteractionDialogAPI dialog;
         private final List<FleetMemberAPI> currentWindow;
+        private final FleetMemberAPI selectedShuttle;
         private boolean waitedOneFrame;
         private boolean done;
 
-        private OpenShuttlePickerScript(
+        private LaunchTourAfterGalleryScript(
                 InteractionDialogAPI dialog,
-                List<FleetMemberAPI> currentWindow) {
+                List<FleetMemberAPI> currentWindow,
+                FleetMemberAPI selectedShuttle) {
             this.dialog = dialog;
             this.currentWindow = currentWindow;
+            this.selectedShuttle = selectedShuttle;
         }
 
         @Override
@@ -164,28 +123,14 @@ public final class GalleryTourLauncher {
                 return;
             }
             done = true;
-            showShuttlePicker(dialog, currentWindow);
+            if (!ShipGalleryData.isTourShuttleEligible(selectedShuttle)) {
+                dialog.getTextPanel().addPara(
+                        "The Gallery has no preserved frigate with "
+                                + "Civilian-grade Hull available as a tour shuttle.");
+                return;
+            }
+            launchSelected(dialog, currentWindow, selectedShuttle);
         }
-    }
-
-    private static List<FleetMemberAPI> getEligibleShuttles() {
-        List<FleetMemberAPI> eligible = new ArrayList<FleetMemberAPI>();
-        SectorAPI sector = Global.getSector();
-        CampaignFleetAPI player = sector == null
-                ? null : sector.getPlayerFleet();
-        if (player == null) return eligible;
-        for (FleetMemberAPI member
-                : player.getFleetData().getMembersListCopy()) {
-            if (isEligibleShuttle(member)) eligible.add(member);
-        }
-        return eligible;
-    }
-
-    private static boolean isEligibleShuttle(FleetMemberAPI member) {
-        return member != null
-                && member.isFrigate()
-                && member.getVariant() != null
-                && member.getVariant().hasHullMod(HullMods.CIVGRADE);
     }
 
     private static void launchSelected(
@@ -272,7 +217,7 @@ public final class GalleryTourLauncher {
     }
 
     private static FleetMemberAPI cloneForTour(FleetMemberAPI source) {
-        if (!isEligibleShuttle(source)) return null;
+        if (!ShipGalleryData.isTourShuttleEligible(source)) return null;
         try {
             ShipVariantAPI variant = source.getVariant().clone();
             FleetMemberAPI copy = Global.getFactory().createFleetMember(

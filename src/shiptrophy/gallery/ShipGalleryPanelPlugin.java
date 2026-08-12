@@ -44,6 +44,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final String SIZE_MEMORY = "$ship_trophy_gallery_size_filter";
     private static final String FACTION_MEMORY = "$ship_trophy_gallery_faction_filter";
     private static final String SELECTED_MEMORY = "$ship_trophy_gallery_selected_ship";
+    private static final String TOUR_SHUTTLE_MEMORY =
+            "$ship_trophy_gallery_tour_shuttle";
 
     private static final float OUTER_PAD = 15f;
     private static final float HEADER_HEIGHT = 62f;
@@ -80,6 +82,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private List<FleetMemberAPI> allShips = Collections.emptyList();
     private List<FleetMemberAPI> visibleShips = Collections.emptyList();
+    private FleetMemberAPI tourShuttle;
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
     private boolean factionDropdownOpen;
@@ -105,6 +108,11 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 visibleShips.subList(start, start + count)));
     }
 
+    /** Returns the preserved civilian frigate selected inside the Gallery. */
+    FleetMemberAPI getTourShuttleSnapshot() {
+        return tourShuttle;
+    }
+
     private void rebuild() {
         if (panel == null) return;
         removeUi();
@@ -116,11 +124,17 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (allShips.isEmpty()) {
             header.addPara("A read-only catalog of the vessels preserved across your Halls of Triumph.",
                     4f, Misc.getGrayColor(), "read-only");
+        } else if (tourShuttle == null) {
+            header.addPara("Select a hull or scroll over the filmstrip. Tours require a stored "
+                            + "%s with %s; none is currently preserved.",
+                    4f, Misc.getNegativeHighlightColor(),
+                    "frigate", "Civilian-grade Hull");
         } else {
-            header.addPara("Select a hull or scroll over the filmstrip. Showing %s of %s stored ships. "
-                            + "%s tours the visible ships in an unarmed Kite.",
+            header.addPara("Showing %s of %s stored ships. Tour shuttle: %s. Select any preserved "
+                            + "civilian frigate in the filmstrip to change it; %s launches this row.",
                     4f, Misc.getHighlightColor(), Integer.toString(visibleShips.size()),
-                    Integer.toString(allShips.size()), "Fly this row");
+                    Integer.toString(allShips.size()), displayShipName(tourShuttle),
+                    "Fly this row");
         }
         panel.addUIElement(header).inTL(OUTER_PAD, 8f);
 
@@ -140,17 +154,30 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private void refreshModel() {
         allShips = ShipGalleryData.getAllShips();
+        FleetMemberAPI rememberedShuttle = findShipById(
+                allShips, getMemory(TOUR_SHUTTLE_MEMORY));
+        if (!ShipGalleryData.isTourShuttleEligible(rememberedShuttle)) {
+            rememberedShuttle = findFirstEligibleShuttle(allShips);
+        }
         List<String> manufacturers = ShipGalleryData.getManufacturers(allShips);
         String manufacturer = validateManufacturer(getManufacturer(), manufacturers);
         if (!manufacturer.equals(getManufacturer())) setMemory(FACTION_MEMORY, manufacturer);
 
         visibleShips = ShipGalleryData.filterAndSort(allShips, getSizeFilter(), manufacturer,
                 getPrimary(), getSecondary());
-        selectedIndex = findShipById(visibleShips, getMemory(SELECTED_MEMORY));
+        selectedIndex = findShipIndexById(
+                visibleShips, getMemory(SELECTED_MEMORY));
         if (selectedIndex < 0 && !visibleShips.isEmpty()) selectedIndex = 0;
         if (selectedIndex >= 0) {
-            setMemory(SELECTED_MEMORY, safe(visibleShips.get(selectedIndex).getId()));
+            FleetMemberAPI selected = visibleShips.get(selectedIndex);
+            setMemory(SELECTED_MEMORY, safe(selected.getId()));
+            if (ShipGalleryData.isTourShuttleEligible(selected)) {
+                rememberedShuttle = selected;
+            }
         }
+        tourShuttle = rememberedShuttle;
+        setMemory(TOUR_SHUTTLE_MEMORY,
+                tourShuttle == null ? "" : safe(tourShuttle.getId()));
         hoveredIndex = -1;
     }
 
@@ -251,6 +278,15 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         details.addToGrid(0, 1, "Hull size", displayHullSize(selected));
         details.addToGrid(0, 2, "Deployment points", displayDp(selected));
         details.addToGrid(0, 3, "Gallery status", "Preserved", Misc.getHighlightColor());
+        if (ShipGalleryData.isTourShuttleEligible(selected)) {
+            details.addToGrid(0, 4, "Tour shuttle", "Selected",
+                    Misc.getPositiveHighlightColor());
+        } else if (tourShuttle != null) {
+            details.addToGrid(0, 4, "Tour shuttle", displayShipName(tourShuttle));
+        } else {
+            details.addToGrid(0, 4, "Tour shuttle", "No eligible hull",
+                    Misc.getNegativeHighlightColor());
+        }
         details.addGrid(4f);
         addCodexDescription(details, selected.getHullSpec());
         panel.addUIElement(details).inTR(OUTER_PAD,
@@ -431,12 +467,26 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         return "";
     }
 
-    private static int findShipById(List<FleetMemberAPI> ships, String id) {
+    private static int findShipIndexById(List<FleetMemberAPI> ships, String id) {
         if (id == null || id.isEmpty()) return -1;
         for (int i = 0; i < ships.size(); i++) {
             if (id.equals(safe(ships.get(i).getId()))) return i;
         }
         return -1;
+    }
+
+    private static FleetMemberAPI findShipById(
+            List<FleetMemberAPI> ships, String id) {
+        int index = findShipIndexById(ships, id);
+        return index < 0 ? null : ships.get(index);
+    }
+
+    private static FleetMemberAPI findFirstEligibleShuttle(
+            List<FleetMemberAPI> ships) {
+        for (FleetMemberAPI member : ships) {
+            if (ShipGalleryData.isTourShuttleEligible(member)) return member;
+        }
+        return null;
     }
 
     private static String displayShipName(FleetMemberAPI member) {

@@ -12,6 +12,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 
 import shiptrophy.ShipTrophyRoomIds;
 
@@ -107,6 +108,13 @@ final class ShipGalleryData {
         List<String> result = new ArrayList<String>(unique);
         Collections.sort(result, String.CASE_INSENSITIVE_ORDER);
         return result;
+    }
+
+    static boolean isTourShuttleEligible(FleetMemberAPI member) {
+        return member != null
+                && member.isFrigate()
+                && member.getVariant() != null
+                && member.getVariant().hasHullMod(HullMods.CIVGRADE);
     }
 
     static List<FleetMemberAPI> filterAndSort(List<FleetMemberAPI> source,

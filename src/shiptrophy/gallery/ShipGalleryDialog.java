@@ -60,7 +60,9 @@ public final class ShipGalleryDialog {
         @Override
         public void customDialogConfirm() {
             GalleryTourLauncher.launch(
-                    dialog, plugin.getVisibleWindowSnapshot());
+                    dialog,
+                    plugin.getVisibleWindowSnapshot(),
+                    plugin.getTourShuttleSnapshot());
         }
 
         @Override
