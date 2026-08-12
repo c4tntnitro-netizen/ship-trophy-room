@@ -15,10 +15,13 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleCreationPlugin;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.BaseCombatLayeredRenderingPlugin;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
 import com.fs.starfarer.api.combat.BattleCreationContext;
@@ -26,12 +29,14 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.CombatEngineLayers;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
@@ -59,7 +64,7 @@ public final class GalleryTourLauncher {
     private static final float MAP_MARGIN = 2400f;
     private static final float EXHIBIT_GAP = 260f;
     private static final float EXHIBIT_Y = 350f;
-    private static final float KITE_START_Y = -650f;
+    private static final float SHUTTLE_START_Y = -650f;
     private static final float INTRO_CAMERA_SECONDS = 0.35f;
     private static final float INTRO_VIEW_MULT = 1.1f;
 
@@ -67,11 +72,75 @@ public final class GalleryTourLauncher {
     }
 
     static void launch(
-            InteractionDialogAPI dialog,
-            List<FleetMemberAPI> currentWindow) {
+            final InteractionDialogAPI dialog,
+            final List<FleetMemberAPI> currentWindow) {
         if (dialog == null || currentWindow == null || currentWindow.isEmpty()) {
             return;
         }
+
+        final List<FleetMemberAPI> eligible = getEligibleShuttles();
+        if (eligible.isEmpty()) {
+            dialog.getTextPanel().addPara(
+                    "A gallery tour requires a frigate in your fleet with "
+                            + "Civilian-grade Hull. No eligible shuttle is available.");
+            return;
+        }
+
+        int columns = Math.max(4, Math.min(8, eligible.size()));
+        dialog.showFleetMemberPickerDialog(
+                "Choose a gallery shuttle (civilian frigates only)",
+                "Launch tour",
+                "Cancel",
+                2,
+                columns,
+                88f,
+                true,
+                false,
+                eligible,
+                new FleetMemberPickerListener() {
+                    @Override
+                    public void pickedFleetMembers(List<FleetMemberAPI> members) {
+                        if (members == null || members.isEmpty()) return;
+                        FleetMemberAPI selected = members.get(0);
+                        if (!isEligibleShuttle(selected)) {
+                            dialog.getTextPanel().addPara(
+                                    "That ship is no longer an eligible gallery shuttle.");
+                            return;
+                        }
+                        launchSelected(dialog, currentWindow, selected);
+                    }
+
+                    @Override
+                    public void cancelledFleetMemberPicking() {
+                        // The Gallery has already closed; Isa's menu remains open.
+                    }
+                });
+    }
+
+    private static List<FleetMemberAPI> getEligibleShuttles() {
+        List<FleetMemberAPI> eligible = new ArrayList<FleetMemberAPI>();
+        SectorAPI sector = Global.getSector();
+        CampaignFleetAPI player = sector == null
+                ? null : sector.getPlayerFleet();
+        if (player == null) return eligible;
+        for (FleetMemberAPI member
+                : player.getFleetData().getMembersListCopy()) {
+            if (isEligibleShuttle(member)) eligible.add(member);
+        }
+        return eligible;
+    }
+
+    private static boolean isEligibleShuttle(FleetMemberAPI member) {
+        return member != null
+                && member.isFrigate()
+                && member.getVariant() != null
+                && member.getVariant().hasHullMod(HullMods.CIVGRADE);
+    }
+
+    private static void launchSelected(
+            InteractionDialogAPI dialog,
+            List<FleetMemberAPI> currentWindow,
+            FleetMemberAPI selected) {
 
         List<Exhibit> exhibits = captureExhibits(currentWindow);
         if (exhibits.isEmpty()) {
@@ -86,20 +155,19 @@ public final class GalleryTourLauncher {
                 Factions.NEUTRAL, "Hall of Triumph Exhibits", false);
         if (shuttle == null || hall == null) return;
 
-        FleetMemberAPI kite = Global.getFactory().createFleetMember(
-                FleetMemberType.SHIP, KITE_VARIANT);
-        if (kite == null) return;
-        kite.setShipName("Gallery Shuttle");
-        kite.setOwner(0);
-        kite.setFlagship(true);
-        kite.getRepairTracker().setMothballed(false);
-        kite.getRepairTracker().setCR(1f);
-        shuttle.getFleetData().addFleetMember(kite);
-        shuttle.getFleetData().setFlagship(kite);
+        FleetMemberAPI shuttleMember = cloneForTour(selected);
+        if (shuttleMember == null) return;
+        shuttleMember.setOwner(0);
+        shuttleMember.setFlagship(true);
+        shuttleMember.getRepairTracker().setMothballed(false);
+        shuttleMember.getRepairTracker().setCR(1f);
+        shuttle.getFleetData().addFleetMember(shuttleMember);
+        shuttle.getFleetData().setFlagship(shuttleMember);
         // CampaignState recrews factory fleets before combat. Supplying the
-        // shuttle's minimum crew keeps the sole Kite deployable through that
+        // shuttle's minimum crew keeps the selected ship deployable through that
         // otherwise automatic synchronization step.
-        shuttle.getCargo().addCrew((int) Math.ceil(kite.getMinCrew()));
+        shuttle.getCargo().addCrew(
+                (int) Math.ceil(shuttleMember.getMinCrew()));
 
         // Some optional campaign plugins inspect every proposed opponent
         // before Starsector chooses a BattleCreationPlugin, and assume that a
@@ -118,7 +186,7 @@ public final class GalleryTourLauncher {
         hall.getFleetData().setFlagship(hallIndex);
         hall.getCargo().addCrew((int) Math.ceil(hallIndex.getMinCrew()));
 
-        Session session = new Session(exhibits, kite);
+        Session session = new Session(exhibits, shuttleMember);
         hall.getMemoryWithoutUpdate().set(MARKER_KEY, true);
         hall.getMemoryWithoutUpdate().set(SESSION_KEY, session);
 
@@ -134,8 +202,47 @@ public final class GalleryTourLauncher {
         context.setStandoffRange(0f);
 
         InteractionDialogPlugin delegate = dialog.getPlugin();
-        dialog.setPlugin(new TourDialogPlugin(
-                dialog, delegate, context, hall));
+        SectorEntityToken target = dialog.getInteractionTarget();
+        PersonAPI activePerson = target == null
+                ? null : target.getActivePerson();
+        TourDialogPlugin tour = new TourDialogPlugin(
+                delegate, target, activePerson, context, hall);
+
+        // A comm-directory contact is not CampaignState's encounter dialog.
+        // Close it first, then open a real encounter dialog to own the battle
+        // and the return callback. Starting combat from the comm dialog leaves
+        // CampaignState.encounterDialog null and crashes on return.
+        dialog.dismiss();
+        SectorAPI sector = Global.getSector();
+        if (sector != null) {
+            sector.addTransientScript(new OpenTourDialogScript(
+                    tour, target, activePerson));
+        }
+    }
+
+    private static FleetMemberAPI cloneForTour(FleetMemberAPI source) {
+        if (!isEligibleShuttle(source)) return null;
+        try {
+            ShipVariantAPI variant = source.getVariant().clone();
+            FleetMemberAPI copy = Global.getFactory().createFleetMember(
+                    FleetMemberType.SHIP, variant);
+            if (copy == null) return null;
+            copy.setShipName(source.getShipName());
+            String spriteOverride = source.getSpriteOverride();
+            if (spriteOverride != null && !spriteOverride.trim().isEmpty()) {
+                copy.setSpriteOverride(spriteOverride);
+            }
+            Vector2f overrideSize = source.getOverrideSpriteSize();
+            if (overrideSize != null) {
+                copy.setOverrideSpriteSize(new Vector2f(overrideSize));
+            }
+            return copy;
+        } catch (Throwable ex) {
+            System.err.println(
+                    "[Hall of Triumph] Could not clone gallery shuttle.");
+            ex.printStackTrace(System.err);
+            return null;
+        }
     }
 
     /** Called by the already-registered campaign battle picker. */
@@ -200,14 +307,14 @@ public final class GalleryTourLauncher {
 
     private static final class Session {
         private final List<Exhibit> exhibits;
-        private final FleetMemberAPI kite;
+        private final FleetMemberAPI shuttle;
         private final float displayScale;
         private final float mapWidth;
         private final float mapHeight;
 
-        private Session(List<Exhibit> exhibits, FleetMemberAPI kite) {
+        private Session(List<Exhibit> exhibits, FleetMemberAPI shuttle) {
             this.exhibits = exhibits;
-            this.kite = kite;
+            this.shuttle = shuttle;
 
             float nativeWidth = 0f;
             float nativeHeight = 0f;
@@ -254,7 +361,7 @@ public final class GalleryTourLauncher {
                     FleetSide.PLAYER, "HOT", FleetGoal.ATTACK, false, 0);
             loader.initFleet(
                     FleetSide.ENEMY, "", FleetGoal.ATTACK, true, 0);
-            loader.addFleetMember(FleetSide.PLAYER, session.kite);
+            loader.addFleetMember(FleetSide.PLAYER, session.shuttle);
             loader.initMap(
                     -session.mapWidth * 0.5f,
                     session.mapWidth * 0.5f,
@@ -306,22 +413,22 @@ public final class GalleryTourLauncher {
         @Override
         public void advance(float amount, List<InputEventAPI> events) {
             if (engine == null) return;
-            ShipAPI kite = engine.getPlayerShip();
-            if (kite == null) {
-                kite = engine.getFleetManager(FleetSide.PLAYER)
-                        .getShipFor(session.kite);
-                if (kite != null) engine.setPlayerShipExternal(kite);
+            ShipAPI shuttle = engine.getPlayerShip();
+            if (shuttle == null) {
+                shuttle = engine.getFleetManager(FleetSide.PLAYER)
+                        .getShipFor(session.shuttle);
+                if (shuttle != null) engine.setPlayerShipExternal(shuttle);
             }
-            if (kite == null) return;
+            if (shuttle == null) return;
 
             if (!positioned) {
-                kite.getLocation().set(0f, KITE_START_Y);
-                kite.getVelocity().set(0f, 0f);
-                kite.setFacing(90f);
+                shuttle.getLocation().set(0f, SHUTTLE_START_Y);
+                shuttle.getVelocity().set(0f, 0f);
+                shuttle.setFacing(90f);
                 ViewportAPI viewport = engine.getViewport();
                 if (viewport != null) {
                     viewport.setExternalControl(true);
-                    viewport.setCenter(new Vector2f(kite.getLocation()));
+                    viewport.setCenter(new Vector2f(shuttle.getLocation()));
                     viewport.setViewMult(INTRO_VIEW_MULT);
                     introCameraRemaining = INTRO_CAMERA_SECONDS;
                 }
@@ -333,7 +440,7 @@ public final class GalleryTourLauncher {
             if (introCameraRemaining > 0f) {
                 ViewportAPI viewport = engine.getViewport();
                 if (viewport != null) {
-                    viewport.setCenter(new Vector2f(kite.getLocation()));
+                    viewport.setCenter(new Vector2f(shuttle.getLocation()));
                     viewport.setViewMult(INTRO_VIEW_MULT);
                 }
                 introCameraRemaining -= Math.max(0f, amount);
@@ -341,8 +448,8 @@ public final class GalleryTourLauncher {
                     viewport.setExternalControl(false);
                 }
             }
-            makeInvulnerable(kite);
-            kite.setCurrentCR(1f);
+            makeInvulnerable(shuttle);
+            shuttle.setCurrentCR(1f);
             engine.maintainStatusForPlayerShip(
                     "ship_trophy_gallery_tour_status",
                     STATUS_ICON,
@@ -596,29 +703,78 @@ public final class GalleryTourLauncher {
         }
     }
 
-    /**
-     * Defers startBattle until the custom Gallery modal has finished closing,
-     * then restores Isa's original rules dialog after the disposable combat.
-     */
+    /** Waits for the comm-directory contact screen to finish closing. */
+    private static final class OpenTourDialogScript
+            implements EveryFrameScript {
+        private final TourDialogPlugin plugin;
+        private final SectorEntityToken target;
+        private final PersonAPI activePerson;
+        private boolean done;
+
+        private OpenTourDialogScript(
+                TourDialogPlugin plugin,
+                SectorEntityToken target,
+                PersonAPI activePerson) {
+            this.plugin = plugin;
+            this.target = target;
+            this.activePerson = activePerson;
+        }
+
+        @Override
+        public boolean isDone() {
+            return done;
+        }
+
+        @Override
+        public boolean runWhilePaused() {
+            return true;
+        }
+
+        @Override
+        public void advance(float amount) {
+            SectorAPI sector = Global.getSector();
+            if (sector == null) {
+                done = true;
+                return;
+            }
+            if (sector.getCampaignUI().getCurrentInteractionDialog() != null) {
+                return;
+            }
+            if (target != null && activePerson != null) {
+                target.setActivePerson(activePerson);
+            }
+            done = sector.getCampaignUI().showInteractionDialog(
+                    plugin, target);
+        }
+    }
+
+    /** Owns both the disposable battle and its supported campaign return. */
     private static final class TourDialogPlugin
             implements InteractionDialogPlugin {
-        private final InteractionDialogAPI dialog;
+        private static final String CLOSE_OPTION =
+                "ship_trophy_gallery_tour_close";
+
         private final InteractionDialogPlugin delegate;
+        private final SectorEntityToken target;
+        private final PersonAPI activePerson;
         private final BattleCreationContext context;
         private final CampaignFleetAPI hall;
         private final long previousBattleTimestamp;
         private final boolean previousBattleWon;
         private final long previousBattleSeed;
+        private InteractionDialogAPI dialog;
         private boolean started;
         private boolean cleaned;
 
         private TourDialogPlugin(
-                InteractionDialogAPI dialog,
                 InteractionDialogPlugin delegate,
+                SectorEntityToken target,
+                PersonAPI activePerson,
                 BattleCreationContext context,
                 CampaignFleetAPI hall) {
-            this.dialog = dialog;
             this.delegate = delegate;
+            this.target = target;
+            this.activePerson = activePerson;
             this.context = context;
             this.hall = hall;
             SectorAPI sector = Global.getSector();
@@ -631,17 +787,18 @@ public final class GalleryTourLauncher {
 
         @Override
         public void init(InteractionDialogAPI dialog) {
-            // The delegate is already initialized; do not reset Isa's dialog.
+            this.dialog = dialog;
         }
 
         @Override
         public void optionSelected(String optionText, Object optionData) {
-            if (delegate != null) delegate.optionSelected(optionText, optionData);
+            if (CLOSE_OPTION.equals(optionData) && dialog != null) {
+                dialog.dismiss();
+            }
         }
 
         @Override
         public void optionMousedOver(String optionText, Object optionData) {
-            if (delegate != null) delegate.optionMousedOver(optionText, optionData);
         }
 
         @Override
@@ -654,20 +811,36 @@ public final class GalleryTourLauncher {
                     System.err.println(
                             "[Hall of Triumph] Gallery tour launch failed.");
                     ex.printStackTrace(System.err);
-                    cleanup();
-                    dialog.getTextPanel().addPara(
-                            "The gallery shuttle fails to launch. See starsector.log for details.");
+                    cleanupBattleState();
+                    showFallback(
+                            "The gallery shuttle fails to launch. "
+                                    + "See starsector.log for details.");
                 }
-                return;
             }
-            if (delegate != null) delegate.advance(amount);
         }
 
         @Override
         public void backFromEngagement(
                 com.fs.starfarer.api.combat.EngagementResultAPI result) {
-            cleanup();
-            if (delegate != null) delegate.backFromEngagement(result);
+            cleanupBattleState();
+            if (target != null && activePerson != null) {
+                target.setActivePerson(activePerson);
+            }
+            if (dialog != null && delegate != null) {
+                try {
+                    dialog.setPlugin(delegate);
+                    delegate.init(dialog);
+                    return;
+                } catch (Throwable ex) {
+                    System.err.println(
+                            "[Hall of Triumph] Could not restore Isa's contact dialog.");
+                    ex.printStackTrace(System.err);
+                    dialog.setPlugin(this);
+                }
+            }
+            showFallback(
+                    "The gallery shuttle docks safely, but the comm link to Isa "
+                            + "does not reopen. Close this channel to return to campaign.");
         }
 
         @Override
@@ -682,7 +855,7 @@ public final class GalleryTourLauncher {
                     : delegate.getMemoryMap();
         }
 
-        private void cleanup() {
+        private void cleanupBattleState() {
             if (cleaned) return;
             cleaned = true;
             if (hall != null) {
@@ -699,7 +872,15 @@ public final class GalleryTourLauncher {
                         previousBattleWon,
                         previousBattleSeed));
             }
-            if (delegate != null) dialog.setPlugin(delegate);
+        }
+
+        private void showFallback(String message) {
+            if (dialog == null) return;
+            dialog.getTextPanel().addPara(message);
+            dialog.getOptionPanel().clearOptions();
+            dialog.getOptionPanel().addOption(
+                    "Close the channel.", CLOSE_OPTION);
+            dialog.setOptionOnEscape("Close the channel.", CLOSE_OPTION);
         }
     }
 
