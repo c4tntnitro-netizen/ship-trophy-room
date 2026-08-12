@@ -46,7 +46,7 @@ public final class GalleryTourLauncher {
     private static final String SESSION_KEY =
             "$ship_trophy_gallery_tour_session";
     private static final String BACKGROUND =
-            "graphics/backgrounds/ship_trophy_gallery_tour_topdown.png";
+            "graphics/backgrounds/ship_trophy_gallery_tour_topdown_graded.png";
     private static final String NATIVE_BACKGROUND =
             "graphics/backgrounds/wormhole_dest_black.jpg";
     private static final String STATUS_ICON =
