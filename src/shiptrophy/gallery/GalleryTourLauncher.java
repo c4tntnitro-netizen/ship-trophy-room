@@ -39,7 +39,7 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 
-/** Launches the disposable, read-only combat view of a Gallery filmstrip. */
+/** Launches the disposable, read-only combat view of a curated Gallery hall. */
 public final class GalleryTourLauncher {
     private static final String MARKER_KEY =
             "$ship_trophy_gallery_tour_fleet";
@@ -60,9 +60,10 @@ public final class GalleryTourLauncher {
     private static final float MIN_MAP_HEIGHT = 6000f;
     private static final float MAX_MAP_HEIGHT = 12000f;
     private static final float MAP_MARGIN = 2400f;
-    private static final float EXHIBIT_GAP = 260f;
-    private static final float EXHIBIT_Y = 350f;
-    private static final float SHUTTLE_START_Y = -650f;
+    private static final float EXHIBIT_GAP = 320f;
+    private static final float AISLE_HALF_WIDTH = 780f;
+    private static final float MAX_EXHIBIT_WIDTH = 980f;
+    private static final float MAX_EXHIBIT_HEIGHT = 860f;
     private static final float INTRO_CAMERA_SECONDS = 0.35f;
     private static final float INTRO_VIEW_MULT = 1.1f;
 
@@ -71,11 +72,9 @@ public final class GalleryTourLauncher {
 
     static void launch(
             final InteractionDialogAPI dialog,
-            final List<FleetMemberAPI> currentWindow,
+            final List<FleetMemberAPI> selectedExhibits,
             final FleetMemberAPI selectedShuttle) {
-        if (dialog == null || currentWindow == null || currentWindow.isEmpty()) {
-            return;
-        }
+        if (dialog == null) return;
 
         SectorAPI sector = Global.getSector();
         if (sector == null) return;
@@ -85,24 +84,26 @@ public final class GalleryTourLauncher {
         // then close Isa's contact screen through the supported return path.
         sector.addTransientScript(new LaunchTourAfterGalleryScript(
                 dialog,
-                new ArrayList<FleetMemberAPI>(currentWindow),
+                selectedExhibits == null
+                        ? Collections.<FleetMemberAPI>emptyList()
+                        : new ArrayList<FleetMemberAPI>(selectedExhibits),
                 selectedShuttle));
     }
 
     private static final class LaunchTourAfterGalleryScript
             implements EveryFrameScript {
         private final InteractionDialogAPI dialog;
-        private final List<FleetMemberAPI> currentWindow;
+        private final List<FleetMemberAPI> selectedExhibits;
         private final FleetMemberAPI selectedShuttle;
         private boolean waitedOneFrame;
         private boolean done;
 
         private LaunchTourAfterGalleryScript(
                 InteractionDialogAPI dialog,
-                List<FleetMemberAPI> currentWindow,
+                List<FleetMemberAPI> selectedExhibits,
                 FleetMemberAPI selectedShuttle) {
             this.dialog = dialog;
-            this.currentWindow = currentWindow;
+            this.selectedExhibits = selectedExhibits;
             this.selectedShuttle = selectedShuttle;
         }
 
@@ -129,19 +130,25 @@ public final class GalleryTourLauncher {
                                 + "Civilian-grade Hull available as a tour shuttle.");
                 return;
             }
-            launchSelected(dialog, currentWindow, selectedShuttle);
+            if (selectedExhibits.isEmpty()) {
+                dialog.getTextPanel().addPara(
+                        "The tour hall is empty. Left-click ships on the Gallery conveyor "
+                                + "to load its exhibit racks first.");
+                return;
+            }
+            launchSelected(dialog, selectedExhibits, selectedShuttle);
         }
     }
 
     private static void launchSelected(
             InteractionDialogAPI dialog,
-            List<FleetMemberAPI> currentWindow,
+            List<FleetMemberAPI> selectedExhibits,
             FleetMemberAPI selected) {
 
-        List<Exhibit> exhibits = captureExhibits(currentWindow);
+        List<Exhibit> exhibits = captureExhibits(selectedExhibits);
         if (exhibits.isEmpty()) {
             dialog.getTextPanel().addPara(
-                    "The gallery shuttle cannot resolve any display images for this row.");
+                    "The gallery shuttle cannot resolve any display images for this hall.");
             return;
         }
 
@@ -268,6 +275,7 @@ public final class GalleryTourLauncher {
         private final float nativeWidth;
         private final float nativeHeight;
         private float x;
+        private float y;
 
         private Exhibit(
                 String spriteName, float nativeWidth, float nativeHeight) {
@@ -307,6 +315,7 @@ public final class GalleryTourLauncher {
         private final float displayScale;
         private final float mapWidth;
         private final float mapHeight;
+        private final float shuttleStartY;
 
         private Session(List<Exhibit> exhibits, FleetMemberAPI shuttle) {
             this.exhibits = exhibits;
@@ -315,29 +324,34 @@ public final class GalleryTourLauncher {
             float nativeWidth = 0f;
             float nativeHeight = 0f;
             for (Exhibit exhibit : exhibits) {
-                nativeWidth += exhibit.nativeWidth;
+                nativeWidth = Math.max(nativeWidth, exhibit.nativeWidth);
                 nativeHeight = Math.max(nativeHeight, exhibit.nativeHeight);
             }
-            float gaps = EXHIBIT_GAP * Math.max(0, exhibits.size() - 1);
-            float availableWidth = MAX_MAP_WIDTH - MAP_MARGIN - gaps;
-            float availableHeight = MAX_MAP_HEIGHT - MAP_MARGIN;
-            float widthScale = nativeWidth <= availableWidth
-                    ? 1f : Math.max(0.1f, availableWidth / nativeWidth);
-            float heightScale = nativeHeight <= availableHeight
-                    ? 1f : Math.max(0.1f, availableHeight / nativeHeight);
+            float widthScale = nativeWidth <= MAX_EXHIBIT_WIDTH
+                    ? 1f : Math.max(0.1f, MAX_EXHIBIT_WIDTH / nativeWidth);
+            float heightScale = nativeHeight <= MAX_EXHIBIT_HEIGHT
+                    ? 1f : Math.max(0.1f, MAX_EXHIBIT_HEIGHT / nativeHeight);
             displayScale = Math.min(widthScale, heightScale);
-            float rowWidth = nativeWidth * displayScale + gaps;
+            float displayedWidth = nativeWidth * displayScale;
+            float displayedHeight = nativeHeight * displayScale;
+            int rows = (exhibits.size() + 1) / 2;
+            float rowSpacing = Math.max(680f, displayedHeight + EXHIBIT_GAP);
+            float rowSpan = Math.max(0, rows - 1) * rowSpacing;
             mapWidth = Math.max(MIN_MAP_WIDTH,
-                    Math.min(MAX_MAP_WIDTH, rowWidth + MAP_MARGIN));
+                    Math.min(MAX_MAP_WIDTH,
+                            (AISLE_HALF_WIDTH + displayedWidth + 440f) * 2f));
             mapHeight = Math.max(MIN_MAP_HEIGHT,
-                    Math.min(MAX_MAP_HEIGHT,
-                            nativeHeight * displayScale + MAP_MARGIN));
+                    Math.min(MAX_MAP_HEIGHT, rowSpan + MAP_MARGIN));
+            float firstY = -rowSpan * 0.5f + 300f;
+            shuttleStartY = -mapHeight * 0.5f + 700f;
 
-            float cursor = -rowWidth * 0.5f;
-            for (Exhibit exhibit : exhibits) {
+            for (int index = 0; index < exhibits.size(); index++) {
+                Exhibit exhibit = exhibits.get(index);
                 float width = exhibit.nativeWidth * displayScale;
-                exhibit.x = cursor + width * 0.5f;
-                cursor += width + EXHIBIT_GAP;
+                boolean leftSide = index % 2 == 0;
+                exhibit.x = (leftSide ? -1f : 1f)
+                        * (AISLE_HALF_WIDTH + width * 0.5f);
+                exhibit.y = firstY + (index / 2) * rowSpacing;
             }
         }
     }
@@ -418,7 +432,7 @@ public final class GalleryTourLauncher {
             if (shuttle == null) return;
 
             if (!positioned) {
-                shuttle.getLocation().set(0f, SHUTTLE_START_Y);
+                shuttle.getLocation().set(0f, session.shuttleStartY);
                 shuttle.getVelocity().set(0f, 0f);
                 shuttle.setFacing(90f);
                 ViewportAPI viewport = engine.getViewport();
@@ -450,7 +464,7 @@ public final class GalleryTourLauncher {
                     "ship_trophy_gallery_tour_status",
                     STATUS_ICON,
                     "Hall of Triumph gallery tour",
-                    "Fly north to the exhibits; press G to return to Isa",
+                    "Fly north through the exhibit hall; press G to return to Isa",
                     false);
         }
 
@@ -595,15 +609,63 @@ public final class GalleryTourLauncher {
         @Override
         public void render(CombatEngineLayers layer, ViewportAPI viewport) {
             if (layer != CombatEngineLayers.BELOW_SHIPS_LAYER) return;
+            renderHallArchitecture(session);
             for (Exhibit exhibit : session.exhibits) {
                 renderExhibit(exhibit, session.displayScale);
             }
         }
 
+        private static void renderHallArchitecture(Session session) {
+            float bottom = -session.mapHeight * 0.5f + 180f;
+            float top = session.mapHeight * 0.5f - 180f;
+            float innerWall = AISLE_HALF_WIDTH - 105f;
+            float outerWall = AISLE_HALF_WIDTH + MAX_EXHIBIT_WIDTH + 300f;
+
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+            // The center remains a clear flyable aisle; the darker wings read
+            // as exhibit bays recessed into both sides of the Hall.
+            GL11.glColor4f(0.025f, 0.075f, 0.085f, 0.42f);
+            GL11.glBegin(GL11.GL_QUADS);
+            GL11.glVertex2f(-outerWall, bottom);
+            GL11.glVertex2f(-innerWall, bottom);
+            GL11.glVertex2f(-innerWall, top);
+            GL11.glVertex2f(-outerWall, top);
+            GL11.glVertex2f(innerWall, bottom);
+            GL11.glVertex2f(outerWall, bottom);
+            GL11.glVertex2f(outerWall, top);
+            GL11.glVertex2f(innerWall, top);
+            GL11.glEnd();
+
+            GL11.glLineWidth(3f);
+            GL11.glColor4f(0.14f, 0.62f, 0.67f, 0.50f);
+            GL11.glBegin(GL11.GL_LINES);
+            GL11.glVertex2f(-innerWall, bottom);
+            GL11.glVertex2f(-innerWall, top);
+            GL11.glVertex2f(innerWall, bottom);
+            GL11.glVertex2f(innerWall, top);
+            GL11.glEnd();
+
+            GL11.glLineWidth(1f);
+            GL11.glColor4f(0.18f, 0.48f, 0.52f, 0.18f);
+            GL11.glBegin(GL11.GL_LINES);
+            for (float y = bottom + 180f; y < top; y += 460f) {
+                GL11.glVertex2f(-outerWall, y);
+                GL11.glVertex2f(-innerWall, y);
+                GL11.glVertex2f(innerWall, y);
+                GL11.glVertex2f(outerWall, y);
+            }
+            GL11.glEnd();
+            GL11.glPopAttrib();
+        }
+
         private static void renderExhibit(Exhibit exhibit, float scale) {
             float width = exhibit.nativeWidth * scale;
             float height = exhibit.nativeHeight * scale;
-            drawPad(exhibit.x, EXHIBIT_Y, width, height);
+            drawPad(exhibit.x, exhibit.y, width, height);
 
             SpriteAPI sprite = null;
             float oldWidth = 0f;
@@ -635,7 +697,7 @@ public final class GalleryTourLauncher {
                 sprite.setColor(Color.WHITE);
                 sprite.setAlphaMult(0.96f);
                 sprite.setNormalBlend();
-                sprite.renderAtCenter(exhibit.x, EXHIBIT_Y);
+                sprite.renderAtCenter(exhibit.x, exhibit.y);
             } catch (Throwable ex) {
                 // One broken third-party sprite must not blank the whole row.
             } finally {

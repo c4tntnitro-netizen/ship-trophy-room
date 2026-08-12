@@ -44,7 +44,7 @@ public final class ShipGalleryDialog {
 
         @Override
         public String getConfirmText() {
-            return "Fly this row";
+            return "Tour selected hall";
         }
 
         @Override
@@ -61,7 +61,7 @@ public final class ShipGalleryDialog {
         public void customDialogConfirm() {
             GalleryTourLauncher.launch(
                     dialog,
-                    plugin.getVisibleWindowSnapshot(),
+                    plugin.getTourManifestSnapshot(),
                     plugin.getTourShuttleSnapshot());
         }
 

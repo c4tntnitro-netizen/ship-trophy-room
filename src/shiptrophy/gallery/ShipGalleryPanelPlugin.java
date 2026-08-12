@@ -46,6 +46,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final String SELECTED_MEMORY = "$ship_trophy_gallery_selected_ship";
     private static final String TOUR_SHUTTLE_MEMORY =
             "$ship_trophy_gallery_tour_shuttle";
+    private static final String TOUR_MANIFEST_MEMORY =
+            "$ship_trophy_gallery_tour_manifest";
 
     private static final float OUTER_PAD = 15f;
     private static final float HEADER_HEIGHT = 62f;
@@ -59,11 +61,18 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final float RAIL_SIDE_PAD = 58f;
     private static final float ICON_SLOT = 82f;
     private static final float HERO_MAX_NATIVE_SCALE = 1.35f;
+    private static final int MANIFEST_COLUMNS = 2;
+    private static final float MANIFEST_SLOT = 62f;
+    private static final float MANIFEST_GAP = 6f;
+    private static final float MANIFEST_PAD = 9f;
+    private static final float HERO_GAP = 12f;
 
     private static final Color VOID = new Color(5, 11, 15);
     private static final Color STAGE = new Color(9, 20, 26);
     private static final Color RAIL = new Color(12, 26, 33);
     private static final Color SOFT_WHITE = new Color(220, 232, 235);
+    private static final Color BERTH_CYAN = new Color(54, 164, 180);
+    private static final Color BERTH_AMBER = new Color(230, 164, 55);
 
     private final float width;
     private final float height;
@@ -83,6 +92,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private List<FleetMemberAPI> allShips = Collections.emptyList();
     private List<FleetMemberAPI> visibleShips = Collections.emptyList();
+    private List<FleetMemberAPI> tourManifest = new ArrayList<FleetMemberAPI>();
     private FleetMemberAPI tourShuttle;
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
@@ -101,13 +111,10 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         rebuild();
     }
 
-    /** Returns the exact ordered slice currently shown in the filmstrip. */
-    List<FleetMemberAPI> getVisibleWindowSnapshot() {
-        if (visibleShips.isEmpty()) return Collections.emptyList();
-        int start = getWindowStart();
-        int count = getWindowCount();
-        return Collections.unmodifiableList(new ArrayList<FleetMemberAPI>(
-                visibleShips.subList(start, start + count)));
+    /** Returns the ordered exhibits explicitly loaded into the tour hall. */
+    List<FleetMemberAPI> getTourManifestSnapshot() {
+        return Collections.unmodifiableList(
+                new ArrayList<FleetMemberAPI>(tourManifest));
     }
 
     /** Returns the preserved civilian frigate selected inside the Gallery. */
@@ -134,11 +141,12 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     4f, Misc.getNegativeHighlightColor(),
                     "frigate", "Civilian-grade Hull");
         } else {
-            header.addPara("Showing %s of %s stored ships. Tour shuttle: %s. Select any preserved "
-                            + "civilian frigate in the filmstrip to change it; %s launches this row.",
+            header.addPara("Showing %s of %s unique hulls. Tour shuttle: %s. Left-click the conveyor "
+                            + "to add exhibits (%s/%s); right-click the left rack to remove them.",
                     4f, Misc.getHighlightColor(), Integer.toString(visibleShips.size()),
                     Integer.toString(allShips.size()), displayShipName(tourShuttle),
-                    "Fly this row");
+                    Integer.toString(tourManifest.size()),
+                    Integer.toString(getManifestCapacity()));
         }
         contentPanel.addUIElement(header).inTL(OUTER_PAD, 8f);
 
@@ -158,6 +166,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private void refreshModel() {
         allShips = ShipGalleryData.getAllShips();
+        restoreTourManifest();
         FleetMemberAPI rememberedShuttle = findShipById(
                 allShips, getMemory(TOUR_SHUTTLE_MEMORY));
         if (!ShipGalleryData.isTourShuttleEligible(rememberedShuttle)) {
@@ -412,6 +421,54 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         requestRebuild();
     }
 
+    private void addToTourManifest(FleetMemberAPI member) {
+        if (member == null || tourManifest.size() >= getManifestCapacity()) return;
+        String key = ShipGalleryData.galleryHullKey(member);
+        if (key.isEmpty()) return;
+        for (FleetMemberAPI existing : tourManifest) {
+            if (key.equals(ShipGalleryData.galleryHullKey(existing))) return;
+        }
+        tourManifest.add(member);
+        persistTourManifest();
+        requestRebuild();
+    }
+
+    private void removeFromTourManifest(int index) {
+        if (index < 0 || index >= tourManifest.size()) return;
+        tourManifest.remove(index);
+        persistTourManifest();
+        requestRebuild();
+    }
+
+    private void restoreTourManifest() {
+        List<FleetMemberAPI> restored = new ArrayList<FleetMemberAPI>();
+        String encoded = getMemory(TOUR_MANIFEST_MEMORY);
+        if (!encoded.isEmpty()) {
+            String[] keys = encoded.split("\\|");
+            for (String rawKey : keys) {
+                String key = safe(rawKey).toLowerCase(Locale.ROOT);
+                if (key.isEmpty()) continue;
+                FleetMemberAPI match = findShipByHullKey(allShips, key);
+                if (match != null && restored.size() < getManifestCapacity()) {
+                    restored.add(match);
+                }
+            }
+        }
+        tourManifest = restored;
+        persistTourManifest();
+    }
+
+    private void persistTourManifest() {
+        StringBuilder encoded = new StringBuilder();
+        for (FleetMemberAPI member : tourManifest) {
+            String key = ShipGalleryData.galleryHullKey(member);
+            if (key.isEmpty()) continue;
+            if (encoded.length() > 0) encoded.append('|');
+            encoded.append(key);
+        }
+        setMemory(TOUR_MANIFEST_MEMORY, encoded.toString());
+    }
+
     private SortKey getPrimary() {
         return SortKey.parse(getMemory(PRIMARY_MEMORY), SortKey.HULL);
     }
@@ -439,6 +496,39 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private float getStageWidth() {
         return Math.max(260f, width - getSidebarWidth() - OUTER_PAD * 3f);
+    }
+
+    private float getStageHeight() {
+        return Math.max(140f,
+                height - SIDEBAR_TOP - RAIL_BOTTOM - RAIL_HEIGHT - 14f);
+    }
+
+    private float getManifestWidth() {
+        return MANIFEST_PAD * 2f
+                + MANIFEST_COLUMNS * MANIFEST_SLOT
+                + (MANIFEST_COLUMNS - 1) * MANIFEST_GAP;
+    }
+
+    private int getManifestRows() {
+        float usable = getStageHeight() - MANIFEST_PAD * 2f;
+        return Math.max(1, (int) Math.floor(
+                (usable + MANIFEST_GAP) / (MANIFEST_SLOT + MANIFEST_GAP)));
+    }
+
+    private int getManifestCapacity() {
+        return getManifestRows() * MANIFEST_COLUMNS;
+    }
+
+    private float manifestSlotX(float stageX, int index) {
+        int column = index % MANIFEST_COLUMNS;
+        return stageX + MANIFEST_PAD
+                + column * (MANIFEST_SLOT + MANIFEST_GAP);
+    }
+
+    private float manifestSlotY(float stageY, float stageHeight, int index) {
+        int row = index / MANIFEST_COLUMNS;
+        return stageY + stageHeight - MANIFEST_PAD - MANIFEST_SLOT
+                - row * (MANIFEST_SLOT + MANIFEST_GAP);
     }
 
     private float getSidebarContentTop() {
@@ -496,6 +586,15 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             List<FleetMemberAPI> ships) {
         for (FleetMemberAPI member : ships) {
             if (ShipGalleryData.isTourShuttleEligible(member)) return member;
+        }
+        return null;
+    }
+
+    private static FleetMemberAPI findShipByHullKey(
+            List<FleetMemberAPI> ships, String key) {
+        if (key == null || key.isEmpty()) return null;
+        for (FleetMemberAPI member : ships) {
+            if (key.equals(ShipGalleryData.galleryHullKey(member))) return member;
         }
         return null;
     }
@@ -638,13 +737,22 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         float stageX = position.getX() + OUTER_PAD;
         float stageY = position.getY() + RAIL_BOTTOM + RAIL_HEIGHT + 14f;
         float stageWidth = getStageWidth();
-        float stageHeight = Math.max(140f,
-                position.getY() + height - SIDEBAR_TOP - stageY);
+        float stageHeight = getStageHeight();
         drawRect(stageX, stageY, stageWidth, stageHeight, VOID, 0.88f * alphaMult);
         drawRect(stageX + 1f, stageY + 1f, stageWidth - 2f, stageHeight - 2f,
                 STAGE, 0.68f * alphaMult);
         drawBorder(stageX, stageY, stageWidth, stageHeight,
                 Misc.getDarkPlayerColor(), 0.55f * alphaMult, 1f);
+
+        renderTourManifestFrames(stageX, stageY, stageHeight, alphaMult);
+
+        float heroX = stageX + getManifestWidth() + HERO_GAP;
+        float heroWidth = Math.max(100f,
+                stageWidth - getManifestWidth() - HERO_GAP);
+        if (selectedIndex >= 0 && !visibleShips.isEmpty()) {
+            renderHeroBerth(getSelected(), heroX, stageY,
+                    heroWidth, stageHeight, alphaMult);
+        }
 
         float railX = position.getX() + RAIL_SIDE_PAD;
         float railY = position.getY() + RAIL_BOTTOM;
@@ -652,26 +760,245 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         drawRect(railX, railY, railWidth, RAIL_HEIGHT, RAIL, 0.92f * alphaMult);
         drawBorder(railX, railY, railWidth, RAIL_HEIGHT,
                 Misc.getDarkPlayerColor(), 0.75f * alphaMult, 1f);
+        renderConveyorBelt(railX, railY, railWidth, alphaMult);
 
         if (selectedIndex >= 0 && !visibleShips.isEmpty()) {
             renderRailFrames(alphaMult);
         }
     }
 
+    private void renderTourManifestFrames(
+            float stageX, float stageY, float stageHeight, float alphaMult) {
+        float manifestWidth = getManifestWidth();
+        drawRect(stageX + 2f, stageY + 2f,
+                manifestWidth - 4f, stageHeight - 4f,
+                VOID, 0.72f * alphaMult);
+        drawBorder(stageX + 2f, stageY + 2f,
+                manifestWidth - 4f, stageHeight - 4f,
+                BERTH_CYAN, 0.32f * alphaMult, 1f);
+
+        int capacity = getManifestCapacity();
+        for (int index = 0; index < capacity; index++) {
+            float x = manifestSlotX(stageX, index);
+            float y = manifestSlotY(stageY, stageHeight, index);
+            boolean occupied = index < tourManifest.size();
+            drawRect(x, y, MANIFEST_SLOT, MANIFEST_SLOT,
+                    occupied ? STAGE : VOID,
+                    (occupied ? 0.66f : 0.34f) * alphaMult);
+            drawBorder(x, y, MANIFEST_SLOT, MANIFEST_SLOT,
+                    occupied ? BERTH_AMBER : Misc.getDarkPlayerColor(),
+                    (occupied ? 0.72f : 0.42f) * alphaMult,
+                    occupied ? 1.5f : 1f);
+            if (!occupied) {
+                float centerX = x + MANIFEST_SLOT * 0.5f;
+                float centerY = y + MANIFEST_SLOT * 0.5f;
+                drawLine(centerX - 8f, centerY, centerX + 8f, centerY,
+                        BERTH_CYAN, 0.18f * alphaMult, 1f);
+            }
+        }
+    }
+
+    private static void renderConveyorBelt(
+            float x, float y, float beltWidth, float alphaMult) {
+        float innerX = x + 7f;
+        float innerY = y + 8f;
+        float innerWidth = beltWidth - 14f;
+        float innerHeight = RAIL_HEIGHT - 16f;
+        drawRect(innerX, innerY, innerWidth, innerHeight,
+                new Color(8, 18, 23), 0.78f * alphaMult);
+        drawLine(innerX, innerY + 7f, innerX + innerWidth, innerY + 7f,
+                BERTH_CYAN, 0.34f * alphaMult, 2f);
+        drawLine(innerX, innerY + innerHeight - 7f,
+                innerX + innerWidth, innerY + innerHeight - 7f,
+                BERTH_CYAN, 0.34f * alphaMult, 2f);
+
+        for (float slatX = innerX + 14f; slatX < innerX + innerWidth; slatX += 26f) {
+            drawLine(slatX, innerY + 10f, slatX, innerY + innerHeight - 10f,
+                    SOFT_WHITE, 0.08f * alphaMult, 1f);
+        }
+        for (float arrowX = innerX + 28f;
+                arrowX < innerX + innerWidth - 14f; arrowX += 104f) {
+            float arrowY = innerY + 7f;
+            drawLine(arrowX - 6f, arrowY - 3f, arrowX, arrowY,
+                    BERTH_AMBER, 0.48f * alphaMult, 1.4f);
+            drawLine(arrowX, arrowY, arrowX - 6f, arrowY + 3f,
+                    BERTH_AMBER, 0.48f * alphaMult, 1.4f);
+        }
+    }
+
+    /** Draws a recessed museum berth sized to the selected hull class. */
+    private static void renderHeroBerth(
+            FleetMemberAPI member,
+            float stageX,
+            float stageY,
+            float stageWidth,
+            float stageHeight,
+            float alphaMult) {
+        if (member == null || member.getHullSpec() == null) return;
+
+        int scaleClass = berthScaleClass(member.getHullSpec().getHullSize());
+        float[] widthFractions = {0.30f, 0.43f, 0.60f, 0.78f};
+        float[] heightFractions = {0.34f, 0.43f, 0.54f, 0.68f};
+        float berthWidth = Math.min(stageWidth - 44f,
+                Math.max(150f, stageWidth * widthFractions[scaleClass - 1]));
+        float berthHeight = Math.min(stageHeight - 34f,
+                Math.max(132f, stageHeight * heightFractions[scaleClass - 1]));
+        float centerX = stageX + stageWidth * 0.5f;
+        float centerY = stageY + stageHeight * 0.52f;
+        float left = centerX - berthWidth * 0.5f;
+        float bottom = centerY - berthHeight * 0.5f;
+        float chamfer = Math.max(12f,
+                Math.min(30f, Math.min(berthWidth, berthHeight) * 0.08f));
+
+        drawChamferedFill(left, bottom, berthWidth, berthHeight, chamfer,
+                new Color(8, 23, 29), 0.58f * alphaMult);
+        drawChamferedFrame(left, bottom, berthWidth, berthHeight, chamfer,
+                BERTH_CYAN, 0.48f * alphaMult, 1.4f);
+        drawChamferedFrame(left + 10f, bottom + 10f,
+                berthWidth - 20f, berthHeight - 20f,
+                Math.max(6f, chamfer - 6f),
+                Misc.getDarkPlayerColor(), 0.62f * alphaMult, 1f);
+
+        // Recessed deck centerlines and a low holographic cradle.
+        drawLine(centerX, bottom + 14f, centerX, bottom + berthHeight - 14f,
+                BERTH_CYAN, 0.13f * alphaMult, 1f);
+        drawLine(left + 14f, centerY, left + berthWidth - 14f, centerY,
+                BERTH_CYAN, 0.10f * alphaMult, 1f);
+        float cradleWidth = berthWidth * 0.42f;
+        float cradleHeight = Math.max(18f, berthHeight * 0.12f);
+        drawRect(centerX - cradleWidth * 0.5f,
+                centerY - cradleHeight * 0.5f,
+                cradleWidth, cradleHeight,
+                BERTH_CYAN, 0.055f * alphaMult);
+        drawBorder(centerX - cradleWidth * 0.5f,
+                centerY - cradleHeight * 0.5f,
+                cradleWidth, cradleHeight,
+                BERTH_CYAN, 0.22f * alphaMult, 1f);
+
+        drawDockingClamp(left - 3f, centerY, true, alphaMult);
+        drawDockingClamp(left + berthWidth + 3f, centerY, false, alphaMult);
+        drawDockingClamp(centerX, bottom - 3f, true, alphaMult);
+        drawDockingClamp(centerX, bottom + berthHeight + 3f, false, alphaMult);
+
+        // One through four registration marks make hull-size changes legible.
+        float tickGap = 12f;
+        float ticksWidth = (scaleClass - 1) * tickGap;
+        for (int i = 0; i < scaleClass; i++) {
+            float tickX = centerX - ticksWidth * 0.5f + i * tickGap;
+            drawRect(tickX - 3.5f, bottom + 5f,
+                    7f, 2.5f, BERTH_AMBER, 0.88f * alphaMult);
+        }
+    }
+
+    private static int berthScaleClass(ShipAPI.HullSize hullSize) {
+        if (hullSize == ShipAPI.HullSize.DESTROYER) return 2;
+        if (hullSize == ShipAPI.HullSize.CRUISER) return 3;
+        if (hullSize == ShipAPI.HullSize.CAPITAL_SHIP) return 4;
+        return 1;
+    }
+
+    private static void drawDockingClamp(
+            float x, float y, boolean pointsPositive, float alphaMult) {
+        float direction = pointsPositive ? 1f : -1f;
+        float innerX = x + direction * 13f;
+        drawLine(x, y - 13f, x, y + 13f,
+                BERTH_AMBER, 0.82f * alphaMult, 2.4f);
+        drawLine(x, y - 13f, innerX, y - 7f,
+                BERTH_AMBER, 0.64f * alphaMult, 1.5f);
+        drawLine(x, y + 13f, innerX, y + 7f,
+                BERTH_AMBER, 0.64f * alphaMult, 1.5f);
+    }
+
+    private static void drawChamferedFill(
+            float x, float y, float width, float height, float chamfer,
+            Color color, float alpha) {
+        if (width <= 0f || height <= 0f || alpha <= 0f) return;
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f,
+                color.getBlue() / 255f, Math.max(0f, Math.min(1f, alpha)));
+        GL11.glBegin(GL11.GL_POLYGON);
+        addChamferedVertices(x, y, width, height, chamfer);
+        GL11.glEnd();
+        GL11.glPopAttrib();
+    }
+
+    private static void drawChamferedFrame(
+            float x, float y, float width, float height, float chamfer,
+            Color color, float alpha, float lineWidth) {
+        if (width <= 0f || height <= 0f || alpha <= 0f) return;
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glLineWidth(lineWidth);
+        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f,
+                color.getBlue() / 255f, Math.max(0f, Math.min(1f, alpha)));
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        addChamferedVertices(x, y, width, height, chamfer);
+        GL11.glEnd();
+        GL11.glPopAttrib();
+    }
+
+    private static void addChamferedVertices(
+            float x, float y, float width, float height, float chamfer) {
+        GL11.glVertex2f(x + chamfer, y);
+        GL11.glVertex2f(x + width - chamfer, y);
+        GL11.glVertex2f(x + width, y + chamfer);
+        GL11.glVertex2f(x + width, y + height - chamfer);
+        GL11.glVertex2f(x + width - chamfer, y + height);
+        GL11.glVertex2f(x + chamfer, y + height);
+        GL11.glVertex2f(x, y + height - chamfer);
+        GL11.glVertex2f(x, y + chamfer);
+    }
+
+    private static void drawLine(
+            float x1, float y1, float x2, float y2,
+            Color color, float alpha, float lineWidth) {
+        if (alpha <= 0f) return;
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glLineWidth(lineWidth);
+        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f,
+                color.getBlue() / 255f, Math.max(0f, Math.min(1f, alpha)));
+        GL11.glBegin(GL11.GL_LINES);
+        GL11.glVertex2f(x1, y1);
+        GL11.glVertex2f(x2, y2);
+        GL11.glEnd();
+        GL11.glPopAttrib();
+    }
+
     @Override
     public void render(float alphaMult) {
-        if (position == null || selectedIndex < 0 || visibleShips.isEmpty()) return;
+        if (position == null) return;
 
         FleetMemberAPI selected = getSelected();
         float stageX = position.getX() + OUTER_PAD;
         float stageY = position.getY() + RAIL_BOTTOM + RAIL_HEIGHT + 14f;
         float stageWidth = getStageWidth();
-        float stageHeight = Math.max(140f,
-                position.getY() + height - SIDEBAR_TOP - stageY);
-        renderShip(selected, stageX + stageWidth * 0.5f,
-                stageY + stageHeight * 0.52f,
-                Math.max(80f, stageWidth - 54f),
-                Math.max(80f, stageHeight - 42f), alphaMult, true);
+        float stageHeight = getStageHeight();
+        float heroX = stageX + getManifestWidth() + HERO_GAP;
+        float heroWidth = Math.max(100f,
+                stageWidth - getManifestWidth() - HERO_GAP);
+        if (selected != null) {
+            renderShip(selected, heroX + heroWidth * 0.5f,
+                    stageY + stageHeight * 0.52f,
+                    Math.max(80f, heroWidth - 54f),
+                    Math.max(80f, stageHeight - 42f), alphaMult, true);
+        }
+
+        for (int index = 0; index < tourManifest.size(); index++) {
+            float x = manifestSlotX(stageX, index) + MANIFEST_SLOT * 0.5f;
+            float y = manifestSlotY(stageY, stageHeight, index)
+                    + MANIFEST_SLOT * 0.5f;
+            renderShip(tourManifest.get(index), x, y,
+                    MANIFEST_SLOT - 12f, MANIFEST_SLOT - 12f,
+                    alphaMult * 0.88f, false);
+        }
 
         int start = getWindowStart();
         int count = getWindowCount();
@@ -852,6 +1179,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 event.consume();
                 return;
             }
+            if (event.isMouseDownEvent() && event.getEventValue() == 1) {
+                int manifestIndex = manifestAt(event.getX(), event.getY());
+                if (manifestIndex >= 0) {
+                    removeFromTourManifest(manifestIndex);
+                    event.consume();
+                    return;
+                }
+            }
             if (visibleShips.isEmpty()) continue;
             int iconIndex = iconAt(event.getX(), event.getY());
             if (event.isMouseMoveEvent()) {
@@ -864,6 +1199,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             } else if (event.isMouseDownEvent() && event.getEventValue() == 0
                     && iconIndex >= 0) {
                 select(iconIndex);
+                addToTourManifest(visibleShips.get(iconIndex));
                 event.consume();
                 return;
             }
@@ -884,6 +1220,21 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (x < left || x >= left + count * ICON_SLOT) return -1;
         int slot = (int) ((x - left) / ICON_SLOT);
         return getWindowStart() + slot;
+    }
+
+    private int manifestAt(float x, float y) {
+        float stageX = position.getX() + OUTER_PAD;
+        float stageY = position.getY() + RAIL_BOTTOM + RAIL_HEIGHT + 14f;
+        float stageHeight = getStageHeight();
+        for (int index = 0; index < tourManifest.size(); index++) {
+            float slotX = manifestSlotX(stageX, index);
+            float slotY = manifestSlotY(stageY, stageHeight, index);
+            if (x >= slotX && x <= slotX + MANIFEST_SLOT
+                    && y >= slotY && y <= slotY + MANIFEST_SLOT) {
+                return index;
+            }
+        }
+        return -1;
     }
 
     private static boolean containsEvent(TooltipMakerAPI component, InputEventAPI event) {

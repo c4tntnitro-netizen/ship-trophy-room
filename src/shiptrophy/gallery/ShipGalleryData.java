@@ -3,9 +3,11 @@ package shiptrophy.gallery;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import com.fs.starfarer.api.Global;
@@ -78,9 +80,10 @@ final class ShipGalleryData {
     }
 
     static List<FleetMemberAPI> getAllShips() {
-        List<FleetMemberAPI> result = new ArrayList<FleetMemberAPI>();
+        Map<String, FleetMemberAPI> unique =
+                new LinkedHashMap<String, FleetMemberAPI>();
         if (Global.getSector() == null || Global.getSector().getEconomy() == null) {
-            return result;
+            return new ArrayList<FleetMemberAPI>();
         }
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
             if (market == null || !market.isPlayerOwned()) continue;
@@ -92,11 +95,22 @@ final class ShipGalleryData {
             for (FleetMemberAPI member : market.getSubmarket(ShipTrophyRoomIds.SUBMARKET)
                     .getCargo().getMothballedShips().getMembersListCopy()) {
                 if (member != null && !member.isFighterWing() && member.getHullSpec() != null) {
-                    result.add(member);
+                    String key = galleryHullKey(member);
+                    if (!key.isEmpty() && !unique.containsKey(key)) {
+                        unique.put(key, member);
+                    }
                 }
             }
         }
-        return result;
+        return new ArrayList<FleetMemberAPI>(unique.values());
+    }
+
+    /** Collapses literal repeats while preserving distinct skins and hull variants. */
+    static String galleryHullKey(FleetMemberAPI member) {
+        if (member == null || member.getHullSpec() == null) return "";
+        String hullId = safe(member.getHullSpec().getHullId());
+        if (hullId.isEmpty()) hullId = safe(member.getHullId());
+        return hullId.toLowerCase(Locale.ROOT);
     }
 
     static List<String> getManufacturers(List<FleetMemberAPI> ships) {
