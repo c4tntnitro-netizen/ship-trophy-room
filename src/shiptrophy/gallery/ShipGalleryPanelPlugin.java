@@ -859,21 +859,12 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 Math.max(6f, chamfer - 6f),
                 Misc.getDarkPlayerColor(), 0.62f * alphaMult, 1f);
 
-        // Recessed deck centerlines and a low holographic cradle.
+        // Recessed deck centerlines keep the berth legible without placing a
+        // solid panel directly beneath the ship sprite.
         drawLine(centerX, bottom + 14f, centerX, bottom + berthHeight - 14f,
                 BERTH_CYAN, 0.13f * alphaMult, 1f);
         drawLine(left + 14f, centerY, left + berthWidth - 14f, centerY,
                 BERTH_CYAN, 0.10f * alphaMult, 1f);
-        float cradleWidth = berthWidth * 0.42f;
-        float cradleHeight = Math.max(18f, berthHeight * 0.12f);
-        drawRect(centerX - cradleWidth * 0.5f,
-                centerY - cradleHeight * 0.5f,
-                cradleWidth, cradleHeight,
-                BERTH_CYAN, 0.055f * alphaMult);
-        drawBorder(centerX - cradleWidth * 0.5f,
-                centerY - cradleHeight * 0.5f,
-                cradleWidth, cradleHeight,
-                BERTH_CYAN, 0.22f * alphaMult, 1f);
 
         drawDockingClamp(left - 3f, centerY, true, alphaMult);
         drawDockingClamp(left + berthWidth + 3f, centerY, false, alphaMult);
