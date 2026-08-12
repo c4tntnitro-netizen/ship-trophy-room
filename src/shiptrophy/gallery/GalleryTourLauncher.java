@@ -44,6 +44,8 @@ public final class GalleryTourLauncher {
             "$ship_trophy_gallery_tour_session";
     private static final String BACKGROUND =
             "graphics/backgrounds/ship_trophy_gallery_tour.png";
+    private static final String NATIVE_BACKGROUND =
+            "graphics/backgrounds/wormhole_dest_black.jpg";
     private static final String STATUS_ICON =
             "graphics/icons/industry/trophy_room.png";
     private static final String KITE_VARIANT = "kite_original_Stock";
@@ -55,9 +57,11 @@ public final class GalleryTourLauncher {
     private static final float MIN_MAP_HEIGHT = 6000f;
     private static final float MAX_MAP_HEIGHT = 12000f;
     private static final float MAP_MARGIN = 2400f;
-    private static final float EXHIBIT_GAP = 190f;
-    private static final float EXHIBIT_Y = 450f;
-    private static final float KITE_START_Y = -750f;
+    private static final float EXHIBIT_GAP = 260f;
+    private static final float EXHIBIT_Y = 350f;
+    private static final float KITE_START_Y = -650f;
+    private static final float INTRO_CAMERA_SECONDS = 0.35f;
+    private static final float INTRO_VIEW_MULT = 1.1f;
 
     private GalleryTourLauncher() {
     }
@@ -256,8 +260,11 @@ public final class GalleryTourLauncher {
                     session.mapWidth * 0.5f,
                     -session.mapHeight * 0.5f,
                     session.mapHeight * 0.5f);
-            loader.setBackgroundSpriteName(BACKGROUND);
-            loader.setBackgroundGlowColor(new Color(22, 70, 78, 70));
+            // The native combat background is distant scenery and becomes
+            // nearly invisible at gallery-map scale. Keep it neutral and draw
+            // the Hall floor explicitly in battlefield coordinates instead.
+            loader.setBackgroundSpriteName(NATIVE_BACKGROUND);
+            loader.setBackgroundGlowColor(new Color(18, 55, 62, 55));
             loader.setHyperspaceMode(false);
             loader.addPlugin(new TourCombatPlugin(session));
         }
@@ -268,13 +275,14 @@ public final class GalleryTourLauncher {
             engine.setCustomExit(
                     "Leave gallery tour", "Return to Isa?");
             engine.setRenderStarfield(false);
-            engine.setBackgroundColor(new Color(3, 7, 9));
+            engine.setBackgroundColor(new Color(5, 9, 11));
             engine.setMaxFleetPoints(FleetSide.PLAYER, 9999);
             engine.setMaxFleetPoints(FleetSide.ENEMY, 9999);
             engine.getFleetManager(FleetSide.PLAYER)
                     .setSuppressDeploymentMessages(true);
             engine.getFleetManager(FleetSide.ENEMY)
                     .setSuppressDeploymentMessages(true);
+            engine.addLayeredRenderingPlugin(new HallBackdrop(session));
             engine.addLayeredRenderingPlugin(new ExhibitRenderer(session));
         }
     }
@@ -284,6 +292,7 @@ public final class GalleryTourLauncher {
         private final Session session;
         private CombatEngineAPI engine;
         private boolean positioned;
+        private float introCameraRemaining;
 
         private TourCombatPlugin(Session session) {
             this.session = session;
@@ -309,7 +318,28 @@ public final class GalleryTourLauncher {
                 kite.getLocation().set(0f, KITE_START_Y);
                 kite.getVelocity().set(0f, 0f);
                 kite.setFacing(90f);
+                ViewportAPI viewport = engine.getViewport();
+                if (viewport != null) {
+                    viewport.setExternalControl(true);
+                    viewport.setCenter(new Vector2f(kite.getLocation()));
+                    viewport.setViewMult(INTRO_VIEW_MULT);
+                    introCameraRemaining = INTRO_CAMERA_SECONDS;
+                }
+                // A regular campaign battle opens paused for deployment. This
+                // scene has only one pre-deployed shuttle, so start the tour.
+                if (engine.isPaused()) engine.setPaused(false);
                 positioned = true;
+            }
+            if (introCameraRemaining > 0f) {
+                ViewportAPI viewport = engine.getViewport();
+                if (viewport != null) {
+                    viewport.setCenter(new Vector2f(kite.getLocation()));
+                    viewport.setViewMult(INTRO_VIEW_MULT);
+                }
+                introCameraRemaining -= Math.max(0f, amount);
+                if (introCameraRemaining <= 0f && viewport != null) {
+                    viewport.setExternalControl(false);
+                }
             }
             makeInvulnerable(kite);
             kite.setCurrentCR(1f);
@@ -347,6 +377,92 @@ public final class GalleryTourLauncher {
             stats.getEmpDamageTakenMult().modifyMult(INVULNERABLE_ID, 0f);
             stats.getEngineDamageTakenMult().modifyMult(INVULNERABLE_ID, 0f);
             stats.getWeaponDamageTakenMult().modifyMult(INVULNERABLE_ID, 0f);
+        }
+    }
+
+    /** Draws the generated Hall interior as the physical floor of the map. */
+    private static final class HallBackdrop
+            extends BaseCombatLayeredRenderingPlugin {
+        private final Session session;
+        private final SpriteAPI floor;
+
+        private HallBackdrop(Session session) {
+            this.session = session;
+            SpriteAPI loaded = null;
+            try {
+                Global.getSettings().loadTexture(BACKGROUND);
+                loaded = Global.getSettings().getSprite(BACKGROUND);
+            } catch (Throwable ignored) {
+            }
+            floor = loaded;
+        }
+
+        @Override
+        public EnumSet<CombatEngineLayers> getActiveLayers() {
+            return EnumSet.of(CombatEngineLayers.ABOVE_PLANETS);
+        }
+
+        @Override
+        public float getRenderRadius() {
+            return Float.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isExpired() {
+            return false;
+        }
+
+        @Override
+        public void render(CombatEngineLayers layer, ViewportAPI viewport) {
+            if (layer != CombatEngineLayers.ABOVE_PLANETS || floor == null) return;
+            SpriteAPI sprite = floor;
+            float oldWidth = 0f;
+            float oldHeight = 0f;
+            float oldCenterX = 0f;
+            float oldCenterY = 0f;
+            float oldAngle = 0f;
+            float oldAlpha = 1f;
+            Color oldColor = Color.WHITE;
+            int oldBlendSource = GL11.GL_SRC_ALPHA;
+            int oldBlendDestination = GL11.GL_ONE_MINUS_SRC_ALPHA;
+            boolean captured = false;
+            try {
+                oldWidth = sprite.getWidth();
+                oldHeight = sprite.getHeight();
+                oldCenterX = sprite.getCenterX();
+                oldCenterY = sprite.getCenterY();
+                oldAngle = sprite.getAngle();
+                oldAlpha = sprite.getAlphaMult();
+                oldColor = sprite.getColor();
+                oldBlendSource = sprite.getBlendSrc();
+                oldBlendDestination = sprite.getBlendDest();
+                captured = true;
+
+                float overscan = 500f;
+                float width = session.mapWidth + overscan;
+                float height = session.mapHeight + overscan;
+                sprite.setSize(width, height);
+                sprite.setCenter(width * 0.5f, height * 0.5f);
+                sprite.setAngle(0f);
+                sprite.setColor(new Color(218, 228, 232));
+                sprite.setAlphaMult(1f);
+                sprite.setNormalBlend();
+                sprite.renderAtCenter(0f, 0f);
+            } catch (Throwable ignored) {
+                // The neutral native background remains as a safe fallback.
+            } finally {
+                if (sprite != null && captured) {
+                    try {
+                        sprite.setSize(oldWidth, oldHeight);
+                        sprite.setCenter(oldCenterX, oldCenterY);
+                        sprite.setAngle(oldAngle);
+                        sprite.setColor(oldColor == null ? Color.WHITE : oldColor);
+                        sprite.setAlphaMult(oldAlpha);
+                        sprite.setBlendFunc(oldBlendSource, oldBlendDestination);
+                    } catch (Throwable ignored) {
+                    }
+                }
+            }
         }
     }
 
@@ -436,28 +552,45 @@ public final class GalleryTourLauncher {
 
         private static void drawPad(
                 float centerX, float centerY, float shipWidth, float shipHeight) {
-            float width = Math.max(150f, shipWidth + 70f);
-            float height = Math.max(150f, shipHeight + 70f);
-            float left = centerX - width * 0.5f;
-            float bottom = centerY - height * 0.5f;
+            float radiusX = Math.max(90f, shipWidth * 0.58f + 42f);
+            float radiusY = Math.max(52f, shipHeight * 0.22f + 28f);
+            float padY = centerY - Math.max(18f, shipHeight * 0.23f);
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            GL11.glColor4f(0.03f, 0.25f, 0.29f, 0.22f);
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex2f(left, bottom);
-            GL11.glVertex2f(left + width, bottom);
-            GL11.glVertex2f(left + width, bottom + height);
-            GL11.glVertex2f(left, bottom + height);
+
+            // A shallow cyan hologram pool, fading toward its edge.
+            GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+            GL11.glColor4f(0.10f, 0.62f, 0.68f, 0.18f);
+            GL11.glVertex2f(centerX, padY);
+            GL11.glColor4f(0.05f, 0.32f, 0.38f, 0.02f);
+            for (int i = 0; i <= 40; i++) {
+                double angle = Math.PI * 2d * i / 40d;
+                GL11.glVertex2f(
+                        centerX + (float) Math.cos(angle) * radiusX,
+                        padY + (float) Math.sin(angle) * radiusY);
+            }
             GL11.glEnd();
-            GL11.glLineWidth(2f);
-            GL11.glColor4f(0.80f, 0.59f, 0.18f, 0.62f);
+
+            GL11.glLineWidth(1.25f);
+            GL11.glColor4f(0.23f, 0.76f, 0.80f, 0.48f);
             GL11.glBegin(GL11.GL_LINE_LOOP);
-            GL11.glVertex2f(left, bottom);
-            GL11.glVertex2f(left + width, bottom);
-            GL11.glVertex2f(left + width, bottom + height);
-            GL11.glVertex2f(left, bottom + height);
+            for (int i = 0; i < 40; i++) {
+                double angle = Math.PI * 2d * i / 40d;
+                GL11.glVertex2f(
+                        centerX + (float) Math.cos(angle) * radiusX,
+                        padY + (float) Math.sin(angle) * radiusY);
+            }
+            GL11.glEnd();
+
+            // A restrained amber registration mark grounds each exhibit.
+            float markerHalf = Math.min(48f, radiusX * 0.32f);
+            GL11.glLineWidth(2f);
+            GL11.glColor4f(0.92f, 0.64f, 0.20f, 0.68f);
+            GL11.glBegin(GL11.GL_LINES);
+            GL11.glVertex2f(centerX - markerHalf, padY - radiusY - 8f);
+            GL11.glVertex2f(centerX + markerHalf, padY - radiusY - 8f);
             GL11.glEnd();
             GL11.glPopAttrib();
         }
