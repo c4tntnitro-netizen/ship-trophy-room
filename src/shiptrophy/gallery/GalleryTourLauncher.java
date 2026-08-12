@@ -46,7 +46,7 @@ public final class GalleryTourLauncher {
     private static final String SESSION_KEY =
             "$ship_trophy_gallery_tour_session";
     private static final String BACKGROUND =
-            "graphics/backgrounds/ship_trophy_gallery_tour.png";
+            "graphics/backgrounds/ship_trophy_gallery_tour_topdown.png";
     private static final String NATIVE_BACKGROUND =
             "graphics/backgrounds/wormhole_dest_black.jpg";
     private static final String STATUS_ICON =
@@ -64,6 +64,12 @@ public final class GalleryTourLauncher {
     private static final float AISLE_HALF_WIDTH = 780f;
     private static final float MAX_EXHIBIT_WIDTH = 980f;
     private static final float MAX_EXHIBIT_HEIGHT = 860f;
+    private static final float BACKGROUND_OVERSCAN = 500f;
+    private static final float BERTH_X_NORMALIZED = 0.355f;
+    private static final float[] BERTH_Y_NORMALIZED = {
+        -0.367f, -0.231f, -0.101f, 0.028f, 0.141f, 0.277f, 0.420f
+    };
+    static final int MAX_EXHIBITS = BERTH_Y_NORMALIZED.length * 2;
     private static final float INTRO_CAMERA_SECONDS = 0.35f;
     private static final float INTRO_VIEW_MULT = 1.1f;
 
@@ -266,6 +272,7 @@ public final class GalleryTourLauncher {
         for (FleetMemberAPI member : members) {
             Exhibit exhibit = Exhibit.capture(member);
             if (exhibit != null) result.add(exhibit);
+            if (result.size() >= MAX_EXHIBITS) break;
         }
         return Collections.unmodifiableList(result);
     }
@@ -342,16 +349,17 @@ public final class GalleryTourLauncher {
                             (AISLE_HALF_WIDTH + displayedWidth + 440f) * 2f));
             mapHeight = Math.max(MIN_MAP_HEIGHT,
                     Math.min(MAX_MAP_HEIGHT, rowSpan + MAP_MARGIN));
-            float firstY = -rowSpan * 0.5f + 300f;
             shuttleStartY = -mapHeight * 0.5f + 700f;
+            float hallWidth = mapWidth + BACKGROUND_OVERSCAN;
+            float hallHeight = mapHeight + BACKGROUND_OVERSCAN;
 
             for (int index = 0; index < exhibits.size(); index++) {
                 Exhibit exhibit = exhibits.get(index);
-                float width = exhibit.nativeWidth * displayScale;
                 boolean leftSide = index % 2 == 0;
                 exhibit.x = (leftSide ? -1f : 1f)
-                        * (AISLE_HALF_WIDTH + width * 0.5f);
-                exhibit.y = firstY + (index / 2) * rowSpacing;
+                        * hallWidth * BERTH_X_NORMALIZED;
+                exhibit.y = hallHeight
+                        * BERTH_Y_NORMALIZED[index / 2];
             }
         }
     }
@@ -555,9 +563,8 @@ public final class GalleryTourLauncher {
                 oldBlendDestination = sprite.getBlendDest();
                 captured = true;
 
-                float overscan = 500f;
-                float width = session.mapWidth + overscan;
-                float height = session.mapHeight + overscan;
+                float width = session.mapWidth + BACKGROUND_OVERSCAN;
+                float height = session.mapHeight + BACKGROUND_OVERSCAN;
                 sprite.setSize(width, height);
                 sprite.setCenter(width * 0.5f, height * 0.5f);
                 sprite.setAngle(0f);
@@ -609,63 +616,15 @@ public final class GalleryTourLauncher {
         @Override
         public void render(CombatEngineLayers layer, ViewportAPI viewport) {
             if (layer != CombatEngineLayers.BELOW_SHIPS_LAYER) return;
-            renderHallArchitecture(session);
             for (Exhibit exhibit : session.exhibits) {
                 renderExhibit(exhibit, session.displayScale);
             }
         }
 
-        private static void renderHallArchitecture(Session session) {
-            float bottom = -session.mapHeight * 0.5f + 180f;
-            float top = session.mapHeight * 0.5f - 180f;
-            float innerWall = AISLE_HALF_WIDTH - 105f;
-            float outerWall = AISLE_HALF_WIDTH + MAX_EXHIBIT_WIDTH + 300f;
-
-            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-            // The center remains a clear flyable aisle; the darker wings read
-            // as exhibit bays recessed into both sides of the Hall.
-            GL11.glColor4f(0.025f, 0.075f, 0.085f, 0.42f);
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex2f(-outerWall, bottom);
-            GL11.glVertex2f(-innerWall, bottom);
-            GL11.glVertex2f(-innerWall, top);
-            GL11.glVertex2f(-outerWall, top);
-            GL11.glVertex2f(innerWall, bottom);
-            GL11.glVertex2f(outerWall, bottom);
-            GL11.glVertex2f(outerWall, top);
-            GL11.glVertex2f(innerWall, top);
-            GL11.glEnd();
-
-            GL11.glLineWidth(3f);
-            GL11.glColor4f(0.14f, 0.62f, 0.67f, 0.50f);
-            GL11.glBegin(GL11.GL_LINES);
-            GL11.glVertex2f(-innerWall, bottom);
-            GL11.glVertex2f(-innerWall, top);
-            GL11.glVertex2f(innerWall, bottom);
-            GL11.glVertex2f(innerWall, top);
-            GL11.glEnd();
-
-            GL11.glLineWidth(1f);
-            GL11.glColor4f(0.18f, 0.48f, 0.52f, 0.18f);
-            GL11.glBegin(GL11.GL_LINES);
-            for (float y = bottom + 180f; y < top; y += 460f) {
-                GL11.glVertex2f(-outerWall, y);
-                GL11.glVertex2f(-innerWall, y);
-                GL11.glVertex2f(innerWall, y);
-                GL11.glVertex2f(outerWall, y);
-            }
-            GL11.glEnd();
-            GL11.glPopAttrib();
-        }
-
         private static void renderExhibit(Exhibit exhibit, float scale) {
             float width = exhibit.nativeWidth * scale;
             float height = exhibit.nativeHeight * scale;
-            drawPad(exhibit.x, exhibit.y, width, height);
+            drawBerthClamps(exhibit.x, exhibit.y, width, height);
 
             SpriteAPI sprite = null;
             float oldWidth = 0f;
@@ -715,47 +674,40 @@ public final class GalleryTourLauncher {
             }
         }
 
-        private static void drawPad(
+        private static void drawBerthClamps(
                 float centerX, float centerY, float shipWidth, float shipHeight) {
-            float radiusX = Math.max(90f, shipWidth * 0.58f + 42f);
-            float radiusY = Math.max(52f, shipHeight * 0.22f + 28f);
-            float padY = centerY - Math.max(18f, shipHeight * 0.23f);
+            float halfWidth = Math.max(72f, shipWidth * 0.56f + 26f);
+            float halfHeight = Math.max(72f, shipHeight * 0.56f + 26f);
+            float bracket = Math.max(24f,
+                    Math.min(58f, Math.min(halfWidth, halfHeight) * 0.34f));
+            float left = centerX - halfWidth;
+            float right = centerX + halfWidth;
+            float bottom = centerY - halfHeight;
+            float top = centerY + halfHeight;
+
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-            // A shallow cyan hologram pool, fading toward its edge.
-            GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-            GL11.glColor4f(0.10f, 0.62f, 0.68f, 0.18f);
-            GL11.glVertex2f(centerX, padY);
-            GL11.glColor4f(0.05f, 0.32f, 0.38f, 0.02f);
-            for (int i = 0; i <= 40; i++) {
-                double angle = Math.PI * 2d * i / 40d;
-                GL11.glVertex2f(
-                        centerX + (float) Math.cos(angle) * radiusX,
-                        padY + (float) Math.sin(angle) * radiusY);
-            }
-            GL11.glEnd();
-
-            GL11.glLineWidth(1.25f);
-            GL11.glColor4f(0.23f, 0.76f, 0.80f, 0.48f);
-            GL11.glBegin(GL11.GL_LINE_LOOP);
-            for (int i = 0; i < 40; i++) {
-                double angle = Math.PI * 2d * i / 40d;
-                GL11.glVertex2f(
-                        centerX + (float) Math.cos(angle) * radiusX,
-                        padY + (float) Math.sin(angle) * radiusY);
-            }
-            GL11.glEnd();
-
-            // A restrained amber registration mark grounds each exhibit.
-            float markerHalf = Math.min(48f, radiusX * 0.32f);
             GL11.glLineWidth(2f);
-            GL11.glColor4f(0.92f, 0.64f, 0.20f, 0.68f);
+            GL11.glColor4f(0.92f, 0.64f, 0.20f, 0.58f);
             GL11.glBegin(GL11.GL_LINES);
-            GL11.glVertex2f(centerX - markerHalf, padY - radiusY - 8f);
-            GL11.glVertex2f(centerX + markerHalf, padY - radiusY - 8f);
+            GL11.glVertex2f(left, bottom);
+            GL11.glVertex2f(left + bracket, bottom);
+            GL11.glVertex2f(left, bottom);
+            GL11.glVertex2f(left, bottom + bracket);
+            GL11.glVertex2f(right, bottom);
+            GL11.glVertex2f(right - bracket, bottom);
+            GL11.glVertex2f(right, bottom);
+            GL11.glVertex2f(right, bottom + bracket);
+            GL11.glVertex2f(left, top);
+            GL11.glVertex2f(left + bracket, top);
+            GL11.glVertex2f(left, top);
+            GL11.glVertex2f(left, top - bracket);
+            GL11.glVertex2f(right, top);
+            GL11.glVertex2f(right - bracket, top);
+            GL11.glVertex2f(right, top);
+            GL11.glVertex2f(right, top - bracket);
             GL11.glEnd();
             GL11.glPopAttrib();
         }

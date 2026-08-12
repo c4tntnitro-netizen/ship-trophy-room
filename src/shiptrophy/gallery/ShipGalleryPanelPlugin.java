@@ -521,7 +521,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private int getManifestCapacity() {
-        return getManifestRows() * MANIFEST_COLUMNS;
+        return Math.min(GalleryTourLauncher.MAX_EXHIBITS,
+                getManifestRows() * MANIFEST_COLUMNS);
     }
 
     private float manifestSlotX(float stageX, int index) {
