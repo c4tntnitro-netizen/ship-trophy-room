@@ -114,8 +114,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     /** Returns the ordered exhibits explicitly loaded into the tour hall. */
     List<FleetMemberAPI> getTourManifestSnapshot() {
+        int count = getManifestDisplayCount();
         return Collections.unmodifiableList(
-                new ArrayList<FleetMemberAPI>(tourManifest));
+                new ArrayList<FleetMemberAPI>(tourManifest.subList(0, count)));
     }
 
     /** Returns the preserved civilian frigate selected inside the Gallery. */
@@ -150,7 +151,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                             + "to add exhibits (%s/%s); right-click the left rack to remove them.",
                     4f, Misc.getHighlightColor(), Integer.toString(visibleShips.size()),
                     Integer.toString(allShips.size()), displayShipName(tourShuttle),
-                    Integer.toString(tourManifest.size()),
+                    Integer.toString(getManifestDisplayCount()),
                     Integer.toString(getManifestCapacity()));
         }
         contentPanel.addUIElement(header).inTL(OUTER_PAD, 8f);
@@ -171,7 +172,6 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private void refreshModel() {
         allShips = ShipGalleryData.getAllShips();
-        restoreTourManifest();
         FleetMemberAPI rememberedShuttle = findShipById(
                 allShips, getMemory(TOUR_SHUTTLE_MEMORY));
         if (!ShipGalleryData.isTourShuttleEligible(rememberedShuttle)) {
@@ -196,6 +196,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         tourShuttle = rememberedShuttle;
         setMemory(TOUR_SHUTTLE_MEMORY,
                 tourShuttle == null ? "" : safe(tourShuttle.getId()));
+        restoreTourManifest();
         hoveredIndex = -1;
     }
 
@@ -305,6 +306,11 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         } else {
             details.addToGrid(0, 4, "Tour shuttle", "No eligible hull",
                     Misc.getNegativeHighlightColor());
+        }
+        if (tourShuttle != null) {
+            details.addToGrid(0, 5, "Shuttle berth capacity",
+                    Integer.toString(getManifestCapacity()) + " exhibits",
+                    Misc.getHighlightColor());
         }
         details.addGrid(4f);
         addCodexDescription(details, selected.getHullSpec());
@@ -454,7 +460,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 String key = safe(rawKey).toLowerCase(Locale.ROOT);
                 if (key.isEmpty()) continue;
                 FleetMemberAPI match = findShipByHullKey(allShips, key);
-                if (match != null && restored.size() < getManifestCapacity()) {
+                if (match != null
+                        && restored.size() < GalleryTourLauncher.MAX_EXHIBITS) {
                     restored.add(match);
                 }
             }
@@ -521,8 +528,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private int getManifestCapacity() {
-        return Math.min(GalleryTourLauncher.MAX_EXHIBITS,
-                getManifestRows() * MANIFEST_COLUMNS);
+        int shuttleCapacity = ShipGalleryData.getTourBerthCapacity(tourShuttle);
+        return Math.min(shuttleCapacity,
+                Math.min(GalleryTourLauncher.MAX_EXHIBITS,
+                        getManifestRows() * MANIFEST_COLUMNS));
+    }
+
+    private int getManifestDisplayCount() {
+        return Math.min(tourManifest.size(), getManifestCapacity());
     }
 
     private float manifestSlotX(float stageX, int index) {
@@ -988,7 +1001,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     Math.max(80f, stageHeight - 42f), alphaMult, true);
         }
 
-        for (int index = 0; index < tourManifest.size(); index++) {
+        for (int index = 0; index < getManifestDisplayCount(); index++) {
             float x = manifestSlotX(stageX, index) + MANIFEST_SLOT * 0.5f;
             float y = manifestSlotY(stageY, stageHeight, index)
                     + MANIFEST_SLOT * 0.5f;
@@ -1223,7 +1236,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         float stageX = position.getX() + OUTER_PAD;
         float stageY = position.getY() + RAIL_BOTTOM + RAIL_HEIGHT + 14f;
         float stageHeight = getStageHeight();
-        for (int index = 0; index < tourManifest.size(); index++) {
+        for (int index = 0; index < getManifestDisplayCount(); index++) {
             float slotX = manifestSlotX(stageX, index);
             float slotY = manifestSlotY(stageY, stageHeight, index);
             if (x >= slotX && x <= slotX + MANIFEST_SLOT

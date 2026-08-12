@@ -151,7 +151,9 @@ public final class GalleryTourLauncher {
             List<FleetMemberAPI> selectedExhibits,
             FleetMemberAPI selected) {
 
-        List<Exhibit> exhibits = captureExhibits(selectedExhibits);
+        int berthCapacity = ShipGalleryData.getTourBerthCapacity(selected);
+        List<Exhibit> exhibits = captureExhibits(
+                selectedExhibits, berthCapacity);
         if (exhibits.isEmpty()) {
             dialog.getTextPanel().addPara(
                     "The gallery shuttle cannot resolve any display images for this hall.");
@@ -267,12 +269,14 @@ public final class GalleryTourLauncher {
     }
 
     private static List<Exhibit> captureExhibits(
-            List<FleetMemberAPI> members) {
+            List<FleetMemberAPI> members, int berthCapacity) {
         List<Exhibit> result = new ArrayList<Exhibit>();
+        int limit = Math.max(0, Math.min(MAX_EXHIBITS, berthCapacity));
+        if (limit == 0) return Collections.unmodifiableList(result);
         for (FleetMemberAPI member : members) {
             Exhibit exhibit = Exhibit.capture(member);
             if (exhibit != null) result.add(exhibit);
-            if (result.size() >= MAX_EXHIBITS) break;
+            if (result.size() >= limit) break;
         }
         return Collections.unmodifiableList(result);
     }

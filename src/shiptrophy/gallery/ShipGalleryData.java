@@ -131,6 +131,32 @@ final class ShipGalleryData {
                 && member.getVariant().hasHullMod(HullMods.CIVGRADE);
     }
 
+    /**
+     * Converts the selected civilian frigate's stock speed into an even number
+     * of paired Hall berths. Dram anchors the floor; the pristine Kite (S) is
+     * the sole fourteen-berth ceiling. Other fast civilian frigates stop at 12.
+     */
+    static int getTourBerthCapacity(FleetMemberAPI member) {
+        if (!isTourShuttleEligible(member)) return 0;
+
+        String hullId = safe(member.getHullSpec().getHullId())
+                .toLowerCase(Locale.ROOT);
+        String baseHullId = safe(member.getHullSpec().getBaseHullId())
+                .toLowerCase(Locale.ROOT);
+        if ("kite_original".equals(hullId)
+                || "kite_original".equals(baseHullId)) return 14;
+        if ("dram".equals(hullId) || "dram".equals(baseHullId)) return 2;
+
+        float speed = 100f;
+        try {
+            speed = member.getStats().getMaxSpeed().getBaseValue();
+        } catch (Throwable ignored) {
+        }
+        float normalized = Math.max(0f, Math.min(1f, (speed - 70f) / 80f));
+        int tier = Math.round(normalized * 5f);
+        return 2 + tier * 2;
+    }
+
     static List<FleetMemberAPI> filterAndSort(List<FleetMemberAPI> source,
                                                SizeFilter sizeFilter,
                                                String manufacturer,
