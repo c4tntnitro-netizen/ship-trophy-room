@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
@@ -126,7 +127,11 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (panel == null) return;
         removeUi();
         refreshModel();
-        contentPanel = panel.createCustomPanel(width, height, null);
+        // Buttons report to the plugin of the panel that directly owns their
+        // UI elements. The replaceable child panel prevents details from
+        // stacking, so give it a relay instead of leaving its plugin null.
+        contentPanel = panel.createCustomPanel(width, height,
+                new ContentButtonRelay());
         panel.addComponent(contentPanel).inTL(0f, 0f);
 
         header = contentPanel.createUIElement(Math.max(560f, width - OUTER_PAD * 2f),
@@ -1235,6 +1240,13 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private static String normalizeQuery(String value) {
         return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private final class ContentButtonRelay extends BaseCustomUIPanelPlugin {
+        @Override
+        public void buttonPressed(Object buttonId) {
+            ShipGalleryPanelPlugin.this.buttonPressed(buttonId);
+        }
     }
 
     private static final class FactionChoice {
