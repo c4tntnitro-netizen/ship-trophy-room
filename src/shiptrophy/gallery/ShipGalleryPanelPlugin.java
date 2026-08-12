@@ -68,6 +68,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private final float width;
     private final float height;
     private CustomPanelAPI panel;
+    private CustomPanelAPI contentPanel;
     private PositionAPI position;
 
     private TooltipMakerAPI header;
@@ -86,6 +87,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
     private boolean factionDropdownOpen;
+    private boolean rebuildPending;
     private String factionQuery = "";
     private String renderedFactionQuery = "";
 
@@ -117,8 +119,10 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (panel == null) return;
         removeUi();
         refreshModel();
+        contentPanel = panel.createCustomPanel(width, height, null);
+        panel.addComponent(contentPanel).inTL(0f, 0f);
 
-        header = panel.createUIElement(Math.max(560f, width - OUTER_PAD * 2f),
+        header = contentPanel.createUIElement(Math.max(560f, width - OUTER_PAD * 2f),
                 HEADER_HEIGHT, false);
         header.addTitle("Ship Gallery", Misc.getBasePlayerColor());
         if (allShips.isEmpty()) {
@@ -136,7 +140,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     Integer.toString(allShips.size()), displayShipName(tourShuttle),
                     "Fly this row");
         }
-        panel.addUIElement(header).inTL(OUTER_PAD, 8f);
+        contentPanel.addUIElement(header).inTL(OUTER_PAD, 8f);
 
         buildControls();
 
@@ -183,7 +187,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     private void buildControls() {
         float sidebarWidth = getSidebarWidth();
-        controls = panel.createUIElement(sidebarWidth, CONTROLS_HEIGHT, false);
+        controls = contentPanel.createUIElement(sidebarWidth, CONTROLS_HEIGHT, false);
         controls.addSectionHeading("Catalog order", Misc.getBasePlayerColor(),
                 Misc.getDarkPlayerColor(), Alignment.MID, 0f);
         controls.addPara("Sort and size cycle; faction opens a search menu.", 4f,
@@ -196,14 +200,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 + (manufacturer.isEmpty() ? "All" : manufacturer);
         addControl(controls.shortenString(factionLabel, Math.max(210f, sidebarWidth - 18f)),
                 FACTION_ID, sidebarWidth);
-        panel.addUIElement(controls).inTR(OUTER_PAD, SIDEBAR_TOP);
+        contentPanel.addUIElement(controls).inTR(OUTER_PAD, SIDEBAR_TOP);
     }
 
     private void buildFactionPicker() {
         float sidebarWidth = getSidebarWidth();
         float pickerTop = getSidebarContentTop();
 
-        factionSearchPanel = panel.createUIElement(sidebarWidth, SEARCH_HEIGHT, false);
+        factionSearchPanel = contentPanel.createUIElement(sidebarWidth, SEARCH_HEIGHT, false);
         factionSearchPanel.setForceProcessInput(true);
         factionSearchPanel.addSectionHeading("Search factions", Misc.getBasePlayerColor(),
                 Misc.getDarkPlayerColor(), Alignment.MID, 0f);
@@ -216,8 +220,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         factionSearch.setColor(Misc.getTextColor());
         factionSearch.setBgColor(VOID);
         factionSearch.setBorderColor(Misc.getBasePlayerColor());
-        panel.addUIElement(factionSearchPanel).inTR(OUTER_PAD, pickerTop);
-        panel.bringComponentToTop(factionSearchPanel);
+        contentPanel.addUIElement(factionSearchPanel).inTR(OUTER_PAD, pickerTop);
+        contentPanel.bringComponentToTop(factionSearchPanel);
         factionSearch.grabFocus(false);
 
         renderedFactionQuery = normalizeQuery(factionQuery);
@@ -232,7 +236,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         float sidebarWidth = getSidebarWidth();
         float resultsHeight = Math.max(64f,
                 getSidebarContentHeight() - SEARCH_HEIGHT - SEARCH_RESULTS_GAP);
-        factionResults = panel.createUIElement(sidebarWidth, resultsHeight, true);
+        factionResults = contentPanel.createUIElement(sidebarWidth, resultsHeight, true);
         factionResults.setForceProcessInput(true);
         factionResults.setBgAlpha(0.98f);
 
@@ -250,9 +254,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     Misc.getNegativeHighlightColor(), "No matching factions");
         }
 
-        panel.addUIElement(factionResults).inTR(OUTER_PAD,
+        contentPanel.addUIElement(factionResults).inTR(OUTER_PAD,
                 getSidebarContentTop() + SEARCH_HEIGHT + SEARCH_RESULTS_GAP);
-        panel.bringComponentToTop(factionResults);
+        contentPanel.bringComponentToTop(factionResults);
     }
 
     private void addFactionChoice(String label, String manufacturer, float sidebarWidth) {
@@ -268,7 +272,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (selected == null || selected.getHullSpec() == null) return;
 
         float sidebarWidth = getSidebarWidth();
-        details = panel.createUIElement(sidebarWidth, getSidebarContentHeight(), true);
+        details = contentPanel.createUIElement(
+                sidebarWidth, getSidebarContentHeight(), true);
         details.setBgAlpha(0.92f);
         details.addTitle(displayShipName(selected), Misc.getBasePlayerColor());
         details.addPara(selected.getHullSpec().getHullNameWithDashClass(), 2f,
@@ -289,31 +294,34 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         }
         details.addGrid(4f);
         addCodexDescription(details, selected.getHullSpec());
-        panel.addUIElement(details).inTR(OUTER_PAD,
+        contentPanel.addUIElement(details).inTR(OUTER_PAD,
                 getSidebarContentTop());
     }
 
     private void buildNavigation() {
         if (visibleShips.size() <= 1) return;
 
-        previousControl = panel.createUIElement(42f, 32f, false);
+        previousControl = contentPanel.createUIElement(42f, 32f, false);
         ButtonAPI previous = previousControl.addButton("<", PREVIOUS_ID,
                 Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), 38f, 26f, 0f);
         previous.setButtonPressedSound("ui_button_pressed");
         previous.setEnabled(selectedIndex > 0);
-        panel.addUIElement(previousControl).inBL(OUTER_PAD, RAIL_BOTTOM + 31f);
+        contentPanel.addUIElement(previousControl).inBL(
+                OUTER_PAD, RAIL_BOTTOM + 31f);
 
-        nextControl = panel.createUIElement(42f, 32f, false);
+        nextControl = contentPanel.createUIElement(42f, 32f, false);
         ButtonAPI next = nextControl.addButton(">", NEXT_ID,
                 Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), 38f, 26f, 0f);
         next.setButtonPressedSound("ui_button_pressed");
         next.setEnabled(selectedIndex + 1 < visibleShips.size());
-        panel.addUIElement(nextControl).inBR(OUTER_PAD, RAIL_BOTTOM + 31f);
+        contentPanel.addUIElement(nextControl).inBR(
+                OUTER_PAD, RAIL_BOTTOM + 31f);
     }
 
     private void buildEmptyState(String message, boolean filtered) {
         float stageWidth = getStageWidth();
-        emptyState = panel.createUIElement(Math.max(280f, stageWidth - 60f), 90f, false);
+        emptyState = contentPanel.createUIElement(
+                Math.max(280f, stageWidth - 60f), 90f, false);
         emptyState.setParaOrbitronLarge();
         emptyState.addPara(message, 0f,
                 filtered ? Misc.getNegativeHighlightColor() : Misc.getGrayColor(),
@@ -323,18 +331,15 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 ? "Cycle the size or faction controls to widen the collection."
                 : "Store a ship in a Hall's dedicated storage to add it here.", 8f,
                 Misc.getGrayColor());
-        panel.addUIElement(emptyState).inTL(OUTER_PAD + 30f, 150f);
+        contentPanel.addUIElement(emptyState).inTL(
+                OUTER_PAD + 30f, 150f);
     }
 
     private void removeUi() {
-        remove(header);
-        remove(controls);
-        remove(details);
-        remove(factionSearchPanel);
-        remove(factionResults);
-        remove(emptyState);
-        remove(previousControl);
-        remove(nextControl);
+        if (panel != null && contentPanel != null) {
+            panel.removeComponent(contentPanel);
+        }
+        contentPanel = null;
         header = null;
         controls = null;
         details = null;
@@ -347,7 +352,13 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private void remove(TooltipMakerAPI component) {
-        if (component != null) panel.removeComponent(component);
+        if (component != null && contentPanel != null) {
+            contentPanel.removeComponent(component);
+        }
+    }
+
+    private void requestRebuild() {
+        rebuildPending = true;
     }
 
     private void addControl(String text, Object id, float sidebarWidth) {
@@ -363,7 +374,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             setMemory(FACTION_MEMORY, ((FactionChoice) buttonId).manufacturer);
             factionDropdownOpen = false;
             factionQuery = "";
-            rebuild();
+            requestRebuild();
             return;
         } else if (PRIMARY_ID.equals(buttonId)) {
             setMemory(PRIMARY_MEMORY, getPrimary().next().label);
@@ -386,7 +397,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         } else {
             return;
         }
-        rebuild();
+        requestRebuild();
     }
 
     private void selectRelative(int amount) {
@@ -398,7 +409,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (index < 0 || index >= visibleShips.size() || index == selectedIndex) return;
         selectedIndex = index;
         setMemory(SELECTED_MEMORY, safe(visibleShips.get(index).getId()));
-        rebuild();
+        requestRebuild();
     }
 
     private SortKey getPrimary() {
@@ -802,6 +813,11 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
     @Override
     public void advance(float amount) {
+        if (rebuildPending) {
+            rebuildPending = false;
+            rebuild();
+            return;
+        }
         if (!factionDropdownOpen || factionSearch == null) return;
         String current = factionSearch.getText();
         factionQuery = current == null ? "" : current;
@@ -821,7 +837,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     && event.getEventValue() == Keyboard.KEY_ESCAPE) {
                 factionDropdownOpen = false;
                 factionQuery = "";
-                rebuild();
+                requestRebuild();
                 event.consume();
                 return;
             }
@@ -832,7 +848,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     && !containsEvent(controls, event)) {
                 factionDropdownOpen = false;
                 factionQuery = "";
-                rebuild();
+                requestRebuild();
                 event.consume();
                 return;
             }
