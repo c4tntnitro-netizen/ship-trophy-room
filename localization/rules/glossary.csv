@@ -1,0 +1,56 @@
+source,domain,zh-Hans-CN,zh-Hant-TW,status,notes
+Hall of Triumph,proper-name,凯旋殿堂,凱旋殿堂,locked,Canonical mod and in-world facility name; triumphant without implying a royal palace.
+Isa Leicester,character,艾萨·莱斯特,艾薩·萊斯特,locked,Isa is exactly the first two characters of Isaac; Leicester follows the established place-name rendering.
+Isa,character,艾萨,艾薩,locked,Short spoken form; exactly the first two characters of 艾萨克/艾薩克.
+Isaac Leicester,character,艾萨克·莱斯特,艾薩克·萊斯特,locked,Keep the given name distinct from Isa.
+Isaac,character,艾萨克,艾薩克,locked,Short spoken form; locked together with Isaac Leicester.
+Leicester,character,莱斯特,萊斯特,locked,Established Chinese rendering of the English city and the characters' surname.
+Gan Eden,proper-name,伊甸园,伊甸園,locked,Translate the Hebrew name semantically so its Garden of Eden meaning and Luddic resonance remain legible.
+Shattered Ring,proper-name,破碎之环,破碎之環,locked,Settlement and station name.
+A Borrowed Name,quest-title,借来的名字,借來的名字,locked,Quest title; preserves the literal borrowed identity and its emotional double meaning.
+Customa Ship Architectures,organization,卡斯托玛舰船设计,卡斯托瑪船舶設計,locked,Transliterates Customa and translates the company's field without inventing an expansion.
+Continuity Authority,organization,延续管理局,延續管理局,locked,Institutional stamp used by the generational construction program.
+Continuity Office,organization,延续办公室,延續辦公室,locked,Related office name; keep distinct from the formal Continuity Authority stamp.
+Golden Omega,lore,金色欧米伽,金色歐米伽,locked,Named aureate Omega group; distinguish from generic Omega references.
+White Remnants,lore,白色余晖,白色餘暉,locked,Named Remnant group and visual identity.
+Space Elevator,world,太空电梯,太空電梯,locked,Recurring Gan Eden landmark.
+Tree of Life,world,生命之树,生命之樹,locked,Settlement and religious landmark.
+Gilead,world,基列,基列,locked,Biblical place-name rendering used for the vanilla world.
+Telepylus,world,泰勒皮卢斯,泰勒皮勒斯,locked,Recurring station name in Isaac's archive.
+Coronal Hypershunt,starsector-term,星冕分流器,星冕分流器,locked,Established Starsector Chinese community term.
+Intel,starsector-term,情报,情報,locked,Starsector UI noun.
+modspec,starsector-term,船体插件方案,船體改裝規格,locked,Formal recurring gameplay term; colloquial spoken lines may shorten it when unambiguous.
+deployment points,starsector-term,部署点,部署點,locked,Established Chinese community term.
+Domain of Man,starsector-term,人之领,人之領,locked,Established Starsector Chinese community term.
+Domain,starsector-term,人之领,人之領,locked,Use only when Domain names the polity; ordinary senses of domain must be translated contextually.
+Ludd,starsector-term,卢德,盧德,locked,Established Starsector Chinese community term.
+Luddic Path,starsector-term,卢德左径,盧德左徑,locked,Established Starsector Chinese community term.
+Luddic Church,starsector-term,卢德教会,盧德教會,locked,Established Starsector Chinese community term.
+Remnant,starsector-term,余晖,餘暉,locked,Established Starsector Chinese community term.
+Omega,starsector-term,欧米伽,歐米伽,locked,Established Starsector Chinese community term.
+Tri-Tachyon,starsector-term,速子科技,速子科技,locked,Established Starsector Chinese community term.
+Tri-Tach,starsector-term,速子科技,速子科技,locked,Colloquial abbreviation of Tri-Tachyon.
+Tritachyon,starsector-term,速子科技,速子科技,locked,Typographic source variant of Tri-Tachyon.
+Onslaught,starsector-term,攻势,攻勢,locked,Established name in the Starsector 0.98a Chinese localization.
+Conquest,starsector-term,征服者,征服者,locked,Established name in the Starsector 0.98a Chinese localization.
+Paragon,starsector-term,典范,典範,locked,Established name in the Starsector 0.98a Chinese localization.
+Invictus,starsector-term,不败,不敗,locked,Established name in the Starsector 0.98a Chinese localization.
+Ziggurat,starsector-term,通灵塔,通靈塔,locked,Established name in the Starsector 0.98a Chinese localization.
+Afflictor,starsector-term,折磨,折磨,locked,Established name in the Starsector 0.98a Chinese localization.
+Shrouded Substrate,starsector-term,渊幕基质,淵幕基質,locked,Established Starsector 0.98a Simplified term with an independently reviewed Traditional form.
+nanoforge,starsector-term,纳米锻炉,奈米鍛爐,locked,Established Simplified term with Taiwan technical vocabulary in Traditional.
+story point,starsector-term,故事点,故事點,locked,Established Starsector Chinese community term.
+Gate,starsector-term,星门,星門,locked,Use when Gate names Domain transit infrastructure; ordinary gate senses remain contextual.
+Rebecca,character,丽贝卡,蕾貝卡,locked,Isaac's wife and Isa's mother.
+Heliostructural Systems,organization,日构系统公司,日構系統公司,locked,Compact company name retaining the solar-structure wordplay.
+DP,starsector-term,DP,DP,keep-latin,Protected gameplay abbreviation when English uses the abbreviation.
+LPC,starsector-term,LPC,LPC,keep-latin,Protected Starsector abbreviation.
+INFOSEC,lore,INFOSEC,INFOSEC,keep-latin,Diegetic archival acronym; retain Latin capitals unless a later art decision changes it.
+HEGAID,lore,HEGAID,HEGAID,keep-latin,Intentional misprinted ration-package mark.
+SUPER ALABASTER,lore,SUPER ALABASTER,SUPER ALABASTER,keep-latin,Diegetic archival clearance code.
+Tech,character,Tech,Tech,keep-latin,Proper-name nickname used by the Shrouded dialogue integration.
+TriPad,starsector-term,TriPad,TriPad,keep-latin,Established in-universe device name.
+Chess960,game,Chess960,Chess960,keep-latin,Standard proper name for the chess variant.
+Cherubim,lore,Cherubim,Cherubim,keep-latin,Named Omega Shard; preserve the Hebrew-derived proper name in Latin.
+Lahat Haharev,lore,Lahat Haharev,Lahat Haharev,keep-latin,Named Omega Shard; preserve the Hebrew-derived proper name in Latin.
+Penelope's Star,proper-name,Penelope's Star,Penelope's Star,keep-latin,Match the established Chinese Starsector localization's treatment of this vanilla system name.
