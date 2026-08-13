@@ -106,6 +106,32 @@ linked logs. It is weaker at detecting abstract connections that share no Englis
 vocabulary. The backend can later be replaced by dense embeddings without
 changing the batch or translation-store formats.
 
+## FOSSIC community reference
+
+Vanilla terminology is not inferred from machine translation. The first
+Simplified Chinese authority is the current FOSSIC localization project:
+
+- forum release: `https://www.fossic.org/forum.php?mod=viewthread&tid=19430`
+- latest-source repository:
+  `https://github.com/TruthOriginem/Starsector-Localization-CN`
+
+Keep a sparse local checkout at
+`build/localization/fossic-reference`. The entire `build` tree is ignored by Git,
+so FOSSIC's files are consulted locally and are never redistributed in this mod.
+Record only the exact terminology decisions Ship Trophy needs in `glossary.csv`,
+with a note identifying them as FOSSIC-verified. Refresh and re-audit those terms
+when the upstream localization changes.
+
+The terminology audit on 2026-08-12 used upstream commit
+`53143a592436890eb72110ecaab7eb9f0994cf17`. Recording the commit makes later
+changes in community wording distinguishable from accidental drift in this mod.
+
+FOSSIC's current style guide leaves people, stars, systems, and planets in Latin.
+The current corpus likewise preserves `Penelope's Star`, `Cherubim`, and `TriPad`.
+Do not treat those forms as untranslated machine residue. The user-approved
+Chinese forms for Isa, Isaac, and Leicester are explicit exceptions for this
+mod's family-name wordplay.
+
 ## Translation-unit model
 
 The exporter creates three kinds of units:

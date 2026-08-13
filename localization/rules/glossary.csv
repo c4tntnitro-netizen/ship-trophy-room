@@ -15,33 +15,62 @@ Golden Omega,lore,金色欧米伽,金色歐米伽,locked,Named aureate Omega gro
 White Remnants,lore,白色余晖,白色餘暉,locked,Named Remnant group and visual identity.
 Space Elevator,world,太空电梯,太空電梯,locked,Recurring Gan Eden landmark.
 Tree of Life,world,生命之树,生命之樹,locked,Settlement and religious landmark.
-Gilead,world,基列,基列,locked,Biblical place-name rendering used for the vanilla world.
-Telepylus,world,泰勒皮卢斯,泰勒皮勒斯,locked,Recurring station name in Isaac's archive.
-Coronal Hypershunt,starsector-term,星冕分流器,星冕分流器,locked,Established Starsector Chinese community term.
+Gilead,world,Gilead,Gilead,keep-latin,Verified against the current FOSSIC corpus; vanilla planet names remain in Latin.
+Telepylus,world,Telepylus,Telepylus,keep-latin,Verified against the current FOSSIC corpus; the vanilla planet and station name remains in Latin.
+Coronal Hypershunt,starsector-term,星冕分流器,星冕分流器,locked,Verified against the current FOSSIC 0.98a localization; Traditional form independently reviewed.
 Intel,starsector-term,情报,情報,locked,Starsector UI noun.
 modspec,starsector-term,船体插件方案,船體改裝規格,locked,Formal recurring gameplay term; colloquial spoken lines may shorten it when unambiguous.
-deployment points,starsector-term,部署点,部署點,locked,Established Chinese community term.
+deployment points,starsector-term,部署点,部署點,locked,Verified against the current FOSSIC 0.98a localization; FOSSIC also uses 部署点数 where grammar calls for a counted total.
 Domain of Man,starsector-term,人之领,人之領,locked,Established Starsector Chinese community term.
 Domain,starsector-term,人之领,人之領,locked,Use only when Domain names the polity; ordinary senses of domain must be translated contextually.
+Hegemony,starsector-term,霸主,霸主,locked,Current FOSSIC faction name; do not use the generic political noun 霸权 for this proper name.
+Persean League,starsector-term,英仙座联盟,英仙座聯盟,locked,Current FOSSIC faction name.
+Sindrian Diktat,starsector-term,辛达强权,辛達強權,locked,Current FOSSIC full faction name.
+Diktat,starsector-term,辛达强权,辛達強權,locked,Current FOSSIC convention uses the full faction name even where English abbreviates it.
 Ludd,starsector-term,卢德,盧德,locked,Established Starsector Chinese community term.
 Luddic Path,starsector-term,卢德左径,盧德左徑,locked,Established Starsector Chinese community term.
 Luddic Church,starsector-term,卢德教会,盧德教會,locked,Established Starsector Chinese community term.
+Moloch,starsector-term,摩洛克,摩洛克,locked,Predominant rendering in the current FOSSIC religious dialogue corpus.
 Remnant,starsector-term,余晖,餘暉,locked,Established Starsector Chinese community term.
 Omega,starsector-term,欧米伽,歐米伽,locked,Established Starsector Chinese community term.
-Tri-Tachyon,starsector-term,速子科技,速子科技,locked,Established Starsector Chinese community term.
+Tri-Tachyon,starsector-term,速子科技,速子科技,locked,Current FOSSIC short form; the formal Tri-Tachyon Corporation is 三一速子科技公司.
+Tri-Tachyon Corporation,starsector-term,三一速子科技公司,三一速子科技公司,locked,Current FOSSIC formal faction name.
 Tri-Tach,starsector-term,速子科技,速子科技,locked,Colloquial abbreviation of Tri-Tachyon.
 Tritachyon,starsector-term,速子科技,速子科技,locked,Typographic source variant of Tri-Tachyon.
+Galatia Academy,starsector-term,Galatia 学院,Galatia 學院,locked,Current FOSSIC treatment follows the convention that the proper place name remains in Latin.
+Lion's Guard,starsector-term,狮心卫队,獅心衛隊,locked,Current FOSSIC faction name.
 Onslaught,starsector-term,攻势,攻勢,locked,Established name in the Starsector 0.98a Chinese localization.
+Onslaught XIV,starsector-term,攻势 (XIV),攻勢 (XIV),locked,Current FOSSIC hull name.
+Onslaught Mk.I,starsector-term,攻势 Mk.I,攻勢 Mk.I,locked,Current FOSSIC hull name.
 Conquest,starsector-term,征服者,征服者,locked,Established name in the Starsector 0.98a Chinese localization.
 Paragon,starsector-term,典范,典範,locked,Established name in the Starsector 0.98a Chinese localization.
 Invictus,starsector-term,不败,不敗,locked,Established name in the Starsector 0.98a Chinese localization.
 Ziggurat,starsector-term,通灵塔,通靈塔,locked,Established name in the Starsector 0.98a Chinese localization.
 Afflictor,starsector-term,折磨,折磨,locked,Established name in the Starsector 0.98a Chinese localization.
+Executor,starsector-term,执行官,執行官,locked,Current FOSSIC hull name.
+Falcon,starsector-term,猎鹰,獵鷹,locked,Current FOSSIC hull name.
+Heron,starsector-term,苍鹭,蒼鷺,locked,Current FOSSIC hull name.
+Kite,starsector-term,风筝,風箏,locked,Current FOSSIC hull name.
+Mudskipper,starsector-term,弹涂鱼,彈塗魚,locked,Current FOSSIC hull name.
+Ox,starsector-term,公牛,公牛,locked,Current FOSSIC hull name.
+Prometheus,starsector-term,普罗米修斯,普羅米修斯,locked,Current FOSSIC hull name.
+Starliner,starsector-term,星际线,星際線,locked,Current FOSSIC hull name.
+Thunder,starsector-term,雷霆,雷霆,locked,Current FOSSIC fighter-wing name.
+Hellbore,starsector-term,炼狱炮,煉獄炮,locked,Short source reference to the Hellbore Cannon; current FOSSIC weapon name.
+Energy Bolt Coherer,starsector-term,能量弹体同调器,能量彈體同調器,locked,Current FOSSIC hullmod name.
 Shrouded Substrate,starsector-term,渊幕基质,淵幕基質,locked,Established Starsector 0.98a Simplified term with an independently reviewed Traditional form.
+Shrouded Lens,starsector-term,渊幕瞳晶,淵幕瞳晶,locked,Current FOSSIC hullmod name; Traditional form independently reviewed.
+Shrouded Mantle,starsector-term,渊幕套膜,淵幕套膜,locked,Current FOSSIC hullmod name; Traditional form independently reviewed.
+Shrouded Thunderhead,starsector-term,渊幕云砧,淵幕雲砧,locked,Current FOSSIC hullmod name; Traditional form independently reviewed.
 nanoforge,starsector-term,纳米锻炉,奈米鍛爐,locked,Established Simplified term with Taiwan technical vocabulary in Traditional.
 story point,starsector-term,故事点,故事點,locked,Established Starsector Chinese community term.
 Gate,starsector-term,星门,星門,locked,Use when Gate names Domain transit infrastructure; ordinary gate senses remain contextual.
 Rebecca,character,丽贝卡,蕾貝卡,locked,Isaac's wife and Isa's mother.
+Philip Andrada,character,Philip Andrada,Philip Andrada,keep-latin,Current FOSSIC convention preserves personal names in Latin.
+Andrada,character,Andrada,Andrada,keep-latin,Current FOSSIC convention preserves this personal name in Latin.
+Andradan,starsector-term,Andrada 式,Andrada 式,locked,Adjectival form; preserve the personal name and express the modifier naturally in Chinese.
+Sindria,world,Sindria,Sindria,keep-latin,Current FOSSIC convention preserves planet names in Latin.
+Galatia,world,Galatia,Galatia,keep-latin,Current FOSSIC convention preserves place names in Latin.
 Heliostructural Systems,organization,日构系统公司,日構系統公司,locked,Compact company name retaining the solar-structure wordplay.
 DP,starsector-term,DP,DP,keep-latin,Protected gameplay abbreviation when English uses the abbreviation.
 LPC,starsector-term,LPC,LPC,keep-latin,Protected Starsector abbreviation.
@@ -49,8 +78,9 @@ INFOSEC,lore,INFOSEC,INFOSEC,keep-latin,Diegetic archival acronym; retain Latin 
 HEGAID,lore,HEGAID,HEGAID,keep-latin,Intentional misprinted ration-package mark.
 SUPER ALABASTER,lore,SUPER ALABASTER,SUPER ALABASTER,keep-latin,Diegetic archival clearance code.
 Tech,character,Tech,Tech,keep-latin,Proper-name nickname used by the Shrouded dialogue integration.
-TriPad,starsector-term,TriPad,TriPad,keep-latin,Established in-universe device name.
+TriPad,starsector-term,TriPad,TriPad,keep-latin,Verified against the current FOSSIC corpus; established in-universe device name.
 Chess960,game,Chess960,Chess960,keep-latin,Standard proper name for the chess variant.
-Cherubim,lore,Cherubim,Cherubim,keep-latin,Named Omega Shard; preserve the Hebrew-derived proper name in Latin.
+Cherubim,lore,Cherubim,Cherubim,keep-latin,Named Omega Shard; FOSSIC also preserves Cherubim in the vanilla Cherubim Asteroids name. A first-use 基路伯 gloss may explain the Biblical allusion without replacing the name.
 Lahat Haharev,lore,Lahat Haharev,Lahat Haharev,keep-latin,Named Omega Shard; preserve the Hebrew-derived proper name in Latin.
-Penelope's Star,proper-name,Penelope's Star,Penelope's Star,keep-latin,Match the established Chinese Starsector localization's treatment of this vanilla system name.
+Penelope's Star,proper-name,Penelope's Star,Penelope's Star,keep-latin,Verified against the current FOSSIC corpus and its convention that star and system names remain in Latin.
+Penelope’s Star,proper-name,Penelope's Star,Penelope's Star,locked,Curly-apostrophe source variant; normalize to the current FOSSIC Latin system name.

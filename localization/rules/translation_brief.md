@@ -2,10 +2,23 @@
 
 ## Source hierarchy
 
-1. The current English unit and its full rule context are authoritative.
-2. Locked glossary entries are authoritative for recurring terminology.
-3. Existing Chinese units are consistency references, never a reason to inherit
-   an error or flatten a deliberate distinction in English.
+1. The current English unit and its full rule context are authoritative for
+   meaning, characterization, and Ship Trophy-specific lore.
+2. For vanilla Starsector names, mechanics, factions, UI, and technical language,
+   use the current FOSSIC/TruthOriginem Simplified Chinese localization exactly.
+   Do not invent a synonym for an established community term.
+3. Locked glossary entries are authoritative for recurring mod terminology. A
+   locked vanilla entry that conflicts with the current FOSSIC corpus must be
+   corrected rather than allowed to override the corpus.
+4. Existing Ship Trophy Chinese units are consistency references, never a reason
+   to inherit an error or flatten a deliberate distinction in English.
+
+The working FOSSIC reference is the `master` branch of
+`TruthOriginem/Starsector-Localization-CN`, which the current FOSSIC release page
+identifies as the latest preview source. Its files are a local reference only:
+do not copy or redistribute the corpus with this mod. When the corpus does not
+contain a Ship Trophy-specific expression, follow the remaining workflow below
+and flag uncertain coinages for fluent review.
 
 Each batch may contain `relatedReferences` selected by the local vector index.
 Use them to recover recurring terminology, voice, callbacks, and previously
@@ -49,8 +62,8 @@ that awkward or missing meaning becomes visible to a non-fluent maintainer.
   trigger. Never add promises, hostility, romance, or moral judgment absent from
   English.
 - **Technical prose:** prefer established Starsector/community terminology once
-  locked in the glossary. Do not replace a precise mechanic with atmospheric
-  language.
+  verified against the current FOSSIC corpus and locked in the glossary. Do not
+  replace a precise mechanic with atmospheric language.
 - **Ceremonial or religious language:** elevated only when English is elevated.
   Avoid pseudo-classical Chinese unless the line is explicitly marked for that
   treatment.
@@ -63,6 +76,13 @@ Use natural mainland Mandarin vocabulary and Simplified characters for normal
 dialogue and gameplay text. Traditional characters may appear only as a marked
 artistic choice in a small diegetic fragment. The target unit must list the exact
 fragment in `traditionalArtFragments` and explain why in `artNote`.
+
+Follow FOSSIC's current formatting convention for ordinary Starsector text:
+people, stars, systems, and planets normally remain in Latin, as do established
+in-universe names such as `TriPad`. The user-approved Chinese renderings of Isa,
+Isaac, and Leicester are deliberate character-specific exceptions. A difficult
+original lore name may receive a Chinese gloss on first use, but that gloss does
+not silently replace an established vanilla proper name.
 
 ### Taiwan Traditional (`zh-Hant-TW`)
 
