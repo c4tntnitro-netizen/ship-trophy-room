@@ -11,6 +11,8 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
+import shiptrophy.ShipTrophyL10n;
+
 /** Permanent Intel archive for one recovered Gan Eden record. */
 public final class GanEdenLogIntel extends BaseIntelPlugin {
     private static final long serialVersionUID = 1L;
@@ -32,7 +34,9 @@ public final class GanEdenLogIntel extends BaseIntelPlugin {
     @Override
     protected String getName() {
         GanEdenLogSpec spec = spec();
-        return spec == null ? "Gan Eden Archive" : spec.getTitle();
+        return spec == null
+                ? ShipTrophyL10n.get("archive_fallback_name")
+                : spec.getTitle();
     }
 
     @Override
@@ -40,7 +44,8 @@ public final class GanEdenLogIntel extends BaseIntelPlugin {
         info.addPara(getName(), getTitleColor(mode), 0f);
         GanEdenLogSpec spec = spec();
         if (spec != null) {
-            info.addPara("Recovered at " + spec.getSiteName(), 3f,
+            info.addPara(ShipTrophyL10n.format(
+                            "archive_recovered_at", spec.getSiteName()), 3f,
                     Misc.getGrayColor(), Misc.getHighlightColor(),
                     spec.getSiteName());
         }
@@ -55,7 +60,8 @@ public final class GanEdenLogIntel extends BaseIntelPlugin {
             float initPad) {
         GanEdenLogSpec spec = spec();
         if (spec != null) {
-            info.addPara("Recovered at " + spec.getSiteName(), initPad, tc,
+            info.addPara(ShipTrophyL10n.format(
+                            "archive_recovered_at", spec.getSiteName()), initPad, tc,
                     Misc.getHighlightColor(), spec.getSiteName());
         }
     }
@@ -65,11 +71,11 @@ public final class GanEdenLogIntel extends BaseIntelPlugin {
             TooltipMakerAPI info, float width, float height) {
         GanEdenLogSpec spec = spec();
         if (spec == null) {
-            info.addPara("The recovered archive index is unreadable.", 0f);
+            info.addPara(ShipTrophyL10n.get("archive_index_unreadable"), 0f);
             return;
         }
 
-        info.addPara("Recovered from %s and retained in the fleet archives.",
+        info.addPara(ShipTrophyL10n.get("archive_retained"),
                 0f, Misc.getGrayColor(), Misc.getHighlightColor(),
                 spec.getSiteName());
         info.addSpacer(10f);
@@ -86,7 +92,7 @@ public final class GanEdenLogIntel extends BaseIntelPlugin {
     @Override
     public Set<String> getIntelTags(SectorMapAPI map) {
         Set<String> tags = super.getIntelTags(map);
-        tags.add(GanEdenLogSpec.ARCHIVE_TAG);
+        tags.add(GanEdenLogSpec.getArchiveTag());
         return tags;
     }
 

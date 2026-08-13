@@ -25,6 +25,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.IsaTrophyManager;
+import shiptrophy.ShipTrophyL10n;
 
 public class IsaTrophyProvenance extends BaseHullMod {
     private static final String ID_PREFIX = "ship_trophy_isa_smod_";
@@ -54,11 +55,11 @@ public class IsaTrophyProvenance extends BaseHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            return "Trophy hullmod effects are disabled in LunaLib settings";
+            return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, IsaTrophyManager.PROVENANCE_HULLMOD_ID);
-        if (other != null) return "Incompatible with " + other;
-        return "Requires Onslaught XIV, Paragon, Invictus, Conquest, and Executor displays in the Hall of Triumph network";
+        if (other != null) return ShipTrophyL10n.format("hullmod_incompatible", other);
+        return ShipTrophyL10n.get("hullmod_masterwork_requires");
     }
 
     @Override
@@ -139,30 +140,36 @@ public class IsaTrophyProvenance extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         } else if (ship != null && ship.getVariant() != null) {
             List<String> bonuses = getExtraSModBonusDescriptions(ship, hullSize);
             List<String> capped = getCappedSModBonusDescriptions(ship);
             if (bonuses.isEmpty()) {
-                tooltip.addPara("Post-Awe cumulative hullmod effects on this ship: none.", opad,
-                        Misc.getGrayColor(), "none");
+                tooltip.addPara(ShipTrophyL10n.get("provenance_none"), opad,
+                        Misc.getGrayColor(),
+                        ShipTrophyL10n.get("provenance_none_highlight"));
             } else {
-                tooltip.addPara("Post-Awe cumulative hullmod effects on this ship:", opad,
-                        Misc.getHighlightColor(), "Post-Awe cumulative hullmod effects");
+                tooltip.addPara(ShipTrophyL10n.get("provenance_heading"), opad,
+                        Misc.getHighlightColor(),
+                        ShipTrophyL10n.get("provenance_heading_highlight"));
                 for (String bonus : bonuses) {
                     tooltip.addPara("- " + bonus, 3f);
                 }
             }
             if (!capped.isEmpty()) {
-                tooltip.addPara("Already-maximized S-mod bonuses (no additional effect):", opad,
-                        Misc.getHighlightColor(), "Already-maximized S-mod bonuses");
+                tooltip.addPara(ShipTrophyL10n.get("provenance_capped"), opad,
+                        Misc.getHighlightColor(),
+                        ShipTrophyL10n.get("provenance_capped_highlight"));
                 for (String bonus : capped) {
                     tooltip.addPara("- " + bonus, 3f);
                 }
             }
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, Misc.getHighlightColor(), "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"), opad,
+                Misc.getHighlightColor(),
+                ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 
     private List<String> getExtraSModBonusDescriptions(ShipAPI ship, ShipAPI.HullSize hullSize) {
@@ -185,127 +192,133 @@ public class IsaTrophyProvenance extends BaseHullMod {
 
     private String getCappedSModBonusDescription(String sMod) {
         if ("eccm".equals(sMod)) {
-            return "ECCM Package: flare avoidance and ECM-range protection are already complete";
+            return ShipTrophyL10n.get("provenance_capped_eccm");
         } else if ("solar_shielding".equals(sMod)) {
-            return "Solar Shielding: corona protection is already complete";
+            return ShipTrophyL10n.get("provenance_capped_solar");
         } else if ("pointdefenseai".equals(sMod)) {
-            return "Integrated Point Defense AI: all eligible small weapons are already classified as point defense";
+            return ShipTrophyL10n.get("provenance_capped_pd_ai");
         } else if ("neural_interface".equals(sMod)) {
-            return "Neural Interface: transfers are already instant";
+            return ShipTrophyL10n.get("provenance_capped_neural");
         } else if ("neural_integrator".equals(sMod)) {
-            return "Neural Integrator: transfers are already instant";
+            return ShipTrophyL10n.get("provenance_capped_integrator");
         } else if ("adaptiveshields".equals(sMod)) {
-            return "Shield Conversion - Omni: the shield-arc penalty is already fully negated";
+            return ShipTrophyL10n.get("provenance_capped_omni");
         } else if ("militarized_subsystems".equals(sMod)) {
-            return "Militarized Subsystems: the increased crew requirement is already fully negated";
+            return ShipTrophyL10n.get("provenance_capped_militarized");
         }
         return null;
     }
 
     private String getExtraSModBonusDescription(String sMod, ShipAPI.HullSize hullSize, ShipAPI ship) {
         if ("advancedshieldemitter".equals(sMod)) {
-            return "Accelerated Shields: +300% shield turn and unfold rate";
+            return ShipTrophyL10n.get("provenance_accelerated_shields");
         } else if ("turretgyros".equals(sMod)) {
             if (hullSize == ShipAPI.HullSize.CAPITAL_SHIP) {
-                return "Advanced Turret Gyros: +50% damage to missiles and fighters, +30% to frigates, +20% to destroyers, and +10% to cruisers";
+                return ShipTrophyL10n.get("provenance_turret_capital");
             } else if (hullSize == ShipAPI.HullSize.CRUISER) {
-                return "Advanced Turret Gyros: +50% damage to missiles and fighters, +20% to frigates, and +10% to destroyers";
+                return ShipTrophyL10n.get("provenance_turret_cruiser");
             } else if (hullSize == ShipAPI.HullSize.DESTROYER) {
-                return "Advanced Turret Gyros: +50% damage to missiles and fighters, and +10% to frigates";
+                return ShipTrophyL10n.get("provenance_turret_destroyer");
             }
-            return "Advanced Turret Gyros: +50% damage to missiles and fighters";
+            return ShipTrophyL10n.get("provenance_turret_frigate");
         } else if ("armoredweapons".equals(sMod)) {
-            return "Armored Weapon Mounts: +21% ballistic and energy weapon rate of fire";
+            return ShipTrophyL10n.get("provenance_armored_mounts");
         } else if ("augmentedengines".equals(sMod)) {
-            return "Augmented Drive Field: +4 maximum burn";
+            return ShipTrophyL10n.get("provenance_augmented_drive");
         } else if ("autorepair".equals(sMod)) {
-            return "Automated Repair Unit: weapon and engine repair time reduced to 19%; overload duration reduced to 45%";
+            return ShipTrophyL10n.get("provenance_auto_repair");
         } else if ("auxiliarythrusters".equals(sMod)) {
-            return "Auxiliary Thrusters: 4x zero-flux turn-rate bonus and +20 zero-flux speed";
+            return ShipTrophyL10n.get("provenance_aux_thrusters");
         } else if ("blast_doors".equals(sMod)) {
-            return "Blast Doors: -89% crew losses";
+            return ShipTrophyL10n.get("provenance_blast_doors");
         } else if ("converted_hangar".equals(sMod)) {
             if (hullSize == ShipAPI.HullSize.CAPITAL_SHIP) {
-                return "Converted Hangar: +50% fighter replacement-rate recovery";
+                return ShipTrophyL10n.get("provenance_hangar_capital");
             } else if (hullSize == ShipAPI.HullSize.CRUISER) {
-                return "Converted Hangar: +20% fighter replacement-rate recovery";
+                return ShipTrophyL10n.get("provenance_hangar_cruiser");
             }
             return null;
         } else if ("converted_fighterbay".equals(sMod)) {
             int bays = Math.round(ship.getMutableStats().getNumFighterBays().getBaseValue());
             float singleReduction = Math.min(1f, bays * 0.15f);
             int reduction = Math.round((1f - (1f - singleReduction) * (1f - singleReduction)) * 100f);
-            if (reduction > 0) return "Converted Fighter Bay: -" + reduction + "% monthly supply use";
+            if (reduction > 0) return ShipTrophyL10n.format(
+                    "provenance_fighter_bay", reduction);
             return null;
         } else if ("dedicated_targeting_core".equals(sMod)) {
             if (hullSize == ShipAPI.HullSize.CAPITAL_SHIP) {
-                return "Dedicated Targeting Core: +70% ballistic and energy weapon range";
+                return ShipTrophyL10n.get("provenance_targeting_capital");
             } else if (hullSize == ShipAPI.HullSize.CRUISER) {
-                return "Dedicated Targeting Core: +45% ballistic and energy weapon range";
+                return ShipTrophyL10n.get("provenance_targeting_cruiser");
             }
             return null;
         } else if (DEFENSIVE_TARGETING_ARRAY_ID.equals(sMod)) {
-            return "Defensive Targeting Array: +200 fighter ballistic and energy weapon range";
+            return ShipTrophyL10n.get("provenance_defensive_array");
         } else if (ESCORT_PACKAGE_ID.equals(sMod)) {
             if (hullSize == ShipAPI.HullSize.DESTROYER) {
-                return "Escort Package: up to -19% shield damage taken at full connection";
+                return ShipTrophyL10n.get("provenance_escort_package");
             }
             return null;
         } else if ("magazines".equals(sMod)) {
-            return "Expanded Magazines: +100% ballistic and energy ammo regeneration";
+            return ShipTrophyL10n.get("provenance_magazines");
         } else if ("extendedshieldemitter".equals(sMod)) {
-            return "Extended Shields: +180 degrees shield arc";
+            return ShipTrophyL10n.get("provenance_extended_shields");
         } else if ("fluxbreakers".equals(sMod)) {
-            return "Resistant Flux Conduits: +45% vent rate";
+            return ShipTrophyL10n.get("provenance_fluxbreakers");
         } else if ("fluxcoil".equals(sMod)) {
             float capacity = bySize(hullSize, 600f, 1200f, 1800f, 3000f)
                     + 2f * bySize(hullSize, 200f, 400f, 600f, 1000f);
-            return "Flux Coil Adjunct: +" + Math.round(capacity) + " flux capacity";
+            return ShipTrophyL10n.format(
+                    "provenance_flux_coil", Math.round(capacity));
         } else if ("fluxdistributor".equals(sMod)) {
             float dissipation = bySize(hullSize, 30f, 60f, 90f, 150f)
                     + 2f * bySize(hullSize, 10f, 20f, 30f, 50f);
-            return "Flux Distributor: +" + Math.round(dissipation) + " flux dissipation";
+            return ShipTrophyL10n.format(
+                    "provenance_flux_distributor", Math.round(dissipation));
         } else if ("shield_shunt".equals(sMod)) {
-            return "Shield Shunt: +45% armor";
+            return ShipTrophyL10n.get("provenance_shield_shunt");
         } else if ("high_scatter_amp".equals(sMod)) {
-            return "High Scatter Amplifier: +20% beam weapon damage";
+            return ShipTrophyL10n.get("provenance_scatter_amp");
         } else if ("frontemitter".equals(sMod)) {
-            return "Shield Conversion - Front: -9.75% shield damage taken";
+            return ShipTrophyL10n.get("provenance_front_shield");
         } else if ("recovery_shuttles".equals(sMod)) {
-            return "Recovery Shuttles: -99% fighter pilot casualties";
+            return ShipTrophyL10n.get("provenance_recovery_shuttles");
         } else if ("additional_berthing".equals(sMod)) {
-            return "Additional Berthing: +" + Math.round(3f * getLogisticsBaseBonus(
-                    hullSize, ship.getHullSpec().getMaxCrew())) + " crew capacity";
+            return ShipTrophyL10n.format("provenance_berthing",
+                    Math.round(3f * getLogisticsBaseBonus(
+                            hullSize, ship.getHullSpec().getMaxCrew())));
         } else if ("auxiliary_fuel_tanks".equals(sMod)) {
-            return "Auxiliary Fuel Tanks: +" + Math.round(3f * getLogisticsBaseBonus(
-                    hullSize, ship.getHullSpec().getFuel())) + " fuel capacity";
+            return ShipTrophyL10n.format("provenance_fuel_tanks",
+                    Math.round(3f * getLogisticsBaseBonus(
+                            hullSize, ship.getHullSpec().getFuel())));
         } else if ("efficiency_overhaul".equals(sMod)) {
-            return "Efficiency Overhaul: -37% minimum crew, monthly supply use, and fuel use";
+            return ShipTrophyL10n.get("provenance_efficiency");
         } else if ("expanded_cargo_holds".equals(sMod)) {
-            return "Expanded Cargo Holds: +" + Math.round(3f * getLogisticsBaseBonus(
-                    hullSize, ship.getHullSpec().getCargo())) + " cargo capacity";
+            return ShipTrophyL10n.format("provenance_cargo",
+                    Math.round(3f * getLogisticsBaseBonus(
+                            hullSize, ship.getHullSpec().getCargo())));
         } else if ("hiressensors".equals(sMod)) {
-            return "High Resolution Sensors: +" + Math.round(bySize(
-                    hullSize, 2000f, 3000f, 4000f, 5000f)) + " in-combat vision range";
+            return ShipTrophyL10n.format("provenance_sensors", Math.round(bySize(
+                    hullSize, 2000f, 3000f, 4000f, 5000f)));
         } else if ("insulatedengine".equals(sMod)) {
-            return "Insulated Engine Assembly: +300% engine health and -98% sensor profile";
+            return ShipTrophyL10n.get("provenance_insulated_engine");
         } else if ("stabilizedshieldemitter".equals(sMod)) {
-            return "Stabilized Shields: 20% of shield damage converted to soft flux";
+            return ShipTrophyL10n.get("provenance_stabilized_shields");
         } else if ("surveying_equipment".equals(sMod)) {
             int reduction = Math.round(3f * bySize(hullSize, 5f, 10f, 20f, 40f));
-            return "Surveying Equipment: -" + reduction + " heavy machinery and supplies required for surveys";
+            return ShipTrophyL10n.format("provenance_surveying", reduction);
         } else if ("secondary_fabricator".equals(sMod)) {
-            return "Secondary Fabricator: +70% fragment replacement rate";
+            return ShipTrophyL10n.get("provenance_secondary_fabricator");
         } else if ("fragment_coordinator".equals(sMod)) {
-            return "Fragment Coordinator: +140% fragment swarm size";
+            return ShipTrophyL10n.get("provenance_fragment_coordinator");
         } else if ("shrouded_mantle".equals(sMod)) {
-            return "Shrouded Mantle: receives 100% of Hungering Rift healing";
+            return ShipTrophyL10n.get("provenance_shrouded_mantle");
         } else if (AVARITIA_ID.equals(sMod)) {
-            return "Avaritia Capacity Overhaul: doubles its active S-mod weapon damage and rate-of-fire bonuses";
+            return ShipTrophyL10n.get("provenance_avaritia");
         } else if (VANAGLORIA_ID.equals(sMod)) {
-            return "Vanagloria Ionized Armor: doubles its S-mod recharge-time reduction";
+            return ShipTrophyL10n.get("provenance_vanagloria");
         } else if (GULA_ID.equals(sMod)) {
-            return "Gula Tandem Warheads: doubles its S-mod bonus damage; eligibility and damage threshold are unchanged";
+            return ShipTrophyL10n.get("provenance_gula");
         }
         return null;
     }

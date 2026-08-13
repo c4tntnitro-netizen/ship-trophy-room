@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.TrophyNetwork;
+import shiptrophy.ShipTrophyL10n;
 
 public abstract class BaseUniqueShowcaseHullMod extends BaseHullMod {
     protected abstract String getHullModId();
@@ -32,11 +33,12 @@ public abstract class BaseUniqueShowcaseHullMod extends BaseHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            return "Trophy hullmod effects are disabled in LunaLib settings";
+            return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
-        if (!isUnlocked()) return "Requires " + getRequiredShowcaseName() + " in the Hall of Triumph network";
+        if (!isUnlocked()) return ShipTrophyL10n.format(
+                "hullmod_requires_showcase", getRequiredShowcaseName());
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getHullModId());
-        if (other != null) return "Incompatible with " + other;
+        if (other != null) return ShipTrophyL10n.format("hullmod_incompatible", other);
         return null;
     }
 
@@ -45,9 +47,11 @@ public abstract class BaseUniqueShowcaseHullMod extends BaseHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"), opad, h,
+                ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 }

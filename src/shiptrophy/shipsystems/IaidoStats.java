@@ -11,6 +11,8 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 
+import shiptrophy.ShipTrophyL10n;
+
 public class IaidoStats extends BaseShipSystemScript {
     public static final float DAMAGE_TAKEN_MULT = 0.50f;
     public static final float BALLISTIC_ENERGY_ROF_MULT = 0.50f;
@@ -71,11 +73,14 @@ public class IaidoStats extends BaseShipSystemScript {
 
     @Override
     public StatusData getStatusData(int index, State state, float effectLevel) {
-        if (index == 0) return new StatusData("iaido drive engaged", false);
-        if (index == 1) return new StatusData("damage taken reduced by 50%", false);
-        if (index == 2) return new StatusData("ballistic and energy rate of fire reduced by 50%", true);
+        if (index == 0) return new StatusData(
+                ShipTrophyL10n.get("iaido_status_engaged"), false);
+        if (index == 1) return new StatusData(
+                ShipTrophyL10n.get("iaido_status_damage"), false);
+        if (index == 2) return new StatusData(
+                ShipTrophyL10n.get("iaido_status_rof"), true);
         if (index == 3 && (state == State.IN || state == State.ACTIVE)) {
-            return new StatusData("torpedo catapult armed", false);
+            return new StatusData(ShipTrophyL10n.get("iaido_status_torpedo"), false);
         }
         return null;
     }
@@ -83,7 +88,9 @@ public class IaidoStats extends BaseShipSystemScript {
     @Override
     public String getInfoText(ShipSystemAPI system, ShipAPI ship) {
         if (system == null || system.isOutOfAmmo()) return null;
-        if (system.getState() == ShipSystemAPI.SystemState.IDLE) return "READY";
+        if (system.getState() == ShipSystemAPI.SystemState.IDLE) {
+            return ShipTrophyL10n.get("iaido_ready");
+        }
         return null;
     }
 

@@ -9,6 +9,8 @@ import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
+import shiptrophy.ShipTrophyL10n;
+
 public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
     protected abstract String getHullModId();
     protected abstract String getRequiredShowcaseName();
@@ -30,13 +32,14 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            return "Trophy hullmod effects are disabled in LunaLib settings";
+            return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         if (!isUnlocked()) {
-            return "Requires the " + getRequiredShowcaseName() + " in the Hall of Triumph network";
+            return ShipTrophyL10n.format(
+                    "hullmod_requires_the_showcase", getRequiredShowcaseName());
         }
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getHullModId());
-        if (other != null) return "Incompatible with " + other;
+        if (other != null) return ShipTrophyL10n.format("hullmod_incompatible", other);
         return null;
     }
 
@@ -53,15 +56,17 @@ public abstract class BaseUniqueTrophyHullMod extends BaseHullMod {
         Color h = Misc.getHighlightColor();
 
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         }
 
         ShipVariantAPI variant = ship == null ? null : ship.getVariant();
         if (variant != null && variant.hasHullMod(getHullModId())) {
-            tooltip.addPara("Current fitted-weapon OP discount: %s.",
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_op_discount"),
                     opad, h, "" + getCurrentDiscount(variant));
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"), opad, h,
+                ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 }

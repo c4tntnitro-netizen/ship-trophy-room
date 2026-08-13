@@ -17,6 +17,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 
 import shiptrophy.ShipTrophyRoomIds;
+import shiptrophy.ShipTrophyL10n;
 
 final class ShipGalleryData {
     enum SortKey {
@@ -43,6 +44,13 @@ final class ShipGalleryData {
         SortKey next() {
             SortKey[] all = values();
             return all[(ordinal() + 1) % all.length];
+        }
+
+        String displayLabel() {
+            if (this == FACTION) return ShipTrophyL10n.get("gallery_sort_faction");
+            if (this == SIZE) return ShipTrophyL10n.get("gallery_sort_size");
+            if (this == DP) return ShipTrophyL10n.get("gallery_sort_dp");
+            return ShipTrophyL10n.get("gallery_sort_hull");
         }
     }
 
@@ -73,6 +81,14 @@ final class ShipGalleryData {
         SizeFilter next() {
             SizeFilter[] all = values();
             return all[(ordinal() + 1) % all.length];
+        }
+
+        String displayLabel() {
+            if (this == FRIGATE) return ShipTrophyL10n.get("gallery_size_frigates");
+            if (this == DESTROYER) return ShipTrophyL10n.get("gallery_size_destroyers");
+            if (this == CRUISER) return ShipTrophyL10n.get("gallery_size_cruisers");
+            if (this == CAPITAL) return ShipTrophyL10n.get("gallery_size_capitals");
+            return ShipTrophyL10n.get("gallery_size_all");
         }
     }
 

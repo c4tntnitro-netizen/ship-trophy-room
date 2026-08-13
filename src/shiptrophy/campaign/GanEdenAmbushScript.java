@@ -1,5 +1,7 @@
 package shiptrophy.campaign;
 
+import shiptrophy.ShipTrophyL10n;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -321,7 +323,7 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
         fleet.getFleetData().setFlagship(sinistral);
         fleet.getFleetData().sort();
         fleet.forceSync();
-        fleet.setName("Aureate Refractions");
+        fleet.setName(ShipTrophyL10n.get("gan_eden_aureate_fleet"));
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
         fleet.getMemoryWithoutUpdate().set(ESCORT_WAVE_KEY, escortWave);

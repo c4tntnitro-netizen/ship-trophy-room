@@ -13,25 +13,25 @@ import org.json.JSONObject;
 
 import com.fs.starfarer.api.Global;
 
+import shiptrophy.ShipTrophyL10n;
+
 /** Metadata and source text for the recoverable Gan Eden archives. */
 public final class GanEdenLogSpec {
-    public static final String ARCHIVE_TAG = "Gan Eden Archives";
-
     public static final GanEdenLogSpec PART_ONE = new GanEdenLogSpec(
-            "part_one", "Personal Log 1765", ShatteredRingGenerator.ENTITY_ID,
-            "The Shattered Ring", "shipTrophyGanEdenEpitaphOne");
+            "part_one", "archive_title_part_one", ShatteredRingGenerator.ENTITY_ID,
+            "archive_site_shattered_ring", "shipTrophyGanEdenEpitaphOne");
     public static final GanEdenLogSpec PART_TWO = new GanEdenLogSpec(
-            "part_two", "Log — Part II", null,
-            "the first Coronal Hypershunt", "shipTrophyGanEdenEpitaphTwo");
+            "part_two", "archive_title_part_two", null,
+            "archive_site_first_hypershunt", "shipTrophyGanEdenEpitaphTwo");
     public static final GanEdenLogSpec PART_THREE = new GanEdenLogSpec(
-            "part_three", "Log — Part III", null,
-            "the second Coronal Hypershunt", "shipTrophyGanEdenEpitaphThree");
+            "part_three", "archive_title_part_three", null,
+            "archive_site_second_hypershunt", "shipTrophyGanEdenEpitaphThree");
     public static final GanEdenLogSpec PART_FOUR = new GanEdenLogSpec(
-            "part_four", "Log — Part IV", GanEdenGenerator.TREE_OF_LIFE_ID,
-            "Tree of Life", "shipTrophyGanEdenEpitaphFour");
+            "part_four", "archive_title_part_four", GanEdenGenerator.TREE_OF_LIFE_ID,
+            "archive_site_tree_of_life", "shipTrophyGanEdenEpitaphFour");
     public static final GanEdenLogSpec FINAL = new GanEdenLogSpec(
-            "final", "Log — Final", GanEdenGenerator.SPACE_ELEVATOR_ID,
-            "the Gan Eden Space Elevator", "shipTrophyGanEdenEpitaphFive");
+            "final", "archive_title_final", GanEdenGenerator.SPACE_ELEVATOR_ID,
+            "archive_site_space_elevator", "shipTrophyGanEdenEpitaphFive");
 
     private static final List<GanEdenLogSpec> ORDERED =
             Collections.unmodifiableList(Arrays.asList(
@@ -41,21 +41,21 @@ public final class GanEdenLogSpec {
     private static boolean bodiesLoaded;
 
     private final String id;
-    private final String title;
+    private final String titleKey;
     private final String siteId;
-    private final String siteName;
+    private final String siteNameKey;
     private final String ruleId;
 
     private GanEdenLogSpec(
             String id,
-            String title,
+            String titleKey,
             String siteId,
-            String siteName,
+            String siteNameKey,
             String ruleId) {
         this.id = id;
-        this.title = title;
+        this.titleKey = titleKey;
         this.siteId = siteId;
-        this.siteName = siteName;
+        this.siteNameKey = siteNameKey;
         this.ruleId = ruleId;
     }
 
@@ -64,7 +64,7 @@ public final class GanEdenLogSpec {
     }
 
     public String getTitle() {
-        return title;
+        return ShipTrophyL10n.get(titleKey);
     }
 
     public String getSiteId() {
@@ -72,20 +72,24 @@ public final class GanEdenLogSpec {
     }
 
     public String getSiteName() {
-        return siteName;
+        return ShipTrophyL10n.get(siteNameKey);
     }
 
     public String getBody() {
         ensureBodiesLoaded();
         String body = BODY_BY_RULE_ID.get(ruleId);
         if (body == null || body.trim().isEmpty()) {
-            return "[Archive data unavailable: " + title + "]";
+            return ShipTrophyL10n.format("archive_data_unavailable", getTitle());
         }
         return body;
     }
 
     public static List<GanEdenLogSpec> ordered() {
         return ORDERED;
+    }
+
+    public static String getArchiveTag() {
+        return ShipTrophyL10n.get("archive_tag");
     }
 
     public static GanEdenLogSpec forId(String id) {

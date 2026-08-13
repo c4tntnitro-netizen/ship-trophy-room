@@ -28,6 +28,7 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 
 import shiptrophy.IsaTrophyManager;
+import shiptrophy.ShipTrophyL10n;
 import shiptrophy.gallery.GalleryTourLauncher;
 
 /** Supplies controlled battle layouts for Gan Eden's quest encounters. */
@@ -341,9 +342,8 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
             engine.maintainStatusForPlayerShip(
                     ATMOSPHERIC_FLOW_ID,
                     STATUS_ICON,
-                    "Atmospheric flow",
-                    "-5% ballistic/energy damage and range; "
-                            + "+20% ship and missile speed",
+                    ShipTrophyL10n.get("atmospheric_flow_name"),
+                    ShipTrophyL10n.get("atmospheric_flow_effect"),
                     false);
         }
 

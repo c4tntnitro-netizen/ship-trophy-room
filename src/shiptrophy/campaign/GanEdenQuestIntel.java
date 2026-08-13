@@ -12,6 +12,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
+import shiptrophy.ShipTrophyL10n;
 import shiptrophy.campaign.GanEdenQuestManager.Stage;
 
 /** Dynamic intel entry for Isa's search for Isaac Leicester. */
@@ -21,8 +22,8 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
     @Override
     protected String getName() {
         return GanEdenQuestManager.isCompleted()
-                ? "A Borrowed Name — Complete"
-                : "A Borrowed Name";
+                ? ShipTrophyL10n.get("quest_title_complete")
+                : ShipTrophyL10n.get("quest_title");
     }
 
     @Override
@@ -39,8 +40,9 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
             Color tc,
             float initPad) {
         if (isUpdate && GanEdenQuestManager.isCompleted()) {
-            info.addPara("Quest completed: %s", initPad, tc,
-                    Misc.getPositiveHighlightColor(), "A Borrowed Name");
+            info.addPara(ShipTrophyL10n.get("quest_completed"), initPad, tc,
+                    Misc.getPositiveHighlightColor(),
+                    ShipTrophyL10n.get("quest_title"));
             return;
         }
         info.addPara(shortObjective(), initPad, tc,
@@ -53,87 +55,61 @@ public final class GanEdenQuestIntel extends BaseIntelPlugin {
         info.setParaInsigniaLarge();
         if (GanEdenQuestManager.getStage()
                 == Stage.INHERITANCE_RECOVERED) {
-            info.addPara(
-                    "Isa Leicester was recovered from a cryopod as an infant, "
-                            + "swaddled in a spacer suit bearing the name "
-                            + "Isaac Leicester. The Shattered Ring has "
-                            + "returned the preserved suit to her, and she "
-                            + "has taken it to her old workshop for study.",
-                    0f);
+            info.addPara(ShipTrophyL10n.get("quest_intro_inheritance"), 0f);
         } else {
-            info.addPara(
-                    "Isa Leicester was recovered from a cryopod as an infant, "
-                            + "swaddled in a spacer suit bearing the name "
-                            + "Isaac Leicester. A concealed identification "
-                            + "wafer in the suit recovered Isaac Thomas "
-                            + "Leicester's first personal log and linked him "
-                            + "to both surviving Coronal Hypershunts.",
-                    0f);
+            info.addPara(ShipTrophyL10n.get("quest_intro_revealed"), 0f);
         }
         info.addSpacer(10f);
-        info.addSectionHeading("Current objective",
+        info.addSectionHeading(ShipTrophyL10n.get("quest_current_objective"),
                 com.fs.starfarer.api.ui.Alignment.MID, 0f);
         info.addPara(shortObjective(), 10f, Misc.getTextColor(),
                 Misc.getHighlightColor(), highlightedObjective());
 
         if (GanEdenQuestManager.isCompleted()) {
             info.addSpacer(10f);
-            info.addPara(
-                    "Five scattered records reconstructed Isaac Thomas "
-                            + "Leicester's logs. Isa recovered the final "
-                            + "entry from Gan Eden's Space Elevator after "
-                            + "Cherubim and Lahat Haharev were destroyed—"
-                            + "though ordinary Omega Shards and Facets have "
-                            + "since begun appearing among some Remnant "
-                            + "Ordos.",
-                    0f);
+            info.addPara(ShipTrophyL10n.get("quest_summary_complete"), 0f);
         }
     }
 
     private String shortObjective() {
         switch (GanEdenQuestManager.getStage()) {
             case INHERITANCE_RECOVERED:
-                return "Investigate Isa's inherited spacer suit in her old "
-                        + "workshop at the Shattered Ring.";
+                return ShipTrophyL10n.get("quest_objective_inheritance");
             case ASK_AROUND_SHATTERED_RING:
             case FIND_BLACK_MARKET_CLUE:
             case INVESTIGATE_HYPERSHUNTS:
-                return "Search the Coronal Hypershunts for clues about "
-                        + "Isaac Leicester.";
+                return ShipTrophyL10n.get("quest_objective_hypershunts");
             case GAN_EDEN_REVEALED:
-                return "Travel through Power Transit Gate - Gan Eden and "
-                        + "find Isaac Leicester.";
+                return ShipTrophyL10n.get("quest_objective_gan_eden");
             case DEFEAT_GOLDEN_SHARDS:
-                return "Defeat Cherubim and Lahat Haharev, the golden Omega "
-                        + "Shards sealing the Space Elevator.";
+                return ShipTrophyL10n.get("quest_objective_bosses");
             case SPACE_ELEVATOR:
-                return "Search the Gan Eden Space Elevator and find Isaac "
-                        + "Leicester.";
+                return ShipTrophyL10n.get("quest_objective_elevator");
             case COMPLETED:
-                return "Isa's search for Isaac Leicester is complete.";
+                return ShipTrophyL10n.get("quest_objective_complete");
             default:
-                return "Bring Isa home to the Shattered Ring.";
+                return ShipTrophyL10n.get("quest_objective_home");
         }
     }
 
     private String highlightedObjective() {
         switch (GanEdenQuestManager.getStage()) {
             case INHERITANCE_RECOVERED:
-                return "old workshop";
+                return ShipTrophyL10n.get("quest_highlight_workshop");
             case ASK_AROUND_SHATTERED_RING:
             case FIND_BLACK_MARKET_CLUE:
             case INVESTIGATE_HYPERSHUNTS:
-                return "Coronal Hypershunts";
+                return ShipTrophyL10n.get("quest_highlight_hypershunts");
             case GAN_EDEN_REVEALED:
-                return "Isaac Leicester";
+                return ShipTrophyL10n.get("quest_highlight_isaac");
             case DEFEAT_GOLDEN_SHARDS:
-                return "Cherubim and Lahat Haharev";
+                return ShipTrophyL10n.get("quest_highlight_bosses");
             case SPACE_ELEVATOR:
-                return "Isaac Leicester";
+                return ShipTrophyL10n.get("quest_highlight_isaac");
             case COMPLETED:
-                return "complete";
+                return ShipTrophyL10n.get("quest_highlight_complete");
             default:
-                return "Shattered Ring";
+                return ShipTrophyL10n.get("quest_highlight_ring");
         }
     }
 

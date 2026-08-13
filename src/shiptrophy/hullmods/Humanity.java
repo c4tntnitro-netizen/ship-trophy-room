@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import shiptrophy.TrophyNetwork;
 import shiptrophy.TrophySubtypeRegistry;
 import shiptrophy.TrophySubtypeSpec;
+import shiptrophy.ShipTrophyL10n;
 
 public class Humanity extends NeuralInterface {
     public static final String HULLMOD_ID = "ship_trophy_humanity";
@@ -42,18 +43,21 @@ public class Humanity extends NeuralInterface {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            return "Trophy hullmod effects are disabled in LunaLib settings";
+            return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         if (!isUnlocked()) {
             TrophySubtypeSpec subtype = getSubtype();
-            String showcaseName = subtype == null ? "Remnant" : subtype.showcaseName;
+            String showcaseName = subtype == null
+                    ? ShipTrophyL10n.get("hullmod_remnant") : subtype.showcaseName;
             float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
-            return "Requires " + Math.round(unlockDp) + " DP worth of " + showcaseName
-                    + " ships in the Hall of Triumph network";
+            return ShipTrophyL10n.format(
+                    "hullmod_requires_dp", Math.round(unlockDp), showcaseName);
         }
-        if (hasNeuralInterface(ship)) return "Incompatible with Neural Interface";
+        if (hasNeuralInterface(ship)) return ShipTrophyL10n.format(
+                "hullmod_incompatible",
+                ShipTrophyL10n.get("hullmod_neural_interface"));
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, HULLMOD_ID);
-        if (other != null) return "Incompatible with " + other;
+        if (other != null) return ShipTrophyL10n.format("hullmod_incompatible", other);
         return null;
     }
 
@@ -87,11 +91,12 @@ public class Humanity extends NeuralInterface {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.",
-                opad, h, "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"),
+                opad, h, ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 
     @Override

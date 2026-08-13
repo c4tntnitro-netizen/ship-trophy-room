@@ -3,6 +3,8 @@ package shiptrophy.hullmods;
 import com.fs.starfarer.api.combat.BeamAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+
+import shiptrophy.ShipTrophyL10n;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.listeners.WeaponBaseRangeModifier;
 
@@ -27,7 +29,9 @@ public class LionGuardPageantry extends BaseTrophyDoctrineHullMod {
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (hasBoltCoherer(ship)) return "Incompatible with Energy Bolt Coherer";
+        if (hasBoltCoherer(ship)) return ShipTrophyL10n.format(
+                "hullmod_incompatible",
+                ShipTrophyL10n.get("hullmod_energy_bolt_coherer"));
         return super.getUnapplicableReason(ship);
     }
 
@@ -66,7 +70,7 @@ public class LionGuardPageantry extends BaseTrophyDoctrineHullMod {
 
     @Override
     protected String getDModCalculationNote() {
-        return "This hullmod counts as a D-mod.";
+        return ShipTrophyL10n.get("hullmod_counts_dmod");
     }
 
     private boolean hasBoltCoherer(ShipAPI ship) {

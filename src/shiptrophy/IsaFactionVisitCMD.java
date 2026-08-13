@@ -165,26 +165,21 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         }
 
         text.setFontInsignia();
-        text.addPara("Before Isa can answer, her slate vibrates again.\n\n"
-                + "This time, the advertisement addresses her by name.");
+        text.addPara(ShipTrophyL10n.get("tritachyon_ad_intro"));
 
         text.setFontOrbitron();
-        text.addPara("ISAAC LEICESTER", corporate);
+        text.addPara(ShipTrophyL10n.get("tritachyon_ad_name"), corporate);
         text.setFontSmallInsignia();
-        text.addPara("CUSTOMA SHIP ARCHITECTURES // PERSONNEL DISCOUNT",
+        text.addPara(ShipTrophyL10n.get("tritachyon_ad_header"),
                 Misc.getGrayColor());
 
-        String assessment = "Based on her recent technical searches, "
-                + "professional history, fleet composition, estimated "
-                + "liquidity, and observed pupil response during the "
-                + "demonstration, Tri-Tachyon predicts an eighty-seven "
-                + "percent likelihood that Isa would benefit from immediate "
-                + "Afflictor ownership.";
+        String assessment = ShipTrophyL10n.get("tritachyon_ad_assessment");
         LabelAPI copy = text.addPara(assessment, Misc.getGrayColor());
-        copy.setHighlight("eighty-seven percent likelihood",
-                "immediate Afflictor ownership");
+        copy.setHighlight(
+                ShipTrophyL10n.get("tritachyon_ad_highlight_probability"),
+                ShipTrophyL10n.get("tritachyon_ad_highlight_afflictor"));
         copy.setHighlightColors(corporate, corporate);
-        text.addPara("FINANCING STATUS: PRE-APPROVED",
+        text.addPara(ShipTrophyL10n.get("tritachyon_ad_financing"),
                 Misc.getPositiveHighlightColor());
         text.setFontInsignia();
     }
@@ -201,19 +196,13 @@ public class IsaFactionVisitCMD implements CommandPlugin {
         }
 
         text.setFontInsignia();
-        text.addPara("Isa hastily wipes the advert from her slate.\n\n"
-                + "\"I didn't give them any of that information.\"\n\n"
-                + "The showroom voice answers without being asked, speaking "
-                + "in the polished cadence of a TriOS delta-level AI.");
+        text.addPara(ShipTrophyL10n.get("trios_intro"));
         text.setFontOrbitron();
-        text.addPara("TRIOS // MARKETING SERVICES", corporate);
+        text.addPara(ShipTrophyL10n.get("trios_header"), corporate);
         text.setFontSmallInsignia();
-        text.addPara("\"You didn't need to, Ms. Leicester. Tri-Tachyon "
-                + "Marketing Services is the finest in the Domain. We "
-                + "have--\"", corporate);
+        text.addPara(ShipTrophyL10n.get("trios_reply"), corporate);
         text.setFontInsignia();
-        text.addPara("Isa cuts it off with a wave, scowling at the speakers "
-                + "overhead.");
+        text.addPara(ShipTrophyL10n.get("trios_cutoff"));
     }
 
     private static void grantHegemonyReward() {
@@ -267,7 +256,7 @@ public class IsaFactionVisitCMD implements CommandPlugin {
             fleet.getStats().getSensorProfileMod().modifyPercent(
                     HEGEMONY_SENSOR_MOD,
                     -1f,
-                    "Isa: concealed observation blister");
+                    ShipTrophyL10n.get("bonus_concealed_observation"));
         }
 
         if (memory.getBoolean(TRITACHYON_REWARD)
@@ -277,7 +266,7 @@ public class IsaFactionVisitCMD implements CommandPlugin {
                 member.getStats().getSuppliesPerMonth().modifyPercent(
                         TRITACHYON_SUPPLY_MOD,
                         -1f,
-                        "Isa: phase-coil maintenance manual");
+                        ShipTrophyL10n.get("bonus_phase_coil_manual"));
             }
         }
     }

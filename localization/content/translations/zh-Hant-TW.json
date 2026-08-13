@@ -1,0 +1,507 @@
+{
+  "schemaVersion": 1,
+  "locale": "zh-Hant-TW",
+  "csvFiles": [
+    {
+      "path": "data/campaign/industries.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_room",
+          "fields": {
+            "name": {"source": "Hall of Triumph", "target": "凱旋殿堂"},
+            "desc": {"source": "A climate-controlled gallery and reserve berth complex for storied vessels. Ships placed in its dedicated storage become trophies whose legends are refined into occasional story points.", "target": "一座專為傳奇艦船打造的恆溫展館與備用泊位綜合設施。存入專用倉儲的艦船會成為展品，其傳奇經歷將不時凝聚成故事點。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_wreck_farms",
+          "fields": {
+            "name": {"source": "Wreck Farms", "target": "殘骸農場"},
+            "desc": {"source": "Salvager families maintain hereditary claims over the dense orbital wreck fields surrounding the Ring. Tug crews herd drifting hulks into safer plots, where cutters and yard crews strip them for metals, machinery, supplies, and reusable hull sections.", "target": "打撈者家族世代持有破碎之環周邊密集軌道殘骸區的作業權。拖船船員將漂流船骸歸攏至較安全的區塊，再由切割工與船塢人員拆取金屬、機械、補給品及可重複利用的艦體部件。"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/campaign/market_conditions.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_pod_community",
+          "fields": {
+            "name": {"source": "Pod Community", "target": "休眠艙社群"},
+            "desc": {"source": "Cryopods are common salvage in the surrounding wreck fields, and the Ring's revival wards have accumulated generations of people separated from their original lives by decades or centuries. Locals jokingly call them \"pod people\"; here, the term usually implies kinship rather than novelty.", "target": "周邊殘骸區經常能打撈到低溫休眠艙，而破碎之環的復甦病房已接納了好幾代與原本生活相隔數十年乃至數百年的人。當地人戲稱他們為\"艙裡人\"；在這裡，這個稱呼通常代表親緣與歸屬，而非獵奇。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_gan_eden_sanctuary",
+          "fields": {
+            "name": {"source": "Gan Eden Sanctuary", "target": "伊甸園庇護所"},
+            "desc": {"source": "Life inside the sealed Gan Eden prototype is self-contained. Its isolation permits no imports, exports, or access to any other market.", "target": "封閉的伊甸園原型內部具有自給自足的生態。此處與世隔絕，不允許進出口，也無法連接任何其他市場。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_gan_eden_aureate_siege",
+          "fields": {
+            "name": {"source": "Aureate Siege", "target": "金輝圍困"},
+            "desc": {"source": "The golden Omega guardians range unchecked across Gan Eden. No settlement can be secure while either shard remains active.", "target": "金色歐米伽守衛在伊甸園內肆意巡弋。只要任一碎片仍在活動，任何聚落都無法獲得安全。"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/campaign/special_items.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_gan_eden_receiver",
+          "fields": {
+            "name": {"source": "Damaged Gate Receiver Fragment", "target": "受損星門接收器碎片"},
+            "tech/manufacturer": {"source": "Domain Restricted", "target": "人之領限制級"},
+            "desc": {"source": "A damaged receiver fragment allegedly recovered from deep inside one of the Shattered Ring's adamantine arcs. Its memory contains a faint human recording and a persistent carrier signature matching the surviving Coronal Hypershunts. The item is bound to this transaction and cannot be resold.", "target": "一塊受損的接收器碎片，據稱發現於破碎之環某段精金拱體深處。其記憶體中留有一段微弱的人類錄音，以及與現存星冕分流器相符的持續載波特徵。此物品與本次交易綁定，無法轉售。"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/campaign/submarkets.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_room_storage",
+          "fields": {
+            "name": {"source": "Hall of\nTriumph", "target": "凱旋殿堂"},
+            "desc": {"source": "A curated ship vault attached to a colony Hall of Triumph. Ships stored here remain mothballed and secure, and displayed hulls help the Hall of Triumph generate story points.", "target": "殖民地凱旋殿堂附屬的精選艦船庫。存放於此的艦船會安全地維持封存狀態；展出的艦體能協助凱旋殿堂產生故事點。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_room_sort_controls",
+          "fields": {
+            "name": {"source": "Legacy Hall Controls", "target": "舊版殿堂控制項"},
+            "desc": {"source": "Hidden save-compatibility shell.", "target": "用於存檔相容性的隱藏外殼。"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/characters/skills/skill_data.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_isa_field_refit",
+          "fields": {
+            "name": {"source": "Field-Refit Doctrine", "target": "戰地改裝學說"},
+            "description": {"source": "Every ship tells you where it is going to break. The trick is to listen before the shooting starts.", "target": "每艘船都會告訴你它將從哪裡斷裂。訣竅是在開火之前聽懂它。"},
+            "author": {"source": "Isa Leicester, workshop notes", "target": "艾薩·萊斯特，工坊筆記"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_isa_redline",
+          "fields": {
+            "name": {"source": "Redline Calibration", "target": "紅線校準"},
+            "description": {"source": "If the engines are still inside the hull when we dock, I left performance on the table.", "target": "要是靠港時引擎還乖乖待在艦體裡，就表示我還沒把性能榨乾。"},
+            "author": {"source": "Isa Leicester, workshop notes", "target": "艾薩·萊斯特，工坊筆記"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/config/LunaSettings.csv",
+      "edits": [
+        {
+          "keyColumn": "fieldID", "key": "shipTrophyRewardsHeader",
+          "fields": {
+            "fieldName": {"source": "Showcase Rewards", "target": "展示獎勵"},
+            "defaultValue": {"source": "Showcase Rewards", "target": "展示獎勵"},
+            "tab": {"source": "Rewards", "target": "獎勵"}
+          }
+        },
+        {
+          "keyColumn": "fieldID", "key": "shipTrophyHullmodsEnabled",
+          "fields": {
+            "fieldName": {"source": "Trophy Hullmod Rewards", "target": "戰利品船體改裝獎勵"},
+            "fieldDescription": {"source": "TRUE: Trophy hullmods unlock normally, remain usable, and apply their normal effects; replacement story-point bonuses are inactive. FALSE: Learned and fitted trophy hullmods remain in the save but become inert and are hidden from the refit picker; each completed faction program or qualifying unique showcase instead adds 5 percent to Hall of Triumph story-point generation. Isa's dialogue is unchanged.", "target": "TRUE：戰利品船體改裝會正常解鎖、維持可用並生效；替代性的故事點加成不啟用。FALSE：已學會或已安裝的戰利品船體改裝仍保留在存檔中，但會失效並從改裝選單中隱藏；每個已完成的陣營計畫或符合條件的獨特展示，改為使凱旋殿堂的故事點產生速度提高5%。艾薩的對話不變。"},
+            "tab": {"source": "Rewards", "target": "獎勵"}
+          }
+        },
+        {
+          "keyColumn": "fieldID", "key": "shipTrophyNexHeader",
+          "fields": {
+            "fieldName": {"source": "Nexerelin Integration", "target": "Nexerelin 整合"},
+            "defaultValue": {"source": "Nexerelin Integration", "target": "Nexerelin 整合"},
+            "tab": {"source": "Achievements", "target": "成就"}
+          }
+        },
+        {
+          "keyColumn": "fieldID", "key": "shipTrophyNexAchievementsEnabled",
+          "fields": {
+            "fieldName": {"source": "Hall Achievements", "target": "殿堂成就"},
+            "fieldDescription": {"source": "TRUE: When Nexerelin and MagicLib are enabled, incomplete Hall achievements are shown and their progress is checked. FALSE: Incomplete Hall achievements are hidden and make no progress; completed achievements remain visible. This setting has no effect when either optional mod is absent.", "target": "TRUE：啟用 Nexerelin 與 MagicLib 時，會顯示尚未完成的殿堂成就並檢查其進度。FALSE：尚未完成的殿堂成就會隱藏且不再推進；已完成的成就仍然可見。任一選用模組缺少時，此設定均不生效。"},
+            "tab": {"source": "Achievements", "target": "成就"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/config/magic_achievements.csv",
+      "edits": [
+        {"keyColumn": "id", "key": "ship_trophy_room_first_exhibit", "fields": {"name": {"source": "The First Exhibit", "target": "第一件展品"}, "description": {"source": "Displayed the first unique ship in a Hall of Triumph.", "target": "在凱旋殿堂中展示第一艘獨特艦船。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_room_doctrine_archive", "fields": {"name": {"source": "Doctrine of Triumph", "target": "凱旋學說"}, "description": {"source": "Completed all six vanilla doctrine showcase programs.", "target": "完成全部六項原版學說展示計畫。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_room_isa_masterwork", "fields": {"name": {"source": "Awe-Inspiring", "target": "震撼人心"}, "description": {"source": "Completed Isa Leicester's five-capital masterwork.", "target": "完成艾薩·萊斯特的五艘主力艦傑作。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_room_gan_eden", "fields": {"name": {"source": "The Domain's Greatest Achievement", "target": "人之領最偉大的成就"}, "description": {"source": "Completed A Borrowed Name and opened Gan Eden's future.", "target": "完成《借來的名字》，為伊甸園開啟未來。"}}}
+      ]
+    },
+    {
+      "path": "data/config/ship_trophy_room/subtypes.csv",
+      "edits": [
+        {"keyColumn": "id", "key": "xiv", "fields": {"displayName": {"source": "XIV Battlegroup", "target": "第十四戰鬥群"}, "showcaseName": {"source": "XIV Battlegroup", "target": "第十四戰鬥群"}}},
+        {"keyColumn": "id", "key": "lp", "fields": {"displayName": {"source": "Luddic Path", "target": "盧德左徑"}, "showcaseName": {"source": "Luddic Path", "target": "盧德左徑"}}},
+        {"keyColumn": "id", "key": "lg", "fields": {"displayName": {"source": "Lion's Guard", "target": "獅心衛隊"}, "showcaseName": {"source": "Lion's Guard", "target": "獅心衛隊"}}},
+        {"keyColumn": "id", "key": "tt", "fields": {"displayName": {"source": "Tri-Tachyon", "target": "速子科技"}, "showcaseName": {"source": "Tri-Tachyon", "target": "速子科技"}}},
+        {"keyColumn": "id", "key": "knights_of_ludd", "fields": {"displayName": {"source": "Knights of Ludd", "target": "盧德騎士團"}, "showcaseName": {"source": "Knights of Ludd", "target": "盧德騎士團"}}},
+        {"keyColumn": "id", "key": "uaf", "fields": {"displayName": {"source": "United Aurora Federation", "target": "聯合極光聯邦"}, "showcaseName": {"source": "Auroran", "target": "極光聯邦"}}},
+        {"keyColumn": "id", "key": "iron_shell", "fields": {"displayName": {"source": "Iron Shell", "target": "鐵殼"}, "showcaseName": {"source": "Iron Shell", "target": "鐵殼"}}},
+        {"keyColumn": "id", "key": "remnant", "fields": {"displayName": {"source": "Remnant", "target": "餘暉"}, "showcaseName": {"source": "Remnant", "target": "餘暉"}}},
+        {"keyColumn": "id", "key": "domain_derelict", "fields": {"displayName": {"source": "Domain Derelicts", "target": "人之領遺棄艦"}, "showcaseName": {"source": "Explorarium", "target": "勘探者"}}}
+      ]
+    },
+    {
+      "path": "data/hullmods/hull_mods.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_xiv_legacy",
+          "fields": {
+            "name": {"source": "Legacy", "target": "遺產"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Defenses", "target": "防禦"},
+            "desc": {"source": "XIV Battlegroup modifications add %s armor. Top speed and maneuverability are reduced by %s, while flux capacity and dissipation are increased by %s.", "target": "第十四戰鬥群改裝增加%s裝甲值。最高航速與機動性降低%s，幅能容量與幅能耗散提高%s。"},
+            "short": {"source": "XIV armor and flux refit.", "target": "第十四戰鬥群裝甲與幅能改裝。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_lp_zeal",
+          "fields": {
+            "name": {"source": "Zeal", "target": "狂熱"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Engines", "target": "引擎"},
+            "desc": {"source": "Luddic Path overdrive rites increase top speed by %s/%s/%s/%s su/second depending on hull size. Non-missile weapon range is reduced by %s, fighter replacement time is increased by %s, and crew casualties are increased by %s. Incompatible with Unstable Injector.", "target": "盧德左徑的超速儀式會依艦體大小，將最高航速提高%s/%s/%s/%s單位/秒。非飛彈武器射程降低%s，戰機補充時間增加%s，船員傷亡增加%s。與不穩定噴射器不相容。"},
+            "short": {"source": "Luddic Path overdrive refit.", "target": "盧德左徑超速改裝。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_lg_pageantry",
+          "fields": {
+            "name": {"source": "Pageantry", "target": "華儀"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Weapons", "target": "武器"},
+            "desc": {"source": "Lion's Guard energy coherers increase energy projectile range by %s and reduce beam range by the same amount. Crew casualties are increased by %s. Incompatible with Energy Bolt Coherer.", "target": "獅心衛隊的能量同調裝置使能量彈體射程提高%s，並等量降低光束射程。船員傷亡增加%s。與能量彈體同調器不相容。"},
+            "short": {"source": "Lion's Guard energy coherer.", "target": "獅心衛隊能量同調改裝。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_tt_optimization",
+          "fields": {
+            "name": {"source": "Optimization", "target": "最佳化"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Special, Logistics", "target": "特殊, 後勤"},
+            "desc": {"source": "Tri-Tachyon baffling reduces sensor profile by %s, while structural reinforcement adds %s hull integrity. Incompatible with Insulated Engine Assembly.", "target": "速子科技的消隱裝置使感測器特徵降低%s，結構加固則增加%s艦體結構值。與引擎隔離性裝配不相容。"},
+            "short": {"source": "Tri-Tachyon stealth reinforcement.", "target": "速子科技匿蹤加固改裝。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_kol_benediction",
+          "fields": {
+            "name": {"source": "Honor", "target": "榮譽"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Defenses", "target": "防禦"},
+            "desc": {"source": "Knights of Ludd reliquary reinforcement reduces hull and armor damage taken by %s, increases hull integrity by %s, and reduces shield damage taken by %s. Low-tech ships only.", "target": "盧德騎士團的聖物匣加固使艦體與裝甲承受的傷害降低%s，艦體結構值提高%s，護盾承受的傷害降低%s。僅限低端技術艦船。"},
+            "short": {"source": "Knights of Ludd reinforcement.", "target": "盧德騎士團加固改裝。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_uaf_resonance",
+          "fields": {
+            "name": {"source": "Resonance", "target": "共振"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Weapons", "target": "武器"},
+            "desc": {"source": "Auroran launch-control systems increase guided missile maximum speed by %s. Torpedo and multi-rocket volleys deploy %s forward decoy flares traveling at %s of the parent munition's speed; Semibreve launchers deploy %s. Decoys remain active for %s/%s/%s seconds when fired by small/medium/large launchers. Missile-based point defense, fighter weapons, and submunitions are unaffected. Incompatible with ECCM Package.", "target": "極光聯邦射控系統使導引飛彈的最高速度提高%s。魚雷與多聯裝火箭齊射會向前釋放%s枚誘餌熱焰彈，其速度為母彈藥速度的%s；Semibreve 發射器會釋放%s枚。由小型/中型/大型發射器發射時，誘餌分別持續%s/%s/%s秒。飛彈點防禦、戰機武器與子彈藥不受影響。與電子反對抗組件不相容。"},
+            "short": {"source": "Accelerates guided missiles and launches heavy-ordnance decoys.", "target": "加速導引飛彈並發射重型彈藥誘餌。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_iron_shell_drill",
+          "fields": {
+            "name": {"source": "Discipline", "target": "紀律"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Defenses, Weapons, Engines", "target": "防禦, 武器, 引擎"},
+            "desc": {"source": "Diverts all shield and some weapon power to the ship's engines, torpedo catapults and dampeners. Replaces the ship's system with %s. While active, shields are disabled and ballistic and energy weapon rate of fire is reduced by %s, but incoming hull, armor, and EMP damage is reduced by %s. Torpedoes launched during the draw gain %s maximum and launch speed and deal an additional %s/%s/%s/%s of their damage as kinetic damage on frigates/destroyers/cruisers/capital ships. Iron Shell ships only.", "target": "將全部護盾能源及部分武器能源轉供艦船引擎、魚雷彈射器與阻尼器。將艦船系統替換為%s。啟用期間護盾關閉，彈道與能量武器射速降低%s，但艦體、裝甲及 EMP 承受的傷害降低%s。拔刀期間發射的魚雷最高速度與初速提高%s，並會對護衛艦/驅逐艦/巡洋艦/主力艦額外造成相當於原傷害%s/%s/%s/%s的動能傷害。僅限鐵殼艦船。"},
+            "short": {"source": "Replaces the ship system with the Iaido torpedo charge.", "target": "將艦船系統替換為居合魚雷衝鋒。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_isa_provenance",
+          "fields": {
+            "name": {"source": "Awe", "target": "敬畏"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Special", "target": "特殊"},
+            "desc": {"source": "Isa's study of the Onslaught XIV, Paragon, Invictus, Conquest, and Executor doubles supported positive S-mod bonuses. Compatible modded hullmods are listed when present on the ship. S-mod penalties are unchanged.", "target": "艾薩對攻勢 (XIV)、典範、不敗、征服者與執行官的研究，會使支援的正面內建船體改裝加成提高為兩倍。艦船裝有相容的模組船體改裝時，也會將其列出。內建船體改裝的負面效果不變。"},
+            "short": {"source": "Doubles supported positive S-mod bonuses.", "target": "使支援的正面內建船體改裝加成提高為兩倍。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_gaze",
+          "fields": {
+            "name": {"source": "Gaze", "target": "凝視"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Defenses, Special", "target": "防禦, 特殊"},
+            "desc": {"source": "Ziggurat-derived flux tuning increases flux dissipation while venting by %s. Incompatible with %s. Cannot be installed on the Ziggurat used to unlock it.", "target": "源自通靈塔的幅能調校使主動排散時的幅能耗散提高%s。與%s不相容。無法安裝在用於解鎖此改裝的通靈塔上。"},
+            "short": {"source": "Increases flux dissipation while venting by 75%.", "target": "主動排散時幅能耗散提高75%。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_contempt",
+          "fields": {
+            "name": {"source": "Contempt", "target": "蔑視"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Weapons, Special", "target": "武器, 特殊"},
+            "desc": {"source": "Onslaught Mk.I threat analysis causes point-defense weapons to deal %s more damage to fighters and missiles while generating %s less flux. This includes weapons classified as point defense by the S-mod effect of Integrated Point Defense AI. All weapons deal %s more hull damage. Cannot be installed on the Onslaught Mk.I used to unlock it.", "target": "攻勢 Mk.I 的威脅分析使點防禦武器對戰機與飛彈造成的傷害提高%s，同時產生的幅能降低%s。其中包括透過整合點防禦 AI 的內建效果而被歸類為點防禦的武器。所有武器對艦體造成的傷害提高%s。無法安裝在用於解鎖此改裝的攻勢 Mk.I 上。"},
+            "short": {"source": "Improves point defense and hull damage.", "target": "提高點防禦效能與對艦體傷害。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_black_lion",
+          "fields": {
+            "name": {"source": "Inheritance", "target": "傳承"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Weapons, Special", "target": "武器, 特殊"},
+            "desc": {"source": "The Black Lion's energy architecture increases energy weapon damage by %s and reduces energy weapon flux cost by %s.", "target": "黑獅號的能量架構使能量武器傷害提高%s，並使能量武器幅能消耗降低%s。"},
+            "short": {"source": "Black Lion energy weapon refit.", "target": "黑獅號能量武器改裝。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_abundant_mercy",
+          "fields": {
+            "name": {"source": "Vow", "target": "誓約"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Defenses, Fighter Bays", "target": "防禦, 戰機甲板"},
+            "desc": {"source": "Abundant Mercy recovery doctrine reduces crew casualties by %s and fighter refit time by %s.", "target": "豐沛的慈悲號的救援學說使船員傷亡降低%s，並使戰機整備時間縮短%s。"},
+            "short": {"source": "Hospitaller recovery doctrine.", "target": "救護騎士團救援學說。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_humanity",
+          "fields": {
+            "name": {"source": "Humanity", "target": "人性"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Special", "target": "特殊"},
+            "desc": {"source": "Remnant integration reduces deployment cost to %s, but reduces ballistic, energy, and missile fire rate by %s, top speed by %s, and fighter engagement range by %s. Functions as Neural Interface and is incompatible with it.", "target": "餘暉整合使部署點消耗降至%s，但彈道、能量與飛彈武器射速降低%s，最高航速降低%s，戰機交戰距離降低%s。可作為神經介面使用，並與其不相容。"},
+            "short": {"source": "Zero deployment cost with severe combat penalties.", "target": "部署點消耗為零，但承受嚴重戰鬥懲罰。"}
+          }
+        },
+        {
+          "keyColumn": "id", "key": "ship_trophy_memory",
+          "fields": {
+            "name": {"source": "Memory", "target": "記憶"}, "tech/manufacturer": {"source": "Hall of Triumph", "target": "凱旋殿堂"}, "uiTags": {"source": "Defenses, Engines, Special", "target": "防禦, 引擎, 特殊"},
+            "desc": {"source": "Explorarium reconstruction increases hull integrity by %s, adds %s armor, and increases top speed by %s/%s/%s/%s su/second depending on hull size. Derelict or Explorarium ships only. Incompatible with Unstable Injector.", "target": "勘探者重構使艦體結構值提高%s，增加%s裝甲值，並依艦體大小將最高航速提高%s/%s/%s/%s單位/秒。僅限遺棄艦或勘探者艦船。與不穩定噴射器不相容。"},
+            "short": {"source": "Derelict structural reconstruction.", "target": "遺棄艦結構重構。"}
+          }
+        }
+      ]
+    },
+    {
+      "path": "data/hulls/wing_data.csv",
+      "edits": [{"keyColumn": "id", "key": "ship_trophy_golden_aspect_wing", "fields": {"role desc": {"source": "Transience", "target": "無常"}}}]
+    },
+    {
+      "path": "data/shipsystems/ship_systems.csv",
+      "edits": [{"keyColumn": "id", "key": "ship_trophy_iaido", "fields": {"name": {"source": "Iaido", "target": "居合"}}}]
+    },
+    {
+      "path": "data/strings/descriptions.csv",
+      "edits": [
+        {
+          "keyColumn": "id", "key": "ship_trophy_iaido",
+          "fields": {
+            "text1": {"source": "Diverts all shield and some weapon power to the ship's engines, torpedo catapults and dampeners.", "target": "將全部護盾能源及部分武器能源轉供艦船引擎、魚雷彈射器與阻尼器。"},
+            "text2": {"source": "Movement", "target": "機動"},
+            "text3": {"source": "Diverts all shield and some weapon power to the ship's engines, torpedo catapults and dampeners. Will attempt to ram targets, otherwise charges straight forward. Torpedoes launched during the charge gain 200% speed and deal bonus Kinetic damage equal to 50% of the torpedo's damage. -50% damage taken and halved ballistic and energy weapon rate of fire while active.", "target": "將全部護盾能源及部分武器能源轉供艦船引擎、魚雷彈射器與阻尼器。系統會嘗試撞擊目標，否則便徑直向前衝鋒。衝鋒期間發射的魚雷速度提高200%，並額外造成相當於魚雷傷害50%的動能傷害。啟用期間承受的傷害降低50%，彈道與能量武器射速減半。"},
+            "text4": {"source": "200% speed | Kinetic | 50% | -50%", "target": "200%速度 | 動能 | 50% | -50%"}
+          }
+        },
+        {"keyColumn": "id", "key": "ship_trophy_shattered_ring", "fields": {"text1": {"source": "The station called the Shattered Ring has been built through the largest surviving arc of an ancient adamantine megastructure. Habitats, docks, revival wards, and salvage gantries cling to the fracture like barnacles. The surrounding debris is divided into jealously guarded orbital claims known as wreck-farms. Generations of salvagers have worked these plots, drawing metals, machinery, intact hull sections, and the occasional living cryopod from a field that has never quite run dry.", "target": "名為破碎之環的太空站貫穿一座古老精金巨構殘存的最大弧段而建。居住艙、船塢、復甦病房和打撈龍門架如藤壺般攀附在斷口上。周邊殘骸被劃分為戒備森嚴的軌道作業權區，當地人稱之為殘骸農場。幾代打撈者在這些區塊中工作，從這片彷彿永不枯竭的殘骸帶裡收集金屬、機械、完整艦體部件，偶爾還能找到仍有生命跡象的低溫休眠艙。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_gan_eden_space_elevator", "fields": {"text1": {"source": "A silent transit terminus rises inward from a remote district of the Dyson sphere's shell. Passenger concourses and cargo spines stand empty, but a sealed continuity archive remains alive behind the station's inner bulkheads.", "target": "一座寂靜的轉運總站從戴森球外殼的偏遠區域向內聳起。旅客大廳與貨運脊線空無一人，但太空站內層艙壁之後，一座封閉的延續檔案庫仍在運作。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_gan_eden_external_ring", "fields": {"text1": {"source": "A solitary adamantine Power Transit Gate floating at the center of a starless system near the northeastern edge of the Sector. Its coordinates were reconstructed from the synchronized routing vectors hidden in both Coronal Hypershunts. The Gate points beyond ordinary hyperspace geometry, toward the sealed interior called Gan Eden.", "target": "一座孤零零的精金能量轉運星門漂浮在星域東北邊緣附近一個無恆星星系的中心。其座標由兩座星冕分流器中隱藏的同步路由向量重建而成。這座星門指向常規超空間幾何之外，通往名為伊甸園的封閉內部。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_gan_eden_heavens_scar", "fields": {"text1": {"source": "Gan Eden's inner shell is blackened around a narrow, orange-hot puncture. Whatever struck it burned through from the outside in.", "target": "伊甸園的內殼在一道狹窄、熾橙的穿孔周圍焦黑一片。無論撞上它的是什麼，都從外向內燒穿了外殼。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_gan_eden_surface_site", "fields": {"text1": {"source": "A surveyed settlement anchor built directly into Gan Eden's inner shell. Its boundaries follow permanent terrain, utility, and load-bearing districts in the megastructure; it is a fixed surface location, not a separate world.", "target": "一處已完成勘測的聚落錨區，直接建在伊甸園的內殼之中。其邊界依照巨構內永久性的地形、公用設施和承重區劃定；這裡是固定的地表地點，而非一顆獨立世界。"}}},
+        {"keyColumn": "id", "key": "ship_trophy_flaming_sword", "fields": {"text1": {"source": "A vast coherent rift projected as a blade of annihilating light, stabilized by an aureate focusing lattice built into its bearer.", "target": "一道龐大的相干裂隙，被投射成毀滅之光的劍刃，並由承載者內部的金輝聚焦晶格加以穩定。"}}}
+      ]
+    },
+    {
+      "path": "data/weapons/weapon_data.csv",
+      "edits": [
+        {"keyColumn": "id", "key": "ship_trophy_flaming_sword", "fields": {"name": {"source": "Flaming Sword", "target": "烈焰之劍"}, "tech/manufacturer": {"source": "Unknown", "target": "未知"}, "primaryRoleStr": {"source": "General", "target": "通用"}, "customPrimary": {"source": "Produces violent rift explosions along the beam's path.", "target": "沿光束路徑引發猛烈的裂隙爆炸。"}}}
+      ]
+    }
+  ],
+  "textFiles": [
+    {
+      "path": "mod_info.json",
+      "edits": [
+        {"key": "name", "source": "\"name\": \"Hall of Triumph\"", "target": "\"name\": \"凱旋殿堂\""},
+        {"key": "description", "source": "\"description\": \"Adds the Hall of Triumph colony structure, Isa Leicester and her trophy doctrines, the Shattered Ring free port, and the sealed Gan Eden prototype system.\"", "target": "\"description\": \"加入凱旋殿堂殖民地建築、艾薩·萊斯特及其戰利品學說、破碎之環自由港，以及封閉的伊甸園原型星系。\""}
+      ]
+    },
+    {
+      "path": "data/config/chatter/characters/ship_trophy_isa.json",
+      "edits": [
+        {"key": "name", "source": "\"name\":\"Isa Leicester\"", "target": "\"name\":\"艾薩·萊斯特\""},
+        {"key": "start_1", "source": "Chief Engineer Leicester, assuming command.", "target": "總工程師萊斯特，接管指揮。"},
+        {"key": "start_2", "source": "Telemetry is live. Let's see what these old hulls can still teach us.", "target": "遙測已啟動。看看這些老船體還能教我們什麼。"},
+        {"key": "start_3", "source": "Time for some field tests.", "target": "該做點實地測試了。"},
+        {"key": "boss_1", "source": "That signature is antimatter-grade trouble. Get a clean scan of it before it explodes. Or we do.", "target": "那道訊號意味著反物質等級的麻煩。趁它還沒爆炸趕快掃描清楚。或者趁我們還沒爆炸。"},
+        {"key": "boss_2", "source": "Careful with that one!", "target": "小心那個傢伙！"},
+        {"key": "boss_3", "source": "White or gold, those signatures are Remnant architecture rewritten by something smarter. Recording everything.", "target": "無論白色還是金色，那些訊號都是被更聰明的東西重寫過的餘暉架構。全部記錄下來。"},
+        {"key": "boss_4", "source": "Those machines know we're here. Isa Leicester, telemetry live. Let's find out what they want.", "target": "那些機器知道我們來了。艾薩·萊斯特，遙測已啟動。看看它們想做什麼。"},
+        {"key": "retreat_1", "source": "Pulling back. I can fix her up.", "target": "正在後撤。我能把她修好。"},
+        {"key": "retreat_2", "source": "Disengaging. Learned enough today.", "target": "脫離交戰。今天學得夠多了。"},
+        {"key": "missile_1", "source": "Missile racks dry!", "target": "飛彈架打空了！"},
+        {"key": "missile_2", "source": "That's the last missile! Ugh, hope it was worth the ordnance. All that money...", "target": "最後一枚飛彈！呃，希望這發值回彈藥錢。那可全是錢啊……"},
+        {"key": "engaged_1", "source": "Engaging. Ludd above, their loadouts are straight ass.", "target": "開始交戰。盧德在上，他們的配裝爛得一塌糊塗。"},
+        {"key": "engaged_2", "source": "Let's take them apart!", "target": "把他們拆了！"},
+        {"key": "engaged_3", "source": "Contact! I want to know what their engineers thought they were doing.", "target": "接敵！我倒想知道他們的工程師以為自己在做什麼。"},
+        {"key": "help_1", "source": "I could use a hand! Before all my hard work gets blasted off!", "target": "來搭把手！趁我的心血還沒全被炸飛！"},
+        {"key": "help_2", "source": "Support needed!", "target": "需要支援！"},
+        {"key": "pursue_1", "source": "They're running! Please keep them intact!", "target": "他們要跑！盡量留個完整的！"},
+        {"key": "pursue_2", "source": "After them!", "target": "追上去！"},
+        {"key": "running_1", "source": "Backing off!", "target": "正在撤退！"},
+        {"key": "running_2", "source": "Falling back!", "target": "向後撤！"},
+        {"key": "hull90_1", "source": "Armor's opened up!", "target": "裝甲被撕開了！"},
+        {"key": "hull90_2", "source": "Breach! Breach! Seal bulkheads and send damage control!", "target": "破艙！破艙！封閉艙壁，損管隊就位！"},
+        {"key": "hull50_1", "source": "Half hull!", "target": "艦體只剩一半！"},
+        {"key": "hull50_2", "source": "Structural integrity below fifty!", "target": "結構完整度低於百分之五十！"},
+        {"key": "hull30_1", "source": "Hull critical! The ship's singing the fat lady's song!", "target": "艦體危急！這艘船都唱起謝幕曲了！"},
+        {"key": "hull30_2", "source": "Son of a bitch! If we survive, I'm welding the patches up myself!", "target": "媽的！要是能活下來，我親自把補丁焊上！"},
+        {"key": "overload_1", "source": "Overloaded. Fantastic.", "target": "過載了。真棒。"},
+        {"key": "overload_2", "source": "Flux grid is out. Cover us, I'm fixing her up!", "target": "幅能網癱了。掩護我們，我來修好她！"},
+        {"key": "death_1", "source": "Escape pods! Save as many as you ca - *static*", "target": "逃生艙！能救多少就救多——*雜訊*"},
+        {"key": "death_2", "source": "Closing time, Captain- *static*", "target": "該打烊了，艦長——*雜訊*"},
+        {"key": "victory_1", "source": "Glad that's over. I want logs, samples, and coffee.", "target": "總算結束了。我要日誌、樣本，還有咖啡。"},
+        {"key": "victory_2", "source": "Good work. Try to leave me something recognizable in the salvage.", "target": "幹得好。打撈時盡量給我留點認得出來的東西。"},
+        {"key": "victory_3", "source": "Just a kinetic peer review.", "target": "不過是一次動能同儕評閱。"},
+        {"key": "victory_boss_1", "source": "That wreck is going to sing her song.", "target": "那具殘骸會唱出她的故事。"},
+        {"key": "victory_boss_2", "source": "No one touch the weird parts until I get there. That means you, Captain.", "target": "我到之前誰都別碰那些怪東西。尤其是你，艦長。"}
+      ]
+    },
+    {
+      "path": "data/config/custom_entities.json",
+      "edits": [
+        {"key": "ring_default", "source": "\"defaultName\":\"The Shattered Ring\"", "target": "\"defaultName\":\"破碎之環\""},
+        {"key": "ring_text", "source": "\"nameInText\":\"Shattered Ring\"", "target": "\"nameInText\":\"破碎之環\""},
+        {"key": "eden_ring_default", "source": "\"defaultName\":\"Eden Transit Ring\"", "target": "\"defaultName\":\"伊甸轉運環\""},
+        {"key": "eden_ring_text", "source": "\"nameInText\":\"transit ring\"", "target": "\"nameInText\":\"轉運環\""},
+        {"key": "scar_default", "source": "\"defaultName\":\"Heavens Scar\"", "target": "\"defaultName\":\"天穹之痕\""},
+        {"key": "scar_text", "source": "\"nameInText\":\"Heavens Scar\"", "target": "\"nameInText\":\"天穹之痕\""},
+        {"key": "scar_short", "source": "\"shortName\":\"Scar\"", "target": "\"shortName\":\"裂痕\""},
+        {"key": "gate_default", "source": "\"defaultName\":\"Power Transit Gate - Gan Eden\"", "target": "\"defaultName\":\"能量轉運星門 - 伊甸園\""},
+        {"key": "gate_text", "source": "\"nameInText\":\"Power Transit Gate\"", "target": "\"nameInText\":\"能量轉運星門\""},
+        {"key": "gate_short", "source": "\"shortName\":\"Gate\"", "target": "\"shortName\":\"星門\""},
+        {"key": "hypershunt_default", "source": "\"defaultName\":\"Damaged Coronal Hypershunt\"", "target": "\"defaultName\":\"受損的星冕分流器\""},
+        {"key": "hypershunt_text", "source": "\"nameInText\":\"damaged coronal hypershunt\"", "target": "\"nameInText\":\"受損的星冕分流器\""},
+        {"key": "hypershunt_short", "source": "\"shortName\":\"damaged hypershunt\"", "target": "\"shortName\":\"受損分流器\""},
+        {"key": "hauler_default", "source": "\"defaultName\":\"Damaged Gate Hauler\"", "target": "\"defaultName\":\"受損的星門運輸艦\""},
+        {"key": "hauler_text", "source": "\"nameInText\":\"damaged Gate Hauler\"", "target": "\"nameInText\":\"受損的星門運輸艦\""},
+        {"key": "hauler_short", "source": "\"shortName\":\"damaged Gate Hauler\"", "target": "\"shortName\":\"受損星門運輸艦\""},
+        {"key": "elevator_default", "source": "\"defaultName\":\"Tree of Life Space Elevator\"", "target": "\"defaultName\":\"生命之樹太空電梯\""},
+        {"key": "elevator_text", "source": "\"nameInText\":\"space elevator\"", "target": "\"nameInText\":\"太空電梯\""},
+        {"key": "elevator_short", "source": "\"shortName\":\"elevator\"", "target": "\"shortName\":\"電梯\""},
+        {"key": "ring_short", "source": "\"shortName\":\"ring\"", "target": "\"shortName\":\"環\"", "expectedCount": 2}
+      ]
+    },
+    {
+      "path": "data/config/planets.json",
+      "edits": [
+        {"key": "artificial", "source": "\"name\":\"Artificial\"", "target": "\"name\":\"人工\""},
+        {"key": "volcanic", "source": "\"name\":\"Volcanic\"", "target": "\"name\":\"火山\"", "expectedCount": 2},
+        {"key": "frozen", "source": "\"name\":\"Frozen\"", "target": "\"name\":\"冰凍\"", "expectedCount": 2},
+        {"key": "terran", "source": "\"name\":\"Terran\"", "target": "\"name\":\"類地\"", "expectedCount": 2},
+        {"key": "water", "source": "\"name\":\"Water\"", "target": "\"name\":\"水體\"", "expectedCount": 2}
+      ]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_golden_aspect.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Aspect\"", "target": "\"hullName\": \"位向\""}, {"key": "description", "source": "An aureate Omega construct guarding the sealed interior of Gan Eden.", "target": "一台守衛伊甸園封閉內部的金輝歐米伽構造體。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_golden_facet.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Facet\"", "target": "\"hullName\": \"構面\""}, {"key": "description", "source": "An aureate Omega construct guarding the sealed interior of Gan Eden.", "target": "一台守衛伊甸園封閉內部的金輝歐米伽構造體。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_golden_shard_left.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Sinistral Shard\"", "target": "\"hullName\": \"左旋\""}, {"key": "description", "source": "An aureate Omega construct guarding the sealed interior of Gan Eden.", "target": "一台守衛伊甸園封閉內部的金輝歐米伽構造體。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_golden_shard_right.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Dextral Shard\"", "target": "\"hullName\": \"右旋\""}, {"key": "description", "source": "An aureate Omega construct guarding the sealed interior of Gan Eden.", "target": "一台守衛伊甸園封閉內部的金輝歐米伽構造體。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_golden_tesseract.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Tesseract\"", "target": "\"hullName\": \"超體\""}, {"key": "description", "source": "An aureate Omega construct guarding the sealed interior of Gan Eden.", "target": "一台守衛伊甸園封閉內部的金輝歐米伽構造體。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pather_enforcer.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Enforcer\"", "target": "\"hullName\": \"執法者\""}, {"key": "description", "source": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.", "target": "一種盧德左徑 Mk IV 改裝型，以乾涸血跡、強化裝甲和危險過載的引擎為標誌。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pather_eradicator.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Eradicator\"", "target": "\"hullName\": \"根除者\""}, {"key": "description", "source": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.", "target": "一種盧德左徑 Mk IV 改裝型，以乾涸血跡、強化裝甲和危險過載的引擎為標誌。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pather_hammerhead.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Hammerhead\"", "target": "\"hullName\": \"錘頭\""}, {"key": "description", "source": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.", "target": "一種盧德左徑 Mk IV 改裝型，以乾涸血跡、強化裝甲和危險過載的引擎為標誌。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pather_manticore.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Manticore (LP)\"", "target": "\"hullName\": \"蠍尾獅 (LP)\""}, {"key": "description", "source": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.", "target": "一種盧德左徑 Mk IV 改裝型，以乾涸血跡、強化裝甲和危險過載的引擎為標誌。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pather_prometheus2.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Prometheus Mk IV\"", "target": "\"hullName\": \"普羅米修斯 Mk IV\""}, {"key": "description", "source": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.", "target": "一種盧德左徑 Mk IV 改裝型，以乾涸血跡、強化裝甲和危險過載的引擎為標誌。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pather_sunder.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Sunder\"", "target": "\"hullName\": \"破陣\""}, {"key": "description", "source": "A Luddic Path Mk IV refit marked by dried blood, reinforced armor, and dangerously overdriven engines.", "target": "一種盧德左徑 Mk IV 改裝型，以乾涸血跡、強化裝甲和危險過載的引擎為標誌。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pirate_atlas2.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Atlas Mk IV\"", "target": "\"hullName\": \"阿特拉斯 Mk IV\""}, {"key": "description", "source": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.", "target": "一種海盜 Mk IV 改裝型，帶有臨時噴塗的虎紋野戰塗裝、強化裝甲和危險過載的引擎。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pirate_eradicator.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Eradicator (P)\"", "target": "\"hullName\": \"根除者 (P)\""}, {"key": "description", "source": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.", "target": "一種海盜 Mk IV 改裝型，帶有臨時噴塗的虎紋野戰塗裝、強化裝甲和危險過載的引擎。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pirate_falcon.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Falcon (P)\"", "target": "\"hullName\": \"獵鷹 (P)\""}, {"key": "description", "source": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.", "target": "一種海盜 Mk IV 改裝型，帶有臨時噴塗的虎紋野戰塗裝、強化裝甲和危險過載的引擎。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pirate_manticore.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Manticore (P)\"", "target": "\"hullName\": \"蠍尾獅 (P)\""}, {"key": "description", "source": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.", "target": "一種海盜 Mk IV 改裝型，帶有臨時噴塗的虎紋野戰塗裝、強化裝甲和危險過載的引擎。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_mk4_pirate_vanguard.skin",
+      "edits": [{"key": "name", "source": "\"hullName\": \"Vanguard (P)\"", "target": "\"hullName\": \"先鋒 (P)\""}, {"key": "description", "source": "A Pirate Mk IV refit carrying improvised tiger-stripe field paint, reinforced armor, and dangerously overdriven engines.", "target": "一種海盜 Mk IV 改裝型，帶有臨時噴塗的虎紋野戰塗裝、強化裝甲和危險過載的引擎。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_apex.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Apex (Ivory)\"", "target": "\"hullName\":\"折光 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_brilliant.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Brilliant (Ivory)\"", "target": "\"hullName\":\"輝煌 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_fulgent.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Fulgent (Ivory)\"", "target": "\"hullName\":\"光輝 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_glimmer.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Glimmer (Ivory)\"", "target": "\"hullName\":\"微光 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_lumen.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Lumen (Ivory)\"", "target": "\"hullName\":\"流明 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_nova.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Nova (Ivory)\"", "target": "\"hullName\":\"新星 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_radiant.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Radiant (Ivory)\"", "target": "\"hullName\":\"輻射 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {
+      "path": "data/hulls/skins/ship_trophy_white_scintilla.skin",
+      "edits": [{"key": "name", "source": "\"hullName\":\"Scintilla (Ivory)\"", "target": "\"hullName\":\"閃耀 (象牙)\""}, {"key": "description", "source": "A pale, refined Remnant reconstruction produced within Gan Eden.", "target": "一艘在伊甸園內製造的蒼白精製餘暉重構艦。"}]
+    },
+    {"path": "data/variants/ship_trophy_golden_aspect_Attack.variant", "edits": [{"key": "display", "source": "\"displayName\": \"Aureate Attack\"", "target": "\"displayName\": \"金輝突擊\""}]},
+    {"path": "data/variants/ship_trophy_golden_facet_Attack.variant", "edits": [{"key": "display", "source": "\"displayName\": \"Aureate Attack\"", "target": "\"displayName\": \"金輝突擊\""}]},
+    {"path": "data/variants/ship_trophy_golden_shard_left_Attack.variant", "edits": [{"key": "display", "source": "\"displayName\": \"Aureate Attack\"", "target": "\"displayName\": \"金輝突擊\""}]},
+    {"path": "data/variants/ship_trophy_golden_shard_right_Attack.variant", "edits": [{"key": "display", "source": "\"displayName\": \"Aureate Attack\"", "target": "\"displayName\": \"金輝突擊\""}]},
+    {"path": "data/variants/ship_trophy_golden_tesseract_Attack.variant", "edits": [{"key": "display", "source": "\"displayName\": \"Aureate Attack\"", "target": "\"displayName\": \"金輝突擊\""}]}
+  ],
+  "localizedFiles": [
+    {
+      "path": "data/strings/strings.json",
+      "translation": "localization/content/strings/zh-Hant-TW.json"
+    }
+  ]
+}

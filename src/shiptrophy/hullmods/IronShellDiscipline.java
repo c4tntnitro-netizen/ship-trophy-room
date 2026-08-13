@@ -16,6 +16,8 @@ import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.MissileAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+
+import shiptrophy.ShipTrophyL10n;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
@@ -71,9 +73,10 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (!isIronShellShip(ship)) return "Can only be installed on Iron Shell ships";
+        if (!isIronShellShip(ship)) return ShipTrophyL10n.get(
+                "hullmod_iron_shell_only");
         if (ship != null && (ship.isFighter() || ship.isStation() || ship.isStationModule())) {
-            return "Cannot be installed on fighters, stations, or station modules";
+            return ShipTrophyL10n.get("hullmod_no_modules");
         }
         return super.getUnapplicableReason(ship);
     }

@@ -39,6 +39,8 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 
+import shiptrophy.ShipTrophyL10n;
+
 /** Launches the disposable, read-only combat view of a curated Gallery hall. */
 public final class GalleryTourLauncher {
     private static final String MARKER_KEY =
@@ -132,14 +134,12 @@ public final class GalleryTourLauncher {
             done = true;
             if (!ShipGalleryData.isTourShuttleEligible(selectedShuttle)) {
                 dialog.getTextPanel().addPara(
-                        "The Gallery has no preserved frigate with "
-                                + "Civilian-grade Hull available as a tour shuttle.");
+                        ShipTrophyL10n.get("gallery_no_shuttle_launch"));
                 return;
             }
             if (selectedExhibits.isEmpty()) {
                 dialog.getTextPanel().addPara(
-                        "The tour hall is empty. Left-click ships on the Gallery conveyor "
-                                + "to load its exhibit racks first.");
+                        ShipTrophyL10n.get("gallery_empty_tour_launch"));
                 return;
             }
             launchSelected(dialog, selectedExhibits, selectedShuttle);
@@ -156,14 +156,14 @@ public final class GalleryTourLauncher {
                 selectedExhibits, berthCapacity);
         if (exhibits.isEmpty()) {
             dialog.getTextPanel().addPara(
-                    "The gallery shuttle cannot resolve any display images for this hall.");
+                    ShipTrophyL10n.get("gallery_no_display_images"));
             return;
         }
 
         CampaignFleetAPI shuttle = Global.getFactory().createEmptyFleet(
-                Factions.PLAYER, "Gallery Shuttle", false);
+                Factions.PLAYER, ShipTrophyL10n.get("gallery_shuttle_fleet"), false);
         CampaignFleetAPI hall = Global.getFactory().createEmptyFleet(
-                Factions.NEUTRAL, "Hall of Triumph Exhibits", false);
+                Factions.NEUTRAL, ShipTrophyL10n.get("gallery_exhibits_fleet"), false);
         if (shuttle == null || hall == null) return;
 
         FleetMemberAPI shuttleMember = cloneForTour(selected);
@@ -188,7 +188,7 @@ public final class GalleryTourLauncher {
         FleetMemberAPI hallIndex = Global.getFactory().createFleetMember(
                 FleetMemberType.SHIP, KITE_VARIANT);
         if (hallIndex == null) return;
-        hallIndex.setShipName("Gallery Exhibit Index");
+        hallIndex.setShipName(ShipTrophyL10n.get("gallery_exhibit_index"));
         hallIndex.setOwner(1);
         hallIndex.setFlagship(true);
         hallIndex.getRepairTracker().setMothballed(false);
@@ -402,7 +402,8 @@ public final class GalleryTourLauncher {
         public void afterDefinitionLoad(CombatEngineAPI engine) {
             engine.setDoNotEndCombat(true);
             engine.setCustomExit(
-                    "Leave gallery tour", "Return to Isa?");
+                    ShipTrophyL10n.get("gallery_leave_tour"),
+                    ShipTrophyL10n.get("gallery_return_to_isa"));
             engine.setRenderStarfield(false);
             engine.setBackgroundColor(new Color(5, 9, 11));
             engine.setMaxFleetPoints(FleetSide.PLAYER, 9999);
@@ -475,8 +476,8 @@ public final class GalleryTourLauncher {
             engine.maintainStatusForPlayerShip(
                     "ship_trophy_gallery_tour_status",
                     STATUS_ICON,
-                    "Hall of Triumph gallery tour",
-                    "Fly north through the exhibit hall; press G to return to Isa",
+                    ShipTrophyL10n.get("gallery_tour_status"),
+                    ShipTrophyL10n.get("gallery_tour_instructions"),
                     false);
         }
 
@@ -826,9 +827,7 @@ public final class GalleryTourLauncher {
                             "[Hall of Triumph] Gallery tour launch failed.");
                     ex.printStackTrace(System.err);
                     cleanupBattleState();
-                    showFallback(
-                            "The gallery shuttle fails to launch. "
-                                    + "See starsector.log for details.");
+                    showFallback(ShipTrophyL10n.get("gallery_launch_failed"));
                 }
             }
         }
@@ -852,9 +851,7 @@ public final class GalleryTourLauncher {
                     dialog.setPlugin(this);
                 }
             }
-            showFallback(
-                    "The gallery shuttle docks safely, but the comm link to Isa "
-                            + "does not reopen. Close this channel to return to campaign.");
+            showFallback(ShipTrophyL10n.get("gallery_return_failed"));
         }
 
         @Override
@@ -892,9 +889,9 @@ public final class GalleryTourLauncher {
             if (dialog == null) return;
             dialog.getTextPanel().addPara(message);
             dialog.getOptionPanel().clearOptions();
-            dialog.getOptionPanel().addOption(
-                    "Close the channel.", CLOSE_OPTION);
-            dialog.setOptionOnEscape("Close the channel.", CLOSE_OPTION);
+            String close = ShipTrophyL10n.get("gallery_close_channel");
+            dialog.getOptionPanel().addOption(close, CLOSE_OPTION);
+            dialog.setOptionOnEscape(close, CLOSE_OPTION);
         }
     }
 

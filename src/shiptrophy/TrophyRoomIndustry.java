@@ -54,7 +54,7 @@ public class TrophyRoomIndustry extends BaseIndustry {
     @Override
     public String getUnavailableReason() {
         if (market != null && !market.isPlayerOwned()) {
-            return "Can only be built on player colonies";
+            return ShipTrophyL10n.get("industry_player_only");
         }
         return super.getUnavailableReason();
     }
@@ -64,10 +64,13 @@ public class TrophyRoomIndustry extends BaseIndustry {
         super.addPostDescriptionSection(tooltip, mode);
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        tooltip.addPara("Adds a dedicated Hall of Triumph storage tab for ships and cargo.", opad, h, "Hall of Triumph");
-        tooltip.addPara("All Halls of Triumph are networked. Story point generation and doctrine unlocks use the whole network's unique displayed hull types.",
-                opad, h, "unique", "Duplicate ships");
-        tooltip.addPara("Base rate is 1 story point every %s days. Every %s unique hull types and every %s total unique deployment points each add another full rate bonus.",
+        tooltip.addPara(ShipTrophyL10n.get("industry_storage"), opad, h,
+                ShipTrophyL10n.get("storage_highlight_hall"));
+        tooltip.addPara(ShipTrophyL10n.get("industry_network_programs"),
+                opad, h,
+                ShipTrophyL10n.get("industry_highlight_unique"),
+                ShipTrophyL10n.get("industry_highlight_duplicates"));
+        tooltip.addPara(ShipTrophyL10n.get("industry_base_rate"),
                 opad, h, "" + BASE_DAYS_PER_STORY_POINT, "" + TrophyNetwork.UNIQUE_HULLS_FOR_FULL_BONUS, "" + TrophyNetwork.DP_FOR_FULL_BONUS);
 
     }
@@ -79,18 +82,18 @@ public class TrophyRoomIndustry extends BaseIndustry {
 
     @Override
     public String getImproveMenuText() {
-        return "Curate exhibits";
+        return ShipTrophyL10n.get("industry_demand_name");
     }
 
     @Override
     public void addImproveDesc(TooltipMakerAPI info, ImprovementDescriptionMode mode) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        info.addPara("Reduces Hall of Triumph story point generation time by %s.", opad, h, "25%");
+        info.addPara(ShipTrophyL10n.get("industry_demand_effect"),
+                opad, h, "25%");
     }
 
     public static boolean isFunctionalTrophyRoom(Industry industry) {
         return industry != null && !industry.isBuilding() && industry.isFunctional();
     }
-
 }

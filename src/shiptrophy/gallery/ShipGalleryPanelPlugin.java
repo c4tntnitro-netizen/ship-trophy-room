@@ -28,6 +28,7 @@ import com.fs.starfarer.api.ui.TextFieldAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
+import shiptrophy.ShipTrophyL10n;
 import shiptrophy.gallery.ShipGalleryData.SizeFilter;
 import shiptrophy.gallery.ShipGalleryData.SortKey;
 
@@ -137,18 +138,19 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
         header = contentPanel.createUIElement(Math.max(560f, width - OUTER_PAD * 2f),
                 HEADER_HEIGHT, false);
-        header.addTitle("Ship Gallery", Misc.getBasePlayerColor());
+        header.addTitle(ShipTrophyL10n.get("gallery_title"),
+                Misc.getBasePlayerColor());
         if (allShips.isEmpty()) {
-            header.addPara("A read-only catalog of the vessels preserved across your Halls of Triumph.",
-                    4f, Misc.getGrayColor(), "read-only");
+            header.addPara(ShipTrophyL10n.get("gallery_intro_empty"),
+                    4f, Misc.getGrayColor(),
+                    ShipTrophyL10n.get("gallery_intro_empty_highlight"));
         } else if (tourShuttle == null) {
-            header.addPara("Select a hull or scroll over the filmstrip. Tours require a stored "
-                            + "%s with %s; none is currently preserved.",
+            header.addPara(ShipTrophyL10n.get("gallery_intro_no_shuttle"),
                     4f, Misc.getNegativeHighlightColor(),
-                    "frigate", "Civilian-grade Hull");
+                    ShipTrophyL10n.get("gallery_intro_shuttle_highlight_one"),
+                    ShipTrophyL10n.get("gallery_intro_shuttle_highlight_two"));
         } else {
-            header.addPara("Showing %s of %s unique hulls. Tour shuttle: %s. Left-click the conveyor "
-                            + "to add exhibits (%s/%s); right-click the left rack to remove them.",
+            header.addPara(ShipTrophyL10n.get("gallery_intro_ready"),
                     4f, Misc.getHighlightColor(), Integer.toString(visibleShips.size()),
                     Integer.toString(allShips.size()), displayShipName(tourShuttle),
                     Integer.toString(getManifestDisplayCount()),
@@ -161,9 +163,9 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (factionDropdownOpen) {
             buildFactionPicker();
         } else if (allShips.isEmpty()) {
-            buildEmptyState("No ships are currently stored in a Hall of Triumph.", false);
+            buildEmptyState(ShipTrophyL10n.get("gallery_empty_halls"), false);
         } else if (visibleShips.isEmpty()) {
-            buildEmptyState("No displayed ships match the active filters.", true);
+            buildEmptyState(ShipTrophyL10n.get("gallery_empty_filtered"), true);
         } else {
             buildDetails();
             buildNavigation();
@@ -203,16 +205,21 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private void buildControls() {
         float sidebarWidth = getSidebarWidth();
         controls = contentPanel.createUIElement(sidebarWidth, CONTROLS_HEIGHT, false);
-        controls.addSectionHeading("Catalog order", Misc.getBasePlayerColor(),
+        controls.addSectionHeading(ShipTrophyL10n.get("gallery_catalog_order"), Misc.getBasePlayerColor(),
                 Misc.getDarkPlayerColor(), Alignment.MID, 0f);
-        controls.addPara("Sort and size cycle; faction opens a search menu.", 4f,
-                Misc.getGrayColor(), "search");
-        addControl("Primary: " + getPrimary().label, PRIMARY_ID, sidebarWidth);
-        addControl("Then by: " + getSecondary().label, SECONDARY_ID, sidebarWidth);
-        addControl("Hull size: " + getSizeFilter().label, SIZE_ID, sidebarWidth);
+        controls.addPara(ShipTrophyL10n.get("gallery_catalog_help"), 4f,
+                Misc.getGrayColor(),
+                ShipTrophyL10n.get("gallery_catalog_help_highlight"));
+        addControl(ShipTrophyL10n.format(
+                "gallery_primary", getPrimary().displayLabel()), PRIMARY_ID, sidebarWidth);
+        addControl(ShipTrophyL10n.format(
+                "gallery_secondary", getSecondary().displayLabel()), SECONDARY_ID, sidebarWidth);
+        addControl(ShipTrophyL10n.format(
+                "gallery_hull_size", getSizeFilter().displayLabel()), SIZE_ID, sidebarWidth);
         String manufacturer = getManufacturer();
-        String factionLabel = "Faction [search]: "
-                + (manufacturer.isEmpty() ? "All" : manufacturer);
+        String factionLabel = ShipTrophyL10n.format("gallery_faction_filter",
+                manufacturer.isEmpty()
+                        ? ShipTrophyL10n.get("gallery_all") : manufacturer);
         addControl(controls.shortenString(factionLabel, Math.max(210f, sidebarWidth - 18f)),
                 FACTION_ID, sidebarWidth);
         contentPanel.addUIElement(controls).inTR(OUTER_PAD, SIDEBAR_TOP);
@@ -224,7 +231,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
         factionSearchPanel = contentPanel.createUIElement(sidebarWidth, SEARCH_HEIGHT, false);
         factionSearchPanel.setForceProcessInput(true);
-        factionSearchPanel.addSectionHeading("Search factions", Misc.getBasePlayerColor(),
+        factionSearchPanel.addSectionHeading(ShipTrophyL10n.get("gallery_search_factions"), Misc.getBasePlayerColor(),
                 Misc.getDarkPlayerColor(), Alignment.MID, 0f);
         factionSearch = factionSearchPanel.addTextField(Math.max(210f, sidebarWidth - 4f), 3f);
         factionSearch.setText(factionQuery);
@@ -255,7 +262,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         factionResults.setForceProcessInput(true);
         factionResults.setBgAlpha(0.98f);
 
-        addFactionChoice("All factions", "", sidebarWidth);
+        addFactionChoice(ShipTrophyL10n.get("gallery_all_factions"), "", sidebarWidth);
         int matches = 0;
         String query = normalizeQuery(factionQuery);
         for (String manufacturer : ShipGalleryData.getManufacturers(allShips)) {
@@ -265,8 +272,10 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             matches++;
         }
         if (matches == 0 && !query.isEmpty()) {
-            factionResults.addPara("No matching factions.", 6f,
-                    Misc.getNegativeHighlightColor(), "No matching factions");
+            factionResults.addPara(
+                    ShipTrophyL10n.get("gallery_no_matching_factions"), 6f,
+                    Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("gallery_no_matching_factions_highlight"));
         }
 
         contentPanel.addUIElement(factionResults).inTR(OUTER_PAD,
@@ -294,22 +303,28 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         details.addPara(selected.getHullSpec().getHullNameWithDashClass(), 2f,
                 Misc.getGrayColor(), selected.getHullSpec().getHullName());
         details.beginGrid(Math.max(110f, sidebarWidth * 0.46f), 1);
-        details.addToGrid(0, 0, "Manufacturer", displayManufacturer(selected));
-        details.addToGrid(0, 1, "Hull size", displayHullSize(selected));
-        details.addToGrid(0, 2, "Deployment points", displayDp(selected));
-        details.addToGrid(0, 3, "Gallery status", "Preserved", Misc.getHighlightColor());
+        details.addToGrid(0, 0, ShipTrophyL10n.get("gallery_manufacturer"), displayManufacturer(selected));
+        details.addToGrid(0, 1, ShipTrophyL10n.get("gallery_grid_hull_size"), displayHullSize(selected));
+        details.addToGrid(0, 2, ShipTrophyL10n.get("gallery_deployment_points"), displayDp(selected));
+        details.addToGrid(0, 3, ShipTrophyL10n.get("gallery_status"),
+                ShipTrophyL10n.get("gallery_preserved"), Misc.getHighlightColor());
         if (ShipGalleryData.isTourShuttleEligible(selected)) {
-            details.addToGrid(0, 4, "Tour shuttle", "Selected",
+            details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
+                    ShipTrophyL10n.get("gallery_selected"),
                     Misc.getPositiveHighlightColor());
         } else if (tourShuttle != null) {
-            details.addToGrid(0, 4, "Tour shuttle", displayShipName(tourShuttle));
+            details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
+                    displayShipName(tourShuttle));
         } else {
-            details.addToGrid(0, 4, "Tour shuttle", "No eligible hull",
+            details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
+                    ShipTrophyL10n.get("gallery_no_eligible_hull"),
                     Misc.getNegativeHighlightColor());
         }
         if (tourShuttle != null) {
-            details.addToGrid(0, 5, "Shuttle berth capacity",
-                    Integer.toString(getManifestCapacity()) + " exhibits",
+            details.addToGrid(0, 5,
+                    ShipTrophyL10n.get("gallery_shuttle_capacity"),
+                    ShipTrophyL10n.format("gallery_exhibit_count",
+                            getManifestCapacity()),
                     Misc.getHighlightColor());
         }
         details.addGrid(4f);
@@ -345,11 +360,13 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         emptyState.setParaOrbitronLarge();
         emptyState.addPara(message, 0f,
                 filtered ? Misc.getNegativeHighlightColor() : Misc.getGrayColor(),
-                filtered ? "No displayed ships" : "No ships");
+                filtered
+                        ? ShipTrophyL10n.get("gallery_empty_filtered_highlight")
+                        : ShipTrophyL10n.get("gallery_empty_halls_highlight"));
         emptyState.setParaFontDefault();
-        emptyState.addPara(filtered
-                ? "Cycle the size or faction controls to widen the collection."
-                : "Store a ship in a Hall's dedicated storage to add it here.", 8f,
+        emptyState.addPara(ShipTrophyL10n.get(filtered
+                ? "gallery_empty_filtered_help"
+                : "gallery_empty_halls_help"), 8f,
                 Misc.getGrayColor());
         contentPanel.addUIElement(emptyState).inTL(
                 OUTER_PAD + 30f, 150f);
@@ -622,22 +639,25 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         String value = member == null ? "" : safe(member.getShipName());
         if (!value.isEmpty()) return value;
         return member == null || member.getHullSpec() == null
-                ? "Unknown vessel" : safe(member.getHullSpec().getHullName());
+                ? ShipTrophyL10n.get("gallery_unknown_vessel")
+                : safe(member.getHullSpec().getHullName());
     }
 
     private static String displayManufacturer(FleetMemberAPI member) {
         String value = ShipGalleryData.faction(member);
-        return value.isEmpty() ? "Unknown" : value;
+        return value.isEmpty() ? ShipTrophyL10n.get("gallery_unknown") : value;
     }
 
     private static String displayHullSize(FleetMemberAPI member) {
-        if (member == null || member.getHullSpec() == null) return "Unknown";
+        if (member == null || member.getHullSpec() == null) {
+            return ShipTrophyL10n.get("gallery_unknown");
+        }
         ShipAPI.HullSize size = member.getHullSpec().getHullSize();
-        if (size == ShipAPI.HullSize.FRIGATE) return "Frigate";
-        if (size == ShipAPI.HullSize.DESTROYER) return "Destroyer";
-        if (size == ShipAPI.HullSize.CRUISER) return "Cruiser";
-        if (size == ShipAPI.HullSize.CAPITAL_SHIP) return "Capital ship";
-        return "Unknown";
+        if (size == ShipAPI.HullSize.FRIGATE) return ShipTrophyL10n.get("gallery_frigate");
+        if (size == ShipAPI.HullSize.DESTROYER) return ShipTrophyL10n.get("gallery_destroyer");
+        if (size == ShipAPI.HullSize.CRUISER) return ShipTrophyL10n.get("gallery_cruiser");
+        if (size == ShipAPI.HullSize.CAPITAL_SHIP) return ShipTrophyL10n.get("gallery_capital_ship");
+        return ShipTrophyL10n.get("gallery_unknown");
     }
 
     private static String displayDp(FleetMemberAPI member) {
@@ -650,10 +670,10 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private static void addCodexDescription(TooltipMakerAPI tooltip, ShipHullSpecAPI spec) {
-        tooltip.addSectionHeading("Codex entry", Misc.getBasePlayerColor(),
+        tooltip.addSectionHeading(ShipTrophyL10n.get("gallery_codex_entry"), Misc.getBasePlayerColor(),
                 Misc.getDarkPlayerColor(), Alignment.MID, 8f);
         if (spec == null) {
-            tooltip.addPara("No Codex entry is available for this hull.",
+            tooltip.addPara(ShipTrophyL10n.get("gallery_no_codex"),
                     Misc.getGrayColor(), 6f);
             return;
         }
@@ -663,7 +683,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
 
         Description description = findShipDescription(spec);
         if (description == null) {
-            tooltip.addPara("No Codex entry is available for this hull.",
+            tooltip.addPara(ShipTrophyL10n.get("gallery_no_codex"),
                     Misc.getGrayColor(), 6f);
             return;
         }
@@ -675,7 +695,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             added = true;
         }
         if (!added && prefix.isEmpty()) {
-            tooltip.addPara("No Codex entry is available for this hull.",
+            tooltip.addPara(ShipTrophyL10n.get("gallery_no_codex"),
                     Misc.getGrayColor(), 6f);
         }
     }

@@ -11,6 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.TrophyDoctrine;
 import shiptrophy.TrophyNetwork;
+import shiptrophy.ShipTrophyL10n;
 import shiptrophy.TrophySubtypeRegistry;
 import shiptrophy.TrophySubtypeSpec;
 
@@ -37,23 +38,27 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            return "Trophy hullmod effects are disabled in LunaLib settings";
+            return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         if (!isUnlocked()) {
             TrophySubtypeSpec subtype = getSubtype();
-            String showcaseName = subtype == null ? "matching" : subtype.showcaseName;
+            String showcaseName = subtype == null
+                    ? ShipTrophyL10n.get("hullmod_matching") : subtype.showcaseName;
             float unlockDp = subtype == null ? TrophyNetwork.DOCTRINE_UNLOCK_DP : subtype.unlockDp;
-            return "Requires " + Math.round(unlockDp) + " DP worth of "
-                    + showcaseName + " ships in the Hall of Triumph network";
+            return ShipTrophyL10n.format(
+                    "hullmod_requires_dp", Math.round(unlockDp), showcaseName);
         }
         if (!matchesStyle(ship)) {
             TrophySubtypeSpec subtype = getSubtype();
-            String style = subtype == null ? "matching" : subtype.installStyle;
-            return "Can only be installed on " + style + " ships";
+            String style = subtype == null
+                    ? ShipTrophyL10n.get("hullmod_matching") : subtype.installStyle;
+            return ShipTrophyL10n.format("hullmod_style_only", style);
         }
         if (!hasNoOtherTrophyHullMod(ship)) {
             String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, getCurrentHullModId());
-            return other == null ? "Only one Hall of Triumph hullmod may be installed" : "Incompatible with " + other;
+            return other == null
+                    ? ShipTrophyL10n.get("hullmod_only_one_reason")
+                    : ShipTrophyL10n.format("hullmod_incompatible", other);
         }
         return null;
     }
@@ -78,14 +83,17 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         }
         String dmodNote = getDModCalculationNote();
         if (dmodNote != null) {
-            tooltip.addPara(dmodNote, opad, h, "counts as a D-mod");
+            tooltip.addPara(dmodNote, opad, h,
+                    ShipTrophyL10n.get("hullmod_counts_dmod_highlight"));
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"), opad, h,
+                ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 
     protected boolean isUnlocked() {

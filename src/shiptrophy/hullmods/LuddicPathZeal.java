@@ -4,6 +4,8 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 
+import shiptrophy.ShipTrophyL10n;
+
 import shiptrophy.TrophyDoctrine;
 
 public class LuddicPathZeal extends BaseTrophyDoctrineHullMod {
@@ -28,7 +30,9 @@ public class LuddicPathZeal extends BaseTrophyDoctrineHullMod {
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (hasUnstableInjector(ship)) return "Incompatible with Unstable Injector";
+        if (hasUnstableInjector(ship)) return ShipTrophyL10n.format(
+                "hullmod_incompatible",
+                ShipTrophyL10n.get("hullmod_unstable_injector"));
         return super.getUnapplicableReason(ship);
     }
 
@@ -65,7 +69,7 @@ public class LuddicPathZeal extends BaseTrophyDoctrineHullMod {
 
     @Override
     protected String getDModCalculationNote() {
-        return "This hullmod counts as a D-mod.";
+        return ShipTrophyL10n.get("hullmod_counts_dmod");
     }
 
     private float getSpeedBonus(ShipAPI.HullSize hullSize) {

@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 
+import shiptrophy.ShipTrophyL10n;
+
 /** Opens the Ship Gallery through Starsector's supported custom-dialog API. */
 public final class ShipGalleryDialog {
     private static final float MAX_WIDTH = 1400f;
@@ -44,7 +46,7 @@ public final class ShipGalleryDialog {
 
         @Override
         public String getConfirmText() {
-            return "Tour selected hall";
+            return ShipTrophyL10n.get("gallery_tour_selected");
         }
 
         @Override
@@ -54,7 +56,7 @@ public final class ShipGalleryDialog {
 
         @Override
         public String getCancelText() {
-            return "Return to Isa";
+            return ShipTrophyL10n.get("gallery_return_to_isa_button");
         }
 
         @Override

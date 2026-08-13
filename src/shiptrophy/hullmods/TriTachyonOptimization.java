@@ -4,6 +4,8 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 
+import shiptrophy.ShipTrophyL10n;
+
 import shiptrophy.TrophyDoctrine;
 
 public class TriTachyonOptimization extends BaseTrophyDoctrineHullMod {
@@ -22,7 +24,9 @@ public class TriTachyonOptimization extends BaseTrophyDoctrineHullMod {
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (hasInsulatedEngines(ship)) return "Incompatible with Insulated Engine Assembly";
+        if (hasInsulatedEngines(ship)) return ShipTrophyL10n.format(
+                "hullmod_incompatible",
+                ShipTrophyL10n.get("hullmod_insulated_engines"));
         return super.getUnapplicableReason(ship);
     }
 

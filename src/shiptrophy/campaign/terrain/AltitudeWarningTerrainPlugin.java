@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 
 import shiptrophy.campaign.GanEdenGenerator;
+import shiptrophy.ShipTrophyL10n;
 
 /**
  * A non-damaging traffic-control field along Gan Eden's inhabited inner
@@ -496,12 +497,12 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public String getTerrainName() {
-        return "Altitude Warning";
+        return ShipTrophyL10n.get("altitude_warning_name");
     }
 
     @Override
     public String getNameForTooltip() {
-        return "Altitude Warning";
+        return ShipTrophyL10n.get("altitude_warning_name");
     }
 
     @Override
@@ -511,14 +512,9 @@ public class AltitudeWarningTerrainPlugin extends BaseRingTerrain {
 
     @Override
     public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
-        tooltip.addTitle("Altitude Warning", WARNING_COLOR);
-        tooltip.addPara(
-                "The inner surface of Gan Eden is dangerously close. "
-                        + "Automated traffic controls redirect approaching fleets toward the star.",
-                10f);
-        tooltip.addPara(
-                "The field causes no hull, combat readiness, or crew damage.",
-                10f);
+        tooltip.addTitle(ShipTrophyL10n.get("altitude_warning_name"), WARNING_COLOR);
+        tooltip.addPara(ShipTrophyL10n.get("altitude_warning_description"), 10f);
+        tooltip.addPara(ShipTrophyL10n.get("altitude_warning_safety"), 10f);
     }
 
     @Override

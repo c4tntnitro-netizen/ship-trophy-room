@@ -21,6 +21,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.TrophyNetwork;
+import shiptrophy.ShipTrophyL10n;
 
 public class Contempt extends BaseUniqueTrophyHullMod {
     public static final String HULLMOD_ID = "ship_trophy_contempt";
@@ -39,7 +40,7 @@ public class Contempt extends BaseUniqueTrophyHullMod {
 
     @Override
     protected String getRequiredShowcaseName() {
-        return "Onslaught Mk.I";
+        return ShipTrophyL10n.get("hullmod_showcase_onslaught_mki");
     }
 
     @Override
@@ -55,7 +56,7 @@ public class Contempt extends BaseUniqueTrophyHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (isOnslaughtMkI(ship)) {
-            return "Cannot be installed on the Onslaught Mk.I used to unlock Contempt";
+            return ShipTrophyL10n.get("hullmod_contempt_source");
         }
         return super.getUnapplicableReason(ship);
     }
@@ -103,10 +104,12 @@ public class Contempt extends BaseUniqueTrophyHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"), opad, h,
+                ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 
     @Override

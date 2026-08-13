@@ -25,12 +25,16 @@ public class IsaContactIntel extends ContactIntel {
         float pad = 10f;
         PersonAPI isa = getPerson();
         if (isa != null) {
-            String rank = isa.getRank() == null ? "Contact" : isa.getRank();
-            String post = isa.getPost() == null ? "Nanoforge Engineer" : isa.getPost();
+            String rank = isa.getRank() == null
+                    ? ShipTrophyL10n.get("contact_default_rank") : isa.getRank();
+            String post = isa.getPost() == null
+                    ? ShipTrophyL10n.get("contact_default_post") : isa.getPost();
             TooltipMakerAPI portrait = info.beginImageWithText(
                     IsaTrophyManager.getIsaPortraitSprite(), 128f);
-            portrait.addPara("Name: %s", 0f, Misc.getHighlightColor(), isa.getNameString());
-            portrait.addPara("Rank: %s", 3f, Misc.getHighlightColor(), rank);
+            portrait.addPara(ShipTrophyL10n.get("contact_name"), 0f,
+                    Misc.getHighlightColor(), isa.getNameString());
+            portrait.addPara(ShipTrophyL10n.get("contact_rank"), 3f,
+                    Misc.getHighlightColor(), rank);
             portrait.addPara(post, 3f);
             info.addImageWithText(0f);
             info.addRelationshipBar(isa, width, pad);
@@ -38,26 +42,24 @@ public class IsaContactIntel extends ContactIntel {
             MarketAPI home = isa.getMarket();
             if (home == null) home = IsaTrophyManager.findHomeMarket();
             if (home != null && home.getFaction() != null) {
-                info.addPara(
-                        isa.getNameString() + " is a " + post.toLowerCase()
-                                + " and can be found on " + home.getName()
-                                + ", a size " + home.getSize() + " colony controlled by "
-                                + home.getFaction().getDisplayName() + ".",
-                        pad);
+                info.addPara(ShipTrophyL10n.format("contact_home",
+                        isa.getNameString(), post, home.getName(),
+                        home.getSize(), home.getFaction().getDisplayName()), pad);
             }
         }
 
         info.addPara(
-                "Permanent contact — Isa cannot be suspended or deleted.",
+                ShipTrophyL10n.get("contact_permanent"),
                 pad,
                 Misc.getHighlightColor(),
-                "Permanent contact");
+                ShipTrophyL10n.get("contact_permanent_highlight"));
 
         String priorityLabel = getState() == ContactState.PRIORITY
-                ? "Remove priority status"
-                : "Make priority contact";
+                ? ShipTrophyL10n.get("contact_remove_priority")
+                : ShipTrophyL10n.get("contact_make_priority");
         info.addButton(priorityLabel, BUTTON_PRIORITY, width, 20f, pad);
-        info.addButton("Contact Isa", BUTTON_CALL, width, 20f, 10f);
+        info.addButton(ShipTrophyL10n.get("contact_call"),
+                BUTTON_CALL, width, 20f, 10f);
     }
 
     @Override

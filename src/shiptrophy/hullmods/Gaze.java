@@ -10,6 +10,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.TrophyNetwork;
+import shiptrophy.ShipTrophyL10n;
 
 public class Gaze extends BaseUniqueTrophyHullMod {
     public static final String HULLMOD_ID = "ship_trophy_gaze";
@@ -24,7 +25,7 @@ public class Gaze extends BaseUniqueTrophyHullMod {
 
     @Override
     protected String getRequiredShowcaseName() {
-        return "Ziggurat";
+        return ShipTrophyL10n.get("hullmod_showcase_ziggurat");
     }
 
     @Override
@@ -41,9 +42,10 @@ public class Gaze extends BaseUniqueTrophyHullMod {
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (isZiggurat(ship)) return "Cannot be installed on the Ziggurat used to unlock Gaze";
+        if (isZiggurat(ship)) return ShipTrophyL10n.get("hullmod_gaze_source");
         if (ship != null && ship.getVariant() != null && ship.getVariant().hasHullMod(HullMods.FLUXBREAKERS)) {
-            return "Incompatible with Resistant Flux Conduits";
+            return ShipTrophyL10n.format("hullmod_incompatible",
+                    ShipTrophyL10n.get("hullmod_resistant_conduits"));
         }
         return super.getUnapplicableReason(ship);
     }
@@ -86,16 +88,18 @@ public class Gaze extends BaseUniqueTrophyHullMod {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (!TrophyHullModUtil.areEffectsEnabled()) {
-            tooltip.addPara("Effects are disabled by the Hall of Triumph reward setting.",
-                    opad, Misc.getNegativeHighlightColor(), "disabled");
+            tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
+                    opad, Misc.getNegativeHighlightColor(),
+                    ShipTrophyL10n.get("hullmod_disabled_highlight"));
         }
-        tooltip.addPara("Only one Hall of Triumph hullmod may be installed on a ship.", opad, h, "one Hall of Triumph hullmod");
+        tooltip.addPara(ShipTrophyL10n.get("hullmod_only_one"), opad, h,
+                ShipTrophyL10n.get("hullmod_only_one_highlight"));
     }
 
     @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
         if (index == 0) return Math.round((VENT_RATE_MULT - 1f) * 100f) + "%";
-        if (index == 1) return "Resistant Flux Conduits";
+        if (index == 1) return ShipTrophyL10n.get("hullmod_resistant_conduits");
         return null;
     }
 

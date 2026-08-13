@@ -237,7 +237,10 @@ public class IsaTrophyManager {
 
     private static void configureIsaOfficer(PersonAPI person) {
         if (person == null) return;
-        person.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
+        person.setName(new FullName(
+                ShipTrophyL10n.get("isa_first_name"),
+                ShipTrophyL10n.get("isa_last_name"),
+                FullName.Gender.FEMALE));
         person.setGender(FullName.Gender.FEMALE);
         person.setFaction(Factions.PLAYER);
         person.setPortraitSprite(getIsaPortraitSprite());
@@ -274,7 +277,10 @@ public class IsaTrophyManager {
         if (person == null) {
             person = Global.getFactory().createPerson();
             person.setId(PERSON_ID);
-            person.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
+            person.setName(new FullName(
+                    ShipTrophyL10n.get("isa_first_name"),
+                    ShipTrophyL10n.get("isa_last_name"),
+                    FullName.Gender.FEMALE));
             person.setGender(FullName.Gender.FEMALE);
             person.setFaction(Factions.PLAYER);
             person.setRankId(Ranks.SPACE_CHIEF);
@@ -285,7 +291,10 @@ public class IsaTrophyManager {
             person.addTag(Tags.CONTACT_TRADE);
             Global.getSector().getImportantPeople().addPerson(person);
         }
-        person.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
+        person.setName(new FullName(
+                ShipTrophyL10n.get("isa_first_name"),
+                ShipTrophyL10n.get("isa_last_name"),
+                FullName.Gender.FEMALE));
         person.setGender(FullName.Gender.FEMALE);
         person.setFaction(Factions.PLAYER);
         person.setPersonality(Personalities.STEADY);

@@ -3,6 +3,8 @@ package shiptrophy.hullmods;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 
+import shiptrophy.ShipTrophyL10n;
+
 public class BlackLionInheritance extends BaseUniqueShowcaseHullMod {
     public static final String HULLMOD_ID = "ship_trophy_black_lion";
     public static final String REQUIRED_HULL_ID = "executor_2";
@@ -21,7 +23,7 @@ public class BlackLionInheritance extends BaseUniqueShowcaseHullMod {
 
     @Override
     protected String getRequiredShowcaseName() {
-        return "The Black Lion";
+        return ShipTrophyL10n.get("showcase_black_lion");
     }
 
     @Override

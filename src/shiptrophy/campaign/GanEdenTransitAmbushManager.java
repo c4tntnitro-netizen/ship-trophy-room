@@ -1,5 +1,7 @@
 package shiptrophy.campaign;
 
+import shiptrophy.ShipTrophyL10n;
+
 import java.util.Random;
 
 import com.fs.starfarer.api.Global;
@@ -165,7 +167,7 @@ public final class GanEdenTransitAmbushManager {
             CampaignFleetAPI fleet, StarSystemAPI system) {
         if (fleet == null) return;
         IvoryRemnantFleetSupport.refitFleet(fleet);
-        fleet.setName("Ivory Custodian Ordo");
+        fleet.setName(ShipTrophyL10n.get("gan_eden_ivory_ordo"));
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
         fleet.addTag(Tags.STORY_CRITICAL);

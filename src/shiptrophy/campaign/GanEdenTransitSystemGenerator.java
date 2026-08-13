@@ -11,6 +11,8 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 
+import shiptrophy.ShipTrophyL10n;
+
 /** Creates the solitary power-transit Gate near the Sector's northeast edge. */
 public final class GanEdenTransitSystemGenerator {
     public static final String SYSTEM_ID =
@@ -90,8 +92,8 @@ public final class GanEdenTransitSystemGenerator {
         // Migrate placement once per access-layout version. Reasserting an
         // absolute position on every load would fight sector-map overhauls or
         // a save-specific relocation performed by another mod.
-        system.setName(SYSTEM_NAME);
-        system.setBaseName(SYSTEM_NAME);
+        system.setName(ShipTrophyL10n.get("gan_eden_transit_gate"));
+        system.setBaseName(ShipTrophyL10n.get("gan_eden_transit_gate"));
         if (system.getMemoryWithoutUpdate().getInt(
                 ACCESS_VERSION_KEY) < ACCESS_VERSION) {
             system.getLocation().set(
@@ -118,12 +120,12 @@ public final class GanEdenTransitSystemGenerator {
         if (gate == null) {
             gate = system.addCustomEntity(
                     GanEdenQuestManager.EXTERNAL_RING_ID,
-                    SYSTEM_NAME,
+                    ShipTrophyL10n.get("gan_eden_transit_gate"),
                     GanEdenQuestManager.EXTERNAL_RING_TYPE,
                     Factions.NEUTRAL);
         }
         if (gate != null) {
-            gate.setName(SYSTEM_NAME);
+            gate.setName(ShipTrophyL10n.get("gan_eden_transit_gate"));
             gate.setFixedLocation(0f, 0f);
             gate.setDiscoverable(null);
             gate.setSensorProfile(null);
@@ -181,10 +183,12 @@ public final class GanEdenTransitSystemGenerator {
     private static void ensureMegastructureGraveyard(
             StarSystemAPI system) {
         ensureRuins(system, "ship_trophy_damaged_hypershunt_",
-                "Damaged Coronal Hypershunt", DAMAGED_HYPERSHUNT_TYPE,
+                ShipTrophyL10n.get("gan_eden_damaged_hypershunt"),
+                DAMAGED_HYPERSHUNT_TYPE,
                 DAMAGED_HYPERSHUNTS);
         ensureRuins(system, "ship_trophy_damaged_gate_hauler_",
-                "Damaged Gate Hauler", DAMAGED_GATE_HAULER_TYPE,
+                ShipTrophyL10n.get("gan_eden_damaged_gate_hauler"),
+                DAMAGED_GATE_HAULER_TYPE,
                 DAMAGED_GATE_HAULERS);
     }
 

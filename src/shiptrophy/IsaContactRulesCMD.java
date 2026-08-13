@@ -209,7 +209,10 @@ public class IsaContactRulesCMD implements CommandPlugin {
     private static PersonAPI contactDisplayPerson(InteractionDialogAPI dialog, PersonAPI isa) {
         if (!isHallOfficeContact(dialog)) return isa;
         PersonAPI display = Global.getFactory().createPerson();
-        display.setName(new FullName("Isa", "Leicester", FullName.Gender.FEMALE));
+        display.setName(new FullName(
+                ShipTrophyL10n.get("isa_first_name"),
+                ShipTrophyL10n.get("isa_last_name"),
+                FullName.Gender.FEMALE));
         display.setGender(FullName.Gender.FEMALE);
         display.setFaction(isa.getFaction().getId());
         display.setRankId(isa.getRankId());
@@ -233,10 +236,16 @@ public class IsaContactRulesCMD implements CommandPlugin {
 
     private static void showBodyguards(InteractionDialogAPI dialog) {
         PersonAPI first = Global.getFactory().createPerson();
-        first.setName(new FullName("Veteran", "Marine", FullName.Gender.ANY));
+        first.setName(new FullName(
+                ShipTrophyL10n.get("bodyguard_first_name"),
+                ShipTrophyL10n.get("bodyguard_last_name"),
+                FullName.Gender.ANY));
         first.setPortraitSprite("graphics/portraits/portrait_hegemony02.png");
         PersonAPI second = Global.getFactory().createPerson();
-        second.setName(new FullName("Veteran", "Marine", FullName.Gender.ANY));
+        second.setName(new FullName(
+                ShipTrophyL10n.get("bodyguard_first_name"),
+                ShipTrophyL10n.get("bodyguard_last_name"),
+                FullName.Gender.ANY));
         second.setPortraitSprite("graphics/portraits/portrait_league07.png");
         dialog.getVisualPanel().showPersonInfo(first);
         dialog.getVisualPanel().showSecondPerson(second);
@@ -270,7 +279,8 @@ public class IsaContactRulesCMD implements CommandPlugin {
 
     private static void showMasterworkStatus(TextPanelAPI text) {
         for (IsaTrophyManager.ShowcaseRequirement requirement : IsaTrophyManager.getMasterworkRequirements()) {
-            addStatusLine(text, requirement.met, requirement.displayName);
+            addStatusLine(text, requirement.met,
+                    localizedMasterworkName(requirement));
         }
     }
 
@@ -286,15 +296,13 @@ public class IsaContactRulesCMD implements CommandPlugin {
         }
 
         if (complete == 0) {
-            text.addPara("\"I have an idea. Or... a dream, more like,\" Isa says. "
-                    + "\"Get me an Onslaught XIV. A Paragon. An Invictus. A Conquest. "
-                    + "An Executor. Do that, and I can get to work.\"");
+            text.addPara(ShipTrophyL10n.get("masterwork_intro"));
             return;
         }
 
         String missing = getMissingMasterworkHullNames(requirements);
-        LabelAPI line = text.addPara("\"We're getting there,\" Isa says. "
-                + "\"The Hall network has %s of the five hulls. I still need %s.\"",
+        LabelAPI line = text.addPara(
+                ShipTrophyL10n.get("masterwork_progress"),
                 Misc.getHighlightColor(),
                 Integer.toString(complete),
                 missing);
@@ -314,14 +322,16 @@ public class IsaContactRulesCMD implements CommandPlugin {
         boolean unseen = unlocked && !IsaTrophyManager.wasUnlockDialogueSeen(IsaTrophyManager.PROVENANCE_HULLMOD_ID);
         Color color = unseen ? Misc.getHighlightColor() : Misc.getTextColor();
 
-        String label = "Review Isa's masterwork (" + complete + "/" + total + " hulls).";
+        String label = ShipTrophyL10n.format(
+                "masterwork_review", complete, total);
         String tooltip;
         if (unlocked) {
             tooltip = unseen
-                    ? "All five hulls are displayed. Isa has completed Awe."
-                    : "All five required hulls are currently displayed.";
+                    ? ShipTrophyL10n.get("masterwork_complete_unseen")
+                    : ShipTrophyL10n.get("masterwork_complete_seen");
         } else {
-            tooltip = "Still needed: " + getMissingMasterworkHullNames(requirements);
+            tooltip = ShipTrophyL10n.format("masterwork_still_needed",
+                    getMissingMasterworkHullNames(requirements));
         }
         options.addOption(label, "ship_trophy_isa_masterwork", color, tooltip);
     }
@@ -339,9 +349,11 @@ public class IsaContactRulesCMD implements CommandPlugin {
             if (requirement.met) continue;
             seen++;
             if (result.length() > 0) {
-                result.append(seen == missing && missing > 1 ? " and " : ", ");
+                result.append(ShipTrophyL10n.get(
+                        seen == missing && missing > 1
+                                ? "list_final_separator" : "list_separator"));
             }
-            result.append(requirement.displayName);
+            result.append(localizedMasterworkName(requirement));
         }
         return result.toString();
     }
@@ -388,14 +400,18 @@ public class IsaContactRulesCMD implements CommandPlugin {
         TrophyNetwork.NetworkStats stats = refreshStats();
         if (!modded) {
             addStatusLine(text, TrophyNetwork.hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID),
-                    "Ziggurat display: " + IsaTrophyManager.getHullModName(Gaze.HULLMOD_ID));
+                    ShipTrophyL10n.format("unique_status_ziggurat",
+                            IsaTrophyManager.getHullModName(Gaze.HULLMOD_ID)));
             addStatusLine(text, TrophyNetwork.hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID),
-                    "Onslaught Mk.I display: " + IsaTrophyManager.getHullModName(Contempt.HULLMOD_ID));
+                    ShipTrophyL10n.format("unique_status_onslaught",
+                            IsaTrophyManager.getHullModName(Contempt.HULLMOD_ID)));
         }
         for (TrophyUniqueShowcases.ShowcaseSpec spec : TrophyUniqueShowcases.getActiveShowcases()) {
             if (spec.isModIntegration() != modded) continue;
             addStatusLine(text, TrophyNetwork.hasShowcasedHull(stats, spec.hullId),
-                    spec.displayName + " display: " + IsaTrophyManager.getHullModName(spec.hullModId));
+                    ShipTrophyL10n.format("unique_status_generic",
+                            localizedShowcaseDisplayName(spec),
+                            IsaTrophyManager.getHullModName(spec.hullModId)));
         }
     }
 
@@ -405,10 +421,16 @@ public class IsaContactRulesCMD implements CommandPlugin {
             if (spec.isModIntegration() != modded) continue;
             if ("kh_invictus".equals(spec.id) || "black_lion".equals(spec.id)) continue;
             boolean showcased = TrophyNetwork.hasShowcasedHull(stats, spec.hullId);
-            addUnlockOption(options, "Discuss " + spec.displayName + ".", UNIQUE_PREFIX + spec.id,
+            String showcaseName = localizedShowcaseDisplayName(spec);
+            addUnlockOption(options,
+                    ShipTrophyL10n.format("unique_discuss", showcaseName),
+                    UNIQUE_PREFIX + spec.id,
                     showcased, spec.hullModId,
-                    showcased ? "Unlocked: " + IsaTrophyManager.getHullModName(spec.hullModId)
-                            : "Requires the " + spec.displayName + " display");
+                    showcased
+                            ? ShipTrophyL10n.format("unlock_unlocked",
+                                    IsaTrophyManager.getHullModName(spec.hullModId))
+                            : ShipTrophyL10n.format("unlock_requires_display",
+                                    showcaseName));
         }
     }
 
@@ -420,11 +442,16 @@ public class IsaContactRulesCMD implements CommandPlugin {
         set(local, "$shipTrophyIsaUniqueActive", active);
         set(local, "$shipTrophyIsaUniqueShowcased", showcased);
         set(local, "$shipTrophyIsaUniqueModded", active && spec.isModIntegration());
-        set(local, "$shipTrophyIsaUniqueShowcaseName", active ? spec.showcaseName : "this hull");
-        set(local, "$shipTrophyIsaUniqueHullmodName", active ? IsaTrophyManager.getHullModName(spec.hullModId) : "unknown");
+        set(local, "$shipTrophyIsaUniqueShowcaseName", active
+                ? localizedShowcaseName(spec)
+                : ShipTrophyL10n.get("generic_this_hull"));
+        set(local, "$shipTrophyIsaUniqueHullmodName", active
+                ? IsaTrophyManager.getHullModName(spec.hullModId)
+                : ShipTrophyL10n.get("generic_unknown"));
         set(local, "$shipTrophyIsaUniqueReceipt", active
-                ? "Received " + IsaTrophyManager.getHullModName(spec.hullModId) + " modspec."
-                : "Received modspec.");
+                ? ShipTrophyL10n.format("unlock_receipt",
+                        IsaTrophyManager.getHullModName(spec.hullModId))
+                : ShipTrophyL10n.get("unlock_receipt_generic"));
     }
 
     private static boolean hasSubtypePrograms(boolean modded) {
@@ -444,10 +471,13 @@ public class IsaContactRulesCMD implements CommandPlugin {
             int current = Math.round(stats.getSubtypeDp(subtype.id));
             int needed = Math.round(subtype.unlockDp);
             boolean unlocked = current >= needed;
-            String label = subtype.displayName + " (" + current + "/" + needed + " DP)";
+            String label = ShipTrophyL10n.format("subtype_option",
+                    subtype.displayName, current, needed);
             String tooltip = unlocked
-                    ? "Unlocked: " + IsaTrophyManager.getHullModName(subtype.hullModId)
-                    : "Requires " + needed + " DP worth of " + subtype.showcaseName + " ships";
+                    ? ShipTrophyL10n.format("unlock_unlocked",
+                            IsaTrophyManager.getHullModName(subtype.hullModId))
+                    : ShipTrophyL10n.format("subtype_requires_dp",
+                            needed, subtype.showcaseName);
             addUnlockOption(options, label, SUBTYPE_PREFIX + subtype.id, unlocked, subtype.hullModId, tooltip);
         }
     }
@@ -462,7 +492,9 @@ public class IsaContactRulesCMD implements CommandPlugin {
         int needed = active ? Math.round(subtype.unlockDp) : 0;
         int remaining = Math.max(0, needed - currentRounded);
         boolean unlocked = active && current >= subtype.unlockDp;
-        String hullModName = active ? IsaTrophyManager.getHullModName(subtype.hullModId) : "unknown";
+        String hullModName = active
+                ? IsaTrophyManager.getHullModName(subtype.hullModId)
+                : ShipTrophyL10n.get("generic_unknown");
 
         set(local, CURRENT_SUBTYPE, id == null ? "" : id);
         set(local, "$shipTrophyIsaSubtypeActive", active);
@@ -472,9 +504,12 @@ public class IsaContactRulesCMD implements CommandPlugin {
         set(local, "$shipTrophyIsaSubtypeCurrentDp", Integer.toString(currentRounded));
         set(local, "$shipTrophyIsaSubtypeUnlockDp", Integer.toString(needed));
         set(local, "$shipTrophyIsaSubtypeRemainingDp", Integer.toString(remaining));
-        set(local, "$shipTrophyIsaSubtypeShowcaseName", active ? subtype.showcaseName : "this family");
+        set(local, "$shipTrophyIsaSubtypeShowcaseName", active
+                ? subtype.showcaseName
+                : ShipTrophyL10n.get("generic_this_family"));
         set(local, "$shipTrophyIsaSubtypeHullmodName", hullModName);
-        set(local, "$shipTrophyIsaSubtypeReceipt", "Received " + hullModName + " modspec.");
+        set(local, "$shipTrophyIsaSubtypeReceipt",
+                ShipTrophyL10n.format("unlock_receipt", hullModName));
     }
 
     private static void addUnlockOption(OptionPanelAPI options, String label, Object optionId,
@@ -488,9 +523,49 @@ public class IsaContactRulesCMD implements CommandPlugin {
 
     private static void addStatusLine(TextPanelAPI text, boolean complete, String label) {
         Color color = complete ? Misc.getHighlightColor() : Misc.getNegativeHighlightColor();
-        LabelAPI line = text.addPara((complete ? "Complete: " : "Needed: ") + label);
-        line.setHighlight(complete ? "Complete" : "Needed");
+        LabelAPI line = text.addPara(ShipTrophyL10n.format(
+                complete ? "status_complete_line" : "status_needed_line", label));
+        line.setHighlight(ShipTrophyL10n.get(
+                complete ? "status_complete_highlight" : "status_needed_highlight"));
         line.setHighlightColor(color);
+    }
+
+    private static String localizedMasterworkName(
+            IsaTrophyManager.ShowcaseRequirement requirement) {
+        if (requirement == null) return ShipTrophyL10n.get("generic_unknown");
+        if ("onslaught_xiv".equals(requirement.hullId)) {
+            return ShipTrophyL10n.get("masterwork_hull_onslaught");
+        }
+        if ("paragon".equals(requirement.hullId)) {
+            return ShipTrophyL10n.get("masterwork_hull_paragon");
+        }
+        if ("invictus".equals(requirement.hullId)) {
+            return ShipTrophyL10n.get("masterwork_hull_invictus");
+        }
+        if ("conquest".equals(requirement.hullId)) {
+            return ShipTrophyL10n.get("masterwork_hull_conquest");
+        }
+        if ("executor".equals(requirement.hullId)) {
+            return ShipTrophyL10n.get("masterwork_hull_executor");
+        }
+        return requirement.displayName;
+    }
+
+    private static String localizedShowcaseDisplayName(
+            TrophyUniqueShowcases.ShowcaseSpec spec) {
+        if (spec == null) return ShipTrophyL10n.get("generic_unknown");
+        if ("kh_invictus".equals(spec.id)) {
+            return ShipTrophyL10n.get("showcase_abundant_mercy");
+        }
+        if ("black_lion".equals(spec.id)) {
+            return ShipTrophyL10n.get("showcase_black_lion");
+        }
+        return spec.displayName;
+    }
+
+    private static String localizedShowcaseName(
+            TrophyUniqueShowcases.ShowcaseSpec spec) {
+        return localizedShowcaseDisplayName(spec);
     }
 
     private static TrophyUniqueShowcases.ShowcaseSpec findShowcase(String id) {

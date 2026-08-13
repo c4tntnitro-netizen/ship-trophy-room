@@ -4,6 +4,8 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 
+import shiptrophy.ShipTrophyL10n;
+
 public class Memory extends BaseTrophyDoctrineHullMod {
     public static final String HULLMOD_ID = "ship_trophy_memory";
     public static final String SUBTYPE_ID = "domain_derelict";
@@ -28,8 +30,11 @@ public class Memory extends BaseTrophyDoctrineHullMod {
     public String getUnapplicableReason(ShipAPI ship) {
         String baseReason = super.getUnapplicableReason(ship);
         if (baseReason != null) return baseReason;
-        if (!isDomainDerelict(ship)) return "Can only be installed on Derelict or Explorarium ships";
-        if (hasUnstableInjector(ship)) return "Incompatible with Unstable Injector";
+        if (!isDomainDerelict(ship)) return ShipTrophyL10n.get(
+                "hullmod_domain_derelict_only");
+        if (hasUnstableInjector(ship)) return ShipTrophyL10n.format(
+                "hullmod_incompatible",
+                ShipTrophyL10n.get("hullmod_unstable_injector"));
         return null;
     }
 

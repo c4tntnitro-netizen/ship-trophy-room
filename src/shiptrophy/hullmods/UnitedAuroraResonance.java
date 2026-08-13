@@ -14,6 +14,8 @@ import com.fs.starfarer.api.combat.MissileAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
+
+import shiptrophy.ShipTrophyL10n;
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 
@@ -51,7 +53,8 @@ public class UnitedAuroraResonance extends BaseTrophyDoctrineHullMod {
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (hasEccmPackage(ship)) return "Incompatible with ECCM Package";
+        if (hasEccmPackage(ship)) return ShipTrophyL10n.format(
+                "hullmod_incompatible", ShipTrophyL10n.get("hullmod_eccm"));
         return super.getUnapplicableReason(ship);
     }
 

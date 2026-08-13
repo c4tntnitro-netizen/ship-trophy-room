@@ -27,6 +27,8 @@ import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.Debri
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldSource;
 import com.fs.starfarer.api.util.Misc;
 
+import shiptrophy.ShipTrophyL10n;
+
 /**
  * Adds the Shattered Ring to the fixed Penelope's Star system.
  *
@@ -98,6 +100,16 @@ public final class ShatteredRingGenerator {
                 if (ring.getMarket() == null) ring.setMarket(market);
                 if (market.getPrimaryEntity() == null) market.setPrimaryEntity(ring);
             }
+            String localizedName = ShipTrophyL10n.get("shattered_ring_name");
+            if (MARKET_NAME.equals(ring.getName())
+                    || (market != null && !market.isPlayerOwned())) {
+                ring.setName(localizedName);
+            }
+            if (market != null
+                    && (MARKET_NAME.equals(market.getName())
+                            || !market.isPlayerOwned())) {
+                market.setName(localizedName);
+            }
             if (market != null) ensureDModVendor(market);
 
             ensureEnvironment(system, ring);
@@ -128,7 +140,8 @@ public final class ShatteredRingGenerator {
 
     private static SectorEntityToken createRing(StarSystemAPI system) {
         CustomCampaignEntityAPI ring = system.addCustomEntity(
-                ENTITY_ID, MARKET_NAME, ENTITY_TYPE, Factions.INDEPENDENT);
+                ENTITY_ID, ShipTrophyL10n.get("shattered_ring_name"),
+                ENTITY_TYPE, Factions.INDEPENDENT);
         if (ring == null) {
             return null;
         }
@@ -147,7 +160,8 @@ public final class ShatteredRingGenerator {
     }
 
     private static void createMarket(SectorEntityToken ring) {
-        MarketAPI market = Global.getFactory().createMarket(MARKET_ID, MARKET_NAME, 4);
+        MarketAPI market = Global.getFactory().createMarket(
+                MARKET_ID, ShipTrophyL10n.get("shattered_ring_name"), 4);
         market.setFactionId(Factions.INDEPENDENT);
         market.setPrimaryEntity(ring);
         market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);
@@ -272,7 +286,7 @@ public final class ShatteredRingGenerator {
             SectorEntityToken debris = Misc.addDebrisField(system, params, null);
             if (debris != null) {
                 debris.setId(DEBRIS_ID);
-                debris.setName("The Suitors");
+                debris.setName(ShipTrophyL10n.get("shattered_ring_suitors"));
                 debris.setFaction(Factions.NEUTRAL);
                 debris.setDiscoverable(false);
                 debris.setOrbit(ring.getOrbit().makeCopy());
@@ -295,7 +309,7 @@ public final class ShatteredRingGenerator {
             if (wreck == null) continue;
 
             wreck.setId(id);
-            wreck.setName("Claimed Derelict");
+            wreck.setName(ShipTrophyL10n.get("shattered_ring_claimed_derelict"));
             wreck.setDiscoverable(false);
             wreck.addTag(Tags.UNRECOVERABLE);
             wreck.getMemoryWithoutUpdate().set("$shipTrophyWreckFarmClaim", true);

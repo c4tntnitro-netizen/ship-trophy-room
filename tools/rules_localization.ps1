@@ -102,6 +102,26 @@ function Get-TextHash {
     }
 }
 
+function Normalize-TextLineEndings {
+    param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Text)
+
+    return $Text.Replace("`r`n", "`n").Replace("`r", "`n")
+}
+
+function Test-UnitSourceCurrent {
+    param(
+        [Parameter(Mandatory = $true)]$Entry,
+        [Parameter(Mandatory = $true)]$Unit
+    )
+
+    $storedSource = [string](Get-OptionalProperty $Entry 'source' '')
+    $storedHash = [string](Get-OptionalProperty $Entry 'sourceHash' '')
+    if ($storedHash -cne (Get-TextHash $storedSource)) { return $false }
+
+    return (Normalize-TextLineEndings $storedSource) -ceq
+        (Normalize-TextLineEndings ([string]$Unit.Source))
+}
+
 function Read-RulesFile {
     param([Parameter(Mandatory = $true)][string]$Path)
 
@@ -717,8 +737,7 @@ function Get-CurrentTranslationReference {
 
     if (-not $EntryTable.ContainsKey($Unit.Key)) { return $null }
     $entry = $EntryTable[$Unit.Key]
-    if ([string](Get-OptionalProperty $entry 'sourceHash' '') -cne
-            $Unit.SourceHash) {
+    if (-not (Test-UnitSourceCurrent $entry $Unit)) {
         return $null
     }
     $target = [string](Get-OptionalProperty $entry 'target' '')
@@ -1122,7 +1141,7 @@ function Export-TranslationBatch {
         if ($table.ContainsKey($unit.Key)) {
             $entry = $table[$unit.Key]
             $hasCurrentTarget = (
-                [string](Get-OptionalProperty $entry 'sourceHash' '') -ceq $unit.SourceHash -and
+                (Test-UnitSourceCurrent $entry $unit) -and
                 -not [string]::IsNullOrWhiteSpace(
                     [string](Get-OptionalProperty $entry 'target' '')))
         }
@@ -1151,7 +1170,7 @@ function Export-TranslationBatch {
         $allowedLatin = @()
         $allowVariant = $false
         if ($null -ne $existing -and
-                [string](Get-OptionalProperty $existing 'sourceHash' '') -ceq $unit.SourceHash) {
+                (Test-UnitSourceCurrent $existing $unit)) {
             $target = [string](Get-OptionalProperty $existing 'target' '')
             $backTranslation = [string](Get-OptionalProperty $existing 'backTranslation' '')
             $status = [string](Get-OptionalProperty $existing 'status' '')
@@ -1252,8 +1271,7 @@ function Import-TranslationBatch {
             throw "Batch contains unknown or removed unit '$key'"
         }
         $unit = $unitTable[$key]
-        if ([string](Get-OptionalProperty $candidate 'sourceHash' '') -cne $unit.SourceHash -or
-                [string](Get-OptionalProperty $candidate 'source' '') -cne $unit.Source) {
+        if (-not (Test-UnitSourceCurrent $candidate $unit)) {
             throw "Batch unit '$key' is stale; export it again from current English rules.csv"
         }
         $target = [string](Get-OptionalProperty $candidate 'target' '')
@@ -1769,7 +1787,7 @@ function New-MachineDrafts {
         if ($entryTable.ContainsKey($unit.Key)) {
             $entry = $entryTable[$unit.Key]
             $isCurrent = (
-                [string](Get-OptionalProperty $entry 'sourceHash' '') -ceq $unit.SourceHash -and
+                (Test-UnitSourceCurrent $entry $unit) -and
                 -not [string]::IsNullOrWhiteSpace(
                     [string](Get-OptionalProperty $entry 'target' '')))
         }
@@ -1939,8 +1957,7 @@ function Invoke-TranslationCheck {
         if ([string]::IsNullOrWhiteSpace($target)) { continue }
         $translated++
 
-        if ([string](Get-OptionalProperty $entry 'sourceHash' '') -cne $unit.SourceHash -or
-                [string](Get-OptionalProperty $entry 'source' '') -cne $unit.Source) {
+        if (-not (Test-UnitSourceCurrent $entry $unit)) {
             $stale++
             Add-QaIssue $issues 'error' $unit.Key 'English source changed; re-export and re-review this unit.'
             continue
@@ -2373,7 +2390,7 @@ function Show-TranslationReport {
         $entry = $table[$unit.Key]
         if ([string]::IsNullOrWhiteSpace(
                 [string](Get-OptionalProperty $entry 'target' ''))) { continue }
-        if ([string](Get-OptionalProperty $entry 'sourceHash' '') -cne $unit.SourceHash) {
+        if (-not (Test-UnitSourceCurrent $entry $unit)) {
             $stale++
             continue
         }

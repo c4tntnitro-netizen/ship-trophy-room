@@ -285,11 +285,8 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         GanEdenLogSpec spec = target == null ? null
                 : GanEdenLogSpec.nextUnrecoveredAtSite(target.getId());
         if (spec == null) return;
-        dialog.getTextPanel().addPara(
-                "A sealed municipal archive beneath " + spec.getSiteName()
-                        + " answers the Leicester continuity credentials. "
-                        + "One surviving personal record is available for "
-                        + "recovery.");
+        dialog.getTextPanel().addPara(ShipTrophyL10n.format(
+                "archive_surface_available", spec.getSiteName()));
     }
 
     private static boolean recoverSurfaceLog(InteractionDialogAPI dialog) {
@@ -329,14 +326,13 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         int days = GanEdenAmbushScript.getRespawnDaysRemaining();
         String status;
         if (days < 0) {
-            status = "Space Elevator telemetry reports that Cherubim and "
-                    + "Lahat Haharev have already reconstructed.";
+            status = ShipTrophyL10n.get("boss_respawn_reconstructed");
         } else {
             String remaining = days == 0
-                    ? "less than one day"
-                    : days + (days == 1 ? " day" : " days");
-            status = "Space Elevator telemetry estimates that Cherubim and "
-                    + "Lahat Haharev will reconstruct in " + remaining + ".";
+                    ? ShipTrophyL10n.get("boss_respawn_less_than_day")
+                    : ShipTrophyL10n.format(days == 1
+                            ? "boss_respawn_one_day" : "boss_respawn_days", days);
+            status = ShipTrophyL10n.format("boss_respawn_pending", remaining);
         }
         local.set("$shipTrophyGanEdenRespawnStatus", status, 0f);
     }
@@ -399,24 +395,24 @@ public final class GanEdenQuestCMD implements CommandPlugin {
     private static void addArchiveParagraph(
             TextPanelAPI text, String paragraph) {
         if (paragraph == null || paragraph.length() <= 0) return;
-        if (paragraph.startsWith(
-                "DOMAIN INFOSEC VIOLATION THRESHOLD WARNING")) {
+        if (paragraph.startsWith(ShipTrophyL10n.get("archive_warning_prefix"))) {
             for (String line : paragraph.split("\\r?\\n")) {
                 text.addPara(line, Misc.getNegativeHighlightColor());
             }
             return;
         }
-        if (paragraph.startsWith("FATAL ACCESS ERROR")) {
+        if (paragraph.startsWith(ShipTrophyL10n.get("archive_fatal_prefix"))) {
             text.addPara(paragraph, Misc.getNegativeHighlightColor());
             return;
         }
-        if (paragraph.startsWith("This device is not authorized")) {
+        if (paragraph.startsWith(
+                ShipTrophyL10n.get("archive_unauthorized_prefix"))) {
             text.addPara(
                     paragraph,
                     new Color(82, 88, 94),
                     Misc.getNegativeHighlightColor(),
-                    "not authorized",
-                    "Domain Information Security Standards");
+                    ShipTrophyL10n.get("archive_unauthorized_highlight"),
+                    ShipTrophyL10n.get("archive_standards_highlight"));
             return;
         }
         text.addPara(paragraph);

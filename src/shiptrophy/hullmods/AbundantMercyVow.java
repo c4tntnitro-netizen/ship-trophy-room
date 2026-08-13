@@ -3,6 +3,8 @@ package shiptrophy.hullmods;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 
+import shiptrophy.ShipTrophyL10n;
+
 public class AbundantMercyVow extends BaseUniqueShowcaseHullMod {
     public static final String HULLMOD_ID = "ship_trophy_abundant_mercy";
     public static final String REQUIRED_HULL_ID = "invictus_kh";
@@ -21,7 +23,7 @@ public class AbundantMercyVow extends BaseUniqueShowcaseHullMod {
 
     @Override
     protected String getRequiredShowcaseName() {
-        return "Abundant Mercy";
+        return ShipTrophyL10n.get("showcase_abundant_mercy");
     }
 
     @Override

@@ -26,6 +26,8 @@ import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
+import shiptrophy.ShipTrophyL10n;
+
 /** Rules command for the Shattered Ring's deliberate D-mod installation service. */
 public class ShatteredRingDModVendorCMD implements CommandPlugin {
     private static final String PICK_SHIP = "ship_trophy_dmod_vendor_pick_ship";
@@ -81,36 +83,38 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
 
     private static void showIntroduction(InteractionDialogAPI dialog) {
         TextPanelAPI text = dialog.getTextPanel();
-        text.addPara("The Ring's nanoforge engineer works out of a hullbreaking cradle overlooking "
-                + "the wreck-farms. The gantries around it are equally suited to careful restoration "
-                + "and carefully planned damage.");
-        text.addPara("\"Most yards promise to take the scars out,\" the engineer says. \"I can put "
-                + "exactly the right scar back in. You name the ship and the compromise.\"");
-        text.addPara("This service installs one eligible D-mod of your choice. A ship may not exceed "
-                + "the normal limit of %s D-mods.", Misc.getTextColor(), Misc.getHighlightColor(),
-                "one eligible D-mod", String.valueOf(DModManager.MAX_DMODS_FROM_COMBAT));
+        text.addPara(ShipTrophyL10n.get("dmod_vendor_intro_one"));
+        text.addPara(ShipTrophyL10n.get("dmod_vendor_intro_two"));
+        text.addPara(ShipTrophyL10n.get("dmod_vendor_intro_three"),
+                Misc.getTextColor(), Misc.getHighlightColor(),
+                ShipTrophyL10n.get("dmod_vendor_eligible_highlight"),
+                String.valueOf(DModManager.MAX_DMODS_FROM_COMBAT));
     }
 
     private static void showMainMenu(InteractionDialogAPI dialog) {
         OptionPanelAPI options = dialog.getOptionPanel();
         options.clearOptions();
-        options.addOption("Select a ship for commissioned damage.", PICK_SHIP,
-                "Choose a ship, then choose the exact D-mod to commission.");
-        options.addOption("Leave.", LEAVE);
-        dialog.setOptionOnEscape("Leave.", LEAVE);
+        options.addOption(ShipTrophyL10n.get("dmod_vendor_select_ship"), PICK_SHIP,
+                ShipTrophyL10n.get("dmod_vendor_select_ship_help"));
+        options.addOption(ShipTrophyL10n.get("dmod_vendor_leave"), LEAVE);
+        dialog.setOptionOnEscape(ShipTrophyL10n.get("dmod_vendor_leave"), LEAVE);
     }
 
     private static void showShipPicker(final InteractionDialogAPI dialog,
             final Map<String, MemoryAPI> memoryMap) {
         List<FleetMemberAPI> eligible = getEligibleShips();
         if (eligible.isEmpty()) {
-            dialog.getTextPanel().addPara("None of the ships in your fleet can accept another "
-                    + "eligible D-mod.", Misc.getNegativeHighlightColor());
+            dialog.getTextPanel().addPara(
+                    ShipTrophyL10n.get("dmod_vendor_none_eligible"),
+                    Misc.getNegativeHighlightColor());
             showMainMenu(dialog);
             return;
         }
 
-        dialog.showFleetMemberPickerDialog("Select a ship", "Continue", "Cancel",
+        dialog.showFleetMemberPickerDialog(
+                ShipTrophyL10n.get("dmod_vendor_picker_title"),
+                ShipTrophyL10n.get("dmod_vendor_continue"),
+                ShipTrophyL10n.get("dmod_vendor_cancel"),
                 7, 8, 72f, true, false, eligible, new FleetMemberPickerListener() {
                     @Override
                     public void pickedFleetMembers(List<FleetMemberAPI> members) {
@@ -135,7 +139,8 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
             Map<String, MemoryAPI> memoryMap) {
         FleetMemberAPI member = selectedMember(memoryMap);
         if (!isStillInFleet(member)) {
-            dialog.getTextPanel().addPara("That ship is no longer available.",
+            dialog.getTextPanel().addPara(
+                    ShipTrophyL10n.get("dmod_vendor_ship_gone"),
                     Misc.getNegativeHighlightColor());
             clearSelection(memoryMap);
             showMainMenu(dialog);
@@ -145,7 +150,8 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
         List<HullModSpecAPI> choices = getEligibleDMods(member);
         if (choices.isEmpty() || DModManager.getNumDMods(member.getVariant())
                 >= DModManager.MAX_DMODS_FROM_COMBAT) {
-            dialog.getTextPanel().addPara("%s cannot accept another eligible D-mod.",
+            dialog.getTextPanel().addPara(
+                    ShipTrophyL10n.get("dmod_vendor_ship_full"),
                     Misc.getNegativeHighlightColor(), member.getShipName());
             clearSelection(memoryMap);
             showMainMenu(dialog);
@@ -158,8 +164,9 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
         if (local != null) local.set(PAGE, page);
 
         dialog.getVisualPanel().showFleetMemberInfo(member, true);
-        dialog.getTextPanel().addPara("The engineer calls up %s's structural plan. Choose the defect "
-                + "to commission.", Misc.getTextColor(), Misc.getHighlightColor(), member.getShipName());
+        dialog.getTextPanel().addPara(
+                ShipTrophyL10n.get("dmod_vendor_choose_defect"),
+                Misc.getTextColor(), Misc.getHighlightColor(), member.getShipName());
 
         OptionPanelAPI options = dialog.getOptionPanel();
         options.clearOptions();
@@ -170,17 +177,20 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
             String optionId = INSTALL_PREFIX + spec.getId();
             String description = spec.getDescription(member.getVariant().getHullSize());
             if (description == null || description.trim().isEmpty()) {
-                description = "Install this D-mod.";
+                description = ShipTrophyL10n.get("dmod_vendor_install_help");
             }
             options.addOption(spec.getDisplayName(), optionId, description);
             dialog.makeStoryOption(optionId, 1, 1f, Sounds.STORY_POINT_SPEND);
         }
 
-        if (page > 0) options.addOption("Previous defects.", PREV);
-        if (page < maxPage) options.addOption("More defects.", NEXT);
-        options.addOption("Choose another ship.", BACK);
-        options.addOption("Leave.", LEAVE);
-        dialog.setOptionOnEscape("Choose another ship.", BACK);
+        if (page > 0) options.addOption(
+                ShipTrophyL10n.get("dmod_vendor_previous"), PREV);
+        if (page < maxPage) options.addOption(
+                ShipTrophyL10n.get("dmod_vendor_more"), NEXT);
+        options.addOption(ShipTrophyL10n.get("dmod_vendor_another_ship"), BACK);
+        options.addOption(ShipTrophyL10n.get("dmod_vendor_leave"), LEAVE);
+        dialog.setOptionOnEscape(
+                ShipTrophyL10n.get("dmod_vendor_another_ship"), BACK);
     }
 
     private static void changePage(InteractionDialogAPI dialog,
@@ -209,7 +219,8 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
         if (member == null || chosen == null
                 || DModManager.getNumDMods(member.getVariant())
                         >= DModManager.MAX_DMODS_FROM_COMBAT) {
-            dialog.getTextPanel().addPara("The commission can no longer be completed.",
+            dialog.getTextPanel().addPara(
+                    ShipTrophyL10n.get("dmod_vendor_commission_failed"),
                     Misc.getNegativeHighlightColor());
             clearSelection(memoryMap);
             showMainMenu(dialog);
@@ -227,10 +238,10 @@ public class ShatteredRingDModVendorCMD implements CommandPlugin {
         Global.getSector().getPlayerFleet().getFleetData().setSyncNeeded();
 
         TextPanelAPI text = dialog.getTextPanel();
-        text.addPara("The hullbreaking cradle closes around %s. Precision charges fire, gantries "
-                + "twist stressed members out of alignment, and the engineer signs off on the damage.",
+        text.addPara(ShipTrophyL10n.get("dmod_vendor_install_scene"),
                 Misc.getTextColor(), Misc.getHighlightColor(), member.getShipName());
-        text.addPara("%s acquired %s.", Misc.getPositiveHighlightColor(),
+        text.addPara(ShipTrophyL10n.get("dmod_vendor_acquired"),
+                Misc.getPositiveHighlightColor(),
                 member.getShipName(), chosen.getDisplayName());
 
         if (DModManager.getNumDMods(member.getVariant()) >= DModManager.MAX_DMODS_FROM_COMBAT
