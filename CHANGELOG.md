@@ -1,5 +1,12 @@
 # Hall of Triumph changelog
 
+## 2.0.0 Hotfix — 2026-08-12
+
+### Fixes
+
+- Removes the Flaming Sword from the Shrouded Substrate weapon-assembly menu.
+- Consolidates Hall story-point notifications into one 30-day summary.
+
 ## 2.0.0 Beta — 2026-08-07
 
 ### Highlights
