@@ -20,6 +20,7 @@ import shiptrophy.campaign.GanEdenQuestManager;
 import shiptrophy.campaign.GanEdenQuestScript;
 import shiptrophy.campaign.MkIVFleetIntegrationListener;
 import shiptrophy.campaign.ShatteredRingGenerator;
+import shiptrophy.gallery.GalleryShuttleCRRecoveryScript;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
 
 public class ShipTrophyRoomModPlugin extends BaseModPlugin {
@@ -86,6 +87,10 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);
         Global.getSector().addScript(new IsaTrophyScript());
+        Global.getSector().removeScriptsOfClass(
+                GalleryShuttleCRRecoveryScript.class);
+        Global.getSector().addScript(
+                new GalleryShuttleCRRecoveryScript());
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);

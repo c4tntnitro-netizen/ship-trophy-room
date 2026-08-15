@@ -47,7 +47,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final String FACTION_MEMORY = "$ship_trophy_gallery_faction_filter";
     private static final String SELECTED_MEMORY = "$ship_trophy_gallery_selected_ship";
     private static final String TOUR_SHUTTLE_MEMORY =
-            "$ship_trophy_gallery_tour_shuttle";
+            GalleryShuttleCRRecoveryScript.SHUTTLE_MEMORY;
     private static final String TOUR_MANIFEST_MEMORY =
             "$ship_trophy_gallery_tour_manifest";
 
@@ -196,8 +196,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             }
         }
         tourShuttle = rememberedShuttle;
-        setMemory(TOUR_SHUTTLE_MEMORY,
-                tourShuttle == null ? "" : safe(tourShuttle.getId()));
+        GalleryShuttleCRRecoveryScript.rememberSelection(tourShuttle);
         restoreTourManifest();
         hoveredIndex = -1;
     }
@@ -324,7 +323,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             details.addToGrid(0, 5,
                     ShipTrophyL10n.get("gallery_shuttle_capacity"),
                     ShipTrophyL10n.format("gallery_exhibit_count",
-                            getManifestCapacity()),
+                            ShipGalleryData.getTourCRRecoveryBonus(tourShuttle)),
                     Misc.getHighlightColor());
         }
         details.addGrid(4f);
@@ -545,10 +544,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private int getManifestCapacity() {
-        int shuttleCapacity = ShipGalleryData.getTourBerthCapacity(tourShuttle);
-        return Math.min(shuttleCapacity,
-                Math.min(GalleryTourLauncher.MAX_EXHIBITS,
-                        getManifestRows() * MANIFEST_COLUMNS));
+        return Math.min(GalleryTourLauncher.MAX_EXHIBITS,
+                getManifestRows() * MANIFEST_COLUMNS);
     }
 
     private int getManifestDisplayCount() {

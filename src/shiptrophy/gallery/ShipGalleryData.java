@@ -148,20 +148,20 @@ final class ShipGalleryData {
     }
 
     /**
-     * Converts the selected civilian frigate's stock speed into an even number
-     * of paired Hall berths. Dram anchors the floor; the pristine Kite (S) is
-     * the sole fourteen-berth ceiling. Other fast civilian frigates stop at 12.
+     * Scales the selected civilian frigate's fleet CR recovery bonus from the
+     * Dram's 1% floor to the pristine Kite (S)'s 5% ceiling. Other fast
+     * civilian frigates stop at 4.5%, preserving the Kite (S) as the apex.
      */
-    static int getTourBerthCapacity(FleetMemberAPI member) {
-        if (!isTourShuttleEligible(member)) return 0;
+    static float getTourCRRecoveryBonus(FleetMemberAPI member) {
+        if (!isTourShuttleEligible(member)) return 0f;
 
         String hullId = safe(member.getHullSpec().getHullId())
                 .toLowerCase(Locale.ROOT);
         String baseHullId = safe(member.getHullSpec().getBaseHullId())
                 .toLowerCase(Locale.ROOT);
         if ("kite_original".equals(hullId)
-                || "kite_original".equals(baseHullId)) return 14;
-        if ("dram".equals(hullId) || "dram".equals(baseHullId)) return 2;
+                || "kite_original".equals(baseHullId)) return 5f;
+        if ("dram".equals(hullId) || "dram".equals(baseHullId)) return 1f;
 
         float speed = 100f;
         try {
@@ -169,8 +169,8 @@ final class ShipGalleryData {
         } catch (Throwable ignored) {
         }
         float normalized = Math.max(0f, Math.min(1f, (speed - 70f) / 80f));
-        int tier = Math.round(normalized * 5f);
-        return 2 + tier * 2;
+        float bonus = Math.min(4.5f, 1f + normalized * 3.5f);
+        return Math.round(bonus * 2f) / 2f;
     }
 
     static List<FleetMemberAPI> filterAndSort(List<FleetMemberAPI> source,
