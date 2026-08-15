@@ -7,6 +7,12 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import shiptrophy.hullmods.TrophyHullModUtil;
 
 public class StoryPointGeneratorScript implements EveryFrameScript {
+    private static final float NOTIFICATION_INTERVAL_DAYS = 30f;
+    private static final String MEMORY_NOTIFICATION_DAYS =
+            "$ship_trophy_room_story_point_notification_days";
+    private static final String MEMORY_NOTIFICATION_POINTS =
+            "$ship_trophy_room_story_point_notification_points";
+
     private final IntervalUtil interval = new IntervalUtil(1f, 1f);
     private final IntervalUtil settingInterval = new IntervalUtil(0.25f, 0.25f);
 
@@ -31,6 +37,7 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
 
         interval.advance(Global.getSector().getClock().convertToDays(amount));
         if (!interval.intervalElapsed()) return;
+        float elapsedDays = interval.getIntervalDuration();
 
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
         float dailyProduction = getDailyStoryPointProgress(stats);
@@ -42,7 +49,7 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
 
         if (!Float.isFinite(dailyProduction) || dailyProduction <= 0f) return;
         float progress = loadProgress();
-        progress += dailyProduction * interval.getIntervalDuration();
+        progress += dailyProduction * elapsedDays;
 
         if (!Float.isFinite(progress) || progress < 0f) {
             progress = 0f;
@@ -51,17 +58,14 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
         int points = (int) progress;
         if (points <= 0) {
             saveProgress(progress);
+            advanceNotification(elapsedDays, 0);
             return;
         }
 
         progress -= points;
         saveProgress(progress);
         Global.getSector().getPlayerStats().addStoryPoints(points);
-        if (Global.getSector().getCampaignUI() != null) {
-            Global.getSector().getCampaignUI().addMessage(
-                    "Hall of Triumph generated " + points + " story point"
-                            + (points == 1 ? "." : "s."));
-        }
+        advanceNotification(elapsedDays, points);
     }
 
     private float loadProgress() {
@@ -77,6 +81,39 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
     private void saveProgress(float value) {
         Global.getSector().getMemoryWithoutUpdate().set(
                 ShipTrophyRoomIds.MEMORY_STORY_POINT_PROGRESS, value);
+    }
+
+    private void advanceNotification(float elapsedDays, int generatedPoints) {
+        Object rawDays = Global.getSector().getMemoryWithoutUpdate().get(MEMORY_NOTIFICATION_DAYS);
+        float notificationDays = rawDays instanceof Number
+                ? ((Number) rawDays).floatValue() : 0f;
+        if (!Float.isFinite(notificationDays) || notificationDays < 0f) notificationDays = 0f;
+
+        Object rawPoints = Global.getSector().getMemoryWithoutUpdate().get(MEMORY_NOTIFICATION_POINTS);
+        int notificationPoints = rawPoints instanceof Number
+                ? Math.max(0, ((Number) rawPoints).intValue()) : 0;
+        notificationPoints += Math.max(0, generatedPoints);
+        notificationDays += Math.max(0f, elapsedDays);
+
+        if (notificationDays >= NOTIFICATION_INTERVAL_DAYS) {
+            if (notificationPoints <= 0) {
+                notificationDays %= NOTIFICATION_INTERVAL_DAYS;
+            } else if (Global.getSector().getCampaignUI() != null) {
+                Global.getSector().getCampaignUI().addMessage(
+                        ShipTrophyL10n.format(
+                                notificationPoints == 1
+                                        ? "story_point_monthly_singular"
+                                        : "story_point_monthly_plural",
+                                notificationPoints));
+                notificationPoints = 0;
+                notificationDays %= NOTIFICATION_INTERVAL_DAYS;
+            }
+        }
+
+        Global.getSector().getMemoryWithoutUpdate().set(
+                MEMORY_NOTIFICATION_DAYS, notificationDays);
+        Global.getSector().getMemoryWithoutUpdate().set(
+                MEMORY_NOTIFICATION_POINTS, notificationPoints);
     }
 
     private float getDailyStoryPointProgress(TrophyNetwork.NetworkStats stats) {

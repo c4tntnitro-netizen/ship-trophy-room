@@ -330,6 +330,9 @@
     "iaido_status_torpedo": "torpedo catapult armed",
     "iaido_ready": "READY",
 
+    "story_point_monthly_singular": "Hall of Triumph generated %s story point this month.",
+    "story_point_monthly_plural": "Hall of Triumph generated %s story points this month.",
+
     "boss_respawn_reconstructed": "Space Elevator telemetry reports that Cherubim and Lahat Haharev have already reconstructed.",
     "boss_respawn_less_than_day": "less than one day",
     "boss_respawn_one_day": "%s day",

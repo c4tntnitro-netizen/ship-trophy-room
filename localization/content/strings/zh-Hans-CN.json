@@ -330,6 +330,9 @@
     "iaido_status_torpedo": "鱼雷弹射器已就绪",
     "iaido_ready": "就绪",
 
+    "story_point_monthly_singular": "凯旋殿堂本月生成了 %s 个故事点。",
+    "story_point_monthly_plural": "凯旋殿堂本月生成了 %s 个故事点。",
+
     "boss_respawn_reconstructed": "太空电梯遥测数据显示，基路伯与剑焰已经完成重构。",
     "boss_respawn_less_than_day": "不到一天",
     "boss_respawn_one_day": "%s 天",
