@@ -1845,11 +1845,11 @@ shipTrophyGanEdenEpitaphLeave,DialogOptionSelected,$option == ship_trophy_gan_ed
 DismissDialog",,,"Completes A Borrowed Name after Isa's closing scene, then returns to the campaign; final-log music continues until the fleet leaves Gan Eden."
 shipTrophyGanEdenEpitaphNeedsIsa,OpenInteractionDialog,GanEdenQuestCMD epitaphNeedsIsa score:55000,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The elevator's continuity archive recognizes Isa Leicester's inherited suit transponder, but she is not present to answer its identity challenge. You will need to return with Isa in the fleet.",0:ship_trophy_gan_eden_epitaph_leave:Leave.,Prevents resolving Isa's family story without Isa.
 shipTrophyGanEdenEpitaphInspected,OpenInteractionDialog,"GanEdenQuestCMD epitaphInspected score:55000
-GanEdenQuestCMD prepareGoldenOmegaRespawnTimer","SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""
-FireAll ShipTrophyGanEdenLureOptions","The silent Space Elevator remains open above Gan Eden. Its final Leicester record is secure in the fleet archives.
+GanEdenQuestCMD prepareGoldenOmegaRespawnTimer",FireAll ShipTrophyGanEdenLureOptions,"The silent Space Elevator remains open above Gan Eden. Its final Leicester record is secure in the fleet archives.
 
-$shipTrophyGanEdenRespawnStatus",0:ship_trophy_gan_eden_epitaph_leave:Leave.,Repeat interaction after the final archive scene; reports the Golden Omega reconstruction timer and offers an immediate rematch when no wave is active.
+$shipTrophyGanEdenRespawnStatus",,Repeat interaction after the final archive scene; reports the Golden Omega reconstruction timer and offers an immediate rematch when no wave is active.
 shipTrophyGanEdenLureOption,ShipTrophyGanEdenLureOptions,GanEdenQuestCMD canLureGoldenOmega,"SetStoryOption ship_trophy_gan_eden_lure_omega 1 shipTrophyGanEdenLureGoldenOmega technology ""Lured the Golden Omega back to Gan Eden""",,10:ship_trophy_gan_eden_lure_omega:Lure the Golden Omega back.,Offers the next escalating Golden Omega wave immediately instead of waiting one year.
+shipTrophyGanEdenLureLeaveOption,ShipTrophyGanEdenLureOptions,,SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE"",,100:ship_trophy_gan_eden_epitaph_leave:Leave.,Always provides a non-lure exit from the repeat Space Elevator interaction.
 shipTrophyGanEdenLureOmega,DialogOptionSelected,$option == ship_trophy_gan_eden_lure_omega,"GanEdenQuestCMD lureGoldenOmega
 SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","Isa wakes the Space Elevator's continuity transmitter and feeds it a deliberately malformed guardian challenge.
 

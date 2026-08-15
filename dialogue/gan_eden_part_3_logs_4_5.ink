@@ -1004,14 +1004,13 @@ The elevator's continuity archive recognizes Isa Leicester's inherited suit tran
 // GanEdenQuestCMD epitaphInspected score:55000
 // GanEdenQuestCMD prepareGoldenOmegaRespawnTimer
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
 // FireAll ShipTrophyGanEdenLureOptions
 
 The silent Space Elevator remains open above Gan Eden. Its final Leicester record is secure in the fleet archives.
 
 $shipTrophyGanEdenRespawnStatus
 
-+ [Leave.] -> rule_shipTrophyGanEdenEpitaphLeave
++ [Continue.] -> rule_shipTrophyGanEdenLureOption
 
 // ============================================================
 === rule_shipTrophyGanEdenLureOption ===
@@ -1026,6 +1025,18 @@ $shipTrophyGanEdenRespawnStatus
 // No literal text in rules.csv; the runtime script supplies this beat.
 
 + [Lure the Golden Omega back.] -> rule_shipTrophyGanEdenLureOmega
+
+// ============================================================
+=== rule_shipTrophyGanEdenLureLeaveOption ===
+// rules.csv id: shipTrophyGanEdenLureLeaveOption
+// Trigger:
+// ShipTrophyGanEdenLureOptions
+// Runtime script:
+// SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""
+
+// No literal text in rules.csv; the runtime script supplies this beat.
+
++ [Leave.] -> rule_shipTrophyGanEdenEpitaphLeave
 
 // ============================================================
 === rule_shipTrophyGanEdenLureOmega ===
