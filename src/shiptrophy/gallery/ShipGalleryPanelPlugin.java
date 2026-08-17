@@ -47,7 +47,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final String FACTION_MEMORY = "$ship_trophy_gallery_faction_filter";
     private static final String SELECTED_MEMORY = "$ship_trophy_gallery_selected_ship";
     private static final String TOUR_SHUTTLE_MEMORY =
-            GalleryShuttleCRRecoveryScript.SHUTTLE_MEMORY;
+            "$ship_trophy_gallery_tour_shuttle";
     private static final String TOUR_MANIFEST_MEMORY =
             "$ship_trophy_gallery_tour_manifest";
 
@@ -196,7 +196,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             }
         }
         tourShuttle = rememberedShuttle;
-        GalleryShuttleCRRecoveryScript.rememberSelection(tourShuttle);
+        setMemory(TOUR_SHUTTLE_MEMORY,
+                tourShuttle == null ? "" : safe(tourShuttle.getId()));
         restoreTourManifest();
         hoveredIndex = -1;
     }
@@ -318,13 +319,6 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
                     ShipTrophyL10n.get("gallery_no_eligible_hull"),
                     Misc.getNegativeHighlightColor());
-        }
-        if (tourShuttle != null) {
-            details.addToGrid(0, 5,
-                    ShipTrophyL10n.get("gallery_shuttle_capacity"),
-                    ShipTrophyL10n.format("gallery_exhibit_count",
-                            ShipGalleryData.getTourCRRecoveryBonus(tourShuttle)),
-                    Misc.getHighlightColor());
         }
         details.addGrid(4f);
         addCodexDescription(details, selected.getHullSpec());

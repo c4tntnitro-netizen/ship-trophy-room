@@ -87,10 +87,9 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         Global.getSector().addScript(new StoryPointGeneratorScript());
         Global.getSector().removeScriptsOfClass(IsaTrophyScript.class);
         Global.getSector().addScript(new IsaTrophyScript());
+        GalleryShuttleCRRecoveryScript.clearCurrentFleetBonus();
         Global.getSector().removeScriptsOfClass(
                 GalleryShuttleCRRecoveryScript.class);
-        Global.getSector().addScript(
-                new GalleryShuttleCRRecoveryScript());
         TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
         TrophyNetwork.syncDmodMarkers(stats);
         TrophyNetwork.syncUniqueDiscountMarkers(stats);
