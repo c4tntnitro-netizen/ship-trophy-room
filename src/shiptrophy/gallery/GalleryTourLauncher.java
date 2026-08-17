@@ -66,10 +66,11 @@ public final class GalleryTourLauncher {
     private static final float AISLE_HALF_WIDTH = 780f;
     private static final float MAX_EXHIBIT_WIDTH = 980f;
     private static final float MAX_EXHIBIT_HEIGHT = 860f;
+    private static final float HALL_WORLD_SCALE = 0.8f;
     private static final float BACKGROUND_OVERSCAN = 500f;
-    private static final float BERTH_X_NORMALIZED = 0.355f;
+    private static final float BERTH_X_NORMALIZED = 0.373f;
     private static final float[] BERTH_Y_NORMALIZED = {
-        -0.367f, -0.231f, -0.101f, 0.028f, 0.141f, 0.277f, 0.420f
+        -0.351f, -0.219f, -0.093f, 0.038f, 0.167f, 0.295f, 0.423f
     };
     static final int MAX_EXHIBITS = BERTH_Y_NORMALIZED.length * 2;
     private static final float INTRO_CAMERA_SECONDS = 0.35f;
@@ -322,6 +323,8 @@ public final class GalleryTourLauncher {
         private final float displayScale;
         private final float mapWidth;
         private final float mapHeight;
+        private final float hallWidth;
+        private final float hallHeight;
         private final float shuttleStartY;
 
         private Session(List<Exhibit> exhibits, FleetMemberAPI shuttle) {
@@ -338,20 +341,26 @@ public final class GalleryTourLauncher {
                     ? 1f : Math.max(0.1f, MAX_EXHIBIT_WIDTH / nativeWidth);
             float heightScale = nativeHeight <= MAX_EXHIBIT_HEIGHT
                     ? 1f : Math.max(0.1f, MAX_EXHIBIT_HEIGHT / nativeHeight);
-            displayScale = Math.min(widthScale, heightScale);
-            float displayedWidth = nativeWidth * displayScale;
-            float displayedHeight = nativeHeight * displayScale;
+            float unscaledDisplayScale = Math.min(widthScale, heightScale);
+            displayScale = unscaledDisplayScale * HALL_WORLD_SCALE;
+            float displayedWidth = nativeWidth * unscaledDisplayScale;
+            float displayedHeight = nativeHeight * unscaledDisplayScale;
             int rows = (exhibits.size() + 1) / 2;
             float rowSpacing = Math.max(680f, displayedHeight + EXHIBIT_GAP);
             float rowSpan = Math.max(0, rows - 1) * rowSpacing;
-            mapWidth = Math.max(MIN_MAP_WIDTH,
+            float unscaledMapWidth = Math.max(MIN_MAP_WIDTH,
                     Math.min(MAX_MAP_WIDTH,
                             (AISLE_HALF_WIDTH + displayedWidth + 440f) * 2f));
-            mapHeight = Math.max(MIN_MAP_HEIGHT,
+            float unscaledMapHeight = Math.max(MIN_MAP_HEIGHT,
                     Math.min(MAX_MAP_HEIGHT, rowSpan + MAP_MARGIN));
-            shuttleStartY = -mapHeight * 0.5f + 700f;
-            float hallWidth = mapWidth + BACKGROUND_OVERSCAN;
-            float hallHeight = mapHeight + BACKGROUND_OVERSCAN;
+            mapWidth = unscaledMapWidth * HALL_WORLD_SCALE;
+            mapHeight = unscaledMapHeight * HALL_WORLD_SCALE;
+            hallWidth = (unscaledMapWidth + BACKGROUND_OVERSCAN)
+                    * HALL_WORLD_SCALE;
+            hallHeight = (unscaledMapHeight + BACKGROUND_OVERSCAN)
+                    * HALL_WORLD_SCALE;
+            shuttleStartY = (-unscaledMapHeight * 0.5f + 700f)
+                    * HALL_WORLD_SCALE;
 
             for (int index = 0; index < exhibits.size(); index++) {
                 Exhibit exhibit = exhibits.get(index);
@@ -564,8 +573,8 @@ public final class GalleryTourLauncher {
                 oldBlendDestination = sprite.getBlendDest();
                 captured = true;
 
-                float width = session.mapWidth + BACKGROUND_OVERSCAN;
-                float height = session.mapHeight + BACKGROUND_OVERSCAN;
+                float width = session.hallWidth;
+                float height = session.hallHeight;
                 sprite.setSize(width, height);
                 sprite.setCenter(width * 0.5f, height * 0.5f);
                 sprite.setAngle(0f);
