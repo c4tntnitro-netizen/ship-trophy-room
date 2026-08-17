@@ -86,8 +86,13 @@ public class StoryPointGeneratorScript implements EveryFrameScript {
         float uniqueBonus = stats.uniqueHullIds.size() / (float) TrophyNetwork.UNIQUE_HULLS_FOR_FULL_BONUS;
         float dpBonus = stats.uniqueDeploymentPoints / TrophyNetwork.DP_FOR_FULL_BONUS;
         float productionMult = roomBonus + uniqueBonus + dpBonus;
+        float isaMultiplier = 1f;
+        if (IsaTrophyManager.wasOfficerGranted()) {
+            isaMultiplier += HallOfTriumphFeatures
+                    .getIsaStoryPointGenerationBonusPercent() / 100f;
+        }
 
-        return productionMult * PermanentStoryPointBoosts.getMultiplier(stats)
+        return productionMult * isaMultiplier
                 / TrophyRoomIndustry.BASE_DAYS_PER_STORY_POINT;
     }
 

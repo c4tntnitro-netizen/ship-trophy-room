@@ -180,8 +180,7 @@
 
     "industry_player_only": "只能建造在玩家殖民地",
     "industry_storage": "为舰船和货物新增一个凯旋殿堂专用仓储分页。",
-    "industry_network_programs": "所有凯旋殿堂均已联网。故事点生成与派系改造解锁会采用整个网络中不重复的展示舰体类型。",
-    "industry_network_showcases": "所有凯旋殿堂均已联网。每完成一项阵营计划或符合条件的独特陈列，故事点生成速度便永久提高 %s。",
+    "industry_network_programs": "所有凯旋殿堂均已联网。不重复的展示舰体类型会促进故事点生成，而派系计划进度则在同一网络中单独追踪。",
     "industry_base_rate": "基础速率为每 %s 天生成 1 个故事点。每 %s 种不重复舰体与每 %s 点不重复舰体部署点总值，都会再增加一份完整的基础速率。",
     "industry_isa_bonus": "艾萨加入舰队后，她的策展工作会让殿堂故事点生成速度提高 %s。",
     "industry_highlight_unique": "不重复",

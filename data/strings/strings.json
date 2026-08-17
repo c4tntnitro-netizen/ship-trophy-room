@@ -180,8 +180,7 @@
 
     "industry_player_only": "Can only be built on player colonies",
     "industry_storage": "Adds a dedicated Hall of Triumph storage tab for ships and cargo.",
-    "industry_network_programs": "All Halls of Triumph are networked. Story point generation and doctrine unlocks use the whole network's unique displayed hull types.",
-    "industry_network_showcases": "All Halls of Triumph are networked. Each completed faction program and qualifying unique showcase permanently increases story point generation by %s.",
+    "industry_network_programs": "All Halls of Triumph are networked. Unique displayed hull types contribute to story point generation, while faction program progress is tracked separately across the same network.",
     "industry_base_rate": "Base rate is 1 story point every %s days. Every %s unique hull types and every %s total unique deployment points each add another full rate bonus.",
     "industry_isa_bonus": "After Isa joins the fleet, her curation adds %s to Hall story point generation.",
     "industry_highlight_unique": "unique",

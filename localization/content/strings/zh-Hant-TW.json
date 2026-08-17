@@ -180,8 +180,7 @@
 
     "industry_player_only": "只能建造於玩家殖民地",
     "industry_storage": "為艦船與貨物新增一個凱旋殿堂專用倉儲分頁。",
-    "industry_network_programs": "所有凱旋殿堂均已連線。故事點生成與派系改造解鎖會採用整個網路中不重複的展示艦體類型。",
-    "industry_network_showcases": "所有凱旋殿堂均已連線。每完成一項陣營計畫或符合條件的獨特陳列，故事點生成速度便永久提高 %s。",
+    "industry_network_programs": "所有凱旋殿堂均已連線。不重複的展示艦體類型會促進故事點生成，而派系計畫進度則在同一網路中單獨追蹤。",
     "industry_base_rate": "基礎速率為每 %s 天生成 1 個故事點。每 %s 種不重複艦體與每 %s 點不重複艦體部署點總值，都會再增加一份完整的基礎速率。",
     "industry_isa_bonus": "艾薩加入艦隊後，她的策展工作會讓殿堂故事點生成速度提高 %s。",
     "industry_highlight_unique": "不重複",
