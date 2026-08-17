@@ -42,19 +42,20 @@ public class IsaTrophyProvenance extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled()
+        return TrophyHullModUtil.areUnlocksEnabled()
                 && IsaTrophyManager.isMasterworkComplete()
                 && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, IsaTrophyManager.PROVENANCE_HULLMOD_ID);
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled() && IsaTrophyManager.isMasterworkComplete();
+        return TrophyHullModUtil.areUnlocksEnabled()
+                && IsaTrophyManager.isMasterworkComplete();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (!TrophyHullModUtil.areEffectsEnabled()) {
+        if (!TrophyHullModUtil.areUnlocksEnabled()) {
             return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         String other = TrophyHullModUtil.getOtherTrophyHullModName(ship, IsaTrophyManager.PROVENANCE_HULLMOD_ID);
@@ -139,7 +140,7 @@ public class IsaTrophyProvenance extends BaseHullMod {
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
-        if (!TrophyHullModUtil.areEffectsEnabled()) {
+        if (!TrophyHullModUtil.areUnlocksEnabled()) {
             tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
                     opad, Misc.getNegativeHighlightColor(),
                     ShipTrophyL10n.get("hullmod_disabled_highlight"));

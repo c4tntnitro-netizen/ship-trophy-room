@@ -67,7 +67,7 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled()
+        return TrophyHullModUtil.areUnlocksEnabled()
                 && isUnlocked() && isValidIronShellCombatShip(ship);
     }
 

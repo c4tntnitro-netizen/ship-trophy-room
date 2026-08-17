@@ -126,8 +126,8 @@
           "keyColumn": "fieldID",
           "key": "shipTrophyHullmodsEnabled",
           "fields": {
-            "fieldName": {"source": "Trophy Hullmod Rewards", "target": "战利品船体插件奖励"},
-            "fieldDescription": {"source": "TRUE: Trophy hullmods unlock normally, remain usable, and apply their normal effects; replacement story-point bonuses are inactive. FALSE: Learned and fitted trophy hullmods remain in the save but become inert and are hidden from the refit picker; each completed faction program or qualifying unique showcase instead adds 5 percent to Hall of Triumph story-point generation. Isa's dialogue is unchanged.", "target": "TRUE：战利品船体插件会正常解锁、保持可用并生效；替代性的故事点加成不启用。FALSE：已学会或已安装的战利品船体插件仍保留在存档中，但会失效并从改装选择器中隐藏；每个已完成的阵营项目或符合条件的独特展陈，改为使凯旋殿堂的故事点生成速度提高5%。艾萨的对话不变。"},
+            "fieldName": {"source": "Custom Hullmod Unlocks", "target": "自定义舰体改造解锁"},
+            "fieldDescription": {"source": "TRUE: Reward hullmods are visible in the refit picker and may be installed once their Hall of Triumph requirements are met. FALSE: Reward hullmods are hidden from the refit picker and cannot be newly installed. Hall of Triumph hullmods already fitted to ships remain installed and continue applying their full effects.", "target": "TRUE：奖励舰体改造会在改装选择器中显示，并可在满足凯旋殿堂要求后安装。FALSE：奖励舰体改造会从改装选择器中隐藏，且无法新安装；已经安装在舰船上的凯旋殿堂舰体改造会保留并继续完整生效。"},
             "tab": {"source": "Rewards", "target": "奖励"}
           }
         },

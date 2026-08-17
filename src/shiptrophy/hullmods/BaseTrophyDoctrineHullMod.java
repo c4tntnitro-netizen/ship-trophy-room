@@ -25,19 +25,19 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled()
+        return TrophyHullModUtil.areUnlocksEnabled()
                 && isUnlocked() && matchesStyle(ship)
                 && hasNoOtherTrophyHullMod(ship);
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked();
+        return TrophyHullModUtil.areUnlocksEnabled() && isUnlocked();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (!TrophyHullModUtil.areEffectsEnabled()) {
+        if (!TrophyHullModUtil.areUnlocksEnabled()) {
             return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         if (!isUnlocked()) {
@@ -82,7 +82,7 @@ public abstract class BaseTrophyDoctrineHullMod extends BaseHullMod {
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        if (!TrophyHullModUtil.areEffectsEnabled()) {
+        if (!TrophyHullModUtil.areUnlocksEnabled()) {
             tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
                     opad, Misc.getNegativeHighlightColor(),
                     ShipTrophyL10n.get("hullmod_disabled_highlight"));

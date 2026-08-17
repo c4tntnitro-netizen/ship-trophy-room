@@ -165,16 +165,14 @@ public class TrophyNetwork {
         ShipVariantAPI variant = member.getVariant();
 
         TrophySubtypeSpec lp = TrophySubtypeRegistry.getSubtype(TrophyDoctrine.LP);
-        boolean lpCounts = HallOfTriumphFeatures.areTrophyHullmodsEnabled()
-                && lp != null
+        boolean lpCounts = lp != null
                 && stats.getSubtypeDp(lp.id) >= lp.unlockDp
                 && variant.hasHullMod(TrophyDoctrine.LP.hullModId)
                 && !variant.hasHullMod(HullMods.UNSTABLE_INJECTOR);
         setMarker(variant, LuddicPathZeal.DMOD_MARKER, lpCounts);
 
         TrophySubtypeSpec lg = TrophySubtypeRegistry.getSubtype(TrophyDoctrine.LG);
-        boolean lgCounts = HallOfTriumphFeatures.areTrophyHullmodsEnabled()
-                && lg != null
+        boolean lgCounts = lg != null
                 && stats.getSubtypeDp(lg.id) >= lg.unlockDp
                 && variant.hasHullMod(TrophyDoctrine.LG.hullModId)
                 && !variant.hasHullMod(LionGuardPageantry.ENERGY_BOLT_COHERER)

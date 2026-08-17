@@ -30,19 +30,19 @@ public class Humanity extends NeuralInterface {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled()
+        return TrophyHullModUtil.areUnlocksEnabled()
                 && isUnlocked() && !hasNeuralInterface(ship)
                 && !TrophyHullModUtil.hasOtherTrophyHullMod(ship, HULLMOD_ID);
     }
 
     @Override
     public boolean showInRefitScreenModPickerFor(ShipAPI ship) {
-        return TrophyHullModUtil.areEffectsEnabled() && isUnlocked();
+        return TrophyHullModUtil.areUnlocksEnabled() && isUnlocked();
     }
 
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
-        if (!TrophyHullModUtil.areEffectsEnabled()) {
+        if (!TrophyHullModUtil.areUnlocksEnabled()) {
             return ShipTrophyL10n.get("hullmod_disabled_reason");
         }
         if (!isUnlocked()) {
@@ -90,7 +90,7 @@ public class Humanity extends NeuralInterface {
         super.addPostDescriptionSection(tooltip, hullSize, ship, width, isForModSpec);
         float opad = 10f;
         Color h = Misc.getHighlightColor();
-        if (!TrophyHullModUtil.areEffectsEnabled()) {
+        if (!TrophyHullModUtil.areUnlocksEnabled()) {
             tooltip.addPara(ShipTrophyL10n.get("hullmod_effects_disabled"),
                     opad, Misc.getNegativeHighlightColor(),
                     ShipTrophyL10n.get("hullmod_disabled_highlight"));

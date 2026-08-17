@@ -12,19 +12,29 @@ import shiptrophy.TrophySubtypeRegistry;
 import shiptrophy.TrophySubtypeSpec;
 
 public class TrophyHullModUtil {
-    private static Boolean lastEffectsEnabled;
+    private static Boolean lastUnlocksEnabled;
 
-    public static boolean areEffectsEnabled() {
+    /** Controls discovery, picker visibility, and new installation only. */
+    public static boolean areUnlocksEnabled() {
         return HallOfTriumphFeatures.areTrophyHullmodsEnabled();
     }
 
+    /**
+     * Installed Hall hullmods always retain their effects. Kept as a distinct
+     * policy hook so existing effect code can never be coupled to the Luna
+     * unlock toggle again.
+     */
+    public static boolean areEffectsEnabled() {
+        return true;
+    }
+
     public static void refreshPlayerFleetEffectsIfSettingChanged() {
-        boolean enabled = areEffectsEnabled();
-        if (lastEffectsEnabled != null
-                && lastEffectsEnabled.booleanValue() == enabled) {
+        boolean enabled = areUnlocksEnabled();
+        if (lastUnlocksEnabled != null
+                && lastUnlocksEnabled.booleanValue() == enabled) {
             return;
         }
-        lastEffectsEnabled = Boolean.valueOf(enabled);
+        lastUnlocksEnabled = Boolean.valueOf(enabled);
         if (Global.getSector() == null
                 || Global.getSector().getPlayerFleet() == null) {
             return;
