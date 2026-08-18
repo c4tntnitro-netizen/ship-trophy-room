@@ -56,7 +56,7 @@ public final class ShipGalleryDialog {
 
         @Override
         public String getCancelText() {
-            return ShipTrophyL10n.get("gallery_return_to_isa_button");
+            return ShipTrophyL10n.get("gallery_return_to_colony_button");
         }
 
         @Override

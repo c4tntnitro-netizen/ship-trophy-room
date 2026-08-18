@@ -69,6 +69,31 @@ public class TrophyNetwork {
         return stats;
     }
 
+    /** True when the exact hull or skin is stored in any functional Hall. */
+    public static boolean hasStoredHull(String hullId) {
+        if (hullId == null || hullId.trim().isEmpty()
+                || Global.getSector() == null
+                || Global.getSector().getEconomy() == null) return false;
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (market == null || !market.isPlayerOwned()) continue;
+            Industry industry = market.getIndustry(ShipTrophyRoomIds.INDUSTRY);
+            if (!TrophyRoomIndustry.isFunctionalTrophyRoom(industry)
+                    || !market.hasSubmarket(ShipTrophyRoomIds.SUBMARKET)) continue;
+            CargoAPI cargo = market.getSubmarket(ShipTrophyRoomIds.SUBMARKET).getCargo();
+            if (cargo == null || cargo.getMothballedShips() == null) continue;
+            for (FleetMemberAPI member
+                    : cargo.getMothballedShips().getMembersListCopy()) {
+                if (member == null || member.getHullSpec() == null) continue;
+                String storedHullId = member.getHullSpec().getHullId();
+                if (storedHullId == null || storedHullId.isEmpty()) {
+                    storedHullId = member.getHullId();
+                }
+                if (hullId.equalsIgnoreCase(storedHullId)) return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isDoctrineUnlocked(TrophyDoctrine doctrine) {
         TrophySubtypeSpec spec = TrophySubtypeRegistry.getSubtype(doctrine);
         return spec != null && getSubtypeDp(spec.id) >= spec.unlockDp;

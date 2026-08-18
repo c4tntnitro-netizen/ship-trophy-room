@@ -23,7 +23,6 @@ import shiptrophy.hullmods.AbundantMercyVow;
 import shiptrophy.hullmods.BlackLionInheritance;
 import shiptrophy.hullmods.Contempt;
 import shiptrophy.hullmods.Gaze;
-import shiptrophy.gallery.ShipGalleryDialog;
 
 /** Dynamic data and state actions used by Isa's rules.csv dialogue. */
 public class IsaContactRulesCMD implements CommandPlugin {
@@ -33,6 +32,7 @@ public class IsaContactRulesCMD implements CommandPlugin {
     private static final String CURRENT_SUBTYPE = "$shipTrophyIsaSubtypeId";
     private static final String CURRENT_UNIQUE = "$shipTrophyIsaUniqueId";
     private static final String JOIN_RESULT = "$shipTrophyIsaJoinResult";
+    private static final String PRISTINE_KITE_HULL_ID = "kite_original";
 
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params,
@@ -57,10 +57,6 @@ public class IsaContactRulesCMD implements CommandPlugin {
         }
         if ("prepareMain".equals(command)) {
             prepareMain(dialog, local);
-            return true;
-        }
-        if ("showGallery".equals(command)) {
-            ShipGalleryDialog.show(dialog);
             return true;
         }
         if ("refreshStats".equals(command)) {
@@ -117,6 +113,24 @@ public class IsaContactRulesCMD implements CommandPlugin {
         }
         if ("showUniqueStatus".equals(command)) {
             showUniqueStatus(dialog.getTextPanel(), isModded(value(params, 1, memoryMap)));
+            return true;
+        }
+        if ("pristineKiteStored".equals(command)) {
+            return TrophyNetwork.hasStoredHull(PRISTINE_KITE_HULL_ID);
+        }
+        if ("pristineKiteSeen".equals(command)) {
+            return Global.getSector() != null
+                    && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                            ShipTrophyRoomIds
+                                    .MEMORY_ISA_PRISTINE_KITE_DIALOGUE_SEEN);
+        }
+        if ("markPristineKiteSeen".equals(command)) {
+            if (Global.getSector() != null) {
+                Global.getSector().getMemoryWithoutUpdate().set(
+                        ShipTrophyRoomIds
+                                .MEMORY_ISA_PRISTINE_KITE_DIALOGUE_SEEN,
+                        true);
+            }
             return true;
         }
         if ("isGenericUniqueOption".equals(command)) {

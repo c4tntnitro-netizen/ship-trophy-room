@@ -38,6 +38,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
+import com.fs.starfarer.api.util.Misc;
 
 import shiptrophy.ShipTrophyL10n;
 
@@ -104,7 +105,7 @@ public final class GalleryTourLauncher {
 
         // customDialogConfirm() runs before Starsector clears the Gallery
         // modal. Defer the direct launch until the following campaign frame,
-        // then close Isa's contact screen through the supported return path.
+        // then close the colony interaction through the supported return path.
         sector.addTransientScript(new LaunchTourAfterGalleryScript(
                 dialog,
                 selectedExhibits == null
@@ -149,7 +150,8 @@ public final class GalleryTourLauncher {
             done = true;
             if (!ShipGalleryData.isTourShuttleEligible(selectedShuttle)) {
                 dialog.getTextPanel().addPara(
-                        ShipTrophyL10n.get("gallery_no_shuttle_launch"));
+                        ShipTrophyL10n.get("gallery_no_shuttle_launch"),
+                        Misc.getNegativeHighlightColor());
                 return;
             }
             if (selectedExhibits.isEmpty()) {
@@ -424,7 +426,7 @@ public final class GalleryTourLauncher {
             engine.setDoNotEndCombat(true);
             engine.setCustomExit(
                     ShipTrophyL10n.get("gallery_leave_tour"),
-                    ShipTrophyL10n.get("gallery_return_to_isa"));
+                    ShipTrophyL10n.get("gallery_return_to_colony"));
             engine.setRenderStarfield(false);
             engine.setBackgroundColor(new Color(5, 9, 11));
             engine.setMaxFleetPoints(FleetSide.PLAYER, 9999);
@@ -1064,7 +1066,7 @@ public final class GalleryTourLauncher {
                     return;
                 } catch (Throwable ex) {
                     System.err.println(
-                            "[Hall of Triumph] Could not restore Isa's contact dialog.");
+                            "[Hall of Triumph] Could not restore the colony dialog.");
                     ex.printStackTrace(System.err);
                     dialog.setPlugin(this);
                 }

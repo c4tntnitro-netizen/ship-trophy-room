@@ -31,7 +31,6 @@ SetTextHighlights $shipTrophyIsaRooms $shipTrophyIsaUniqueHulls $shipTrophyIsaUn
 shipTrophyIsaMainJoin,ShipTrophyIsaMainOptions,IsaContactRulesCMD canJoin,"SetOptionColor ship_trophy_isa_join_fleet highlight
 SetTooltip ship_trophy_isa_join_fleet ""Isa has completed Awe and can now join your officer roster.""",,0:ship_trophy_isa_join_fleet:Isa is ready to join the fleet.,
 shipTrophyIsaMainMasterwork,ShipTrophyIsaMainOptions,,IsaContactOptionsCMD populateMasterworkOption,,,
-shipTrophyIsaMainGallery,ShipTrophyIsaMainOptions,,,,15:ship_trophy_isa_gallery:View the Ship Gallery.,Ship Gallery access whenever Isa's Hall contact menu is available.
 shipTrophyIsaMainUniques,ShipTrophyIsaMainOptions,,,,20:ship_trophy_isa_uniques:Ask about unique hulls.,
 shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtypes:Ask about vanilla faction and subtype programs.,
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
@@ -39,7 +38,6 @@ shipTrophyIsaMainModdedSubtypes,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasS
 shipTrophyIsaMainGanEden,ShipTrophyIsaMainOptions,GanEdenQuestCMD questCompleted,,,"60:ship_trophy_isa_isaac:""...so. Isaac Leicester. He was Ludd.""",The full post-quest conversation about Isaac Leicester remains available through Isa's contact menu.
 shipTrophyIsaMainShatteredRing,ShipTrophyIsaMainOptions,IsaContactRulesCMD alreadyJoined,,,70:ship_trophy_isa_shattered_ring:Ask Isa about the Shattered Ring.,Post-recruitment conversation about Isa's childhood home.
 shipTrophyIsaMainLeave,ShipTrophyIsaMainOptions,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,100:ship_trophy_isa_close:Cut the comm link.,
-shipTrophyIsaGalleryOpen,DialogOptionSelected,$option == ship_trophy_isa_gallery,IsaContactRulesCMD showGallery,,,Opens the Ship Gallery from Isa's contact dialogue.
 shipTrophyIsaShatteredRingHub,DialogOptionSelected,$option == ship_trophy_isa_shattered_ring,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""The Shattered Ring? It's home for me. Such as it is. Bring me along sometime, I wanna say hi.""","90:ship_trophy_isa_open:Back to the Hall ledgers.
 100:ship_trophy_isa_close:Cut the comm link.",Post-recruitment one-line response about Isa's home.
 shipTrophyIsaShatteredRingChildhood,DialogOptionSelected,$option == ship_trophy_isa_shattered_ring_childhood,,"""Arc Two, mostly,"" Isa says. ""That was where the habitation decks were. Arc One had the good machine shops, but their gravity used to cut out whenever the ore processor started.""
@@ -279,6 +277,11 @@ shipTrophyIsaContemptOptionNew,ShipTrophyIsaUniqueOptionsVanilla,"IsaContactRule
 SetTooltip ship_trophy_isa_contempt ""Unlocked: Contempt""",,20:ship_trophy_isa_contempt:Discuss the Onslaught Mk.I.,
 shipTrophyIsaContemptOptionSeen,ShipTrophyIsaUniqueOptionsVanilla,"IsaContactRulesCMD uniqueShowcased contempt
 IsaContactRulesCMD unlockSeen contempt","SetTooltip ship_trophy_isa_contempt ""Unlocked: Contempt""",,20:ship_trophy_isa_contempt:Discuss the Onslaught Mk.I.,
+shipTrophyIsaPristineKiteOptionNew,ShipTrophyIsaUniqueOptionsVanilla,"IsaContactRulesCMD pristineKiteStored
+!IsaContactRulesCMD pristineKiteSeen","SetOptionColor ship_trophy_isa_pristine_kite highlight
+SetTooltip ship_trophy_isa_pristine_kite ""Isa has marked the pristine Kite as a priority-one exhibit.""",,"25:ship_trophy_isa_pristine_kite:""Isa? Why is the pristine Kite flagged as a priority-one emergency?""",Hidden pristine Kite conversation; no locked option exists and no hullmod is awarded.
+shipTrophyIsaPristineKiteOptionSeen,ShipTrophyIsaUniqueOptionsVanilla,"IsaContactRulesCMD pristineKiteStored
+IsaContactRulesCMD pristineKiteSeen",,,25:ship_trophy_isa_pristine_kite:Discuss the pristine Kite.,Repeat access to the secret pristine Kite conversation.
 shipTrophyIsaGenericVanillaOptions,ShipTrophyIsaUniqueOptionsVanilla,,IsaContactOptionsCMD populateGenericUniqueOptions vanilla,,,
 shipTrophyIsaUniqueVanillaBack,ShipTrophyIsaUniqueOptionsVanilla,,"SetShortcut ship_trophy_isa_close ""ESCAPE""",,"90:ship_trophy_isa_open:Back.
 100:ship_trophy_isa_close:Cut the comm link.",
@@ -369,6 +372,142 @@ shipTrophyIsaContemptSix,DialogOptionSelected,$option == ship_trophy_isa_contemp
 
 Isa puts her hand over her heart. ""Rest in peace, now.""","0:ship_trophy_isa_uniques:Back.
 100:ship_trophy_isa_close:Cut the comm link.",
+shipTrophyIsaPristineKiteOpen,DialogOptionSelected,"$option == ship_trophy_isa_pristine_kite
+IsaContactRulesCMD pristineKiteStored","IsaContactRulesCMD markPristineKiteSeen
+SetShortcut ship_trophy_isa_close ""ESCAPE""","You find Isa in berth seven.
+
+She is perched atop the recent pristine Kite you've brought in, one boot planted on the wing root and the other dangling over the side. Half the ship's access panels are open around her, though nothing appears to have actually been removed. A work light has been dragged underneath the fuselage. Three engineers are standing nearby with the slightly helpless expressions of people who made the mistake of asking Isa what she thought of something.
+
+She spots you.
+
+""Commander. Commander! You know what this is!? Commander!""
+
+She keeps talking before you can answer.
+
+""A pristine Kite. An actual, unmolested, luxury Kite! This one still has the maker's lacquer under the access panels!""
+
+She drops through the open canopy so quickly that for a moment only her boots are visible.
+
+""Look at this seat!""
+
+Her voice is muffled now, projected enthusiastically from somewhere inside the cockpit.
+
+""That is real leather! Real. Leather. Full-grain, hand-stitched, properly sprung! Cows went extinct in the Sector eighty cycles ago! This might be the last bit of real leather outside of an Eventide hovercar!""
+
+You lean over the canopy.
+
+Isa has both hands pressed reverently against the pilot's seat.
+
+""And look at the wear! Somebody actually used this thing. See the creasing here? Natural compression. No vat-grown utility hide, no stamped polymer pretending to have pores. This was an animal.""
+
+She pauses.
+
+""Probably a very expensive animal.""
+
+She twists around and sweeps a hand toward the controls.
+
+""The pilot's console is wood! Carved Gilead wood! Somebody selected the grain, shaped it around the instrument binnacle, inlaid the switch labels in brass, and then polished it until—""
+
+She runs a sleeve over one section, squints at her reflection, then immediately buffs away the mark she just made.
+
+""—until you can practically shave in it. Every toggle has the same resistance. Every dial has a mechanical stop. The switches have little felt dampers underneath them so they don't click too loudly at night.""
+
+She flips one.
+
+Click.
+
+Isa beams.
+
+""Listen to that.""
+
+You listen.","0:ship_trophy_isa_pristine_kite_clicked:""Yes. It clicked.""",Your supplied pristine Kite scene; the player's spoken response is rendered as a selected option.
+shipTrophyIsaPristineKiteClicked,DialogOptionSelected,$option == ship_trophy_isa_pristine_kite_clicked,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Exactly.""
+
+She disappears beneath the console.
+
+""And the wiring harness is laced!""
+
+A moment later she resurfaces.
+
+Isa is speaking faster now.
+
+""The sleeping quarters have two proper berths, sound insulation, a fold-down table that does not block the hatch, a wardrobe deep enough for an actual coat, and a washroom where the shower does not share plumbing with the reactor coolant loop—""
+
+She catches you by the sleeve and drags you toward the rear compartment.
+
+""Look--""
+
+There is, indeed, a wardrobe.
+
+Isa opens it.
+
+It contains three wooden hangers.
+
+""Wooden hangers.""
+
+She looks at you meaningfully.
+
+You look back at her.
+
+""Commander! They brought trees into space so your jacket wouldn't get shoulder bumps.""
+
+She moves on before you can formulate a response.
+
+""The galley has a heat surface with six actual temperature settings instead of LOW, HIGH, and REACTOR INCIDENT. The drawers have felt-lined runners. The cabinet doors stay shut under thrust because they have proper brass catches instead of magnets.""
+
+She pulls open a narrow compartment.
+
+""And this...""
+
+Inside is a fitted rack holding four crystal glasses.
+
+Isa lifts one toward the overhead light.
+
+""A drinks cabinet.""
+
+Your bodyguards, for once, behind you murmur appreciatively.
+
+She sets it back with both hands.
+
+She is already moving toward the engine room.
+
+""And we haven't even gotten to the drive!""",0:ship_trophy_isa_pristine_kite_seat:Find a seat and hopefully a drink.,The tour continues only after the player's action is selected.
+shipTrophyIsaPristineKiteSeat,DialogOptionSelected,$option == ship_trophy_isa_pristine_kite_seat,"SetShortcut ship_trophy_isa_close ""ESCAPE""","After getting an impromptu tour of the Kite's drink cabinet, you manage to salvage both.
+
+Isa continues.
+
+Isa spends eleven minutes explaining the machining tolerances on the cabin door hinges.
+
+Then seventeen on the atmospheric system.
+
+Then she starts on the engines.
+
+You lose to Yvan at chess960.
+
+Twice.
+
+Damn it.
+
+By the time Isa finally finishes, it has been over an hour.
+
+She stands in the middle of the cabin, flushed from excitement, surrounded by open schematics and an audience of engineers who have either become genuinely invested or simply accepted that escape is no longer possible.
+
+""So.""
+
+Isa clasps her hands behind her back.
+
+""You get it?""
+
+She gestures around the tiny ship.
+
+""What do you think, Commander?""","0:ship_trophy_isa_pristine_kite_modspec:""So what kind of modspec are you going to extract from this?""",The player's modspec question is rendered as a selected option.
+shipTrophyIsaPristineKiteModspec,DialogOptionSelected,$option == ship_trophy_isa_pristine_kite_modspec,"SetShortcut ship_trophy_isa_close ""ESCAPE""","Isa gasps.
+
+""How dare you."" She looks genuinely appalled.
+
+""Commander. We are not dissecting it.""","0:ship_trophy_isa_pristine_kite_protest:""I didn't say dissect—""",The player's protest is rendered as a selected option.
+shipTrophyIsaPristineKiteProtest,DialogOptionSelected,$option == ship_trophy_isa_pristine_kite_protest,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Never! I won't let you!""","0:ship_trophy_isa_uniques:[You slowly back away.]
+100:ship_trophy_isa_close:Cut the comm link.",The player's retreat is rendered as a selected action; the scene grants no hullmod.
 shipTrophyIsaMercyLocked,DialogOptionSelected,"$option == ship_trophy_isa_mercy
 !IsaContactRulesCMD uniqueShowcased mercy","SetShortcut ship_trophy_isa_close ""ESCAPE""","""Keep an eye out for Abundant Mercy, the Knights Hospitaller's Invictus-pattern ships. If you get it into the network, I want a separate ledger for it.""","0:ship_trophy_isa_modded_uniques:Back.
 100:ship_trophy_isa_close:Cut the comm link.",
@@ -555,7 +694,11 @@ shipTrophyIsaJoinReady,DialogOptionSelected,"$option == ship_trophy_isa_join_fle
 !IsaContactRulesCMD alreadyJoined
 IsaContactRulesCMD canJoin","SetOptionColor ship_trophy_isa_join_fleet_confirm highlight
 SetTooltip ship_trophy_isa_join_fleet_confirm ""Isa will join your officer roster.""
-SetShortcut ship_trophy_isa_close ""ESCAPE""","For once, Isa has no slate in her hands. No schematics, no lists, no half-disassembled parts balanced on the furniture. Just a travel case at her feet and a hard little smile she is trying, unsuccessfully, to hide.
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""Well, Commander, if it's not too much to ask. Can you come by here later today? Give me some time.""
+
+Several hours later, you find yourself in the workshop again. The place is quiet, save for the occasional clink of a tool against metal. The air smells faintly of oil and solder.
+
+For once, Isa has no slate in her hands. No schematics, no lists, no half-disassembled parts balanced on the furniture. Just a travel case at her feet and a hard little smile she is trying, unsuccessfully, to hide.
 
 ""My greatest work is finished,"" she says. ""The Hall can run without me staring over its shoulder now. So if you'll have me, Captain, I want to join you. I want to see what legacies look like while they're being made.""","0:ship_trophy_isa_join_fleet_confirm:""Let's go write history.""
 90:ship_trophy_isa_open:Back.
@@ -764,6 +907,10 @@ SetTextHighlights ""[Received: Isa's inheritance.]"" ""[Quest started: A Borrowe
 
 [Objective: Investigate Isa's inheritance in her old workshop.]",0:ship_trophy_isa_homecoming_inheritance_return:Return to the Shattered Ring concourse.,The suit starts A Borrowed Name and becomes a persistent workshop objective.
 shipTrophyIsaShatteredRingHomecomingInheritanceReturn,DialogOptionSelected,$option == ship_trophy_isa_homecoming_inheritance_return,FireBest OpenInteractionDialog,,,Returns to the normal Shattered Ring colony menu.
+shipTrophyGalleryColonyOption,PopulateOptions,"$hasMarket
+$menuState == main
+ShipGalleryRulesCMD shouldShow",,,15:ship_trophy_gallery_open:Visit the Ship Gallery.,Ship Gallery access from the main menu of a player colony with a functional Hall of Triumph.
+shipTrophyGalleryColonyOpen,DialogOptionSelected,$option == ship_trophy_gallery_open,ShipGalleryRulesCMD show,,,Opens the Ship Gallery from its Hall of Triumph colony menu.
 shipTrophyIsaShatteredRingHomecomingWorkshopOption,PopulateOptions,IsaHomecomingCMD shouldShowWorkshop,,,20:ship_trophy_isa_homecoming_workshop_open:Investigate Isa's suit in her workshop.,Persistent Shattered Ring colony-menu option after receiving the inheritance.
 shipTrophyIsaShatteredRingHomecomingWorkshopOpen,DialogOptionSelected,$option == ship_trophy_isa_homecoming_workshop_open,"IsaHomecomingCMD prepareWorkshop
 FireAll ShipTrophyIsaHomecomingWorkshop",,,Resumes the homecoming inside Isa's childhood workshop.
