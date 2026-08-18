@@ -300,15 +300,15 @@ public class IsaTrophyManager {
 
         MutableCharacterStatsAPI stats = person.getStats();
         if (stats == null) return;
-        stats.setLevel(1);
-        stats.setSkillLevel(Skills.ORDNANCE_EXPERTISE, 0f);
-        stats.setSkillLevel(Skills.SYSTEMS_EXPERTISE, 0f);
-        stats.setSkillLevel(Skills.DAMAGE_CONTROL, 0f);
-        stats.setSkillLevel(Skills.COMBAT_ENDURANCE, 0f);
-        stats.setSkillLevel(Skills.HELMSMANSHIP, 0f);
-        stats.setSkillLevel(Skills.IMPACT_MITIGATION, 0f);
-        stats.setSkillLevel(DEFENSIVE_SKILL_ID, 2f);
-        stats.setSkillLevel(MOBILITY_SKILL_ID, 0f);
+        stats.setSkillLevel(Skills.ORDNANCE_EXPERTISE, 2f);
+        stats.setSkillLevel(Skills.SYSTEMS_EXPERTISE, 2f);
+        stats.setSkillLevel(Skills.DAMAGE_CONTROL, 2f);
+        stats.setSkillLevel(Skills.COMBAT_ENDURANCE, 1f);
+        stats.setSkillLevel(Skills.HELMSMANSHIP, 1f);
+        stats.setSkillLevel(Skills.IMPACT_MITIGATION, 1f);
+        stats.setSkillLevel(DEFENSIVE_SKILL_ID, 1f);
+        stats.setSkillLevel(MOBILITY_SKILL_ID, 1f);
+        stats.setLevel(8);
         stats.refreshCharacterStatsEffects();
     }
 

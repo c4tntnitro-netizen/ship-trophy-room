@@ -19,8 +19,7 @@
 
 ### Isa and balance
 
-- Recruits Isa at level 1 after completing Awe. Her Hull Repair Doctrine replaces Damage Control and grants 40% less hull damage taken, 75% fewer crew casualties, and immunity to weapon and engine disablement.
-- Adds Hull Repair Doctrine's elite armor regeneration: 0.1% of total armor per second, capped at the lesser of 1,000 armor or 15% of total armor. Legacy serialized skill data remains save-compatible.
+- Recruits Isa at level 8 after completing Awe with her original Field-Refit Doctrine and Redline Calibration skills.
 - Adds a hidden, repeatable pristine Kite conversation to Isa's unique-hull menu, with no attached hullmod or mechanical reward.
 - Adds configurable post-recruitment conveniences for crew pay, sensor profile, and fleet burn level without changing Isa's dialogue.
 - Rebalances Gaze, Contempt, and Iaido and prevents the unique showcase hullmods from being installed on the hulls used to unlock them.
