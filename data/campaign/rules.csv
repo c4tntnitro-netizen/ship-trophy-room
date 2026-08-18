@@ -29,9 +29,9 @@ SetTextHighlights $shipTrophyIsaRooms $shipTrophyIsaUniqueHulls $shipTrophyIsaUn
 
 ""It's not about not owning ships,"" she says. ""It's owning history. Hulls with enough legacy that they teach us all.""",,
 shipTrophyIsaMainJoin,ShipTrophyIsaMainOptions,IsaContactRulesCMD canJoin,"SetOptionColor ship_trophy_isa_join_fleet highlight
-SetTooltip ship_trophy_isa_join_fleet ""Every vanilla Hall of Triumph ledger is complete. Isa can now join your officer roster.""",,0:ship_trophy_isa_join_fleet:Isa is ready to join the fleet.,
+SetTooltip ship_trophy_isa_join_fleet ""Isa has completed Awe and can now join your officer roster.""",,0:ship_trophy_isa_join_fleet:Isa is ready to join the fleet.,
 shipTrophyIsaMainMasterwork,ShipTrophyIsaMainOptions,,IsaContactOptionsCMD populateMasterworkOption,,,
-shipTrophyIsaMainGallery,ShipTrophyIsaMainOptions,IsaContactRulesCMD alreadyJoined,,,15:ship_trophy_isa_gallery:View the Ship Gallery.,Post-recruitment access to the Ship Gallery.
+shipTrophyIsaMainGallery,ShipTrophyIsaMainOptions,,,,15:ship_trophy_isa_gallery:View the Ship Gallery.,Ship Gallery access whenever Isa's Hall contact menu is available.
 shipTrophyIsaMainUniques,ShipTrophyIsaMainOptions,,,,20:ship_trophy_isa_uniques:Ask about unique hulls.,
 shipTrophyIsaMainSubtypes,ShipTrophyIsaMainOptions,,,,30:ship_trophy_isa_subtypes:Ask about vanilla faction and subtype programs.,
 shipTrophyIsaMainModdedUniques,ShipTrophyIsaMainOptions,IsaContactRulesCMD hasUniquePrograms modded,,,40:ship_trophy_isa_modded_uniques:Ask about modded unique hulls.,
@@ -251,9 +251,10 @@ SetTextHighlightColors hColor
 SetTextHighlights ""Received Awe modspec.""","""Useful?"" Isa grins. She pinches the web down to a single rotating modspec and flicks it from her terminal to yours. ""Commander, this is my Magnum Opus. Your ships will have never sung so beautifully in their lives.""
 
 Received Awe modspec.","0:ship_trophy_isa_masterwork_3:""It's named 'Awe'? Modest of you.""",
-shipTrophyIsaMasterworkUnlockEnd,DialogOptionSelected,$option == ship_trophy_isa_masterwork_3,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""I considered 'Isa Leicester Is The Best,'"" she says. ""Marketing talked me down.""
+shipTrophyIsaMasterworkUnlockEnd,DialogOptionSelected,$option == ship_trophy_isa_masterwork_3,"SetOptionColor ship_trophy_isa_join_fleet highlight
+SetShortcut ship_trophy_isa_close ""ESCAPE""","""I considered 'Isa Leicester Is The Best,'"" she says. ""Marketing talked me down.""
 
-She is still smiling when she turns back to the five ships.","0:ship_trophy_isa_masterwork:Back.
+She is still smiling when she turns back to the five ships.","0:ship_trophy_isa_join_fleet:""You look like you have something to say.""
 100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaUniquesHub,DialogOptionSelected,$option == ship_trophy_isa_uniques,"IsaContactRulesCMD prepare
 IsaContactRulesCMD refreshStats
@@ -466,11 +467,16 @@ shipTrophyIsaSubtypeCommentXiv,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD cu
 shipTrophyIsaSubtypeCommentLp,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype lp score:100,,"""Path ships are floating disasters with engines. Dangerous lesson set, but useful if you respect how much they are willing to martyr themselves.""",,
 shipTrophyIsaSubtypeCommentLg,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype lg score:100,,"""Lion's Guard work is parade paint over surprisingly decent forge-level tuning. Ignoring the garbage wiring and that man-mulcher they call the 'Energy Bolt Coherer', it's got a surprisingly practical layout. For some of the patterns, anways.""",,
 shipTrophyIsaSubtypeCommentTt,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype tt score:100,,"""Tri-Tachyon legacy hulls hide their best tricks in the absence of obvious machinery. Their comapny is lies on lies, but their ships sing a different story.""",,
-shipTrophyIsaSubtypeCommentKnights,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype knights_of_ludd score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
-shipTrophyIsaSubtypeCommentUaf,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype uaf score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
-shipTrophyIsaSubtypeCommentIronShell,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype iron_shell score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
-shipTrophyIsaSubtypeCommentRemnant,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype remnant score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
-shipTrophyIsaSubtypeCommentDerelict,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype domain_derelict score:100,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
+shipTrophyIsaSubtypeCommentKnights,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype knights_of_ludd score:100,,"""The gallant Knights,"" Isa says. ""Their ships are a testament to their unwavering spirit. They're also a tremendous pain. Do you know how annoying it is to refit all that modular armor after every single battle?""
+
+Isa is getting visibly agitated. ""The overtime alone is a nightmare!""",,
+shipTrophyIsaSubtypeCommentUaf,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype uaf score:100,,"""What a strange set of ships,"" Isa says, slowly turning the model around. ""A strange doctrine for a weirdly intense people. Everything's specialized, everything's expensive, and somehow they still found room for another missile rack or flight deck. Cruiser school, by any other name.""",,
+
+shipTrophyIsaSubtypeCommentIronShell,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype iron_shell score:100,,"""You can tell these grew out of Hegemony hulls,"" Isa says. ""Same bones, same obsession with armor and reliability. But there's an edge to everything they do with it. Like a sword in mid-swing.""",,
+
+shipTrophyIsaSubtypeCommentRemnant,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype remnant score:100,,"""These are fun,"" Isa says. ""No crew spaces. No access corridors unless a machine actually needs one. No pretending a human being might ever have to repair it."" She taps the model. ""I'm no Luddite, Commander. AI has its own voice, even in ship design. I aim to hear it.""",,
+
+shipTrophyIsaSubtypeCommentDerelict,ShipTrophyIsaSubtypeComment,IsaContactRulesCMD currentSubtype domain_derelict score:100,,"""These look crude until you start comparing them,"" Isa says. ""Then you realize the weaknesses repeat. Same compromises, same limitations, across hulls that had no reason to share them."" She turns the model over in her hands. ""The Domain did this on purpose. Why would you deliberately hobble an Explorarium fleet?"" She stares at it for another moment. ""Hm. Well. I fixed the obvious parts.""",,
 shipTrophyIsaSubtypeCommentGeneric,ShipTrophyIsaSubtypeComment,,,"""This family has its own habits,"" Isa says. ""Get enough examples into our network and the design patterns start showing through.""",,
 shipTrophyIsaSubtypeInactive,ShipTrophyIsaSubtypeState,!IsaContactRulesCMD currentSubtypeActive,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""That ledger isn't active right now,"" Isa says. ""Might be a missing mod, might be a bad index.""","0:ship_trophy_isa_open:Back.
 100:ship_trophy_isa_close:Cut the comm link.",
@@ -551,7 +557,7 @@ IsaContactRulesCMD canJoin","SetOptionColor ship_trophy_isa_join_fleet_confirm h
 SetTooltip ship_trophy_isa_join_fleet_confirm ""Isa will join your officer roster.""
 SetShortcut ship_trophy_isa_close ""ESCAPE""","For once, Isa has no slate in her hands. No schematics, no lists, no half-disassembled parts balanced on the furniture. Just a travel case at her feet and a hard little smile she is trying, unsuccessfully, to hide.
 
-""The Hall can run without me staring over its shoulder now,"" she says. ""Every ledger is clean. Every weird old hull has taught us what it was going to teach from a dock. So if you'll have me, Captain, I want to join you. I want to see what legacies looks like when they're being made.""","0:ship_trophy_isa_join_fleet_confirm:""Let's go write history.""
+""My greatest work is finished,"" she says. ""The Hall can run without me staring over its shoulder now. So if you'll have me, Captain, I want to join you. I want to see what legacies look like while they're being made.""","0:ship_trophy_isa_join_fleet_confirm:""Let's go write history.""
 90:ship_trophy_isa_open:Back.
 100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinAlready,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet
@@ -561,7 +567,7 @@ SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa has already joined your fleet 
 100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinIncomplete,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet
 !IsaContactRulesCMD alreadyJoined
-!IsaContactRulesCMD canJoin","SetShortcut ship_trophy_isa_close ""ESCAPE""",The Hall of Triumph is not quite ready for Isa to leave her workshop yet.,"0:ship_trophy_isa_open:Back to contact dialogue.
+!IsaContactRulesCMD canJoin","SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa will be ready to leave her workshop after she finishes Awe.,"0:ship_trophy_isa_open:Back to contact dialogue.
 100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaJoinConfirm,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet_confirm
 !IsaContactRulesCMD alreadyJoined
@@ -577,7 +583,7 @@ SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa has already joined your fleet 
 100:ship_trophy_isa_close:Cut the comm link.",Direct stale-confirmation fallback.
 shipTrophyIsaJoinConfirmIncomplete,DialogOptionSelected,"$option == ship_trophy_isa_join_fleet_confirm
 !IsaContactRulesCMD alreadyJoined
-!IsaContactRulesCMD canJoin","SetShortcut ship_trophy_isa_close ""ESCAPE""",The Hall of Triumph is not quite ready for Isa to leave her workshop yet.,"0:ship_trophy_isa_open:Back to contact dialogue.
+!IsaContactRulesCMD canJoin","SetShortcut ship_trophy_isa_close ""ESCAPE""",Isa will be ready to leave her workshop after she finishes Awe.,"0:ship_trophy_isa_open:Back to contact dialogue.
 100:ship_trophy_isa_close:Cut the comm link.",Direct stale-confirmation fallback.
 shipTrophyIsaBarPrompt,ShipTrophyIsaBarPrompt,,,"A lean, red-haired spacer with her overalls still dusted in machine oil and soot watches the traffic from the dockside bar at $shipTrophyIsaBarMarketName. Her crew has staked out a bar table under a spread of projected hull sections. They're in the middle of some lively debate over the feasibility of some kind of ship technology. Coaxial weaponry, by the looks of it. Her eyes glint as she sees hull after hull move in and out of the designated display berth.",0:ship_trophy_isa_bar_begin:Approach the salvager watching the Hall of Triumph traffic.,CSV-owned prompt; Java substitutes the event object required by BaseBarEvent.
 shipTrophyIsaBarIntro,ShipTrophyIsaBarIntro,,,"Her crew whispers as you approach and hurriedly clean up the blueprints. The spacer, however, turns and beams at you.
@@ -631,9 +637,9 @@ SetShortcut ship_trophy_hall_complete_leave ""ESCAPE""","A private channel opens
 
 The view settles on ranks of restored hulls beneath the gallery lights, each faction's doctrine preserved in steel, circuitry, and old scars.
 
-""I wanted to see it from out here,"" Isa says at last. ""The whole thing at once. One last time, before I leave.""
+""I wanted to see it from out here,"" Isa says at last. ""The whole thing at once, for the first time.""
 
-""You've done it, Captain. The Hall of Triumph is done. Not finished, mind you; places like this are never finished. But every core ledger is preserved under one roof. Not under war, but peace.""
+""You've done it, Captain. The Hall of Triumph is done. Not finished, mind you; places like this are never finished. But every core ledger in the history of the Sector is preserved under one roof. Not under war, but peace.""
 
 Isa glances from the distant gallery to the fleet around you. ""The Hall can preserve what came before. From here on, we get to make what comes next. Thank you for giving me a place in it.""","0:ship_trophy_hall_complete_leave:Welcome aboard, Chief.",CSV-owned Hall completion cinematic.
 shipTrophyIsaShatteredRingHomecoming,OpenInteractionDialog,IsaHomecomingCMD shouldShow score:30000,IsaHomecomingCMD prepare,"Shattered Ring comes into view one broken section at a time.
@@ -1876,11 +1882,11 @@ shipTrophyGanEdenEpitaphLeave,DialogOptionSelected,$option == ship_trophy_gan_ed
 DismissDialog",,,"Completes A Borrowed Name after Isa's closing scene, then returns to the campaign; final-log music continues until the fleet leaves Gan Eden."
 shipTrophyGanEdenEpitaphNeedsIsa,OpenInteractionDialog,GanEdenQuestCMD epitaphNeedsIsa score:55000,"SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","The elevator's continuity archive recognizes Isa Leicester's inherited suit transponder, but she is not present to answer its identity challenge. You will need to return with Isa in the fleet.",0:ship_trophy_gan_eden_epitaph_leave:Leave.,Prevents resolving Isa's family story without Isa.
 shipTrophyGanEdenEpitaphInspected,OpenInteractionDialog,"GanEdenQuestCMD epitaphInspected score:55000
-GanEdenQuestCMD prepareGoldenOmegaRespawnTimer","SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""
-FireAll ShipTrophyGanEdenLureOptions","The silent Space Elevator remains open above Gan Eden. Its final Leicester record is secure in the fleet archives.
+GanEdenQuestCMD prepareGoldenOmegaRespawnTimer",FireAll ShipTrophyGanEdenLureOptions,"The silent Space Elevator remains open above Gan Eden. Its final Leicester record is secure in the fleet archives.
 
-$shipTrophyGanEdenRespawnStatus",0:ship_trophy_gan_eden_epitaph_leave:Leave.,Repeat interaction after the final archive scene; reports the Golden Omega reconstruction timer and offers an immediate rematch when no wave is active.
+$shipTrophyGanEdenRespawnStatus",,Repeat interaction after the final archive scene; reports the Golden Omega reconstruction timer and offers an immediate rematch when no wave is active.
 shipTrophyGanEdenLureOption,ShipTrophyGanEdenLureOptions,GanEdenQuestCMD canLureGoldenOmega,"SetStoryOption ship_trophy_gan_eden_lure_omega 1 shipTrophyGanEdenLureGoldenOmega technology ""Lured the Golden Omega back to Gan Eden""",,10:ship_trophy_gan_eden_lure_omega:Lure the Golden Omega back.,Offers the next escalating Golden Omega wave immediately instead of waiting one year.
+shipTrophyGanEdenLureLeaveOption,ShipTrophyGanEdenLureOptions,,SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE"",,100:ship_trophy_gan_eden_epitaph_leave:Leave.,Always provides a non-lure exit from the repeat Space Elevator interaction.
 shipTrophyGanEdenLureOmega,DialogOptionSelected,$option == ship_trophy_gan_eden_lure_omega,"GanEdenQuestCMD lureGoldenOmega
 SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""","Isa wakes the Space Elevator's continuity transmitter and feeds it a deliberately malformed guardian challenge.
 

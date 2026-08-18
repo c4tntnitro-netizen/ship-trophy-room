@@ -9,13 +9,14 @@ Adds a player-colony structure called **Hall of Triumph**.
 - Generates story points passively while functional.
 - All functional Halls of Triumph are networked.
 - Adds **Isa**, a salvager and ship-modder contact who appears in the dockside bar after the first functional Hall of Triumph is built.
-- Completing every vanilla Isa trophy program grants **Isa Leicester** as a steady level-8 officer with two exclusive skills; optional mod integrations are not required.
+- Completing Isa's five-capital **Awe** showcase grants **Isa Leicester** as a steady level-1 officer with the exclusive **Hull Repair Doctrine** skill; optional mod integrations are not required.
 - After Isa joins the fleet, the first visit to a station owned by each supported vanilla faction plays a short, one-time vignette about that faction's shipbuilding doctrine. Knights of Ludd remains an optional, safely detected integration.
 - Adds **The Shattered Ring**, an independent size-4 free port in Penelope's Star. The station is built into the remains of an adamantine ring and supports a community of salvagers, wreck-farmers, and cryopod survivors.
 - Adds **Gan Eden**, a compact prototype Dyson-sphere interior reached through Isa's post-recruitment story quest.
 - Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
+- Every unique hull also earns 10 credits per base ordnance point each month. Functional Halls split this network stipend evenly and each demands one unit of crew, heavy machinery, and supplies.
 - Every 12 unique hull types adds another full base-rate bonus.
 - Every 240 total deployment points from unique hulls adds another full base-rate bonus.
 - Tracks hosted hull-size counts: frigates, destroyers, cruisers, and capitals.
@@ -39,7 +40,7 @@ The quest sends the player to investigate both vanilla Coronal Hypershunts. One 
 
 Every battle inside Gan Eden uses a dedicated 4096x2048 enhancement of the Terran Eccentric surface texture as its full-screen backdrop and applies **Atmospheric Flow** to all combatants: ballistic and energy weapon damage and range are reduced by 5%, while ship and missile maximum speed are increased by 20%.
 
-The Gan Eden Space Elevator is relocated to a separate surface district and remains hidden and non-interactable until **Cherubim** and **Lahat Haharev** are defeated together for the first time. That first complete victory releases its four settlement sites from their sealed economy groups so player colonies can participate in ordinary Sector trade, but Gan Eden itself remains parked beyond charted hyperspace and accessible only through the Power Transit Gate. If only one named Shard survives an encounter, it reconstructs its missing counterpart. A complete victory begins a recurring 90-day return cycle. Each new Golden Omega wave brings a larger escort of custom ivory ceramic Remnant hulls, escalating through four tiers until the escort alone is roughly a full Ordo. These reconstructed ships use exact 50/50 composites of their ivory artwork and the eight corresponding vanilla Remnant sprites, retaining the vanilla alpha masks, and have **Insulated Engine Assembly**, **Resistant Flux Conduits**, **Solar Shielding**, and **Stabilized Shields** built directly into their hulls. Later victories reset the 90-day timer without relocking the quest or transit-gate route. After the first victory, newly spawned ordinary Remnant Ordos also have a 10% chance to carry one or more regular, non-aureate Facets or Shards as escorts; Cherubim and Lahat themselves no longer appear in random Ordos. Golden Omega encounters suppress Starsector's default Remnant music, cue **Strike from the Sky** at five seconds of unpaused combat time, play its authored intro once, and then repeat its dedicated loop segment.
+The Gan Eden Space Elevator is relocated to a separate surface district and remains hidden and non-interactable until **Cherubim** and **Lahat Haharev** are defeated together for the first time. That first complete victory releases its four settlement sites from their sealed economy groups so player colonies can participate in ordinary Sector trade, but Gan Eden itself remains parked beyond charted hyperspace and accessible only through the Power Transit Gate. If only one named Shard survives an encounter, it reconstructs its missing counterpart. A complete victory begins a recurring one-year return cycle. Each new Golden Omega wave brings a larger escort of custom ivory ceramic Remnant hulls, escalating through four tiers until the escort alone is roughly a full Ordo. These reconstructed ships use exact 50/50 composites of their ivory artwork and the eight corresponding vanilla Remnant sprites, retaining the vanilla alpha masks, and have **Insulated Engine Assembly**, **Resistant Flux Conduits**, **Solar Shielding**, and **Stabilized Shields** built directly into their hulls. Later victories reset the one-year timer without relocking the quest or transit-gate route. After the first victory, newly spawned ordinary Remnant Ordos also have a 10% chance to carry one or more regular, non-aureate Facets or Shards as escorts; Cherubim and Lahat themselves no longer appear in random Ordos. Golden Omega encounters suppress Starsector's default Remnant music, cue **Strike from the Sky** at five seconds of unpaused combat time, play its authored intro once, and then repeat its dedicated loop segment.
 ## Music credits
 
 ```text
@@ -104,14 +105,14 @@ Optional example integrations are included:
 
 - **Honor**: active only with `knights_of_ludd`; low-tech only, hull and armor damage taken -5%, hull integrity +10%, shield damage taken -10%.
 - **Resonance**: active only with `uaf`; increases guided missile maximum speed by 33%. Torpedo and multi-rocket volleys launch two forward decoy flares at 110% of the parent munition's speed, while Semibreve launchers deploy five. Decoys remain active for 2/4/10 seconds when fired by small/medium/large launchers. Missile-based point defense, fighter weapons, and submunitions are excluded. Incompatible with ECCM Package.
-- **Discipline**: active only with `timid_xiv` and installable only on Iron Shell ships. Replaces the ship's system with **Iaido**, a high-speed armored charge that leaves torpedo launchers operational. Torpedoes fired during the draw gain 200% maximum and launch speed and deal 50% additional kinetic damage without a cap.
+- **Discipline**: active only with `timid_xiv` and installable only on Iron Shell ships. Replaces the ship's system with **Iaido**, a high-speed armored charge that leaves torpedo launchers operational. Torpedoes fired during the draw gain 200% maximum and launch speed and deal 50%/35%/25%/15% additional kinetic damage on frigates/destroyers/cruisers/capital ships without a cap.
 
 For a plain-language walkthrough of adding your own subtype and special trophy hullmod, see `docs/creating_trophy_hullmods.md`.
 
 ## Unique showcase unlocks
 
-- **Gaze**: unlocked by showcasing the Ziggurat anywhere in the Hall of Triumph network. Doubles flux dissipation while venting and is incompatible with Resistant Flux Conduits.
-- **Contempt**: unlocked by showcasing the Onslaught Mk.I anywhere in the Hall of Triumph network. Point-defense weapons deal 25% increased damage to fighters and missiles and generate 10% less flux; this includes weapons converted by S-modded Integrated Point Defense AI. All weapons also deal 5% increased damage to hull.
+- **Gaze**: unlocked by showcasing the Ziggurat anywhere in the Hall of Triumph network. Increases flux dissipation while venting by 75%, is incompatible with Resistant Flux Conduits, and cannot be installed on the Ziggurat itself.
+- **Contempt**: unlocked by showcasing the Onslaught Mk.I anywhere in the Hall of Triumph network. Point-defense weapons deal 20% increased damage to fighters and missiles and generate 5% less flux; this includes weapons converted by S-modded Integrated Point Defense AI. All weapons also deal 5% increased damage to hull. Cannot be installed on the Onslaught Mk.I itself.
 - Featured mod-ship showcases: **Abundant Mercy** from Knights Hospitaller (`knights_hospitallar`) and **The Black Lion** from Black Lion Ships (`black_lion_ships`) are always listed in Isa's modded unique-hull menu, even when their source mods are not installed. Their 0 OP trophy hullmods can only be unlocked when the corresponding ship is actually available and displayed.
 
 - **Inheritance**: unlocked by showcasing The Black Lion. Increases energy weapon damage by 10% and reduces energy weapon flux cost by 5%.
@@ -136,3 +137,13 @@ To make a clean install folder that excludes Git metadata and build scratch:
 ```
 
 Then copy `dist\HallOfTriumph` into `Starsector\mods`, enable **Hall of Triumph**, and start/load a campaign.
+## Optional mod settings
+
+When LunaLib is enabled, Hall of Triumph adds a settings page for its reward modules. LunaLib is optional; the same defaults remain available in `data/config/settings.json` when it is absent.
+
+- **Custom Hullmod Unlocks** is enabled by default. When enabled, earned Hall reward hullmods are visible and installable. When disabled, reward hullmods are hidden from the refit picker and cannot be newly installed, while hullmods already fitted to ships remain installed and continue applying their full effects.
+- **Hall Achievements** adds four Hall milestones to MagicLib's achievement screen when both Nexerelin and MagicLib are enabled: the first exhibit, all six vanilla doctrine programs, Isa's masterwork, and completion of A Borrowed Name. All three external mods remain optional.
+- **Hall Storage Sorting** orders displayed ships using a primary and secondary category: hull name, faction/manufacturer, hull size, or deployment-point cost. Text sorts A-Z, while size and DP sort from lowest to highest. Sorting changes presentation order only.
+- `shipTrophyIsaQualityOfLifeBonusesEnabled` gives the fleet Isa's post-recruitment crew-pay, sensor-profile, and burn-level bonuses.
+- `shipTrophyIsaCrewPayReductionPercent`, `shipTrophyIsaSensorProfileReductionPercent`, and `shipTrophyIsaBurnLevelBonus` tune those conveniences.
+- `shipTrophyIsaStoryPointGenerationBonusPercent` gives a flat post-recruitment bonus to Hall story-point generation. Set the QoL toggle to `false` and this value above zero to use it as Isa's sole mechanical reward.

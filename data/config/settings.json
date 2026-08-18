@@ -1,6 +1,11 @@
 {
     "shipTrophyHullmodsEnabled": true,
     "shipTrophyNexAchievementsEnabled": true,
+    "shipTrophyIsaQualityOfLifeBonusesEnabled": true,
+    "shipTrophyIsaCrewPayReductionPercent": 20,
+    "shipTrophyIsaSensorProfileReductionPercent": 25,
+    "shipTrophyIsaBurnLevelBonus": 1,
+    "shipTrophyIsaStoryPointGenerationBonusPercent": 0,
     "ruleCommandPackages": [
         "shiptrophy"
     ],

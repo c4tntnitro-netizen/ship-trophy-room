@@ -83,7 +83,8 @@ public class IsaContactRulesCMD implements CommandPlugin {
             return IsaTrophyManager.isMasterworkComplete();
         }
         if ("canJoin".equals(command)) {
-            return !IsaTrophyManager.wasOfficerGranted() && IsaTrophyManager.areAllQuestsComplete();
+            return !IsaTrophyManager.wasOfficerGranted()
+                    && IsaTrophyManager.isAweRecruitmentReady();
         }
         if ("alreadyJoined".equals(command)) {
             return IsaTrophyManager.wasOfficerGranted();
@@ -362,9 +363,9 @@ public class IsaContactRulesCMD implements CommandPlugin {
         String result;
         if (IsaTrophyManager.wasOfficerGranted()) {
             result = "already";
-        } else if (!IsaTrophyManager.areAllQuestsComplete()) {
+        } else if (!IsaTrophyManager.isAweRecruitmentReady()) {
             result = "incomplete";
-        } else if (IsaTrophyManager.grantOfficerIfComplete()) {
+        } else if (IsaTrophyManager.grantOfficerIfAweComplete()) {
             result = "joined";
         } else if (IsaTrophyManager.wasOfficerGranted()) {
             result = "already";

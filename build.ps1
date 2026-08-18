@@ -23,6 +23,7 @@ $classpath = @(
     (Join-Path $core "json.jar"),
     (Join-Path $core "lwjgl.jar"),
     (Join-Path $core "lwjgl_util.jar"),
+    (Join-Path $starsector "mods\Console Commands\jars\lw_Console.jar"),
     (Join-Path $starsector "mods\MagicLib\jars\MagicLib.jar")
 ) -join [System.IO.Path]::PathSeparator
 & $javac --release 8 -classpath $classpath -d $classes @sources

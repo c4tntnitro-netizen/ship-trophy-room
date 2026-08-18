@@ -5,17 +5,9 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 
 public class ship_trophy_isa_redline {
-    public static final float TOP_SPEED_BONUS = 10f;
-    public static final float MANEUVERABILITY_BONUS = 20f;
-
     public static class Level1 implements ShipSkillEffect {
         @Override
         public void apply(MutableShipStatsAPI stats, HullSize hullSize, String id, float level) {
-            stats.getMaxSpeed().modifyPercent(id, TOP_SPEED_BONUS);
-            stats.getAcceleration().modifyPercent(id, MANEUVERABILITY_BONUS);
-            stats.getDeceleration().modifyPercent(id, MANEUVERABILITY_BONUS);
-            stats.getMaxTurnRate().modifyPercent(id, MANEUVERABILITY_BONUS);
-            stats.getTurnAcceleration().modifyPercent(id, MANEUVERABILITY_BONUS);
         }
 
         @Override
@@ -29,7 +21,7 @@ public class ship_trophy_isa_redline {
 
         @Override
         public String getEffectDescription(float level) {
-            return "+10% top speed; +20% acceleration, deceleration, and maneuverability";
+            return "Legacy skill; no effect";
         }
 
         @Override

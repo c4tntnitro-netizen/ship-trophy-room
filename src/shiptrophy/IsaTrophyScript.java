@@ -32,6 +32,7 @@ public class IsaTrophyScript implements EveryFrameScript {
         interval.advance(Global.getSector().getClock().convertToDays(amount));
         if (!interval.intervalElapsed()) return;
 
+        IsaQualityOfLifeBonuses.advance(interval.getIntervalDuration());
         IsaFactionVisitCMD.applyPersistentBonuses();
         MarketAPI home = IsaTrophyManager.findHomeMarket();
         if (home == null) return;
@@ -45,7 +46,24 @@ public class IsaTrophyScript implements EveryFrameScript {
     }
 
     private void tryShowHallCompletionScene() {
-        if (!IsaTrophyManager.wasOfficerGranted() || IsaTrophyManager.wasFactionCompletionSceneShown()) return;
+        if (!IsaTrophyManager.wasOfficerGranted()
+                || IsaTrophyManager.wasFactionCompletionSceneValidated()) return;
+
+        boolean allVanillaComplete = IsaTrophyManager.areAllVanillaProgramsComplete(
+                TrophyNetwork.computeNetworkStats());
+        if (!allVanillaComplete) {
+            if (IsaTrophyManager.wasFactionCompletionSceneShown()) {
+                IsaTrophyManager.markFactionCompletionSceneForReplay();
+            }
+            return;
+        }
+
+        // Migrate saves where the original completion-gated scene played correctly.
+        if (IsaTrophyManager.wasFactionCompletionSceneShown()
+                && !IsaTrophyManager.doesFactionCompletionSceneNeedReplay()) {
+            IsaTrophyManager.setFactionCompletionSceneValidated();
+            return;
+        }
 
         MarketAPI home = IsaTrophyManager.findHomeMarket();
         if (home == null || Global.getSector().getPlayerFleet() == null) return;

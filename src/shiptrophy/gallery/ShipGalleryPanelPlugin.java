@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.loading.Description;
@@ -68,6 +69,10 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private static final float MANIFEST_GAP = 6f;
     private static final float MANIFEST_PAD = 9f;
     private static final float HERO_GAP = 12f;
+    private static final float SHUTTLE_BAY_HEIGHT = 100f;
+    private static final float SHUTTLE_BAY_GAP = 8f;
+    private static final float SHUTTLE_LABEL_HEIGHT = 20f;
+    private static final String DEFAULT_SHUTTLE_VARIANT = "kite_original_Stock";
 
     private static final Color VOID = new Color(5, 11, 15);
     private static final Color STAGE = new Color(9, 20, 26);
@@ -91,11 +96,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     private TooltipMakerAPI emptyState;
     private TooltipMakerAPI previousControl;
     private TooltipMakerAPI nextControl;
+    private TooltipMakerAPI shuttleBayLabel;
 
     private List<FleetMemberAPI> allShips = Collections.emptyList();
     private List<FleetMemberAPI> visibleShips = Collections.emptyList();
     private List<FleetMemberAPI> tourManifest = new ArrayList<FleetMemberAPI>();
     private FleetMemberAPI tourShuttle;
+    private FleetMemberAPI defaultTourShuttle;
+    private boolean usingDefaultTourShuttle;
     private int selectedIndex = -1;
     private int hoveredIndex = -1;
     private boolean factionDropdownOpen;
@@ -159,6 +167,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         contentPanel.addUIElement(header).inTL(OUTER_PAD, 8f);
 
         buildControls();
+        buildShuttleBayLabel();
 
         if (factionDropdownOpen) {
             buildFactionPicker();
@@ -177,7 +186,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         FleetMemberAPI rememberedShuttle = findShipById(
                 allShips, getMemory(TOUR_SHUTTLE_MEMORY));
         if (!ShipGalleryData.isTourShuttleEligible(rememberedShuttle)) {
-            rememberedShuttle = findFirstEligibleShuttle(allShips);
+            rememberedShuttle = null;
         }
         List<String> manufacturers = ShipGalleryData.getManufacturers(allShips);
         String manufacturer = validateManufacturer(getManufacturer(), manufacturers);
@@ -191,13 +200,13 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         if (selectedIndex >= 0) {
             FleetMemberAPI selected = visibleShips.get(selectedIndex);
             setMemory(SELECTED_MEMORY, safe(selected.getId()));
-            if (ShipGalleryData.isTourShuttleEligible(selected)) {
-                rememberedShuttle = selected;
-            }
         }
-        tourShuttle = rememberedShuttle;
+        usingDefaultTourShuttle = rememberedShuttle == null;
+        tourShuttle = usingDefaultTourShuttle
+                ? getDefaultTourShuttle() : rememberedShuttle;
         setMemory(TOUR_SHUTTLE_MEMORY,
-                tourShuttle == null ? "" : safe(tourShuttle.getId()));
+                usingDefaultTourShuttle || tourShuttle == null
+                        ? "" : safe(tourShuttle.getId()));
         restoreTourManifest();
         hoveredIndex = -1;
     }
@@ -223,6 +232,20 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         addControl(controls.shortenString(factionLabel, Math.max(210f, sidebarWidth - 18f)),
                 FACTION_ID, sidebarWidth);
         contentPanel.addUIElement(controls).inTR(OUTER_PAD, SIDEBAR_TOP);
+    }
+
+    private void buildShuttleBayLabel() {
+        float bayWidth = getShuttleBayWidth();
+        shuttleBayLabel = contentPanel.createUIElement(
+                bayWidth, SHUTTLE_LABEL_HEIGHT, false);
+        shuttleBayLabel.addSectionHeading(
+                ShipTrophyL10n.get("gallery_shuttle_bay"),
+                Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(),
+                Alignment.MID, 0f);
+        contentPanel.addUIElement(shuttleBayLabel).inBL(
+                OUTER_PAD + MANIFEST_PAD,
+                getShuttleBayBottom() + SHUTTLE_BAY_HEIGHT
+                        - SHUTTLE_LABEL_HEIGHT - 4f);
     }
 
     private void buildFactionPicker() {
@@ -308,10 +331,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         details.addToGrid(0, 2, ShipTrophyL10n.get("gallery_deployment_points"), displayDp(selected));
         details.addToGrid(0, 3, ShipTrophyL10n.get("gallery_status"),
                 ShipTrophyL10n.get("gallery_preserved"), Misc.getHighlightColor());
-        if (ShipGalleryData.isTourShuttleEligible(selected)) {
+        if (sameShip(selected, tourShuttle)) {
             details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
                     ShipTrophyL10n.get("gallery_selected"),
                     Misc.getPositiveHighlightColor());
+        } else if (ShipGalleryData.isTourShuttleEligible(selected)) {
+            details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
+                    ShipTrophyL10n.get("gallery_click_to_assign"),
+                    Misc.getHighlightColor());
         } else if (tourShuttle != null) {
             details.addToGrid(0, 4, ShipTrophyL10n.get("gallery_tour_shuttle"),
                     displayShipName(tourShuttle));
@@ -379,6 +406,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         emptyState = null;
         previousControl = null;
         nextControl = null;
+        shuttleBayLabel = null;
     }
 
     private void remove(TooltipMakerAPI component) {
@@ -461,6 +489,17 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         requestRebuild();
     }
 
+    private void assignTourShuttle(FleetMemberAPI member) {
+        if (!ShipGalleryData.isTourShuttleEligible(member)) return;
+        setMemory(TOUR_SHUTTLE_MEMORY, safe(member.getId()));
+        requestRebuild();
+    }
+
+    private void restoreDefaultTourShuttle() {
+        setMemory(TOUR_SHUTTLE_MEMORY, "");
+        requestRebuild();
+    }
+
     private void restoreTourManifest() {
         List<FleetMemberAPI> restored = new ArrayList<FleetMemberAPI>();
         String encoded = getMemory(TOUR_MANIFEST_MEMORY);
@@ -532,7 +571,8 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
     }
 
     private int getManifestRows() {
-        float usable = getStageHeight() - MANIFEST_PAD * 2f;
+        float usable = getStageHeight() - MANIFEST_PAD * 2f
+                - SHUTTLE_BAY_HEIGHT - SHUTTLE_BAY_GAP;
         return Math.max(1, (int) Math.floor(
                 (usable + MANIFEST_GAP) / (MANIFEST_SLOT + MANIFEST_GAP)));
     }
@@ -556,6 +596,22 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         int row = index / MANIFEST_COLUMNS;
         return stageY + stageHeight - MANIFEST_PAD - MANIFEST_SLOT
                 - row * (MANIFEST_SLOT + MANIFEST_GAP);
+    }
+
+    private float getShuttleBayWidth() {
+        return getManifestWidth() - MANIFEST_PAD * 2f;
+    }
+
+    private float getShuttleBayBottom() {
+        return RAIL_BOTTOM + RAIL_HEIGHT + 14f + MANIFEST_PAD;
+    }
+
+    private float shuttleBayX(float stageX) {
+        return stageX + MANIFEST_PAD;
+    }
+
+    private float shuttleBayY(float stageY) {
+        return stageY + MANIFEST_PAD;
     }
 
     private float getSidebarContentTop() {
@@ -609,12 +665,24 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         return index < 0 ? null : ships.get(index);
     }
 
-    private static FleetMemberAPI findFirstEligibleShuttle(
-            List<FleetMemberAPI> ships) {
-        for (FleetMemberAPI member : ships) {
-            if (ShipGalleryData.isTourShuttleEligible(member)) return member;
+    private FleetMemberAPI getDefaultTourShuttle() {
+        if (ShipGalleryData.isTourShuttleEligible(defaultTourShuttle)) {
+            return defaultTourShuttle;
         }
-        return null;
+        try {
+            defaultTourShuttle = Global.getFactory().createFleetMember(
+                    FleetMemberType.SHIP, DEFAULT_SHUTTLE_VARIANT);
+            if (defaultTourShuttle != null) {
+                defaultTourShuttle.setShipName(
+                        ShipTrophyL10n.get("gallery_default_shuttle_name"));
+                defaultTourShuttle.getRepairTracker().setMothballed(false);
+                defaultTourShuttle.getRepairTracker().setCR(1f);
+            }
+        } catch (Throwable ignored) {
+            defaultTourShuttle = null;
+        }
+        return ShipGalleryData.isTourShuttleEligible(defaultTourShuttle)
+                ? defaultTourShuttle : null;
     }
 
     private static FleetMemberAPI findShipByHullKey(
@@ -632,6 +700,14 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
         return member == null || member.getHullSpec() == null
                 ? ShipTrophyL10n.get("gallery_unknown_vessel")
                 : safe(member.getHullSpec().getHullName());
+    }
+
+    private static boolean sameShip(
+            FleetMemberAPI left, FleetMemberAPI right) {
+        if (left == null || right == null) return false;
+        String leftId = safe(left.getId());
+        String rightId = safe(right.getId());
+        return !leftId.isEmpty() && leftId.equals(rightId);
     }
 
     private static String displayManufacturer(FleetMemberAPI member) {
@@ -775,6 +851,7 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 Misc.getDarkPlayerColor(), 0.55f * alphaMult, 1f);
 
         renderTourManifestFrames(stageX, stageY, stageHeight, alphaMult);
+        renderShuttleBay(stageX, stageY, alphaMult);
 
         float heroX = stageX + getManifestWidth() + HERO_GAP;
         float heroWidth = Math.max(100f,
@@ -826,6 +903,32 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                         BERTH_CYAN, 0.18f * alphaMult, 1f);
             }
         }
+    }
+
+    private void renderShuttleBay(
+            float stageX, float stageY, float alphaMult) {
+        float x = shuttleBayX(stageX);
+        float y = shuttleBayY(stageY);
+        float bayWidth = getShuttleBayWidth();
+        Color stateColor = usingDefaultTourShuttle
+                ? BERTH_CYAN : BERTH_AMBER;
+
+        drawChamferedFill(x, y, bayWidth, SHUTTLE_BAY_HEIGHT, 10f,
+                new Color(7, 18, 23), 0.86f * alphaMult);
+        drawChamferedFrame(x, y, bayWidth, SHUTTLE_BAY_HEIGHT, 10f,
+                stateColor, 0.76f * alphaMult, 1.6f);
+        drawLine(x + 12f, y + 13f, x + bayWidth - 12f, y + 13f,
+                BERTH_CYAN, 0.34f * alphaMult, 1.4f);
+        drawLine(x + 19f, y + 8f, x + 27f, y + 13f,
+                BERTH_AMBER, 0.72f * alphaMult, 1.5f);
+        drawLine(x + 27f, y + 13f, x + 19f, y + 18f,
+                BERTH_AMBER, 0.72f * alphaMult, 1.5f);
+        drawLine(x + bayWidth - 19f, y + 8f,
+                x + bayWidth - 27f, y + 13f,
+                BERTH_AMBER, 0.72f * alphaMult, 1.5f);
+        drawLine(x + bayWidth - 27f, y + 13f,
+                x + bayWidth - 19f, y + 18f,
+                BERTH_AMBER, 0.72f * alphaMult, 1.5f);
     }
 
     private static void renderConveyorBelt(
@@ -1021,6 +1124,17 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                     alphaMult * 0.88f, false);
         }
 
+        if (tourShuttle != null) {
+            float bayX = shuttleBayX(stageX);
+            float bayY = shuttleBayY(stageY);
+            renderShip(tourShuttle,
+                    bayX + getShuttleBayWidth() * 0.5f,
+                    bayY + (SHUTTLE_BAY_HEIGHT - SHUTTLE_LABEL_HEIGHT) * 0.45f,
+                    getShuttleBayWidth() - 24f,
+                    SHUTTLE_BAY_HEIGHT - SHUTTLE_LABEL_HEIGHT - 18f,
+                    alphaMult, false);
+        }
+
         int start = getWindowStart();
         int count = getWindowCount();
         float left = getWindowLeft();
@@ -1201,6 +1315,11 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 return;
             }
             if (event.isMouseDownEvent() && event.getEventValue() == 1) {
+                if (isInsideShuttleBay(event.getX(), event.getY())) {
+                    restoreDefaultTourShuttle();
+                    event.consume();
+                    return;
+                }
                 int manifestIndex = manifestAt(event.getX(), event.getY());
                 if (manifestIndex >= 0) {
                     removeFromTourManifest(manifestIndex);
@@ -1219,8 +1338,13 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
                 return;
             } else if (event.isMouseDownEvent() && event.getEventValue() == 0
                     && iconIndex >= 0) {
+                FleetMemberAPI clicked = visibleShips.get(iconIndex);
                 select(iconIndex);
-                addToTourManifest(visibleShips.get(iconIndex));
+                if (ShipGalleryData.isTourShuttleEligible(clicked)) {
+                    assignTourShuttle(clicked);
+                } else {
+                    addToTourManifest(clicked);
+                }
                 event.consume();
                 return;
             }
@@ -1256,6 +1380,15 @@ final class ShipGalleryPanelPlugin implements CustomUIPanelPlugin {
             }
         }
         return -1;
+    }
+
+    private boolean isInsideShuttleBay(float x, float y) {
+        float stageX = position.getX() + OUTER_PAD;
+        float stageY = position.getY() + RAIL_BOTTOM + RAIL_HEIGHT + 14f;
+        float bayX = shuttleBayX(stageX);
+        float bayY = shuttleBayY(stageY);
+        return x >= bayX && x <= bayX + getShuttleBayWidth()
+                && y >= bayY && y <= bayY + SHUTTLE_BAY_HEIGHT;
     }
 
     private static boolean containsEvent(TooltipMakerAPI component, InputEventAPI event) {

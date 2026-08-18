@@ -258,6 +258,15 @@ public class TrophyNetwork {
         return safe(member.getHullId());
     }
 
+    private static int getBaseOrdnancePoints(FleetMemberAPI member) {
+        if (member == null || member.getHullSpec() == null) return 0;
+        try {
+            return Math.max(0, member.getHullSpec().getOrdnancePoints(null));
+        } catch (RuntimeException ex) {
+            return 0;
+        }
+    }
+
     public static boolean hasShowcasedHull(CollectionStats stats, String baseHullId) {
         if (stats == null || baseHullId == null) return false;
         for (String hullId : stats.uniqueHullIds) {
@@ -277,8 +286,10 @@ public class TrophyNetwork {
     public static class CollectionStats {
         public int storedShips = 0;
         public float uniqueDeploymentPoints = 0f;
+        public int uniqueOrdnancePoints = 0;
         public Set<String> uniqueHullIds = new LinkedHashSet<String>();
         public Map<String, Float> uniqueHullDp = new LinkedHashMap<String, Float>();
+        public Map<String, Integer> uniqueHullOp = new LinkedHashMap<String, Integer>();
         public Map<ShipAPI.HullSize, Integer> hullSizeCounts = new LinkedHashMap<ShipAPI.HullSize, Integer>();
         public Map<String, Float> subtypeDp = new LinkedHashMap<String, Float>();
         public Map<String, Float> doctrineDp = subtypeDp;
@@ -302,15 +313,21 @@ public class TrophyNetwork {
             String baseHullId = getBaseHullId(member);
             if (uniqueHullIds.add(baseHullId)) {
                 float dp = Math.max(0f, member.getUnmodifiedDeploymentPointsCost());
+                int op = getBaseOrdnancePoints(member);
                 uniqueHullDp.put(baseHullId, dp);
+                uniqueHullOp.put(baseHullId, op);
                 uniqueDeploymentPoints += dp;
+                uniqueOrdnancePoints += op;
             }
 
             String hullId = member.getHullId();
             if (TrophyUniqueShowcases.isOptionalUniqueHull(hullId) && uniqueHullIds.add(hullId)) {
                 float dp = Math.max(0f, member.getUnmodifiedDeploymentPointsCost());
+                int op = getBaseOrdnancePoints(member);
                 uniqueHullDp.put(hullId, dp);
+                uniqueHullOp.put(hullId, op);
                 uniqueDeploymentPoints += dp;
+                uniqueOrdnancePoints += op;
             }
 
             for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
@@ -336,8 +353,12 @@ public class TrophyNetwork {
                 if (uniqueHullIds.add(hullId)) {
                     Float dp = other.uniqueHullDp.get(hullId);
                     if (dp == null) dp = 0f;
+                    Integer op = other.uniqueHullOp.get(hullId);
+                    if (op == null) op = 0;
                     uniqueHullDp.put(hullId, dp);
+                    uniqueHullOp.put(hullId, op);
                     uniqueDeploymentPoints += dp;
+                    uniqueOrdnancePoints += op;
                 }
             }
 

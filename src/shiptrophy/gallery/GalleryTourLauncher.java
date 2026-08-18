@@ -56,6 +56,20 @@ public final class GalleryTourLauncher {
     private static final String KITE_VARIANT = "kite_original_Stock";
     private static final String INVULNERABLE_ID =
             "ship_trophy_gallery_tour_invulnerable";
+    private static final String GALLERY_MUSIC_SET =
+            "ship_trophy_time_leads_to_the_end";
+    private static final String GALLERY_MUSIC_FILE =
+            "ship_trophy_time_leads_to_the_end.ogg";
+    // Sample-true duration of the game-ready Ogg Vorbis stream.
+    private static final long GALLERY_MUSIC_DURATION_NANOS =
+            (long) (134.747062d * 1_000_000_000d);
+    private static final long GALLERY_MUSIC_END_TOLERANCE_NANOS =
+            (long) (2d * 1_000_000_000d);
+    private static final long GALLERY_MUSIC_SILENCE_NANOS =
+            (long) (20d * 1_000_000_000d);
+    private static final long GALLERY_MUSIC_RETRY_NANOS =
+            (long) (0.75d * 1_000_000_000d);
+    private static boolean galleryMusicActive;
 
     private static final float MIN_MAP_WIDTH = 7000f;
     private static final float MAX_MAP_WIDTH = 20000f;
@@ -284,6 +298,7 @@ public final class GalleryTourLauncher {
         private final float nativeHeight;
         private float x;
         private float y;
+        private float angle;
 
         private Exhibit(
                 String spriteName, float nativeWidth, float nativeHeight) {
@@ -369,6 +384,7 @@ public final class GalleryTourLauncher {
                         * hallWidth * BERTH_X_NORMALIZED;
                 exhibit.y = hallHeight
                         * BERTH_Y_NORMALIZED[index / 2];
+                exhibit.angle = leftSide ? -90f : 90f;
             }
         }
     }
@@ -419,6 +435,202 @@ public final class GalleryTourLauncher {
                     .setSuppressDeploymentMessages(true);
             engine.addLayeredRenderingPlugin(new HallBackdrop(session));
             engine.addLayeredRenderingPlugin(new ExhibitRenderer(session));
+            if (beginGalleryMusic()) {
+                // Vanilla queues combat music after this callback. Claim the
+                // channel here, then start the authored track from a live
+                // combat frame once battle construction has finished.
+                engine.addPlugin(new GalleryMusic(engine));
+            }
+        }
+    }
+
+    private static boolean beginGalleryMusic() {
+        galleryMusicActive = true;
+        try {
+            Global.getSoundPlayer().setSuspendDefaultMusicPlayback(true);
+            return true;
+        } catch (RuntimeException ex) {
+            System.err.println(
+                    "Hall of Triumph: failed to suspend default music for "
+                            + "the Gallery tour.");
+            ex.printStackTrace(System.err);
+            restoreGalleryMusic();
+            return false;
+        }
+    }
+
+    /** Releases the process-wide music channel owned by the Gallery tour. */
+    private static void restoreGalleryMusic() {
+        if (!galleryMusicActive) return;
+        galleryMusicActive = false;
+
+        try {
+            Global.getSoundPlayer().pauseCustomMusic();
+        } catch (RuntimeException ex) {
+            logGalleryMusicFailure("stop custom music", ex);
+        }
+        try {
+            Global.getSoundPlayer().setSuspendDefaultMusicPlayback(false);
+        } catch (RuntimeException ex) {
+            logGalleryMusicFailure(
+                    "release the default-music suspension", ex);
+        }
+        try {
+            Global.getSoundPlayer().restartCurrentMusic();
+        } catch (RuntimeException ex) {
+            logGalleryMusicFailure("restart normal music", ex);
+        }
+    }
+
+    private static void logGalleryMusicFailure(
+            String operation, RuntimeException ex) {
+        System.err.println(
+                "Hall of Triumph: failed to " + operation
+                        + " after the Gallery tour.");
+        ex.printStackTrace(System.err);
+    }
+
+    /** Plays the full Gallery theme, rests for 20 seconds, then repeats. */
+    private static final class GalleryMusic
+            extends BaseEveryFrameCombatPlugin {
+        private final CombatEngineAPI engine;
+        private boolean trackRequested;
+        private boolean trackActive;
+        private boolean silent;
+        private boolean restored;
+        private long trackStartedAt = -1L;
+        private long silenceStartedAt = -1L;
+        private long lastMusicRequestAt = -1L;
+
+        private GalleryMusic(CombatEngineAPI engine) {
+            this.engine = engine;
+        }
+
+        @Override
+        public void advance(float amount, List<InputEventAPI> events) {
+            if (restored) return;
+            if (!galleryMusicActive) {
+                // An explicit G-key exit may release the channel before the
+                // combat engine reports itself over. Do not let a final live
+                // frame reclaim music after that handoff.
+                restored = true;
+                return;
+            }
+            if (engine == null || engine.isCombatOver()) {
+                restoreDefaultMusic();
+                return;
+            }
+
+            // Music keeps advancing while combat is paused, so every phase is
+            // measured against wall-clock time instead of simulation time.
+            long now = System.nanoTime();
+            if (silent) {
+                if (now - silenceStartedAt < GALLERY_MUSIC_SILENCE_NANOS) {
+                    return;
+                }
+                silent = false;
+                trackRequested = false;
+                trackActive = false;
+                trackStartedAt = -1L;
+            }
+
+            if (!trackRequested) {
+                trackRequested = true;
+                requestMusic(now);
+                return;
+            }
+
+            if (!trackActive) {
+                if (isCurrentGalleryMusic()) {
+                    trackActive = true;
+                    trackStartedAt = now;
+                } else {
+                    retryMusic(now);
+                }
+                return;
+            }
+
+            long elapsed = now - trackStartedAt;
+            if (elapsed >= GALLERY_MUSIC_DURATION_NANOS) {
+                beginSilence(now);
+                return;
+            }
+
+            if (isCurrentGalleryMusic()) return;
+
+            // Starsector can release a non-looping stream shortly before its
+            // sample-true endpoint. Near the known end, treat that as the end
+            // of the song instead of accidentally restarting it from zero.
+            if (elapsed >= GALLERY_MUSIC_DURATION_NANOS
+                    - GALLERY_MUSIC_END_TOLERANCE_NANOS) {
+                beginSilence(now);
+                return;
+            }
+
+            // A music-switcher mod or late encounter callback replaced the
+            // stream early. Reassert it at a bounded rate and restart timing
+            // only after the audio thread confirms the requested OGG.
+            trackActive = false;
+            trackStartedAt = -1L;
+            retryMusic(now);
+        }
+
+        private void beginSilence(long now) {
+            try {
+                Global.getSoundPlayer().pauseCustomMusic();
+                Global.getSoundPlayer().setSuspendDefaultMusicPlayback(true);
+            } catch (RuntimeException ex) {
+                System.err.println(
+                        "Hall of Triumph: failed to begin the Gallery "
+                                + "music rest.");
+                ex.printStackTrace(System.err);
+                restoreDefaultMusic();
+                return;
+            }
+            silent = true;
+            silenceStartedAt = now;
+            trackRequested = false;
+            trackActive = false;
+            trackStartedAt = -1L;
+        }
+
+        private void retryMusic(long now) {
+            if (isCurrentGalleryMusic()) return;
+            if (lastMusicRequestAt >= 0L
+                    && now - lastMusicRequestAt
+                            < GALLERY_MUSIC_RETRY_NANOS) {
+                return;
+            }
+            requestMusic(now);
+        }
+
+        private void requestMusic(long now) {
+            lastMusicRequestAt = now;
+            try {
+                Global.getSoundPlayer().setSuspendDefaultMusicPlayback(true);
+                Global.getSoundPlayer().playCustomMusic(
+                        0, 0, GALLERY_MUSIC_SET, false);
+            } catch (RuntimeException ex) {
+                System.err.println(
+                        "Hall of Triumph: failed to start Gallery tour "
+                                + "music.");
+                ex.printStackTrace(System.err);
+                restoreDefaultMusic();
+            }
+        }
+
+        private boolean isCurrentGalleryMusic() {
+            try {
+                return GALLERY_MUSIC_FILE.equals(
+                        Global.getSoundPlayer().getCurrentMusicId());
+            } catch (RuntimeException ex) {
+                return false;
+            }
+        }
+
+        private void restoreDefaultMusic() {
+            restored = true;
+            restoreGalleryMusic();
         }
     }
 
@@ -498,6 +710,7 @@ public final class GalleryTourLauncher {
                     continue;
                 }
                 event.consume();
+                restoreGalleryMusic();
                 engine.setDoNotEndCombat(false);
                 engine.endCombat(0f, FleetSide.PLAYER);
                 return;
@@ -634,7 +847,7 @@ public final class GalleryTourLauncher {
         private static void renderExhibit(Exhibit exhibit, float scale) {
             float width = exhibit.nativeWidth * scale;
             float height = exhibit.nativeHeight * scale;
-            drawBerthClamps(exhibit.x, exhibit.y, width, height);
+            drawBerthClamps(exhibit.x, exhibit.y, height, width);
 
             SpriteAPI sprite = null;
             float oldWidth = 0f;
@@ -662,7 +875,7 @@ public final class GalleryTourLauncher {
 
                 sprite.setSize(width, height);
                 sprite.setCenter(width * 0.5f, height * 0.5f);
-                sprite.setAngle(0f);
+                sprite.setAngle(exhibit.angle);
                 sprite.setColor(Color.WHITE);
                 sprite.setAlphaMult(0.96f);
                 sprite.setNormalBlend();
@@ -872,6 +1085,7 @@ public final class GalleryTourLauncher {
         }
 
         private void cleanupBattleState() {
+            restoreGalleryMusic();
             if (cleaned) return;
             cleaned = true;
             if (hall != null) {

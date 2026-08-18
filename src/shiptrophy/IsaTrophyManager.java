@@ -135,6 +135,33 @@ public class IsaTrophyManager {
         if (Global.getSector() == null) return;
         Global.getSector().getMemoryWithoutUpdate().set(
                 ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE, true);
+        setFactionCompletionSceneValidated();
+        Global.getSector().getMemoryWithoutUpdate().unset(
+                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_NEEDS_REPLAY);
+    }
+
+    public static boolean wasFactionCompletionSceneValidated() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                        ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_VALIDATED);
+    }
+
+    public static void setFactionCompletionSceneValidated() {
+        if (Global.getSector() == null) return;
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_VALIDATED, true);
+    }
+
+    public static boolean doesFactionCompletionSceneNeedReplay() {
+        return Global.getSector() != null
+                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
+                        ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_NEEDS_REPLAY);
+    }
+
+    public static void markFactionCompletionSceneForReplay() {
+        if (Global.getSector() == null || wasFactionCompletionSceneValidated()) return;
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_NEEDS_REPLAY, true);
     }
 
     public static boolean wasFactionVisitSceneShown(String factionId) {
@@ -166,6 +193,25 @@ public class IsaTrophyManager {
         return isIsaOfficerInRoster(Global.getSector().getPlayerFleet().getFleetData());
     }
 
+    /**
+     * Console/debug entry point that adds Isa without advancing her quest state.
+     *
+     * @return true if Isa was added, or false if she was already in the roster
+     *         or the player fleet was unavailable
+     */
+    public static boolean addIsaOfficerImmediately() {
+        if (Global.getSector() == null || Global.getSector().getPlayerFleet() == null) return false;
+
+        FleetDataAPI fleetData = Global.getSector().getPlayerFleet().getFleetData();
+        if (fleetData == null || isIsaOfficerInRoster(fleetData)) return false;
+
+        PersonAPI isa = getOrCreateIsa(findHomeMarket());
+        if (isa == null) return false;
+        configureIsaOfficer(isa);
+        fleetData.addOfficer(isa);
+        return true;
+    }
+
     public static boolean areAllFactionHullmodsComplete(TrophyNetwork.NetworkStats stats) {
         if (stats == null) stats = TrophyNetwork.computeNetworkStats();
         int activePrograms = 0;
@@ -176,34 +222,38 @@ public class IsaTrophyManager {
         }
         return activePrograms > 0;
     }
-    public static boolean areAllQuestsComplete() {
-        return areAllQuestsComplete(TrophyNetwork.computeNetworkStats());
-    }
 
-    public static boolean areAllQuestsComplete(TrophyNetwork.NetworkStats stats) {
-        if (!isIntroduced()) return false;
-        if (!isMasterworkComplete()) return false;
+    /** Returns true only after every base-game Hall ledger is complete. */
+    public static boolean areAllVanillaProgramsComplete(TrophyNetwork.NetworkStats stats) {
+        if (!isIntroduced() || !isMasterworkComplete()) return false;
         if (stats == null) stats = TrophyNetwork.computeNetworkStats();
+
         if (!TrophyNetwork.hasShowcasedHull(stats, Gaze.REQUIRED_BASE_HULL_ID)) return false;
         if (!TrophyNetwork.hasShowcasedHull(stats, Contempt.REQUIRED_BASE_HULL_ID)) return false;
+
         for (TrophyUniqueShowcases.ShowcaseSpec showcase : TrophyUniqueShowcases.getActiveShowcases()) {
             if (showcase.isModIntegration()) continue;
             if (!TrophyNetwork.hasShowcasedHull(stats, showcase.hullId)) return false;
         }
 
+        int vanillaPrograms = 0;
         for (TrophySubtypeSpec subtype : TrophySubtypeRegistry.getActiveSubtypes()) {
-            if (subtype.isModIntegration()) continue;
-            if (!subtype.hasHullModUnlock() || !hullModExists(subtype.hullModId)) continue;
+            if (subtype.isModIntegration() || !subtype.hasHullModUnlock()) continue;
+            vanillaPrograms++;
+            if (!hullModExists(subtype.hullModId)) return false;
             if (stats.getSubtypeDp(subtype.id) < subtype.unlockDp) return false;
         }
-        return true;
+        return vanillaPrograms > 0;
+    }
+    /** Awe is received through its dialogue after the five-hull showcase. */
+    public static boolean isAweRecruitmentReady() {
+        return isMasterworkComplete()
+                && wasUnlockDialogueSeen(PROVENANCE_HULLMOD_ID);
     }
 
-    public static boolean grantOfficerIfComplete() {
+    public static boolean grantOfficerIfAweComplete() {
         if (Global.getSector() == null || wasOfficerGranted()) return false;
-
-        TrophyNetwork.NetworkStats stats = TrophyNetwork.computeNetworkStats();
-        if (!areAllQuestsComplete(stats)) return false;
+        if (!isAweRecruitmentReady()) return false;
         setMasterworkCompleted();
 
         CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
@@ -250,15 +300,15 @@ public class IsaTrophyManager {
 
         MutableCharacterStatsAPI stats = person.getStats();
         if (stats == null) return;
-        stats.setLevel(8);
-        stats.setSkillLevel(Skills.ORDNANCE_EXPERTISE, 2f);
-        stats.setSkillLevel(Skills.SYSTEMS_EXPERTISE, 2f);
-        stats.setSkillLevel(Skills.DAMAGE_CONTROL, 2f);
-        stats.setSkillLevel(Skills.COMBAT_ENDURANCE, 1f);
-        stats.setSkillLevel(Skills.HELMSMANSHIP, 1f);
-        stats.setSkillLevel(Skills.IMPACT_MITIGATION, 1f);
-        stats.setSkillLevel(DEFENSIVE_SKILL_ID, 1f);
-        stats.setSkillLevel(MOBILITY_SKILL_ID, 1f);
+        stats.setLevel(1);
+        stats.setSkillLevel(Skills.ORDNANCE_EXPERTISE, 0f);
+        stats.setSkillLevel(Skills.SYSTEMS_EXPERTISE, 0f);
+        stats.setSkillLevel(Skills.DAMAGE_CONTROL, 0f);
+        stats.setSkillLevel(Skills.COMBAT_ENDURANCE, 0f);
+        stats.setSkillLevel(Skills.HELMSMANSHIP, 0f);
+        stats.setSkillLevel(Skills.IMPACT_MITIGATION, 0f);
+        stats.setSkillLevel(DEFENSIVE_SKILL_ID, 2f);
+        stats.setSkillLevel(MOBILITY_SKILL_ID, 0f);
         stats.refreshCharacterStatsEffects();
     }
 
@@ -369,7 +419,8 @@ public class IsaTrophyManager {
 
     public static void refreshIsaHullmod() {
         if (Global.getSector() == null || Global.getSector().getPlayerFaction() == null) return;
-        boolean unlocked = isMasterworkComplete() && hullModExists(PROVENANCE_HULLMOD_ID);
+        boolean unlocked = isMasterworkComplete()
+                && hullModExists(PROVENANCE_HULLMOD_ID);
         if (unlocked && !Global.getSector().getPlayerFaction().knowsHullMod(PROVENANCE_HULLMOD_ID)) {
             Global.getSector().getPlayerFaction().addKnownHullMod(PROVENANCE_HULLMOD_ID);
         } else if (!unlocked && Global.getSector().getPlayerFaction().knowsHullMod(PROVENANCE_HULLMOD_ID)) {

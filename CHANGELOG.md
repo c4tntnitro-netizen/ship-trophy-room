@@ -1,5 +1,37 @@
 # Hall of Triumph changelog
 
+## 2.5.0 Beta - 2026-08-17
+
+### Ship Gallery
+
+- Adds a sortable and filterable Ship Gallery to Isa's Hall contact menu. The Gallery is available before Isa joins the fleet and catalogs every unique hull preserved across the Hall network.
+- Adds a curated exhibit rack, searchable manufacturer filter, base-game Codex descriptions, hull-size-aware hero presentation, and a dedicated civilian-frigate shuttle bay with a loaner Kite fallback.
+- Adds a flyable, top-down Hall tour using the selected exhibit rack. Ships occupy fourteen inward-facing berths around a central aisle, and the Gallery theme plays once followed by twenty seconds of silence before repeating.
+- Keeps Gallery touring decorative. It grants no fleet or campaign bonuses.
+
+### Hall economy and settings
+
+- Adds a monthly network preservation stipend worth 10 credits per base ordnance point from each unique displayed hull. Functional Halls divide the stipend evenly so extra structures and duplicate hulls cannot multiply it.
+- Adds a demand of one unit each of crew, heavy machinery, and supplies to every Hall. A shortage suspends that Hall's stipend share without affecting Gallery access or story-point generation.
+- Adds the optional LunaLib Custom Hullmod Unlocks setting. Disabling it hides reward hullmods and prevents new installations while leaving already-installed Hall hullmods fully functional.
+- Adds optional Hall achievements when Nexerelin and MagicLib are both installed. LunaLib, MagicLib, Nexerelin, and Console Commands remain optional.
+- Consolidates Hall story-point messages into one monthly summary and prevents subfaction unlocks from adding unintended story-point bonuses.
+
+### Isa and balance
+
+- Recruits Isa at level 1 after completing Awe. Her Hull Repair Doctrine replaces Damage Control and grants 40% less hull damage taken, 75% fewer crew casualties, and immunity to weapon and engine disablement.
+- Adds Hull Repair Doctrine's elite armor regeneration: 0.1% of total armor per second, capped at the lesser of 1,000 armor or 15% of total armor. Legacy serialized skill data remains save-compatible.
+- Adds configurable post-recruitment conveniences for crew pay, sensor profile, and fleet burn level without changing Isa's dialogue.
+- Rebalances Gaze, Contempt, and Iaido and prevents the unique showcase hullmods from being installed on the hulls used to unlock them.
+
+### Gan Eden and compatibility
+
+- Extends Cherubim and Lahat Haharev's reconstruction interval to one campaign year and adds the countdown to the Space Elevator.
+- Corrects the Power Transit Gate and Gan Eden arrival text, keeps the repeat Space Elevator interaction escapable, and restores Hall-completion dialogue after all vanilla programs are complete.
+- Preserves existing installed Hall hullmods, prior Gallery reward-script saves, Isa's legacy skills, Hall inventories, and Gan Eden quest progress.
+
+This is an English beta build for Starsector 0.98a. The separate Chinese 2.0.0 editions have not yet been updated to the 2.5.0 feature set.
+
 ## 2.0.0 Beta — 2026-08-07
 
 ### Highlights

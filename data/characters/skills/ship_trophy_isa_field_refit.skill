@@ -2,14 +2,28 @@
 	"id":"ship_trophy_isa_field_refit",
 	"governingAptitude":"combat",
 	"compressHullmods":false,
-	"elite":false,
+	"elite":true,
 	"scope":"PILOTED_SHIP",
 	"effectGroups":[
+		{
+			"requiredSkillLevel":0,
+			"effects":[
+				{"type":"DESCRIPTION", "script":"data.scripts.ship_trophy_isa_field_refit$UniqueSkillDescription"},
+			]
+		},
 		{
 			"requiredSkillLevel":1,
 			"effectBasedOnLevel":false,
 			"effects":[
 				{"type":"SHIP", "script":"data.scripts.ship_trophy_isa_field_refit$Level1"},
+			]
+		},
+		{
+			"name":"Elite",
+			"requiredSkillLevel":2,
+			"effectBasedOnLevel":false,
+			"effects":[
+				{"type":"SHIP", "script":"data.scripts.ship_trophy_isa_field_refit$Elite"},
 			]
 		},
 	],
