@@ -37,6 +37,8 @@ public final class GanEdenTransitAmbushManager {
             "$shipTrophyGanEdenTransitIvoryParked";
     private static final String FULL_ORDO_KEY =
             "$shipTrophyGanEdenTransitIvoryFullOrdoV1";
+    private static final String IVORY_REFIT_COMPLETE_KEY =
+            "$shipTrophyGanEdenTransitIvoryRefitV2";
     private static final float COMBAT_POINTS = 360f;
     private static final float FULL_ORDO_MIN_FP = 330f;
     private static final float GATE_OFFSET = 950f;
@@ -94,7 +96,7 @@ public final class GanEdenTransitAmbushManager {
         CampaignFleetAPI fleet = createRemnantFleet(
                 COMBAT_POINTS, 0x69766f7279676174L);
         if (fleet == null || fleet.isEmpty()) return null;
-        IvoryRemnantFleetSupport.refitFleet(fleet);
+        ensureIvoryRefit(fleet);
 
         SectorEntityToken gate = system.getEntityById(
                 GanEdenQuestManager.EXTERNAL_RING_ID);
@@ -154,7 +156,9 @@ public final class GanEdenTransitAmbushManager {
             }
             fleet.getFleetData().sort();
             fleet.forceSync();
-            IvoryRemnantFleetSupport.refitFleet(fleet);
+            fleet.getMemoryWithoutUpdate().unset(
+                    IVORY_REFIT_COMPLETE_KEY);
+            ensureIvoryRefit(fleet);
         }
 
         if (fleet.getFleetData().getFleetPointsUsed()
@@ -166,7 +170,7 @@ public final class GanEdenTransitAmbushManager {
     private static void configureFleet(
             CampaignFleetAPI fleet, StarSystemAPI system) {
         if (fleet == null) return;
-        IvoryRemnantFleetSupport.refitFleet(fleet);
+        ensureIvoryRefit(fleet);
         fleet.setName(ShipTrophyL10n.get("gan_eden_ivory_ordo"));
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
@@ -209,6 +213,19 @@ public final class GanEdenTransitAmbushManager {
                 && !memory.getBoolean(PARKED_KEY)) {
             orbitGate(fleet, system);
         }
+    }
+
+    /**
+     * Converts and readies the persistent interception fleet once. The quest
+     * maintenance script runs every second, so doing the full member refit on
+     * every pass needlessly recalculated the stats of the entire Ordo.
+     */
+    private static void ensureIvoryRefit(CampaignFleetAPI fleet) {
+        if (fleet == null) return;
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+        if (memory.getBoolean(IVORY_REFIT_COMPLETE_KEY)) return;
+        IvoryRemnantFleetSupport.refitFleet(fleet);
+        memory.set(IVORY_REFIT_COMPLETE_KEY, true);
     }
 
     private static void orbitGate(

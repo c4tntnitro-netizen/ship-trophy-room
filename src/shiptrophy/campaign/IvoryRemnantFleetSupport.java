@@ -20,8 +20,9 @@ public final class IvoryRemnantFleetSupport {
         for (FleetMemberAPI member
                 : fleet.getFleetData().getMembersListCopy()) {
             if (member == null || member.isFighterWing()) continue;
-            changed |= refitMember(member);
-            readyMember(member);
+            boolean memberChanged = refitMember(member);
+            changed |= memberChanged;
+            if (memberChanged) readyMember(member);
         }
         if (changed) fleet.forceSync();
     }
