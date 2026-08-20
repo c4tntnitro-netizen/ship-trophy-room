@@ -5,6 +5,7 @@
 ### Hotfixes
 
 - Reduces the Hall preservation stipend from 10 credits to 1 credit per unique base ordnance point per month.
+- Prevents the full "Welcome aboard, Chief" Hall-completion cinematic from replaying when showcased ships are removed and returned.
 
 ### Ship Gallery
 

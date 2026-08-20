@@ -47,23 +47,11 @@ public class IsaTrophyScript implements EveryFrameScript {
 
     private void tryShowHallCompletionScene() {
         if (!IsaTrophyManager.wasOfficerGranted()
-                || IsaTrophyManager.wasFactionCompletionSceneValidated()) return;
+                || IsaTrophyManager.wasFactionCompletionSceneShown()) return;
 
         boolean allVanillaComplete = IsaTrophyManager.areAllVanillaProgramsComplete(
                 TrophyNetwork.computeNetworkStats());
-        if (!allVanillaComplete) {
-            if (IsaTrophyManager.wasFactionCompletionSceneShown()) {
-                IsaTrophyManager.markFactionCompletionSceneForReplay();
-            }
-            return;
-        }
-
-        // Migrate saves where the original completion-gated scene played correctly.
-        if (IsaTrophyManager.wasFactionCompletionSceneShown()
-                && !IsaTrophyManager.doesFactionCompletionSceneNeedReplay()) {
-            IsaTrophyManager.setFactionCompletionSceneValidated();
-            return;
-        }
+        if (!allVanillaComplete) return;
 
         MarketAPI home = IsaTrophyManager.findHomeMarket();
         if (home == null || Global.getSector().getPlayerFleet() == null) return;

@@ -135,33 +135,6 @@ public class IsaTrophyManager {
         if (Global.getSector() == null) return;
         Global.getSector().getMemoryWithoutUpdate().set(
                 ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE, true);
-        setFactionCompletionSceneValidated();
-        Global.getSector().getMemoryWithoutUpdate().unset(
-                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_NEEDS_REPLAY);
-    }
-
-    public static boolean wasFactionCompletionSceneValidated() {
-        return Global.getSector() != null
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
-                        ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_VALIDATED);
-    }
-
-    public static void setFactionCompletionSceneValidated() {
-        if (Global.getSector() == null) return;
-        Global.getSector().getMemoryWithoutUpdate().set(
-                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_VALIDATED, true);
-    }
-
-    public static boolean doesFactionCompletionSceneNeedReplay() {
-        return Global.getSector() != null
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(
-                        ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_NEEDS_REPLAY);
-    }
-
-    public static void markFactionCompletionSceneForReplay() {
-        if (Global.getSector() == null || wasFactionCompletionSceneValidated()) return;
-        Global.getSector().getMemoryWithoutUpdate().set(
-                ShipTrophyRoomIds.MEMORY_ISA_FACTION_COMPLETION_SCENE_NEEDS_REPLAY, true);
     }
 
     public static boolean wasFactionVisitSceneShown(String factionId) {
