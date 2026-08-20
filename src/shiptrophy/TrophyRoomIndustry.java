@@ -12,7 +12,7 @@ import com.fs.starfarer.api.util.Misc;
 
 public class TrophyRoomIndustry extends BaseIndustry {
     public static final int BASE_DAYS_PER_STORY_POINT = 180;
-    public static final int CREDITS_PER_UNIQUE_OP = 10;
+    public static final int CREDITS_PER_UNIQUE_OP = 1;
     public static final int OPERATING_DEMAND = 1;
     private static final String STIPEND_MOD_ID =
             "ship_trophy_preservation_stipend";

@@ -16,7 +16,7 @@ Adds a player-colony structure called **Hall of Triumph**.
 - Base network rate is 1 story point per 180 days per functional Hall of Triumph.
 - Tracks stored ships by unique base hull id across the whole network.
 - Duplicate hulls can be stored, but only one of each hull type contributes to network generation.
-- Every unique hull also earns 10 credits per base ordnance point each month. Functional Halls split this network stipend evenly and each demands one unit of crew, heavy machinery, and supplies.
+- Every unique hull also earns 1 credit per base ordnance point each month. Functional Halls split this network stipend evenly and each demands one unit of crew, heavy machinery, and supplies.
 - Every 12 unique hull types adds another full base-rate bonus.
 - Every 240 total deployment points from unique hulls adds another full base-rate bonus.
 - Tracks hosted hull-size counts: frigates, destroyers, cruisers, and capitals.

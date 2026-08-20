@@ -2,6 +2,10 @@
 
 ## 2.5.0 - 2026-08-17
 
+### Hotfixes
+
+- Reduces the Hall preservation stipend from 10 credits to 1 credit per unique base ordnance point per month.
+
 ### Ship Gallery
 
 - Adds a sortable and filterable Ship Gallery to the main interaction menu of player colonies with a functional Hall. The Gallery is available before Isa joins the fleet and catalogs every unique hull preserved across the Hall network.
@@ -11,7 +15,7 @@
 
 ### Hall economy and settings
 
-- Adds a monthly network preservation stipend worth 10 credits per base ordnance point from each unique displayed hull. Functional Halls divide the stipend evenly so extra structures and duplicate hulls cannot multiply it.
+- Adds a monthly network preservation stipend worth 1 credit per base ordnance point from each unique displayed hull. Functional Halls divide the stipend evenly so extra structures and duplicate hulls cannot multiply it.
 - Adds a demand of one unit each of crew, heavy machinery, and supplies to every Hall. A shortage suspends that Hall's stipend share without affecting Gallery access or story-point generation.
 - Adds the optional LunaLib Custom Hullmod Unlocks setting. Disabling it hides reward hullmods and prevents new installations while leaving already-installed Hall hullmods fully functional.
 - Adds optional Hall achievements when Nexerelin and MagicLib are both installed. LunaLib, MagicLib, Nexerelin, and Console Commands remain optional.
