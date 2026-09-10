@@ -1,2 +1,4 @@
 command,class,tags,syntax,help
 AddIsa,shiptrophy.console.AddIsa,"cheat,campaign,Hall of Triumph",addisa,Immediately adds Isa Leicester to the player officer roster without advancing the Hall of Triumph quest.
+OpenGanEdenHypershunt,shiptrophy.console.OpenGanEdenHypershunt,"cheat,campaign,Hall of Triumph",openganedenhypershunt [1|2],Clears the selected Gan Eden quest blockade and force-opens that Coronal Hypershunt's interaction. With no number opens the next unsurveyed hypershunt.
+AdvanceGanEdenHypershunts,shiptrophy.console.AdvanceGanEdenHypershunts,"cheat,campaign,Hall of Triumph",advanceganedenhypershunts [all],Marks the next Gan Eden hypershunt surveyed and files its log. Use all to recover both logs and reveal the Power Transit Gate.

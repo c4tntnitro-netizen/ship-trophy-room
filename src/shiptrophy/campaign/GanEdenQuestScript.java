@@ -50,7 +50,11 @@ public final class GanEdenQuestScript implements EveryFrameScript {
         float elapsed = interval;
         interval = 0f;
 
-        GanEdenQuestManager.ensureForCurrentSave();
+        // Full save migration and world repair run from the mod plugin on
+        // game load. Repeating them here rebuilt/reasserted the transit
+        // system, Gate, and graveyard every second. Runtime maintenance only
+        // needs to keep the one active interception encounter synchronized.
+        GanEdenTransitAmbushManager.ensureEncounter();
         GanEdenQuestManager.checkHypershunts();
         GanEdenQuestManager.completeIfReady();
         tryShowTransitEntryComms();

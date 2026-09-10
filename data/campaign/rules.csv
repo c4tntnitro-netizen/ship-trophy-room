@@ -1584,13 +1584,18 @@ Then a name appears.
 TREE OF LIFE
 EDEN PRIMARY BIOSPHERE
 EMERGENCY ACCESS","0:ship_trophy_gan_eden_arrival_continue:Nav, set a course.",Ends the arrival cinematic at the Tree of Life navigation packet.
+shipTrophyGanEdenExternalRingCustodians,OpenInteractionDialog,"GanEdenQuestCMD isExternalRing score:52000
+!GanEdenQuestCMD ivoryCustodiansDefeated","SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","The Ivory Custodian Ordo controls the approach to Power Transit Gate - Gan Eden. Its warships hold between your fleet and the active aperture; no transit course is possible while they remain operational.",100:ship_trophy_gan_eden_ring_leave:Leave.,Prevents the player from bypassing the one-time Ivory Custodian interception.
 shipTrophyGanEdenExternalRingLocked,OpenInteractionDialog,"GanEdenQuestCMD isExternalRing score:51000
+GanEdenQuestCMD ivoryCustodiansDefeated
 GanEdenQuestCMD lacksUsableJanusGate","SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","Power Transit Gate - Gan Eden hangs alone at the center of an empty starless system. Impossible depth shifts within the aperture but the Gate does not answer your fleet. Traversal requires a Janus Device integrated with the fleet.",100:ship_trophy_gan_eden_ring_leave:Leave.,Blocks entry until the Janus Device has been acquired and integrated.
 shipTrophyGanEdenExternalRing,OpenInteractionDialog,"GanEdenQuestCMD isExternalRing score:50000
+GanEdenQuestCMD ivoryCustodiansDefeated
 GanEdenQuestCMD canUseJanusGate","SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","Power Transit Gate - Gan Eden hangs alone at the center of an empty, starless system. Its adamantine surface is awake. Within the aperture, impossible depth folds toward the sealed world beyond.","0:ship_trophy_gan_eden_ring_enter:Enter the Power Transit Gate.
 100:ship_trophy_gan_eden_ring_leave:Leave.",Quest-gated entrance to Gan Eden.
 shipTrophyGanEdenExternalRingEnter,DialogOptionSelected,"$option == ship_trophy_gan_eden_ring_enter
-GanEdenQuestCMD canUseJanusGate","GanEdenQuestCMD transitIn
+GanEdenQuestCMD canUseJanusGate
+GanEdenQuestCMD ivoryCustodiansDefeated","GanEdenQuestCMD transitIn
 DismissDialog",,,Transfers the player into Gan Eden.
 shipTrophyGanEdenInternalRing,OpenInteractionDialog,GanEdenQuestCMD isInternalRing score:50000,"SetShortcut ship_trophy_gan_eden_ring_leave ""ESCAPE""","The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its connection remains synchronized with Power Transit Gate - Gan Eden.","0:ship_trophy_gan_eden_ring_exit:Traverse the Gate.
 100:ship_trophy_gan_eden_ring_leave:Remain in Gan Eden.",Permanent exit from Gan Eden to the isolated Power Transit Gate.

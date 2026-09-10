@@ -6,6 +6,9 @@
 
 - Reduces the Hall preservation stipend from 10 credits to 1 credit per unique base ordnance point per month.
 - Prevents the full "Welcome aboard, Chief" Hall-completion cinematic from replaying when showcased ships are removed and returned.
+- Adds console recovery commands for mod-conflicted Gan Eden hypershunt interactions.
+- Makes the Ivory Custodian encounter save-safe and lightweight, uses static ivory hull skins, and prevents its AI ships from retreating.
+- Restores Gan Eden, Log V, and Cherubim music by replacing repeated stream requests with a single timed handoff.
 
 ### Ship Gallery
 

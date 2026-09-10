@@ -181,13 +181,29 @@ EMERGENCY ACCESS
 + [Nav, set a course.] -> END
 
 // ============================================================
+=== rule_shipTrophyGanEdenExternalRingCustodians ===
+// rules.csv id: shipTrophyGanEdenExternalRingCustodians
+// Trigger:
+// OpenInteractionDialog
+// Conditions:
+// GanEdenQuestCMD isExternalRing score:52000
+!GanEdenQuestCMD ivoryCustodiansDefeated
+// Runtime script:
+// SetShortcut ship_trophy_gan_eden_ring_leave "ESCAPE"
+
+The Ivory Custodian Ordo controls the approach to Power Transit Gate - Gan Eden. Its warships hold between your fleet and the active aperture; no transit course is possible while they remain operational.
+
++ [Leave.] -> rule_shipTrophyGanEdenRingLeave
+
+// ============================================================
 === rule_shipTrophyGanEdenExternalRingLocked ===
 // rules.csv id: shipTrophyGanEdenExternalRingLocked
 // Trigger:
 // OpenInteractionDialog
 // Conditions:
 // GanEdenQuestCMD isExternalRing score:51000
-// GanEdenQuestCMD lacksUsableJanusGate
+GanEdenQuestCMD ivoryCustodiansDefeated
+GanEdenQuestCMD lacksUsableJanusGate
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_ring_leave "ESCAPE"
 
@@ -202,7 +218,8 @@ Power Transit Gate - Gan Eden hangs alone at the center of an empty starless sys
 // OpenInteractionDialog
 // Conditions:
 // GanEdenQuestCMD isExternalRing score:50000
-// GanEdenQuestCMD canUseJanusGate
+GanEdenQuestCMD ivoryCustodiansDefeated
+GanEdenQuestCMD canUseJanusGate
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_ring_leave "ESCAPE"
 
@@ -218,10 +235,11 @@ Power Transit Gate - Gan Eden hangs alone at the center of an empty, starless sy
 // DialogOptionSelected
 // Conditions:
 // $option == ship_trophy_gan_eden_ring_enter
-// GanEdenQuestCMD canUseJanusGate
+GanEdenQuestCMD canUseJanusGate
+GanEdenQuestCMD ivoryCustodiansDefeated
 // Runtime script:
 // GanEdenQuestCMD transitIn
-// DismissDialog
+DismissDialog
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -251,7 +269,7 @@ The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its 
 // $option == ship_trophy_gan_eden_ring_exit
 // Runtime script:
 // GanEdenQuestCMD transitOut
-// DismissDialog
+DismissDialog
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -280,7 +298,7 @@ The Eden Transit Ring frames a narrow wound in the sealed world's geometry. Its 
 // GanEdenQuestCMD canRecoverSurfaceLog score:62000
 // Runtime script:
 // ShowImageVisual ship_trophy_gan_eden_eden_prime
-// SetShortcut ship_trophy_gan_eden_surface_log_leave "ESCAPE"
+SetShortcut ship_trophy_gan_eden_surface_log_leave "ESCAPE"
 
 Your fleet touches down beneath the Tree of Life.
 
@@ -551,7 +569,7 @@ Isa grips her arm.
 // $option == ship_trophy_gan_eden_surface_log_continue
 // Runtime script:
 // SetTextHighlightColors hColor
-// SetTextHighlights "Space Elevator"
+SetTextHighlights "Space Elevator"
 
 "I know."
 
@@ -758,7 +776,7 @@ Instead, I was left alive inside it.
 // $option == ship_trophy_gan_eden_epitaph_five
 // Runtime script:
 // GanEdenQuestCMD startFinalLogMusic
-// GanEdenQuestCMD showLogPage final 0
+GanEdenQuestCMD showLogPage final 0
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -917,9 +935,9 @@ Isaac Thomas Leicester.
 // $option == ship_trophy_gan_eden_epitaph_stay
 // Runtime script:
 // GanEdenQuestCMD finishEpitaphLogs
-// SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
-// SetTextHighlightColors hColor hColor
-// SetTextHighlights "[Recovered Log — Final.]" "[Filed under Gan Eden Archives in Intel.]"
+SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
+SetTextHighlightColors hColor hColor
+SetTextHighlights "[Recovered Log — Final.]" "[Filed under Gan Eden Archives in Intel.]"
 
 The final log ends.
 
@@ -947,8 +965,8 @@ No answer comes from the empty world. This time, she does not seem to need one.
 // $option == ship_trophy_gan_eden_epitaph_talk
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
-// SetTextHighlightColors story
-// SetTextHighlights "[You can speak with Isa about Isaac Leicester through her contact menu.]"
+SetTextHighlightColors story
+SetTextHighlights "[You can speak with Isa about Isaac Leicester through her contact menu.]"
 
 You remain beside Isa at the observation glass.
 
@@ -975,7 +993,7 @@ Below, the Tree of Life turns slowly beneath the inward sun.
 // $option == ship_trophy_gan_eden_epitaph_leave
 // Runtime script:
 // GanEdenQuestCMD markEpitaph
-// DismissDialog
+DismissDialog
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -1002,7 +1020,7 @@ The elevator's continuity archive recognizes Isa Leicester's inherited suit tran
 // OpenInteractionDialog
 // Conditions:
 // GanEdenQuestCMD epitaphInspected score:55000
-// GanEdenQuestCMD prepareGoldenOmegaRespawnTimer
+GanEdenQuestCMD prepareGoldenOmegaRespawnTimer
 // Runtime script:
 // FireAll ShipTrophyGanEdenLureOptions
 
@@ -1047,7 +1065,7 @@ $shipTrophyGanEdenRespawnStatus
 // $option == ship_trophy_gan_eden_lure_omega
 // Runtime script:
 // GanEdenQuestCMD lureGoldenOmega
-// SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
+SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
 
 Isa wakes the Space Elevator's continuity transmitter and feeds it a deliberately malformed guardian challenge.
 

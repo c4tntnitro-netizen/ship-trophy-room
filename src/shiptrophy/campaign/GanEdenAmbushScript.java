@@ -19,6 +19,7 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -33,7 +34,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial;
 import com.fs.starfarer.api.util.Misc;
 
-import shiptrophy.hullmods.WhiteRemnantEscort;
 
 /**
  * Ensures Gan Eden's golden Omega fleet guards the Space Elevator.
@@ -58,6 +58,8 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             "$shipTrophyGanEdenGoldenEscortWave";
     private static final String GUARD_ANCHOR_KEY =
             "$shipTrophyGanEdenGoldenGuardAnchorV1";
+    private static final String WHITE_ESCORT_MIGRATED_KEY =
+            "$shipTrophyGanEdenWhiteEscortMigrationV4";
     private static final String SINISTRAL_VARIANT =
             "ship_trophy_golden_shard_left_Attack";
     private static final String DEXTRAL_VARIANT =
@@ -363,9 +365,28 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
                 : support.getFleetData().getMembersListCopy()) {
             if (member == null || member.isFighterWing()) continue;
             member.setFlagship(false);
+            // The global Remnant pool may contain mod-added ships for which
+            // no pregenerated Ivory skin exists. Never leak those into this
+            // authored escort group under an Ivory fleet identity.
             IvoryRemnantFleetSupport.refitMember(member);
+            if (!IvoryRemnantFleetSupport.isIvoryMemberComplete(member)) {
+                continue;
+            }
             readyMember(member);
+            PersonAPI captain = member.getCaptain();
+            OfficerDataAPI officer = captain == null
+                    ? null : support.getFleetData().getOfficerData(
+                            captain);
+            support.getFleetData().removeFleetMember(member);
+            if (officer != null) support.getFleetData().removeOfficer(captain);
             destination.getFleetData().addFleetMember(member);
+            if (officer != null) {
+                if (destination.getFleetData().getOfficerData(captain)
+                        == null) {
+                    destination.getFleetData().addOfficer(officer);
+                }
+                member.setCaptain(captain);
+            }
         }
     }
 
@@ -533,25 +554,35 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
     /** Migrates escorts spawned by builds which only applied a runtime tint. */
     private static boolean ensureWhiteEscortSkins(CampaignFleetAPI fleet) {
         if (fleet == null) return false;
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+        if (memory.getBoolean(WHITE_ESCORT_MIGRATED_KEY)) return false;
         boolean changed = false;
         for (FleetMemberAPI member
                 : fleet.getFleetData().getMembersListCopy()) {
             if (member == null
-                    || member.getVariant() == null
-                    || !member.getVariant().hasHullMod(
-                            WhiteRemnantEscort.HULLMOD_ID)) {
+                    || member.getVariant() == null) {
                 continue;
             }
-            String whiteHullId = WhiteRemnantEscort.getWhiteHullId(
-                    member.getVariant().getHullSpec().getBaseHullId());
-            if (whiteHullId == null
-                    || whiteHullId.equals(
-                            member.getVariant().getHullSpec().getHullId())) {
+            String variantId = member.getVariant().getHullVariantId();
+            if (SINISTRAL_VARIANT.equals(variantId)
+                    || DEXTRAL_VARIANT.equals(variantId)) {
+                continue;
+            }
+            if (IvoryRemnantFleetSupport.getWhiteHullId(
+                    member.getHullSpec().getBaseHullId()) == null) {
+                if (member.getCaptain() != null
+                        && fleet.getFleetData().getOfficerData(
+                                member.getCaptain()) != null) {
+                    fleet.getFleetData().removeOfficer(member.getCaptain());
+                }
+                fleet.getFleetData().removeFleetMember(member);
+                changed = true;
                 continue;
             }
             changed |= IvoryRemnantFleetSupport.refitMember(member);
         }
         if (changed) fleet.forceSync();
+        memory.set(WHITE_ESCORT_MIGRATED_KEY, true);
         return changed;
     }
 

@@ -583,11 +583,21 @@ public final class GanEdenHypershuntManager {
         if (dialog == null) return null;
         SectorEntityToken tap = findTapForTarget(
                 dialog.getInteractionTarget());
+        return markTapSurveyed(tap);
+    }
+
+    /** Marks one specific tap surveyed for console/save recovery. */
+    public static GanEdenLogSpec markTapSurveyed(SectorEntityToken tap) {
         if (tap == null || !isQuestTap(tap)) return null;
+        if (tap.getMemoryWithoutUpdate().getBoolean(TAP_SURVEYED_KEY)) {
+            return null;
+        }
         int previousCount = getSurveyedCount();
         MemoryAPI memory = tap.getMemoryWithoutUpdate();
         memory.set(TAP_GUARD_CLEARED_KEY, true);
         memory.set(TAP_SURVEYED_KEY, true);
+        CampaignFleetAPI guard = findGuard(tap);
+        if (guard != null) releaseGuard(guard, tap);
         GanEdenLogSpec recovered = previousCount <= 0
                 ? GanEdenLogSpec.PART_TWO
                 : GanEdenLogSpec.PART_THREE;
@@ -596,6 +606,16 @@ public final class GanEdenHypershuntManager {
         GanEdenLogManager.recoverSilently(recovered);
         GanEdenQuestManager.checkHypershunts();
         return recovered;
+    }
+
+    /** Clears one blockade without counting the associated survey complete. */
+    public static boolean forceClearBlockade(SectorEntityToken tap) {
+        if (tap == null || !isQuestTap(tap)) return false;
+        MemoryAPI memory = tap.getMemoryWithoutUpdate();
+        memory.set(TAP_GUARD_CLEARED_KEY, true);
+        CampaignFleetAPI guard = findGuard(tap);
+        if (guard != null) releaseGuard(guard, tap);
+        return true;
     }
 
     public static int getSurveyedCount() {

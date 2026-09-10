@@ -139,6 +139,21 @@ public final class GanEdenQuestManager {
         GanEdenHypershuntManager.ensureEncounters();
     }
 
+    /**
+     * Console-recovery entry point for saves whose hypershunt interaction was
+     * displaced by another mod. Never moves a quest that is already beyond
+     * the hypershunt investigation backwards.
+     */
+    public static boolean forceHypershuntInvestigation() {
+        if (Global.getSector() == null) return false;
+        if (isAtLeast(Stage.INVESTIGATE_HYPERSHUNTS)) return true;
+
+        GanEdenLogManager.recoverSilently(GanEdenLogSpec.PART_ONE);
+        setStage(Stage.INVESTIGATE_HYPERSHUNTS, null, false);
+        GanEdenHypershuntManager.ensureEncounters();
+        return true;
+    }
+
     /** Retrofits campaigns that played the homecoming before this quest existed. */
     public static void ensureForCurrentSave() {
         if (Global.getSector() == null) return;

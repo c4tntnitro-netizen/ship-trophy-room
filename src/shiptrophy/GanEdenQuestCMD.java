@@ -23,6 +23,7 @@ import shiptrophy.campaign.GanEdenLogManager;
 import shiptrophy.campaign.GanEdenLogSpec;
 import shiptrophy.campaign.GanEdenQuestManager;
 import shiptrophy.campaign.GanEdenQuestManager.Stage;
+import shiptrophy.campaign.GanEdenTransitAmbushManager;
 
 /** Rule-command bridge for the Gan Eden quest scenes and transit rings. */
 public final class GanEdenQuestCMD implements CommandPlugin {
@@ -223,6 +224,9 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         if ("canUseJanusGate".equals(command)) {
             return canUseJanusGate();
         }
+        if ("ivoryCustodiansDefeated".equals(command)) {
+            return GanEdenTransitAmbushManager.isDefeated();
+        }
         if ("lacksUsableJanusGate".equals(command)) {
             return !canUseJanusGate();
         }
@@ -239,7 +243,8 @@ public final class GanEdenQuestCMD implements CommandPlugin {
         }
         if ("transitIn".equals(command)) {
             if (!canUseJanusGate()
-                    || !GanEdenQuestManager.hasBothHypershuntLogs()) {
+                    || !GanEdenQuestManager.hasBothHypershuntLogs()
+                    || !GanEdenTransitAmbushManager.isDefeated()) {
                 return false;
             }
             GanEdenQuestManager.transitIntoGanEden(

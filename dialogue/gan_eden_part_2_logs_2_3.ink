@@ -28,7 +28,7 @@ Part II - The Coronal Hypershunts
 // GanEdenQuestCMD isSecondHypershuntCrisis score:75000
 // Runtime script:
 // FleetDesc
-// HailPlayer
+HailPlayer
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -43,7 +43,7 @@ Part II - The Coronal Hypershunts
 // GanEdenQuestCMD isHypershuntGuard luddic_path score:70000
 // Runtime script:
 // FleetDesc
-// HailPlayer
+HailPlayer
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -58,7 +58,7 @@ Part II - The Coronal Hypershunts
 // GanEdenQuestCMD isHypershuntGuard pirates score:70000
 // Runtime script:
 // FleetDesc
-// HailPlayer
+HailPlayer
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -141,7 +141,7 @@ Isa closes the channel and looks at you, the fury draining from her face as batt
 // GanEdenQuestCMD isHypershuntGuard luddic_path score:70000
 // Runtime script:
 // GanEdenQuestCMD prepareHypershuntGuard
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
+SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 A large Pather fleet holds position between you and the hypershunt.
 
@@ -162,7 +162,7 @@ Their commander answers your hail. He wears a scorched pressure suit marked with
 // $option == ship_trophy_gan_eden_hypershunt_pather_records
 // Runtime script:
 // SetStoryOption ship_trophy_gan_eden_hypershunt_pather_persuade 1 shipTrophyGanEdenPatherPersuade technology "Persuaded the Pather blockade to stand aside"
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
+SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 "Knowledge is another form of temptation."
 
@@ -209,8 +209,8 @@ The Pather fleet begins clearing the approach corridor.
 // $option == ship_trophy_gan_eden_hypershunt_pather_fight
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
-// SetTextHighlightColors bad
-// SetTextHighlights "[The Luddic Path fleet moves to engage.]"
+SetTextHighlightColors bad
+SetTextHighlights "[The Luddic Path fleet moves to engage.]"
 
 The commander’s expression hardens.
 
@@ -232,7 +232,7 @@ The channel closes.
 // GanEdenQuestCMD isHypershuntGuard pirates score:70000
 // Runtime script:
 // GanEdenQuestCMD prepareHypershuntGuard
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
+SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 A pirate fleet blocks the approach to the hypershunt.
 
@@ -253,8 +253,8 @@ Their commander answers your hail with their boots resting on the console.
 // $option == ship_trophy_gan_eden_hypershunt_pirate_records
 // Runtime script:
 // SetStoryOption ship_trophy_gan_eden_hypershunt_pirate_persuade 1 shipTrophyGanEdenPiratePersuade technology "Negotiated professional courtesy from the pirate blockade"
-// FireAll ShipTrophyGanEdenHypershuntPiratePayOptions
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
+FireAll ShipTrophyGanEdenHypershuntPiratePayOptions
+SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 
 "Sure. Records."
 
@@ -287,8 +287,8 @@ The commander grins.
 // $option == ship_trophy_gan_eden_hypershunt_pirate_pay
 // Runtime script:
 // GanEdenQuestCMD payHypershuntPirates
-// SetTextHighlightColors bad
-// SetTextHighlights "[Lost 250,000 credits.]"
+SetTextHighlightColors bad
+SetTextHighlights "[Lost 250,000 credits.]"
 
 You authorize the transfer.
 
@@ -343,8 +343,8 @@ The pirate fleet clears the approach corridor.
 // $option == ship_trophy_gan_eden_hypershunt_pirate_fight
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
-// SetTextHighlightColors bad
-// SetTextHighlights "[The pirate fleet moves to engage.]"
+SetTextHighlightColors bad
+SetTextHighlights "[The pirate fleet moves to engage.]"
 
 The commander takes their boots off the console.
 
@@ -366,9 +366,9 @@ The channel closes.
 // $option == ship_trophy_gan_eden_hypershunt_engage
 // Runtime script:
 // GanEdenQuestCMD engageHypershuntGuard
-// MakeOtherFleetHostile shipTrophyGanEden true
-// MakeOtherFleetAggressiveOnce shipTrophyGanEden true
-// EndConversation
+MakeOtherFleetHostile shipTrophyGanEden true
+MakeOtherFleetAggressiveOnce shipTrophyGanEden true
+EndConversation
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -383,7 +383,7 @@ The channel closes.
 // $option == ship_trophy_gan_eden_hypershunt_disengage
 // Runtime script:
 // ShowDefaultVisual
-// EndConversation NO_CONTINUE
+EndConversation NO_CONTINUE
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -398,7 +398,7 @@ The channel closes.
 // $option == ship_trophy_gan_eden_hypershunt_stand_down
 // Runtime script:
 // ShowDefaultVisual
-// EndConversation NO_CONTINUE
+EndConversation NO_CONTINUE
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -413,7 +413,7 @@ The channel closes.
 // GanEdenQuestCMD canInvestigateHypershunt score:65000
 // Runtime script:
 // GanEdenQuestCMD prepareHypershuntInvestigation
-// FireAll ShipTrophyGanEdenHypershuntInvestigate
+FireAll ShipTrophyGanEdenHypershuntInvestigate
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -494,7 +494,7 @@ Several sections do not.
 // $option == ship_trophy_gan_eden_hypershunt_records_continue
 // Runtime script:
 // SetTextHighlightColors "82,88,94,255" "82,88,94,255" "82,88,94,255" story
-// SetTextHighlights "DCR-2F38-CB017-6A" "LEICESTER, ISAAC THOMAS" "CONTINUITY AUTHORITY" "[A sealed personal log is embedded beside the routing data.]"
+SetTextHighlights "DCR-2F38-CB017-6A" "LEICESTER, ISAAC THOMAS" "CONTINUITY AUTHORITY" "[A sealed personal log is embedded beside the routing data.]"
 
 Tiny deviations recur across the hypershunt’s oldest assemblies: corrections too consistent to be random, repeated through construction phases separated by centuries.
 
@@ -525,7 +525,7 @@ The same pattern appears in the hypershunt’s transmission geometry, attached t
 // $option == ship_trophy_gan_eden_hypershunt_read_log
 // Runtime script:
 // GanEdenQuestCMD surveyHypershunt
-// FireAll ShipTrophyGanEdenHypershuntSurveyResult
+FireAll ShipTrophyGanEdenHypershuntSurveyResult
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -640,7 +640,7 @@ She stares at the carrier trace.
 // $option == ship_trophy_gan_eden_hypershunt_log_two_routing
 // Runtime script:
 // SetTextHighlightColors hColor hColor story
-// SetTextHighlights "[Recovered Log — Part II.]" "[Filed under Gan Eden Archives in Intel.]" "[The first hypershunt routing vector has been recovered.]"
+SetTextHighlights "[Recovered Log — Part II.]" "[Filed under Gan Eden Archives in Intel.]" "[The first hypershunt routing vector has been recovered.]"
 
 Isa returns to the carrier data.
 
@@ -724,7 +724,7 @@ Isa enlarges the projection and looks toward the location of the remaining hyper
 // $option == ship_trophy_gan_eden_hypershunt_log_three_response
 // Runtime script:
 // SetTextHighlightColors hColor hColor
-// SetTextHighlights "[Recovered Log — Part III.]" "[Filed under Gan Eden Archives in Intel.]"
+SetTextHighlights "[Recovered Log — Part III.]" "[Filed under Gan Eden Archives in Intel.]"
 
 The recording ends.
 
@@ -759,8 +759,8 @@ Her fingers remain poised above the slate.
 // ShipTrophyGanEdenHypershuntSurveyCompleteFinal
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_hypershunt_leave "ESCAPE"
-// SetTextHighlightColors story story
-// SetTextHighlights "[The location of Power Transit Gate - Gan Eden has been determined.]" "[Objective updated: Find Isaac Leicester.]"
+SetTextHighlightColors story story
+SetTextHighlights "[The location of Power Transit Gate - Gan Eden has been determined.]" "[Objective updated: Find Isaac Leicester.]"
 
 Isa returns to the carrier data.
 

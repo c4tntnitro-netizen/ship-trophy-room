@@ -19,6 +19,7 @@ import shiptrophy.campaign.GanEdenPostQuestMusicScript;
 import shiptrophy.campaign.GanEdenQuestManager;
 import shiptrophy.campaign.GanEdenQuestScript;
 import shiptrophy.campaign.MkIVFleetIntegrationListener;
+import shiptrophy.campaign.IvoryRemnantFleetSupport;
 import shiptrophy.campaign.ShatteredRingGenerator;
 import shiptrophy.gallery.GalleryShuttleCRRecoveryScript;
 import shiptrophy.hullmods.ConfigurableTrophyHullMod;
@@ -45,10 +46,12 @@ public class ShipTrophyRoomModPlugin extends BaseModPlugin {
         GanEdenGenerator.ensureGenerated();
         GanEdenQuestManager.ensureForCurrentSave();
         GanEdenLogManager.ensureForCurrentSave();
+        IvoryRemnantFleetSupport.migrateLegacyVariants();
         Global.getSector().removeScriptsOfClass(GanEdenQuestScript.class);
         Global.getSector().addScript(new GanEdenQuestScript());
         Global.getSector().removeScriptsOfClass(
                 GanEdenFinalLogMusicScript.class);
+        GanEdenBattleCreationPlugin.resetMusicForGameLoad();
         GanEdenFinalLogMusicScript.resetForGameLoad();
         Global.getSector().addScript(new GanEdenFinalLogMusicScript());
         Global.getSector().removeScriptsOfClass(
