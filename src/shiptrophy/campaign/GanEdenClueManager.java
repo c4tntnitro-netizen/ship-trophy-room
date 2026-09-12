@@ -35,7 +35,7 @@ public final class GanEdenClueManager {
 
     public static void ensureStock() {
         if (Global.getSector() == null) return;
-        MarketAPI market = Global.getSector().getEconomy().getMarket(
+        MarketAPI market = EconomyMarketLookup.findById(
                 ShatteredRingGenerator.MARKET_ID);
         if (market == null) return;
         SubmarketAPI black = market.getSubmarket(Submarkets.SUBMARKET_BLACK);

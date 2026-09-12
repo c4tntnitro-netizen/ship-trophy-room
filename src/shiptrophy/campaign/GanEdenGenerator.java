@@ -353,10 +353,8 @@ public final class GanEdenGenerator {
         MarketAPI market = entity instanceof PlanetAPI
                 ? ((PlanetAPI) entity).getMarket()
                 : null;
-        if (market == null
-                && Global.getSector() != null
-                && Global.getSector().getEconomy() != null) {
-            market = Global.getSector().getEconomy().getMarket(entityId);
+        if (market == null) {
+            market = EconomyMarketLookup.findById(entityId);
         }
         if (market != null
                 && Global.getSector() != null

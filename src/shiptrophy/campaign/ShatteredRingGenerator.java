@@ -92,10 +92,10 @@ public final class ShatteredRingGenerator {
             ring.setSensorProfile(null);
             ring.addTag(Tags.STATION);
 
-            MarketAPI market = Global.getSector().getEconomy().getMarket(MARKET_ID);
+            MarketAPI market = EconomyMarketLookup.findById(MARKET_ID);
             if (market == null) {
                 createMarket(ring);
-                market = Global.getSector().getEconomy().getMarket(MARKET_ID);
+                market = ring.getMarket();
             } else {
                 if (ring.getMarket() == null) ring.setMarket(market);
                 if (market.getPrimaryEntity() == null) market.setPrimaryEntity(ring);

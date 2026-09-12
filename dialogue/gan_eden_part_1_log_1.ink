@@ -280,8 +280,8 @@ The old man laughs, then disappears into the crowd.
 // $option == ship_trophy_isa_homecoming_inheritance
 // Runtime script:
 // IsaHomecomingCMD receiveSuit
-SetTextHighlightColors story story story
-SetTextHighlights "[Received: Isa's inheritance.]" "[Quest started: A Borrowed Name]" "[Objective: Investigate Isa's inheritance in her old workshop.]"
+// SetTextHighlightColors story story story
+// SetTextHighlights "[Received: Isa's inheritance.]" "[Quest started: A Borrowed Name]" "[Objective: Investigate Isa's inheritance in her old workshop.]"
 
 Isa closes the case and calls for one of your crew to transfer it to her old workshop.
 
@@ -328,7 +328,7 @@ Isa closes the case and calls for one of your crew to transfer it to her old wor
 // $option == ship_trophy_isa_homecoming_workshop_open
 // Runtime script:
 // IsaHomecomingCMD prepareWorkshop
-FireAll ShipTrophyIsaHomecomingWorkshop
+// FireAll ShipTrophyIsaHomecomingWorkshop
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 
@@ -566,9 +566,9 @@ She scrolls through the recovered file again.
 // $option == ship_trophy_isa_homecoming_registry_receipt
 // Runtime script:
 // GanEdenQuestCMD recoverInitialLog
-SetTextHighlightColors hColor hColor
-SetTextHighlights "[Recovered Personal Log 1765.]" "[Filed under Gan Eden Archives in Intel.]"
-FireAll ShipTrophyIsaHomecomingHypershuntKnowledgeOptions
+// SetTextHighlightColors hColor hColor
+// SetTextHighlights "[Recovered Personal Log 1765.]" "[Filed under Gan Eden Archives in Intel.]"
+// FireAll ShipTrophyIsaHomecomingHypershuntKnowledgeOptions
 
 [Recovered Personal Log 1765.]
 [Filed under Gan Eden Archives in Intel.]
@@ -1036,8 +1036,8 @@ She snaps a salute.
 // ShipTrophyIsaHomecomingPrepareSearch
 // Runtime script:
 // SetShortcut ship_trophy_isa_homecoming_return "ESCAPE"
-SetTextHighlightColors story
-SetTextHighlights "[Objective updated: Search the Coronal Hypershunts for clues about Isaac Leicester.]"
+// SetTextHighlightColors story
+// SetTextHighlights "[Objective updated: Search the Coronal Hypershunts for clues about Isaac Leicester.]"
 
 Isa transfers the recovered log, the wafer registry number, and the INFOSEC failures into a new directory.
 
@@ -1060,7 +1060,7 @@ ISAAC THOMAS LEICESTER
 // $option == ship_trophy_isa_homecoming_return
 // Runtime script:
 // IsaHomecomingCMD markSeen
-FireBest OpenInteractionDialog
+// FireBest OpenInteractionDialog
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 

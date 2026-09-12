@@ -1,5 +1,15 @@
 # Hall of Triumph changelog
 
+## 2.5.1 Beta - 2026-09-11
+
+### Experimental crash compatibility fix
+
+- Avoids Hall-triggered rebuilds of Starsector 0.98a's shared market-location cache when looking up markets by id. The reported crash occurred while that unsynchronized cache was being rebuilt.
+- Uses cache-neutral market snapshots for Gan Eden legacy cleanup, Shattered Ring recovery, and quest-clue stocking while preserving existing market-registration behavior.
+- Does not remove player industries, force colony growth, or change Gan Eden's four settlement sites.
+
+This is a beta mitigation for a reported `ArrayIndexOutOfBoundsException` in `ReachEconomy.updateLocationMap()`. The affected save and complete mod list were unavailable, and whether AotD was installed is unknown. This build removes Hall as a possible competing cache rebuilder but cannot prevent another mod from accessing the same cache off-thread.
+
 ## 2.5.0 - 2026-08-17
 
 ### Hotfixes
