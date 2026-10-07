@@ -1,5 +1,7 @@
 # Project instructions
 
+- `AddIsa` sets the durable `$ship_trophy_room_isa_officer_granted` recruitment flag after a successful addition or when Isa is already in the player roster. Rerunning it repairs the flag without adding a duplicate officer. Invalid syntax, wrong context and unavailable fleets must not set it; no other quest-completion flags are advanced.
+
 ## Starsector rules
 
 - `data/campaign/rules.csv` is the runtime dialogue authority and must remain valid UTF-8 CSV with exactly these seven columns: `id,trigger,conditions,script,text,options,notes`.

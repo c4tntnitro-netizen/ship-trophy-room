@@ -1,9 +1,11 @@
 package shiptrophy.console;
 
+import com.fs.starfarer.api.Global;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.Console;
 
 import shiptrophy.IsaTrophyManager;
+import shiptrophy.ShipTrophyRoomIds;
 
 /** Console Commands integration for immediately adding Isa to the player fleet. */
 public class AddIsa implements BaseCommand {
@@ -17,16 +19,17 @@ public class AddIsa implements BaseCommand {
             return CommandResult.BAD_SYNTAX;
         }
 
-        if (IsaTrophyManager.isIsaOfficerInPlayerFleet()) {
-            Console.showMessage("Isa Leicester is already in your officer roster.");
-            return CommandResult.SUCCESS;
-        }
-        if (!IsaTrophyManager.addIsaOfficerImmediately()) {
+        boolean alreadyInRoster = IsaTrophyManager.isIsaOfficerInPlayerFleet();
+        if (!alreadyInRoster && !IsaTrophyManager.addIsaOfficerImmediately()) {
             Console.showMessage("Unable to add Isa Leicester: the player fleet is unavailable.");
             return CommandResult.ERROR;
         }
 
-        Console.showMessage("Isa Leicester has been added to your officer roster.");
+        Global.getSector().getMemoryWithoutUpdate().set(
+                ShipTrophyRoomIds.MEMORY_ISA_OFFICER_GRANTED, true);
+        Console.showMessage(alreadyInRoster
+                ? "Isa Leicester is already in your officer roster; her recruitment flag is set."
+                : "Isa Leicester has been added to your officer roster.");
         return CommandResult.SUCCESS;
     }
 }

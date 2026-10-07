@@ -6,3 +6,4 @@ tmp/
 build_resume.py
 __pycache__/
 *.py[cod]
+/jars/HallOfTriumph.next*.jar
