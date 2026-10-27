@@ -25,7 +25,11 @@ Hall of Triumph dialogue catalog
 + [shipTrophyIsaMainModdedUniques] -> rule_shipTrophyIsaMainModdedUniques
 + [shipTrophyIsaMainModdedSubtypes] -> rule_shipTrophyIsaMainModdedSubtypes
 + [shipTrophyIsaMainGanEden] -> rule_shipTrophyIsaMainGanEden
++ [shipTrophyIsaMainShatteredRing] -> rule_shipTrophyIsaMainShatteredRing
 + [shipTrophyIsaMainLeave] -> rule_shipTrophyIsaMainLeave
++ [shipTrophyIsaShatteredRingHub] -> rule_shipTrophyIsaShatteredRingHub
++ [shipTrophyIsaShatteredRingChildhood] -> rule_shipTrophyIsaShatteredRingChildhood
++ [shipTrophyIsaShatteredRingMiss] -> rule_shipTrophyIsaShatteredRingMiss
 + [shipTrophyIsaGanEdenHub] -> rule_shipTrophyIsaGanEdenHub
 + [shipTrophyIsaGanEdenProcess] -> rule_shipTrophyIsaGanEdenProcess
 + [shipTrophyIsaGanEdenProcessChange] -> rule_shipTrophyIsaGanEdenProcessChange
@@ -62,6 +66,8 @@ Hall of Triumph dialogue catalog
 + [shipTrophyIsaContemptOptionLocked] -> rule_shipTrophyIsaContemptOptionLocked
 + [shipTrophyIsaContemptOptionNew] -> rule_shipTrophyIsaContemptOptionNew
 + [shipTrophyIsaContemptOptionSeen] -> rule_shipTrophyIsaContemptOptionSeen
++ [shipTrophyIsaPristineKiteOptionNew] -> rule_shipTrophyIsaPristineKiteOptionNew
++ [shipTrophyIsaPristineKiteOptionSeen] -> rule_shipTrophyIsaPristineKiteOptionSeen
 + [shipTrophyIsaGenericVanillaOptions] -> rule_shipTrophyIsaGenericVanillaOptions
 + [shipTrophyIsaUniqueVanillaBack] -> rule_shipTrophyIsaUniqueVanillaBack
 + [shipTrophyIsaMercyOptionLocked] -> rule_shipTrophyIsaMercyOptionLocked
@@ -89,6 +95,11 @@ Hall of Triumph dialogue catalog
 + [shipTrophyIsaContemptFour] -> rule_shipTrophyIsaContemptFour
 + [shipTrophyIsaContemptFive] -> rule_shipTrophyIsaContemptFive
 + [shipTrophyIsaContemptSix] -> rule_shipTrophyIsaContemptSix
++ [shipTrophyIsaPristineKiteOpen] -> rule_shipTrophyIsaPristineKiteOpen
++ [shipTrophyIsaPristineKiteClicked] -> rule_shipTrophyIsaPristineKiteClicked
++ [shipTrophyIsaPristineKiteSeat] -> rule_shipTrophyIsaPristineKiteSeat
++ [shipTrophyIsaPristineKiteModspec] -> rule_shipTrophyIsaPristineKiteModspec
++ [shipTrophyIsaPristineKiteProtest] -> rule_shipTrophyIsaPristineKiteProtest
 + [shipTrophyIsaMercyLocked] -> rule_shipTrophyIsaMercyLocked
 + [shipTrophyIsaMercyUnlocked] -> rule_shipTrophyIsaMercyUnlocked
 + [shipTrophyIsaMercyUnlockedText] -> rule_shipTrophyIsaMercyUnlockedText
@@ -174,6 +185,8 @@ Hall of Triumph dialogue catalog
 + [shipTrophyIsaShatteredRingHomecomingForemanContinue] -> rule_shipTrophyIsaShatteredRingHomecomingForemanContinue
 + [shipTrophyIsaShatteredRingHomecomingInheritance] -> rule_shipTrophyIsaShatteredRingHomecomingInheritance
 + [shipTrophyIsaShatteredRingHomecomingInheritanceReturn] -> rule_shipTrophyIsaShatteredRingHomecomingInheritanceReturn
++ [shipTrophyGalleryColonyOption] -> rule_shipTrophyGalleryColonyOption
++ [shipTrophyGalleryColonyOpen] -> rule_shipTrophyGalleryColonyOpen
 + [shipTrophyIsaShatteredRingHomecomingWorkshopOption] -> rule_shipTrophyIsaShatteredRingHomecomingWorkshopOption
 + [shipTrophyIsaShatteredRingHomecomingWorkshopOpen] -> rule_shipTrophyIsaShatteredRingHomecomingWorkshopOpen
 + [shipTrophyIsaShatteredRingHomecomingWorkshop] -> rule_shipTrophyIsaShatteredRingHomecomingWorkshop
@@ -259,6 +272,7 @@ Hall of Triumph dialogue catalog
 + [shipTrophyGanEdenArrivalSceneTwo] -> rule_shipTrophyGanEdenArrivalSceneTwo
 + [shipTrophyGanEdenArrivalSceneThree] -> rule_shipTrophyGanEdenArrivalSceneThree
 + [shipTrophyGanEdenArrivalSceneFour] -> rule_shipTrophyGanEdenArrivalSceneFour
++ [shipTrophyGanEdenExternalRingCustodians] -> rule_shipTrophyGanEdenExternalRingCustodians
 + [shipTrophyGanEdenExternalRingLocked] -> rule_shipTrophyGanEdenExternalRingLocked
 + [shipTrophyGanEdenExternalRing] -> rule_shipTrophyGanEdenExternalRing
 + [shipTrophyGanEdenExternalRingEnter] -> rule_shipTrophyGanEdenExternalRingEnter
@@ -303,6 +317,7 @@ Hall of Triumph dialogue catalog
 + [shipTrophyGanEdenEpitaphNeedsIsa] -> rule_shipTrophyGanEdenEpitaphNeedsIsa
 + [shipTrophyGanEdenEpitaphInspected] -> rule_shipTrophyGanEdenEpitaphInspected
 + [shipTrophyGanEdenLureOption] -> rule_shipTrophyGanEdenLureOption
++ [shipTrophyGanEdenLureLeaveOption] -> rule_shipTrophyGanEdenLureLeaveOption
 + [shipTrophyGanEdenLureOmega] -> rule_shipTrophyGanEdenLureOmega
 + [shipTrophyIsaFactionVisitHegemony] -> rule_shipTrophyIsaFactionVisitHegemony
 + [shipTrophyIsaFactionVisitHegemonyCustoms] -> rule_shipTrophyIsaFactionVisitHegemonyCustoms
@@ -416,9 +431,14 @@ Hall of Triumph dialogue catalog
 // $option == ship_trophy_isa_close
 // $shipTrophyIsaIntelDialog
 // Runtime script:
+// HideFirstPerson
+// HideSecondPerson
+// HideThirdPerson
+// unset $shipTrophyIsaIntelDialog
+// EndConversation DO_NOT_FIRE
 // DismissDialog
 // Notes:
-// Dismisses Isa's rules dialogue when opened as an Intel-screen overlay.
+// Dismisses Isa's rules dialogue and clears the active contact when opened as an Intel-screen overlay.
 
 You cut the comm link.
 
@@ -433,9 +453,13 @@ You cut the comm link.
 // $option == ship_trophy_isa_close
 // !$shipTrophyIsaIntelDialog
 // Runtime script:
+// HideFirstPerson
+// HideSecondPerson
+// HideThirdPerson
+// ShowDefaultVisual
 // EndConversation
 // Notes:
-// Returns cleanly from Isa's normal market-contact conversation.
+// Clears Isa's portrait and restores the market visual before returning from her normal contact conversation.
 
 You cut the comm link.
 
@@ -449,8 +473,10 @@ You cut the comm link.
 // Conditions:
 // $id == ship_trophy_isa
 // !IsaContactRulesCMD alreadyJoined
+// Runtime script:
+// unset $shipTrophyIsaIntelDialog
 // Notes:
-// Isa contact entry point before officer recruitment.
+// Normal market contact entry point also clears remote-dialog state left by earlier releases.
 
 // No literal text; the runtime script supplies this beat.
 
@@ -466,9 +492,10 @@ You cut the comm link.
 // $id == ship_trophy_isa
 // IsaContactRulesCMD alreadyJoined
 // Runtime script:
+// unset $shipTrophyIsaIntelDialog
 // IsaContactRulesCMD showContactPortrait
 // Notes:
-// Post-recruitment contact entry point.
+// Post-recruitment market contact entry point also clears remote-dialog state left by earlier releases.
 
 // No literal text; the runtime script supplies this beat.
 
@@ -557,7 +584,7 @@ Isa has the Hall of Triumph's network up on a battered slate: $shipTrophyIsaRoom
 // IsaContactRulesCMD canJoin
 // Runtime script:
 // SetOptionColor ship_trophy_isa_join_fleet highlight
-// SetTooltip ship_trophy_isa_join_fleet "Every vanilla Hall of Triumph ledger is complete. Isa can now join your officer roster."
+// SetTooltip ship_trophy_isa_join_fleet "Isa has completed Awe and can now join your officer roster."
 
 // No literal text; the runtime script supplies this beat.
 
@@ -640,6 +667,21 @@ Isa has the Hall of Triumph's network up on a battered slate: $shipTrophyIsaRoom
 + [Return to index.] -> rule_index
 
 // ============================================================
+=== rule_shipTrophyIsaMainShatteredRing ===
+// rules.csv id: shipTrophyIsaMainShatteredRing
+// Trigger:
+// ShipTrophyIsaMainOptions
+// Conditions:
+// IsaContactRulesCMD alreadyJoined
+// Notes:
+// Post-recruitment conversation about Isa's childhood home.
+
+// No literal text; the runtime script supplies this beat.
+
++ [Ask Isa about the Shattered Ring.] -> rule_shipTrophyIsaShatteredRingHub
++ [Return to index.] -> rule_index
+
+// ============================================================
 === rule_shipTrophyIsaMainLeave ===
 // rules.csv id: shipTrophyIsaMainLeave
 // Trigger:
@@ -649,6 +691,78 @@ Isa has the Hall of Triumph's network up on a battered slate: $shipTrophyIsaRoom
 
 // No literal text; the runtime script supplies this beat.
 
++ [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaShatteredRingHub ===
+// rules.csv id: shipTrophyIsaShatteredRingHub
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_shattered_ring
+// Runtime script:
+// SetShortcut ship_trophy_isa_close "ESCAPE"
+// Notes:
+// Post-recruitment one-line response about Isa's home.
+
+"The Shattered Ring? It's home for me. Such as it is. Bring me along sometime, I wanna say hi."
+
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
++ [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaShatteredRingChildhood ===
+// rules.csv id: shipTrophyIsaShatteredRingChildhood
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_shattered_ring_childhood
+// Notes:
+// Isa describes growing up in Arc Two and learning engineering from the Ring's culture of repair.
+
+"Arc Two, mostly," Isa says. "That was where the habitation decks were. Arc One had the good machine shops, but their gravity used to cut out whenever the ore processor started."
+
+She smiles at the memory.
+
+"You learned to keep one hand near a railing and never put a tool down without clipping it to something. The wreck-farms supplied whatever the station couldn't make, and every broken machine became three working machines if you gave the mechanics enough time."
+
+Isa rests the spanner against her shoulder.
+
+"People say a place like that teaches you how to survive. Mostly, it teaches you that almost anything can be repaired if enough people are willing to hold it together."
+
++ [Ask something else about the Shattered Ring.] -> rule_shipTrophyIsaShatteredRingHub
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
++ [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaShatteredRingMiss ===
+// rules.csv id: shipTrophyIsaShatteredRingMiss
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_shattered_ring_miss
+// Notes:
+// Isa admits what she misses about the Shattered Ring and calls the fleet another home.
+
+"Of course not."
+
+Isa answers too quickly.
+
+"I don't miss the recycler alarms, or the gravity failures, or food that tasted like somebody had described vegetables to a nutrient printer."
+
+She looks past the comm pickup for a moment.
+
+"I miss knowing every voice on the maintenance channel. I miss people shouting repair advice through three decks of open conduit. I miss knowing that if one bulkhead failed, half the Ring would arrive with welding torches before the pressure alarm finished sounding."
+
+Her gaze returns to you.
+
+"It's still home. This fleet is too. Don't make that expression; I'm not saying it twice."
+
++ [Ask something else about the Shattered Ring.] -> rule_shipTrophyIsaShatteredRingHub
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
 + [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
 + [Return to index.] -> rule_index
 
@@ -1107,7 +1221,7 @@ Her father.
 
 "Bring me the missing hulls and I'll get to work on my custom modspec."
 
-+ [Back.] -> rule_shipTrophyIsaMasterworkHub
++ [Back.] -> rule_shipTrophyIsaContactOpen
 + [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
 + [Return to index.] -> rule_index
 
@@ -1202,13 +1316,14 @@ Received Awe modspec.
 // Conditions:
 // $option == ship_trophy_isa_masterwork_3
 // Runtime script:
+// SetOptionColor ship_trophy_isa_join_fleet highlight
 // SetShortcut ship_trophy_isa_close "ESCAPE"
 
 "I considered 'Isa Leicester Is The Best,'" she says. "Marketing talked me down."
 
 She is still smiling when she turns back to the five ships.
 
-+ [Back.] -> rule_shipTrophyIsaMasterworkHub
++ ["You look like you have something to say."] -> rule_shipTrophyIsaJoinReady
 + [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
 + [Return to index.] -> rule_index
 
@@ -1352,6 +1467,41 @@ She is still smiling when she turns back to the five ships.
 // No literal text; the runtime script supplies this beat.
 
 + [Discuss the Onslaught Mk.I.] -> rule_shipTrophyIsaContemptLocked
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteOptionNew ===
+// rules.csv id: shipTrophyIsaPristineKiteOptionNew
+// Trigger:
+// ShipTrophyIsaUniqueOptionsVanilla
+// Conditions:
+// IsaContactRulesCMD pristineKiteStored
+// !IsaContactRulesCMD pristineKiteSeen
+// Runtime script:
+// SetOptionColor ship_trophy_isa_pristine_kite highlight
+// SetTooltip ship_trophy_isa_pristine_kite "Isa has marked the pristine Kite as a priority-one exhibit."
+// Notes:
+// Hidden pristine Kite conversation; no locked option exists and no hullmod is awarded.
+
+// No literal text; the runtime script supplies this beat.
+
++ ["Isa? Why is the pristine Kite flagged as a priority-one emergency?"] -> rule_shipTrophyIsaPristineKiteOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteOptionSeen ===
+// rules.csv id: shipTrophyIsaPristineKiteOptionSeen
+// Trigger:
+// ShipTrophyIsaUniqueOptionsVanilla
+// Conditions:
+// IsaContactRulesCMD pristineKiteStored
+// IsaContactRulesCMD pristineKiteSeen
+// Notes:
+// Repeat access to the secret pristine Kite conversation.
+
+// No literal text; the runtime script supplies this beat.
+
++ [Discuss the pristine Kite.] -> rule_shipTrophyIsaPristineKiteOpen
 + [Return to index.] -> rule_index
 
 // ============================================================
@@ -1793,6 +1943,222 @@ Isa shakes her head. "Anything... 'sentient' has long died out. There's nothing 
 Isa puts her hand over her heart. "Rest in peace, now."
 
 + [Back.] -> rule_shipTrophyIsaUniquesHub
++ [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteOpen ===
+// rules.csv id: shipTrophyIsaPristineKiteOpen
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_pristine_kite
+// IsaContactRulesCMD pristineKiteStored
+// Runtime script:
+// IsaContactRulesCMD markPristineKiteSeen
+// SetShortcut ship_trophy_isa_close "ESCAPE"
+// Notes:
+// Your supplied pristine Kite scene; the player's spoken response is rendered as a selected option.
+
+You find Isa in berth seven.
+
+She is perched atop the recent pristine Kite you've brought in, one boot planted on the wing root and the other dangling over the side. Half the ship's access panels are open around her, though nothing appears to have actually been removed. A work light has been dragged underneath the fuselage. Three engineers are standing nearby with the slightly helpless expressions of people who made the mistake of asking Isa what she thought of something.
+
+She spots you.
+
+"Commander. Commander! You know what this is!? Commander!"
+
+She keeps talking before you can answer.
+
+"A pristine Kite. An actual, unmolested, luxury Kite! This one still has the maker's lacquer under the access panels!"
+
+She drops through the open canopy so quickly that for a moment only her boots are visible.
+
+"Look at this seat!"
+
+Her voice is muffled now, projected enthusiastically from somewhere inside the cockpit.
+
+"That is real leather! Real. Leather. Full-grain, hand-stitched, properly sprung! Cows went extinct in the Sector eighty cycles ago! This might be the last bit of real leather outside of an Eventide hovercar!"
+
+You lean over the canopy.
+
+Isa has both hands pressed reverently against the pilot's seat.
+
+"And look at the wear! Somebody actually used this thing. See the creasing here? Natural compression. No vat-grown utility hide, no stamped polymer pretending to have pores. This was an animal."
+
+She pauses.
+
+"Probably a very expensive animal."
+
+She twists around and sweeps a hand toward the controls.
+
+"The pilot's console is wood! Carved Gilead wood! Somebody selected the grain, shaped it around the instrument binnacle, inlaid the switch labels in brass, and then polished it until—"
+
+She runs a sleeve over one section, squints at her reflection, then immediately buffs away the mark she just made.
+
+"—until you can practically shave in it. Every toggle has the same resistance. Every dial has a mechanical stop. The switches have little felt dampers underneath them so they don't click too loudly at night."
+
+She flips one.
+
+Click.
+
+Isa beams.
+
+"Listen to that."
+
+You listen.
+
++ ["Yes. It clicked."] -> rule_shipTrophyIsaPristineKiteClicked
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteClicked ===
+// rules.csv id: shipTrophyIsaPristineKiteClicked
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_pristine_kite_clicked
+// Runtime script:
+// SetShortcut ship_trophy_isa_close "ESCAPE"
+// Notes:
+// The tour continues only after the player's action is selected.
+
+"Exactly."
+
+She disappears beneath the console.
+
+"And the wiring harness is laced!"
+
+A moment later she resurfaces.
+
+Isa is speaking faster now.
+
+"The sleeping quarters have two proper berths, sound insulation, a fold-down table that does not block the hatch, a wardrobe deep enough for an actual coat, and a washroom where the shower does not share plumbing with the reactor coolant loop—"
+
+She catches you by the sleeve and drags you toward the rear compartment.
+
+"Look--"
+
+There is, indeed, a wardrobe.
+
+Isa opens it.
+
+It contains three wooden hangers.
+
+"Wooden hangers."
+
+She looks at you meaningfully.
+
+You look back at her.
+
+"Commander! They brought trees into space so your jacket wouldn't get shoulder bumps."
+
+She moves on before you can formulate a response.
+
+"The galley has a heat surface with six actual temperature settings instead of LOW, HIGH, and REACTOR INCIDENT. The drawers have felt-lined runners. The cabinet doors stay shut under thrust because they have proper brass catches instead of magnets."
+
+She pulls open a narrow compartment.
+
+"And this..."
+
+Inside is a fitted rack holding four crystal glasses.
+
+Isa lifts one toward the overhead light.
+
+"A drinks cabinet."
+
+Your bodyguards, for once, behind you murmur appreciatively.
+
+She sets it back with both hands.
+
+She is already moving toward the engine room.
+
+"And we haven't even gotten to the drive!"
+
++ [Find a seat and hopefully a drink.] -> rule_shipTrophyIsaPristineKiteSeat
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteSeat ===
+// rules.csv id: shipTrophyIsaPristineKiteSeat
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_pristine_kite_seat
+// Runtime script:
+// SetShortcut ship_trophy_isa_close "ESCAPE"
+// Notes:
+// The player's modspec question is rendered as a selected option.
+
+After getting an impromptu tour of the Kite's drink cabinet, you manage to salvage both.
+
+Isa continues.
+
+Isa spends eleven minutes explaining the machining tolerances on the cabin door hinges.
+
+Then seventeen on the atmospheric system.
+
+Then she starts on the engines.
+
+You lose to Yvan at chess960.
+
+Twice.
+
+Damn it.
+
+By the time Isa finally finishes, it has been over an hour.
+
+She stands in the middle of the cabin, flushed from excitement, surrounded by open schematics and an audience of engineers who have either become genuinely invested or simply accepted that escape is no longer possible.
+
+"So."
+
+Isa clasps her hands behind her back.
+
+"You get it?"
+
+She gestures around the tiny ship.
+
+"What do you think, Commander?"
+
++ ["So what kind of modspec are you going to extract from this?"] -> rule_shipTrophyIsaPristineKiteModspec
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteModspec ===
+// rules.csv id: shipTrophyIsaPristineKiteModspec
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_pristine_kite_modspec
+// Runtime script:
+// SetShortcut ship_trophy_isa_close "ESCAPE"
+// Notes:
+// The player's protest is rendered as a selected option.
+
+Isa gasps.
+
+"How dare you." She looks genuinely appalled.
+
+"Commander. We are not dissecting it."
+
++ ["I didn't say dissect—"] -> rule_shipTrophyIsaPristineKiteProtest
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPristineKiteProtest ===
+// rules.csv id: shipTrophyIsaPristineKiteProtest
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_pristine_kite_protest
+// Runtime script:
+// SetShortcut ship_trophy_isa_close "ESCAPE"
+// Notes:
+// The player's retreat is rendered as a selected action; the scene grants no hullmod.
+
+"Never! I won't let you!"
+
++ [\[You slowly back away.\]] -> rule_shipTrophyIsaUniquesHub
 + [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
 + [Return to index.] -> rule_index
 
@@ -2307,7 +2673,9 @@ $shipTrophyIsaUniqueReceipt
 // Conditions:
 // IsaContactRulesCMD currentSubtype knights_of_ludd score:100
 
-"This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
+"The gallant Knights," Isa says. "Their ships are a testament to their unwavering spirit. They're also a tremendous pain. Do you know how annoying it is to refit all that modular armor after every single battle?"
+
+Isa is getting visibly agitated. "The overtime alone is a nightmare!"
 
 + [Return to index.] -> rule_index
 
@@ -2319,7 +2687,7 @@ $shipTrophyIsaUniqueReceipt
 // Conditions:
 // IsaContactRulesCMD currentSubtype uaf score:100
 
-"This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
+"What a strange set of ships," Isa says, slowly turning the model around. "A strange doctrine for a weirdly intense people. Everything's specialized, everything's expensive, and somehow they still found room for another missile rack or flight deck. Cruiser school, by any other name."
 
 + [Return to index.] -> rule_index
 
@@ -2331,7 +2699,7 @@ $shipTrophyIsaUniqueReceipt
 // Conditions:
 // IsaContactRulesCMD currentSubtype iron_shell score:100
 
-"This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
+"You can tell these grew out of Hegemony hulls," Isa says. "Same bones, same obsession with armor and reliability. But there's an edge to everything they do with it. Like a sword in mid-swing."
 
 + [Return to index.] -> rule_index
 
@@ -2343,7 +2711,7 @@ $shipTrophyIsaUniqueReceipt
 // Conditions:
 // IsaContactRulesCMD currentSubtype remnant score:100
 
-"This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
+"These are fun," Isa says. "No crew spaces. No access corridors unless a machine actually needs one. No pretending a human being might ever have to repair it." She taps the model. "I'm no Luddite, Commander. AI has its own voice, even in ship design. I aim to hear it."
 
 + [Return to index.] -> rule_index
 
@@ -2355,7 +2723,7 @@ $shipTrophyIsaUniqueReceipt
 // Conditions:
 // IsaContactRulesCMD currentSubtype domain_derelict score:100
 
-"This family has its own habits," Isa says. "Get enough examples into our network and the design patterns start showing through."
+"These look crude until you start comparing them," Isa says. "Then you realize the weaknesses repeat. Same compromises, same limitations, across hulls that had no reason to share them." She turns the model over in her hands. "The Domain did this on purpose. Why would you deliberately hobble an Explorarium fleet?" She stares at it for another moment. "Hm. Well. I fixed the obvious parts."
 
 + [Return to index.] -> rule_index
 
@@ -2671,9 +3039,13 @@ $shipTrophyIsaSubtypeReceipt
 // SetTooltip ship_trophy_isa_join_fleet_confirm "Isa will join your officer roster."
 // SetShortcut ship_trophy_isa_close "ESCAPE"
 
+"Well, Commander, if it's not too much to ask. Can you come by here later today? Give me some time."
+
+Several hours later, you find yourself in the workshop again. The place is quiet, save for the occasional clink of a tool against metal. The air smells faintly of oil and solder.
+
 For once, Isa has no slate in her hands. No schematics, no lists, no half-disassembled parts balanced on the furniture. Just a travel case at her feet and a hard little smile she is trying, unsuccessfully, to hide.
 
-"The Hall can run without me staring over its shoulder now," she says. "Every ledger is clean. Every weird old hull has taught us what it was going to teach from a dock. So if you'll have me, Captain, I want to join you. I want to see what legacies looks like when they're being made."
+"My greatest work is finished," she says. "The Hall can run without me staring over its shoulder now. So if you'll have me, Captain, I want to join you. I want to see what legacies look like while they're being made."
 
 + ["Let's go write history."] -> rule_shipTrophyIsaJoinConfirm
 + [Back.] -> rule_shipTrophyIsaContactOpen
@@ -2711,7 +3083,7 @@ Isa has already joined your fleet as an officer.
 // Runtime script:
 // SetShortcut ship_trophy_isa_close "ESCAPE"
 
-The Hall of Triumph is not quite ready for Isa to leave her workshop yet.
+Isa will be ready to leave her workshop after she finishes Awe.
 
 + [Back to contact dialogue.] -> rule_shipTrophyIsaContactOpen
 + [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
@@ -2775,7 +3147,7 @@ Isa has already joined your fleet as an officer.
 // Notes:
 // Direct stale-confirmation fallback.
 
-The Hall of Triumph is not quite ready for Isa to leave her workshop yet.
+Isa will be ready to leave her workshop after she finishes Awe.
 
 + [Back to contact dialogue.] -> rule_shipTrophyIsaContactOpen
 + [Cut the comm link.] -> rule_shipTrophyIsaCloseIntel
@@ -2985,9 +3357,9 @@ A private channel opens on the fleet's command display. Isa is standing only a f
 
 The view settles on ranks of restored hulls beneath the gallery lights, each faction's doctrine preserved in steel, circuitry, and old scars.
 
-"I wanted to see it from out here," Isa says at last. "The whole thing at once. One last time, before I leave."
+"I wanted to see it from out here," Isa says at last. "The whole thing at once, for the first time."
 
-"You've done it, Captain. The Hall of Triumph is done. Not finished, mind you; places like this are never finished. But every core ledger is preserved under one roof. Not under war, but peace."
+"You've done it, Captain. The Hall of Triumph is done. Not finished, mind you; places like this are never finished. But every core ledger in the history of the Sector is preserved under one roof. Not under war, but peace."
 
 Isa glances from the distant gallery to the fleet around you. "The Hall can preserve what came before. From here on, we get to make what comes next. Thank you for giving me a place in it."
 
@@ -3316,6 +3688,39 @@ Isa closes the case and calls for one of your crew to transfer it to her old wor
 // FireBest OpenInteractionDialog
 // Notes:
 // Returns to the normal Shattered Ring colony menu.
+
+// No literal text; the runtime script supplies this beat.
+
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyGalleryColonyOption ===
+// rules.csv id: shipTrophyGalleryColonyOption
+// Trigger:
+// PopulateOptions
+// Conditions:
+// $hasMarket
+// $menuState == main
+// ShipGalleryRulesCMD shouldShow
+// Notes:
+// Shown only when the unstable Ship Gallery setting is enabled at a functional player-owned Hall.
+
+// No literal text; the runtime script supplies this beat.
+
++ [Visit the Ship Gallery.] -> rule_shipTrophyGalleryColonyOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyGalleryColonyOpen ===
+// rules.csv id: shipTrophyGalleryColonyOpen
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_gallery_open
+// Runtime script:
+// ShipGalleryRulesCMD show
+// Notes:
+// Opens the Ship Gallery from its Hall of Triumph colony menu.
 
 // No literal text; the runtime script supplies this beat.
 
@@ -5108,7 +5513,7 @@ The second hypershunt’s signal contains the same concealed routing pattern as 
 
 She aligns the two vectors.
 
-They intersect far beyond the charted systems of the Sector, near its northeastern edge. There is no stable jump point; reaching it will require a Transverse Jump.
+They intersect far beyond the charted systems of the Sector, near its northeastern edge.
 
 A destination marker appears.
 
@@ -5250,12 +5655,31 @@ EMERGENCY ACCESS
 + [Return to index.] -> rule_index
 
 // ============================================================
+=== rule_shipTrophyGanEdenExternalRingCustodians ===
+// rules.csv id: shipTrophyGanEdenExternalRingCustodians
+// Trigger:
+// OpenInteractionDialog
+// Conditions:
+// GanEdenQuestCMD isExternalRing score:52000
+// !GanEdenQuestCMD ivoryCustodiansDefeated
+// Runtime script:
+// SetShortcut ship_trophy_gan_eden_ring_leave "ESCAPE"
+// Notes:
+// Prevents the player from bypassing the one-time Ivory Custodian interception.
+
+The Ivory Custodian Ordo controls the approach to Power Transit Gate - Gan Eden. Its warships hold between your fleet and the active aperture; no transit course is possible while they remain operational.
+
++ [Leave.] -> rule_shipTrophyGanEdenRingLeave
++ [Return to index.] -> rule_index
+
+// ============================================================
 === rule_shipTrophyGanEdenExternalRingLocked ===
 // rules.csv id: shipTrophyGanEdenExternalRingLocked
 // Trigger:
 // OpenInteractionDialog
 // Conditions:
 // GanEdenQuestCMD isExternalRing score:51000
+// GanEdenQuestCMD ivoryCustodiansDefeated
 // GanEdenQuestCMD lacksUsableJanusGate
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_ring_leave "ESCAPE"
@@ -5274,6 +5698,7 @@ Power Transit Gate - Gan Eden hangs alone at the center of an empty starless sys
 // OpenInteractionDialog
 // Conditions:
 // GanEdenQuestCMD isExternalRing score:50000
+// GanEdenQuestCMD ivoryCustodiansDefeated
 // GanEdenQuestCMD canUseJanusGate
 // Runtime script:
 // SetShortcut ship_trophy_gan_eden_ring_leave "ESCAPE"
@@ -5294,6 +5719,7 @@ Power Transit Gate - Gan Eden hangs alone at the center of an empty, starless sy
 // Conditions:
 // $option == ship_trophy_gan_eden_ring_enter
 // GanEdenQuestCMD canUseJanusGate
+// GanEdenQuestCMD ivoryCustodiansDefeated
 // Runtime script:
 // GanEdenQuestCMD transitIn
 // DismissDialog
@@ -6219,7 +6645,7 @@ Until today.
 
 Today, God finally answered.
 
-It did not connect to Penelope’s Star or any other Gate I knew. Instead, two angels arrived through the Gate and began descending toward Gan Eden.
+It did not connect to Penelope’s Star or any other Gate I knew. Instead, two angels arrived through the the Earth and began ascending toward the Space Elevator.
 
 The first resembles a winged figure, though my instruments cannot hold its shape for more than a moment. The second turns within lines of fire like a burning sword. They burn with the light of God and race through the sky like searing chariots.
 
@@ -6349,7 +6775,6 @@ The elevator's continuity archive recognizes Isa Leicester's inherited suit tran
 // GanEdenQuestCMD epitaphInspected score:55000
 // GanEdenQuestCMD prepareGoldenOmegaRespawnTimer
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
 // FireAll ShipTrophyGanEdenLureOptions
 // Notes:
 // Repeat interaction after the final archive scene; reports the Golden Omega reconstruction timer and offers an immediate rematch when no wave is active.
@@ -6358,7 +6783,6 @@ The silent Space Elevator remains open above Gan Eden. Its final Leicester recor
 
 $shipTrophyGanEdenRespawnStatus
 
-+ [Leave.] -> rule_shipTrophyGanEdenEpitaphLeave
 + [Return to index.] -> rule_index
 
 // ============================================================
@@ -6376,6 +6800,21 @@ $shipTrophyGanEdenRespawnStatus
 // No literal text; the runtime script supplies this beat.
 
 + [Lure the Golden Omega back.] -> rule_shipTrophyGanEdenLureOmega
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyGanEdenLureLeaveOption ===
+// rules.csv id: shipTrophyGanEdenLureLeaveOption
+// Trigger:
+// ShipTrophyGanEdenLureOptions
+// Runtime script:
+// SetShortcut ship_trophy_gan_eden_epitaph_leave ""ESCAPE""
+// Notes:
+// Always provides a non-lure exit from the repeat Space Elevator interaction.
+
+// No literal text; the runtime script supplies this beat.
+
++ [Leave.] -> rule_shipTrophyGanEdenEpitaphLeave
 + [Return to index.] -> rule_index
 
 // ============================================================

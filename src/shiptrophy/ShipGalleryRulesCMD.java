@@ -33,6 +33,7 @@ public final class ShipGalleryRulesCMD implements CommandPlugin {
     }
 
     private static boolean shouldShow(InteractionDialogAPI dialog) {
+        if (!HallOfTriumphFeatures.isShipGalleryEnabled()) return false;
         SectorEntityToken target = dialog.getInteractionTarget();
         // PopulateOptions also runs inside comm-directory conversations. The
         // Gallery belongs only on the colony's main interaction menu.

@@ -1,7 +1,5 @@
 package shiptrophy;
 
-import java.lang.reflect.Method;
-
 import com.fs.starfarer.api.Global;
 
 /** Runtime switches used by official Hall of Triumph replacement builds. */
@@ -12,15 +10,12 @@ public final class HallOfTriumphFeatures {
     private static final String NEXERELIN_ID = "nexerelin";
     private static final String TROPHY_HULLMODS_ENABLED = "shipTrophyHullmodsEnabled";
     private static final String NEX_ACHIEVEMENTS_ENABLED = "shipTrophyNexAchievementsEnabled";
+    private static final String SHIP_GALLERY_ENABLED = "shipTrophyShipGalleryEnabled";
     private static final String ISA_QOL_ENABLED = "shipTrophyIsaQualityOfLifeBonusesEnabled";
     private static final String ISA_CREW_PAY_REDUCTION = "shipTrophyIsaCrewPayReductionPercent";
     private static final String ISA_SENSOR_PROFILE_REDUCTION = "shipTrophyIsaSensorProfileReductionPercent";
     private static final String ISA_BURN_LEVEL_BONUS = "shipTrophyIsaBurnLevelBonus";
     private static final String ISA_STORY_POINT_BONUS = "shipTrophyIsaStoryPointGenerationBonusPercent";
-
-    private static volatile boolean lunaMethodsResolved;
-    private static Method lunaBooleanGetter;
-    private static Method lunaFloatGetter;
 
     private HallOfTriumphFeatures() {
     }
@@ -31,6 +26,10 @@ public final class HallOfTriumphFeatures {
 
     public static boolean areNexAchievementsEnabled() {
         return getBoolean(NEX_ACHIEVEMENTS_ENABLED, true);
+    }
+
+    public static boolean isShipGalleryEnabled() {
+        return getBoolean(SHIP_GALLERY_ENABLED, false);
     }
 
     public static boolean isNexAchievementIntegrationActive() {
@@ -86,36 +85,24 @@ public final class HallOfTriumphFeatures {
         }
     }
 
-    /** Uses reflection so LunaLib remains an optional dependency. */
+    /** Only loads the optional bridge when LunaLib is enabled. */
     private static Object getLunaValue(String method, String id) {
+        // Only these fields are exposed in LunaSettings.csv. Isa's JSON-only
+        // settings must not trigger LunaLib missing-field errors every frame.
+        if (!TROPHY_HULLMODS_ENABLED.equals(id)
+                && !NEX_ACHIEVEMENTS_ENABLED.equals(id)
+                && !SHIP_GALLERY_ENABLED.equals(id)) return null;
         if (!isModEnabled(LUNALIB_ID)) return null;
         try {
-            resolveLunaMethods();
-            Method getter;
             if ("getBoolean".equals(method)) {
-                getter = lunaBooleanGetter;
+                return LunaSettingsBridge.getBoolean(MOD_ID, id);
             } else if ("getFloat".equals(method)) {
-                getter = lunaFloatGetter;
-            } else {
-                return null;
+                return LunaSettingsBridge.getFloat(MOD_ID, id);
             }
-            return getter == null ? null : getter.invoke(null, MOD_ID, id);
+            return null;
         } catch (Throwable ignored) {
             return null;
         }
-    }
-
-    private static synchronized void resolveLunaMethods() throws Exception {
-        if (lunaMethodsResolved) return;
-
-        ClassLoader loader = Global.getSettings().getScriptClassLoader();
-        Class<?> settings = Class.forName(
-                "lunalib.lunaSettings.LunaSettings", true, loader);
-        lunaBooleanGetter = settings.getMethod(
-                "getBoolean", String.class, String.class);
-        lunaFloatGetter = settings.getMethod(
-                "getFloat", String.class, String.class);
-        lunaMethodsResolved = true;
     }
 
     private static boolean isModEnabled(String id) {

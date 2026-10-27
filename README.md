@@ -139,10 +139,11 @@ To make a clean install folder that excludes Git metadata and build scratch:
 Then copy `dist\HallOfTriumph` into `Starsector\mods`, enable **Hall of Triumph**, and start/load a campaign.
 ## Optional mod settings
 
-When LunaLib is enabled, Hall of Triumph adds a settings page for its reward modules. LunaLib is optional; the same defaults remain available in `data/config/settings.json` when it is absent.
+When LunaLib is enabled, Hall of Triumph adds a settings page for its optional features. LunaLib is optional; the same defaults remain available in `data/config/settings.json` when it is absent.
 
 - **Custom Hullmod Unlocks** is enabled by default. When enabled, earned Hall reward hullmods are visible and installable. When disabled, reward hullmods are hidden from the refit picker and cannot be newly installed, while hullmods already fitted to ships remain installed and continue applying their full effects.
 - **Hall Achievements** adds four Hall milestones to MagicLib's achievement screen when both Nexerelin and MagicLib are enabled: the first exhibit, all six vanilla doctrine programs, Isa's masterwork, and completion of A Borrowed Name. All three external mods remain optional.
+- **Ship Gallery (Unstable)**, on LunaLib's **Gallery** tab, is disabled by default. Enabling it restores the Ship Gallery colony-menu option at functional player-owned Halls. Its warning describes possible missing system backgrounds after tours and missing weapon or decorative details. Reopen the colony menu after changing it. Without LunaLib, `shipTrophyShipGalleryEnabled` in `data/config/settings.json` controls the same option.
 - **Hall Storage Sorting** orders displayed ships using a primary and secondary category: hull name, faction/manufacturer, hull size, or deployment-point cost. Text sorts A-Z, while size and DP sort from lowest to highest. Sorting changes presentation order only.
 - `shipTrophyIsaQualityOfLifeBonusesEnabled` gives the fleet Isa's post-recruitment crew-pay, sensor-profile, and burn-level bonuses.
 - `shipTrophyIsaCrewPayReductionPercent`, `shipTrophyIsaSensorProfileReductionPercent`, and `shipTrophyIsaBurnLevelBonus` tune those conveniences.

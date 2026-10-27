@@ -6,13 +6,23 @@ IsaContactRulesCMD prepareMain
 FireAll ShipTrophyIsaMainText
 FireAll ShipTrophyIsaMainOptions",,,Remote contact entry point available from Isa's Contacts intel.
 shipTrophyIsaCloseIntel,DialogOptionSelected,"$option == ship_trophy_isa_close
-$shipTrophyIsaIntelDialog",DismissDialog,You cut the comm link.,,Dismisses Isa's rules dialogue when opened as an Intel-screen overlay.
+$shipTrophyIsaIntelDialog","HideFirstPerson
+HideSecondPerson
+HideThirdPerson
+unset $shipTrophyIsaIntelDialog
+EndConversation DO_NOT_FIRE
+DismissDialog",You cut the comm link.,,Dismisses Isa's rules dialogue and clears the active contact when opened as an Intel-screen overlay.
 shipTrophyIsaCloseConversation,DialogOptionSelected,"$option == ship_trophy_isa_close
-!$shipTrophyIsaIntelDialog",EndConversation,You cut the comm link.,,Returns cleanly from Isa's normal market-contact conversation.
+!$shipTrophyIsaIntelDialog","HideFirstPerson
+HideSecondPerson
+HideThirdPerson
+ShowDefaultVisual
+EndConversation",You cut the comm link.,,Clears Isa's portrait and restores the market visual before returning from her normal contact conversation.
 shipTrophyIsaContactOption,PopulateOptions,"$id == ship_trophy_isa
-!IsaContactRulesCMD alreadyJoined",,,40:ship_trophy_isa_open:Talk about the Hall of Triumph ledgers.,Isa contact entry point before officer recruitment.
+!IsaContactRulesCMD alreadyJoined",unset $shipTrophyIsaIntelDialog,,40:ship_trophy_isa_open:Talk about the Hall of Triumph ledgers.,Normal market contact entry point also clears remote-dialog state left by earlier releases.
 shipTrophyIsaOfficerContactOption,PopulateOptions,"$id == ship_trophy_isa
-IsaContactRulesCMD alreadyJoined",IsaContactRulesCMD showContactPortrait,,40:ship_trophy_isa_officer_call:Call Isa's Hall office.,Post-recruitment contact entry point.
+IsaContactRulesCMD alreadyJoined","unset $shipTrophyIsaIntelDialog
+IsaContactRulesCMD showContactPortrait",,40:ship_trophy_isa_officer_call:Call Isa's Hall office.,Post-recruitment market contact entry point also clears remote-dialog state left by earlier releases.
 shipTrophyIsaOfficerCall,DialogOptionSelected,$option == ship_trophy_isa_officer_call,"SetShortcut ship_trophy_isa_close ""ESCAPE""","The connection routes to Isa's office. Instead of a live feed, the comm screen displays her screensaver: a photo of her looking out at the stars, below the shadow of some unknown ship.","0:ship_trophy_isa_officer_answer:""Isa?""
 100:ship_trophy_isa_close:Cut the comm link.",Post-recruitment office screensaver beat.
 shipTrophyIsaOfficerAnswer,DialogOptionSelected,$option == ship_trophy_isa_officer_answer,"SetShortcut ship_trophy_isa_close ""ESCAPE""","A moment later, the screensaver folds away. Isa appears on the feed from somewhere aboard your fleet, safety goggles pushed into her hair and a spanner still in one hand.
@@ -228,7 +238,7 @@ shipTrophyIsaMasterworkHub,DialogOptionSelected,$option == ship_trophy_isa_maste
 IsaContactRulesCMD showMasterworkIntro
 IsaContactRulesCMD showMasterworkStatus
 FireBest ShipTrophyIsaMasterworkState",,,
-shipTrophyIsaMasterworkIncomplete,ShipTrophyIsaMasterworkState,!IsaContactRulesCMD masterworkComplete,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Bring me the missing hulls and I'll get to work on my custom modspec.""","0:ship_trophy_isa_masterwork:Back.
+shipTrophyIsaMasterworkIncomplete,ShipTrophyIsaMasterworkState,!IsaContactRulesCMD masterworkComplete,"SetShortcut ship_trophy_isa_close ""ESCAPE""","""Bring me the missing hulls and I'll get to work on my custom modspec.""","0:ship_trophy_isa_open:Back.
 100:ship_trophy_isa_close:Cut the comm link.",
 shipTrophyIsaMasterworkComplete,ShipTrophyIsaMasterworkState,IsaContactRulesCMD masterworkComplete,"FireAll ShipTrophyIsaMasterworkCompleteText
 FireBest ShipTrophyIsaMasterworkCompleteOptions",,,
@@ -909,7 +919,7 @@ SetTextHighlights ""[Received: Isa's inheritance.]"" ""[Quest started: A Borrowe
 shipTrophyIsaShatteredRingHomecomingInheritanceReturn,DialogOptionSelected,$option == ship_trophy_isa_homecoming_inheritance_return,FireBest OpenInteractionDialog,,,Returns to the normal Shattered Ring colony menu.
 shipTrophyGalleryColonyOption,PopulateOptions,"$hasMarket
 $menuState == main
-ShipGalleryRulesCMD shouldShow",,,15:ship_trophy_gallery_open:Visit the Ship Gallery.,Ship Gallery access from the main menu of a player colony with a functional Hall of Triumph.
+ShipGalleryRulesCMD shouldShow",,,15:ship_trophy_gallery_open:Visit the Ship Gallery.,Shown only when the unstable Ship Gallery setting is enabled at a functional player-owned Hall.
 shipTrophyGalleryColonyOpen,DialogOptionSelected,$option == ship_trophy_gallery_open,ShipGalleryRulesCMD show,,,Opens the Ship Gallery from its Hall of Triumph colony menu.
 shipTrophyIsaShatteredRingHomecomingWorkshopOption,PopulateOptions,IsaHomecomingCMD shouldShowWorkshop,,,20:ship_trophy_isa_homecoming_workshop_open:Investigate Isa's suit in her workshop.,Persistent Shattered Ring colony-menu option after receiving the inheritance.
 shipTrophyIsaShatteredRingHomecomingWorkshopOpen,DialogOptionSelected,$option == ship_trophy_isa_homecoming_workshop_open,"IsaHomecomingCMD prepareWorkshop

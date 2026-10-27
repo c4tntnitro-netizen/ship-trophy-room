@@ -1,6 +1,7 @@
 {
     "shipTrophyHullmodsEnabled": true,
     "shipTrophyNexAchievementsEnabled": true,
+    "shipTrophyShipGalleryEnabled": false,
     "shipTrophyIsaQualityOfLifeBonusesEnabled": true,
     "shipTrophyIsaCrewPayReductionPercent": 20,
     "shipTrophyIsaSensorProfileReductionPercent": 25,

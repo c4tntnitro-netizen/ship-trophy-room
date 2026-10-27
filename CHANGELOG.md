@@ -1,5 +1,13 @@
 # Hall of Triumph changelog
 
+## 2.5.2 Beta Hotfix - 2026-10-26
+
+- Disables the Ship Gallery by default and adds a LunaLib Gallery toggle labeled "Ship Gallery (Unstable)", with a warning about background and ship-display issues.
+- Fixes LunaLib settings being ignored under Starsector's script restrictions, including the Ship Gallery opt-in toggle.
+- Returns the unfinished Isa masterwork's Back option to the Hall ledgers.
+- Clears Isa's portraits when ending a conversation and clears remote-call state before closing her Contacts intel overlay.
+- Makes `AddIsa` set or repair Isa's durable recruitment flag without adding duplicate officers or advancing other quest flags.
+
 ## 2.5.1 Beta - 2026-09-11
 
 ### Experimental crash compatibility fix
