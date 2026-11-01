@@ -1,0 +1,45 @@
+{
+    "displayName": "Strike",
+    "fluxCapacitors": 8,
+    "fluxVents": 13,
+    "goalVariant": false,
+    "hullId": "ship_trophy_white_scintilla",
+    "hullMods": [],
+    "permaMods": [],
+    "sMods": [],
+    "variantId": "ship_trophy_ivory_scintilla_Strike",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 006": "typhoon"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 007": "sabot",
+                "WS 008": "sabot"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 000": "taclaser",
+                "WS 001": "taclaser",
+                "WS 002": "pdlaser",
+                "WS 003": "pdlaser"
+            }
+        }
+    ],
+    "wings": [
+        "lux_wing",
+        "flash_wing"
+    ],
+    "tags": [
+        "always_recoverable"
+    ]
+}

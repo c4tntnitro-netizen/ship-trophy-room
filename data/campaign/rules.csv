@@ -1307,16 +1307,15 @@ At last, he nods.
 ""Then go, brother. For the Prophet’s sake, go.""
 
 The Pather fleet begins clearing the approach corridor.",0:ship_trophy_gan_eden_hypershunt_stand_down:Return to your fleet.,The special persuasion option ends the blockade encounter without starting the hypershunt survey.
-shipTrophyGanEdenHypershuntPatherFight,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pather_fight,"SetShortcut ship_trophy_gan_eden_hypershunt_disengage ""ESCAPE""
-SetTextHighlightColors bad
-SetTextHighlights ""[The Luddic Path fleet moves to engage.]""","The commander’s expression hardens.
+shipTrophyGanEdenHypershuntPatherFight,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pather_fight,"SetTextHighlightColors bad
+SetTextHighlights ""[The Luddic Path fleet moves to engage.]""
+GanEdenQuestCMD beginHypershuntBattle","The commander’s expression hardens.
 
 ""Then may Moloch lay with your dead!""
 
 The channel closes.
 
-[The Luddic Path fleet moves to engage.]","0:ship_trophy_gan_eden_hypershunt_engage:Engage.
-100:ship_trophy_gan_eden_hypershunt_disengage:Withdraw.",The Pather commander prepares for battle.
+[The Luddic Path fleet moves to engage.]",,The fight choice proceeds directly to vanilla battle preparation after the commander closes the channel.
 shipTrophyGanEdenHypershuntPirateGuard,OpenCommLink,GanEdenQuestCMD isHypershuntGuard pirates score:70000,"GanEdenQuestCMD prepareHypershuntGuard
 SetShortcut ship_trophy_gan_eden_hypershunt_disengage ""ESCAPE""","A pirate fleet blocks the approach to the hypershunt.
 
@@ -1365,20 +1364,16 @@ They glance toward someone outside the transmitter’s view.
 The pirate fleet clears the approach corridor.
 
 ""Go on through.""",0:ship_trophy_gan_eden_hypershunt_stand_down:Return to your fleet.,The special negotiation option ends the blockade encounter without starting the hypershunt survey.
-shipTrophyGanEdenHypershuntPirateFight,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pirate_fight,"SetShortcut ship_trophy_gan_eden_hypershunt_disengage ""ESCAPE""
-SetTextHighlightColors bad
-SetTextHighlights ""[The pirate fleet moves to engage.]""","The commander takes their boots off the console.
+shipTrophyGanEdenHypershuntPirateFight,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_pirate_fight,"SetTextHighlightColors bad
+SetTextHighlights ""[The pirate fleet moves to engage.]""
+GanEdenQuestCMD beginHypershuntBattle","The commander takes their boots off the console.
 
 ""Wrong answer.""
 
 The channel closes.
 
-[The pirate fleet moves to engage.]","0:ship_trophy_gan_eden_hypershunt_engage:Engage.
-100:ship_trophy_gan_eden_hypershunt_disengage:Withdraw.",The pirate commander prepares for battle.
-shipTrophyGanEdenHypershuntEngage,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_engage,"GanEdenQuestCMD engageHypershuntGuard
-MakeOtherFleetHostile shipTrophyGanEden true
-MakeOtherFleetAggressiveOnce shipTrophyGanEden true
-EndConversation",,,Returns control to the vanilla fleet-interaction flow after making the blockade hostile.
+[The pirate fleet moves to engage.]",,The fight choice proceeds directly to vanilla battle preparation after the commander closes the channel.
+shipTrophyGanEdenHypershuntEngage,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_engage,GanEdenQuestCMD beginHypershuntBattle,,,Starts vanilla battle preparation directly from Isa's engagement choice without another Continue or Engage menu.
 shipTrophyGanEdenHypershuntDisengage,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_disengage,"ShowDefaultVisual
 EndConversation NO_CONTINUE",,,Returns control to the vanilla fleet-interaction flow so its Leave option performs campaign-battle cleanup.
 shipTrophyGanEdenHypershuntStandDown,DialogOptionSelected,$option == ship_trophy_gan_eden_hypershunt_stand_down,"ShowDefaultVisual

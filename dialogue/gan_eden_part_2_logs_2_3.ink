@@ -208,9 +208,9 @@ The Pather fleet begins clearing the approach corridor.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_pather_fight
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 // SetTextHighlightColors bad
 // SetTextHighlights "[The Luddic Path fleet moves to engage.]"
+// GanEdenQuestCMD beginHypershuntBattle
 
 The commander’s expression hardens.
 
@@ -220,8 +220,7 @@ The channel closes.
 
 [The Luddic Path fleet moves to engage.]
 
-+ [Engage.] -> rule_shipTrophyGanEdenHypershuntEngage
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
++ [Continue.] -> rule_shipTrophyGanEdenHypershuntPirateGuard
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntPirateGuard ===
@@ -342,9 +341,9 @@ The pirate fleet clears the approach corridor.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_pirate_fight
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 // SetTextHighlightColors bad
 // SetTextHighlights "[The pirate fleet moves to engage.]"
+// GanEdenQuestCMD beginHypershuntBattle
 
 The commander takes their boots off the console.
 
@@ -354,8 +353,7 @@ The channel closes.
 
 [The pirate fleet moves to engage.]
 
-+ [Engage.] -> rule_shipTrophyGanEdenHypershuntEngage
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
++ [Continue.] -> rule_shipTrophyGanEdenHypershuntEngage
 
 // ============================================================
 === rule_shipTrophyGanEdenHypershuntEngage ===
@@ -365,10 +363,7 @@ The channel closes.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_engage
 // Runtime script:
-// GanEdenQuestCMD engageHypershuntGuard
-// MakeOtherFleetHostile shipTrophyGanEden true
-// MakeOtherFleetAggressiveOnce shipTrophyGanEden true
-// EndConversation
+// GanEdenQuestCMD beginHypershuntBattle
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 

@@ -71,6 +71,24 @@ public final class GanEdenQuestCMD implements CommandPlugin {
             GanEdenHypershuntManager.clearGuard(dialog);
             return true;
         }
+        if ("beginHypershuntBattle".equals(command)) {
+            if (dialog == null || !(dialog.getPlugin() instanceof
+                    com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl)
+                    || !(dialog.getInteractionTarget() instanceof
+                            com.fs.starfarer.api.campaign.CampaignFleetAPI)) {
+                return false;
+            }
+            GanEdenHypershuntManager.engageGuard(dialog);
+            // Restore the existing fleet dialog so its battle context and
+            // post-combat recovery remain owned by vanilla, then perform the
+            // Engage action the player already chose in the conversation.
+            new com.fs.starfarer.api.impl.campaign.rulecmd.EndConversation().execute(
+                    ruleId, dialog, Misc.tokenize("NO_CONTINUE"), memoryMap);
+            dialog.getPlugin().optionSelected(null,
+                    com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl
+                            .OptionId.ENGAGE);
+            return true;
+        }
         if ("engageHypershuntGuard".equals(command)) {
             GanEdenHypershuntManager.engageGuard(dialog);
             return true;

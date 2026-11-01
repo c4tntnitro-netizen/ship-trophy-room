@@ -34,6 +34,9 @@ public final class GanEdenTransitAmbushManager {
     public static final String FLEET_KEY =
             "$shipTrophyGanEdenTransitIvoryFleet";
 
+    public static final String REPLAY_FLEET_KEY =
+            "$shipTrophyGanEdenIvoryReplayFleet";
+
     private static final String SPAWNED_KEY =
             "$shipTrophyGanEdenTransitIvorySpawned";
     private static final String DEFEATED_KEY =
@@ -50,8 +53,6 @@ public final class GanEdenTransitAmbushManager {
             "$shipTrophyGanEdenTransitIvoryFullOrdoV2";
     private static final String FULL_ORDO_KEY =
             "$shipTrophyGanEdenTransitIvoryFullOrdoV3";
-    private static final String IVORY_REFIT_COMPLETE_KEY =
-            "$shipTrophyGanEdenTransitIvoryRefitV4";
     private static final String FLEET_ID_KEY =
             "$shipTrophyGanEdenTransitIvoryFleetIdV1";
     private static final String FID_CONFIG_GEN_KEY = "$fidConifgGen";
@@ -64,19 +65,38 @@ public final class GanEdenTransitAmbushManager {
     private static final String FLEETS_RECONCILED_KEY =
             "$shipTrophyGanEdenTransitIvoryFleetsReconciledV2";
     private static final float COMBAT_POINTS = 360f;
-    private static final float FULL_ORDO_MIN_FP = 330f;
     private static final int MAX_SHIPS = 30;
     private static final float CREATION_RETRY_DAYS = 1f;
-    private static final String[] FALLBACK_VARIANTS = {
-        "radiant_Assault", "radiant_Strike",
-        "nova_Attack", "nova_Standard",
-        "apex_Assault", "apex_Missile", "apex_Standard",
-        "apex_Overdriven", "brilliant_Standard", "brilliant_Support",
+    private static final String AUTHORED_ROSTER_KEY =
+            "$shipTrophyGanEdenTransitIvoryAuthoredV1";
+    private static final String[] IVORY_VARIANTS = {
+        "ship_trophy_ivory_radiant_Assault", "ship_trophy_ivory_radiant_Strike",
+        "ship_trophy_ivory_nova_Attack", "ship_trophy_ivory_nova_Standard",
+        "ship_trophy_ivory_apex_Assault", "ship_trophy_ivory_apex_Missile", "ship_trophy_ivory_apex_Standard",
+        "ship_trophy_ivory_apex_Overdriven", "ship_trophy_ivory_brilliant_Standard", "ship_trophy_ivory_brilliant_Support",
     };
     private static final float GATE_OFFSET = 950f;
+    private static final float INTERCEPTION_DISTANCE = 6000f;
     private static final float ASSIGNMENT_DURATION = 1000000f;
 
     private GanEdenTransitAmbushManager() {
+    }
+
+    /** Independent replay: no quest flags, original encounter ID, or victory listener. */
+    public static CampaignFleetAPI spawnReplayOrdo() {
+        if (Global.getSector() == null) return null;
+        CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+        if (player == null || player.getContainingLocation() == null
+                || player.getBattle() != null) return null;
+        CampaignFleetAPI fleet = createAuthoredFleet(0x69766f7279676174L);
+        if (fleet == null || fleet.isEmpty()) return null;
+        configureFleetProperties(fleet, false);
+        player.getContainingLocation().addEntity(fleet);
+        fleet.setLocation(player.getLocation().x + GATE_OFFSET,
+                player.getLocation().y);
+        fleet.addAssignment(FleetAssignment.INTERCEPT, player,
+                ASSIGNMENT_DURATION, "moving to intercept");
+        return fleet;
     }
 
     public static boolean isDefeated() {
@@ -232,21 +252,11 @@ public final class GanEdenTransitAmbushManager {
             return;
         }
         sectorMemory.unset(CREATION_FAILED_SINCE_KEY);
-        ensureFullOrdoStrength(fleet);
         configureFleet(fleet, system);
     }
 
     private static CampaignFleetAPI createFleet(StarSystemAPI system) {
-        CampaignFleetAPI fleet = createRemnantFleet(
-                COMBAT_POINTS, 0x69766f7279676174L);
-        if (fleet == null
-                || fleet.isEmpty()
-                || !ensureIvoryRefit(fleet)
-                || fleet.isEmpty()
-                || fleet.getFleetData().getFleetPointsUsed()
-                        < FULL_ORDO_MIN_FP) {
-            fleet = createFallbackFleet(0x69766f727966616cL);
-        }
+        CampaignFleetAPI fleet = createAuthoredFleet(0x69766f7279676174L);
         if (fleet == null || fleet.isEmpty()) return null;
 
         SectorEntityToken gate = system.getEntityById(
@@ -259,14 +269,14 @@ public final class GanEdenTransitAmbushManager {
         return fleet;
     }
 
-    /** Known-vanilla roster used when another mod empties the Remnant pool. */
-    private static CampaignFleetAPI createFallbackFleet(long seed) {
+    /** Bespoke roster: members are instantiated from native Ivory variants. */
+    private static CampaignFleetAPI createAuthoredFleet(long seed) {
         CampaignFleetAPI fleet = Global.getFactory().createEmptyFleet(
                 Factions.REMNANTS,
                 ShipTrophyL10n.get("gan_eden_ivory_ordo"),
                 true);
         if (fleet == null) return null;
-        for (String variantId : FALLBACK_VARIANTS) {
+        for (String variantId : IVORY_VARIANTS) {
             FleetMemberAPI member =
                     fleet.getFleetData().addFleetMember(variantId);
             if (member != null) member.setFlagship(false);
@@ -277,19 +287,14 @@ public final class GanEdenTransitAmbushManager {
                 random, fleet, false);
         FleetFactoryV3.addCommanderAndOfficersV2(
                 fleet, createRemnantParams(COMBAT_POINTS, random), random);
-        if (!ensureIvoryRefit(fleet) || fleet.isEmpty()) return null;
+        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+            IvoryRemnantFleetSupport.readyMember(member);
+        }
+        fleet.getMemoryWithoutUpdate().set(AUTHORED_ROSTER_KEY, true);
         ensureRemnantCommander(fleet, random);
         fleet.getFleetData().sort();
         fleet.forceSync();
         return fleet;
-    }
-
-    private static CampaignFleetAPI createRemnantFleet(
-            float combatPoints, long seed) {
-        Random random = new Random(seed);
-        FleetParamsV3 params = createRemnantParams(combatPoints, random);
-
-        return FleetFactoryV3.createFleet(params);
     }
 
     private static FleetParamsV3 createRemnantParams(
@@ -314,89 +319,51 @@ public final class GanEdenTransitAmbushManager {
         return params;
     }
 
-    /** Upgrades the older 180-FP encounter once without healing later losses. */
-    private static void ensureFullOrdoStrength(CampaignFleetAPI fleet) {
-        if (fleet == null || Global.getSector() == null) return;
-        MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
-        if (sectorMemory.getBoolean(FULL_ORDO_KEY)) return;
-        trimToFleetLimits(fleet);
-        ensureRemnantCommander(fleet, new Random(0x69766f7279636f72L));
-
-        // Older version keys mean this encounter was already brought to
-        // authored strength. Preserve later battle losses, but apply the new
-        // hard ship/FP limits once before considering migration complete.
-        if (sectorMemory.getBoolean(LEGACY_FULL_ORDO_KEY)
-                || sectorMemory.getBoolean(PREVIOUS_FULL_ORDO_KEY)) {
-            sectorMemory.set(FULL_ORDO_KEY, true);
-            return;
-        }
-
-        float current = fleet.getFleetData().getFleetPointsUsed();
-        if (current < FULL_ORDO_MIN_FP) {
-            if (!strengthRetryReady(sectorMemory)) return;
-            float reinforcements = Math.max(40f, COMBAT_POINTS - current);
-            CampaignFleetAPI donor = createRemnantFleet(
-                    reinforcements, 0x69766f727966756cL);
-            int moved = transferReinforcements(fleet, donor);
-            if (fleet.getFleetData().getFleetPointsUsed()
-                            < FULL_ORDO_MIN_FP
-                    && fleet.getFleetData().getNumMembers() < MAX_SHIPS) {
-                moved += transferReinforcements(
-                        fleet,
-                        createFallbackFleet(0x69766f7279667562L));
-            }
-            if (moved > 0) {
-                fleet.getFleetData().sort();
-                fleet.forceSync();
-                fleet.getMemoryWithoutUpdate().unset(
-                        IVORY_REFIT_COMPLETE_KEY);
-                ensureIvoryRefit(fleet);
-                ensureRemnantCommander(
-                        fleet, new Random(0x69766f7279636f6dL));
-            }
-        }
-
-        if (fleet.getFleetData().getFleetPointsUsed()
-                        >= FULL_ORDO_MIN_FP
-                || fleet.getFleetData().getNumMembers() >= MAX_SHIPS) {
-            sectorMemory.set(FULL_ORDO_KEY, true);
-            sectorMemory.unset(STRENGTH_RETRY_SINCE_KEY);
-        } else {
-            sectorMemory.set(
-                    STRENGTH_RETRY_SINCE_KEY,
-                    Global.getSector().getClock().getTimestamp());
-        }
-    }
-
-    /** Filters incompatible mod hulls before strength is measured. */
+    /** Replace legacy members with native variants once, preserving battle losses. */
     private static boolean prepareIvoryRoster(
             CampaignFleetAPI fleet, MemoryAPI sectorMemory) {
-        if (fleet == null || sectorMemory == null || fleet.isEmpty()) {
-            return false;
-        }
-        if (fleet.getMemoryWithoutUpdate().getBoolean(
-                IVORY_REFIT_COMPLETE_KEY)) {
+        if (fleet == null || sectorMemory == null || fleet.isEmpty()) return false;
+        if (fleet.getMemoryWithoutUpdate().getBoolean(AUTHORED_ROSTER_KEY)) {
             return true;
         }
-        int membersBefore = fleet.getFleetData().getNumMembers();
-        float fpBefore = fleet.getFleetData().getFleetPointsUsed();
-        boolean ready = ensureIvoryRefit(fleet);
-        boolean filtered = fleet.getFleetData().getNumMembers() < membersBefore
-                || fleet.getFleetData().getFleetPointsUsed() < fpBefore;
-        if (filtered) clearStrengthMigration(sectorMemory);
-        if (ready && !fleet.isEmpty()) return true;
-        if (!fleet.isEmpty()) return false;
+        for (FleetMemberAPI old : fleet.getFleetData().getMembersListCopy()) {
+            String base = old.getHullSpec().getBaseHullId();
+            String variantId = legacyIvoryVariant(base);
+            if (variantId == null) {
+                removeMemberAndOfficer(fleet, old);
+                continue;
+            }
+            boolean flagship = old.isFlagship();
+            PersonAPI captain = old.getCaptain();
+            float cr = old.getRepairTracker().getCR();
+            FleetMemberAPI replacement = Global.getFactory().createFleetMember(
+                    com.fs.starfarer.api.fleet.FleetMemberType.SHIP, variantId);
+            replacement.setId(old.getId());
+            replacement.setCaptain(captain);
+            replacement.setShipName(old.getShipName());
+            replacement.getRepairTracker().setCR(cr);
+            replacement.getStatus().setHullFraction(old.getStatus().getHullFraction());
+            fleet.getFleetData().removeFleetMember(old);
+            fleet.getFleetData().addFleetMember(replacement);
+            if (flagship) fleet.getFleetData().setFlagship(replacement);
+        }
+        fleet.forceSync();
+        fleet.getMemoryWithoutUpdate().set(AUTHORED_ROSTER_KEY, true);
+        // Existing encounters retain their surviving roster rather than refilling losses.
+        sectorMemory.set(FULL_ORDO_KEY, true);
+        return true;
+    }
 
-        // A legacy/modded roster can consist entirely of unsupported hulls.
-        // Refill this same persistent entity with the known-vanilla fallback
-        // rather than treating compatibility filtering as a player victory.
-        CampaignFleetAPI fallback = createFallbackFleet(
-                0x69766f7279726570L);
-        if (fallback == null || fallback.isEmpty()) return false;
-        transferReinforcements(fleet, fallback);
-        fleet.getMemoryWithoutUpdate().unset(IVORY_REFIT_COMPLETE_KEY);
-        clearStrengthMigration(sectorMemory);
-        return !fleet.isEmpty() && ensureIvoryRefit(fleet);
+    private static String legacyIvoryVariant(String base) {
+        if ("radiant".equals(base)) return "ship_trophy_ivory_radiant_Assault";
+        if ("nova".equals(base)) return "ship_trophy_ivory_nova_Attack";
+        if ("apex".equals(base)) return "ship_trophy_ivory_apex_Assault";
+        if ("brilliant".equals(base)) return "ship_trophy_ivory_brilliant_Standard";
+        if ("fulgent".equals(base)) return "ship_trophy_ivory_fulgent_Assault";
+        if ("glimmer".equals(base)) return "ship_trophy_ivory_glimmer_Assault";
+        if ("lumen".equals(base)) return "ship_trophy_ivory_lumen_Standard";
+        if ("scintilla".equals(base)) return "ship_trophy_ivory_scintilla_Strike";
+        return null;
     }
 
     private static void clearStrengthMigration(MemoryAPI memory) {
@@ -415,61 +382,6 @@ public final class GanEdenTransitAmbushManager {
         memory.unset(CREATION_FAILED_SINCE_KEY);
         memory.unset(MISSING_SINCE_KEY);
         clearStrengthMigration(memory);
-    }
-
-    private static int transferReinforcements(
-            CampaignFleetAPI fleet, CampaignFleetAPI donor) {
-        if (fleet == null || donor == null || donor.isEmpty()) return 0;
-        int moved = 0;
-        for (FleetMemberAPI member
-                : donor.getFleetData().getMembersListCopy()) {
-            if (fleet.getFleetData().getNumMembers() >= MAX_SHIPS) break;
-            if (member == null
-                    || member.isFighterWing()
-                    || IvoryRemnantFleetSupport.getWhiteHullId(
-                            member.getHullSpec().getBaseHullId()) == null) {
-                continue;
-            }
-            float projected = fleet.getFleetData().getFleetPointsUsed()
-                    + member.getFleetPointCost();
-            if (projected > COMBAT_POINTS) continue;
-            member.setFlagship(false);
-            PersonAPI captain = member.getCaptain();
-            OfficerDataAPI officer = captain == null
-                    ? null : donor.getFleetData().getOfficerData(captain);
-            donor.getFleetData().removeFleetMember(member);
-            if (officer != null) donor.getFleetData().removeOfficer(captain);
-            fleet.getFleetData().addFleetMember(member);
-            if (officer != null) {
-                if (fleet.getFleetData().getOfficerData(captain) == null) {
-                    fleet.getFleetData().addOfficer(officer);
-                }
-                member.setCaptain(captain);
-            }
-            moved++;
-        }
-        return moved;
-    }
-
-    private static void trimToFleetLimits(CampaignFleetAPI fleet) {
-        if (fleet == null) return;
-        boolean changed = false;
-        List<FleetMemberAPI> members =
-                fleet.getFleetData().getMembersListCopy();
-        for (int i = members.size() - 1;
-                i >= 0 && (fleet.getFleetData().getNumMembers() > MAX_SHIPS
-                        || fleet.getFleetData().getFleetPointsUsed()
-                                > COMBAT_POINTS);
-                i--) {
-            FleetMemberAPI member = members.get(i);
-            if (member == null || member.isFlagship()) continue;
-            removeMemberAndOfficer(fleet, member);
-            changed = true;
-        }
-        if (changed) {
-            fleet.getFleetData().sort();
-            fleet.forceSync();
-        }
     }
 
     private static void removeMemberAndOfficer(
@@ -509,14 +421,14 @@ public final class GanEdenTransitAmbushManager {
         }
     }
 
-    private static void configureFleet(
-            CampaignFleetAPI fleet, StarSystemAPI system) {
+    private static void configureFleetProperties(
+            CampaignFleetAPI fleet, boolean questEncounter) {
         if (fleet == null) return;
         fleet.setName(ShipTrophyL10n.get("gan_eden_ivory_ordo"));
         fleet.setNoFactionInName(true);
         fleet.setNoAutoDespawn(true);
         fleet.addTag(Tags.STORY_CRITICAL);
-        ensureBattleListener(fleet);
+        if (questEncounter) ensureBattleListener(fleet);
 
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         if (!memory.contains(FID_CONFIG_GEN_KEY)) {
@@ -525,7 +437,7 @@ public final class GanEdenTransitAmbushManager {
             // the normal committed-AI/no-retreat encounter semantics.
             RemnantSeededFleetManager.addRemnantInteractionConfig(fleet);
         }
-        memory.set(FLEET_KEY, true);
+        memory.set(questEncounter ? FLEET_KEY : REPLAY_FLEET_KEY, true);
         memory.set(MemFlags.STORY_CRITICAL, true);
         memory.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
         memory.set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
@@ -539,13 +451,24 @@ public final class GanEdenTransitAmbushManager {
         memory.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
         memory.set(MemFlags.MEMORY_KEY_FORCE_TRANSPONDER_OFF, true);
 
+    }
+
+    private static void configureFleet(
+            CampaignFleetAPI fleet, StarSystemAPI system) {
+        if (fleet == null) return;
+        configureFleetProperties(fleet, true);
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         CampaignFleetAPI player = Global.getSector().getPlayerFleet();
         boolean playerHere = player != null
                 && player.getContainingLocation() == system;
         SectorEntityToken gate = system.getEntityById(
                 GanEdenQuestManager.EXTERNAL_RING_ID);
         if (gate == null) gate = system.getCenter();
-        if (playerHere && !hasAssignment(
+        boolean approachingGate = playerHere
+                && (memory.getBoolean(PURSUING_KEY)
+                        || Misc.getDistance(player.getLocation(), gate.getLocation())
+                                <= INTERCEPTION_DISTANCE);
+        if (approachingGate && !hasAssignment(
                 fleet, FleetAssignment.INTERCEPT, player)) {
             memory.set(PURSUING_KEY, true);
             memory.unset(PARKED_KEY);
@@ -555,27 +478,11 @@ public final class GanEdenTransitAmbushManager {
                     player,
                     ASSIGNMENT_DURATION,
                     "closing the gate behind you");
-        } else if (!playerHere && !hasAssignment(
+        } else if (!approachingGate && !hasAssignment(
                 fleet, FleetAssignment.ORBIT_PASSIVE, gate)) {
             memory.unset(PURSUING_KEY);
             orbitGate(fleet, system);
         }
-    }
-
-    /**
-     * Converts and readies the persistent interception fleet once. The quest
-     * maintenance script runs every second, so doing the full member refit on
-     * every pass needlessly recalculated the stats of the entire Ordo.
-     */
-    private static boolean ensureIvoryRefit(CampaignFleetAPI fleet) {
-        if (fleet == null) return false;
-        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
-        if (memory.getBoolean(IVORY_REFIT_COMPLETE_KEY)) return true;
-        if (IvoryRemnantFleetSupport.refitFleet(fleet)) {
-            memory.set(IVORY_REFIT_COMPLETE_KEY, true);
-            return true;
-        }
-        return false;
     }
 
     private static void orbitGate(
@@ -703,13 +610,6 @@ public final class GanEdenTransitAmbushManager {
         }
         return Global.getSector().getClock().getElapsedDaysSince(
                 memory.getLong(MISSING_SINCE_KEY)) >= 0.25f;
-    }
-
-    private static boolean strengthRetryReady(MemoryAPI memory) {
-        if (!memory.contains(STRENGTH_RETRY_SINCE_KEY)) return true;
-        return Global.getSector().getClock().getElapsedDaysSince(
-                memory.getLong(STRENGTH_RETRY_SINCE_KEY))
-                >= CREATION_RETRY_DAYS;
     }
 
     private static boolean hasAssignment(

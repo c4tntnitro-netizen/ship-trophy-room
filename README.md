@@ -148,3 +148,7 @@ When LunaLib is enabled, Hall of Triumph adds a settings page for its optional f
 - `shipTrophyIsaQualityOfLifeBonusesEnabled` gives the fleet Isa's post-recruitment crew-pay, sensor-profile, and burn-level bonuses.
 - `shipTrophyIsaCrewPayReductionPercent`, `shipTrophyIsaSensorProfileReductionPercent`, and `shipTrophyIsaBurnLevelBonus` tune those conveniences.
 - `shipTrophyIsaStoryPointGenerationBonusPercent` gives a flat post-recruitment bonus to Hall story-point generation. Set the QoL toggle to `false` and this value above zero to use it as Isa's sole mechanical reward.
+
+For a repeat Custodian fight, run `SpawnIvoryOrdo` in Console Commands during the campaign. It spawns a fresh bespoke Ivory Custodian Ordo near your fleet without changing Gan Eden quest progress.
+
+Known issue: Transverse Jump into the Power Transit Gate system can still place the player on top of the gate and Ivory Custodian Ordo. The attempted arrival-spacing fix has not resolved this in-game.

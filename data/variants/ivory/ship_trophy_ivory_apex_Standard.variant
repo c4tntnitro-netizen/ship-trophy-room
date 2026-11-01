@@ -1,0 +1,56 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 2,
+    "fluxVents": 30,
+    "goalVariant": false,
+    "hullId": "ship_trophy_white_apex",
+    "hullMods": [
+        "targetingunit",
+        "hardenedshieldemitter"
+    ],
+    "permaMods": [],
+    "sMods": [],
+    "variantId": "ship_trophy_ivory_apex_Standard",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 004": "pulselaser",
+                "WS 005": "pulselaser",
+                "WS 006": "pulselaser",
+                "WS 007": "pulselaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 000": "gravitonbeam",
+                "WS 003": "gravitonbeam"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 010": "ioncannon",
+                "WS 011": "ioncannon",
+                "WS 012": "ioncannon",
+                "WS 013": "ioncannon"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 008": "pdlaser",
+                "WS 009": "pdlaser"
+            }
+        }
+    ],
+    "wings": [],
+    "tags": [
+        "always_recoverable"
+    ]
+}

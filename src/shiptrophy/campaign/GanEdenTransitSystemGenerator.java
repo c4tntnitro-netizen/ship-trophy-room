@@ -37,14 +37,14 @@ public final class GanEdenTransitSystemGenerator {
             "$shipTrophyGanEdenPowerTransitJumpGenerated";
     private static final String ACCESS_VERSION_KEY =
             "$shipTrophyGanEdenPowerTransitAccessVersion";
-    private static final int ACCESS_VERSION = 6;
+    private static final int ACCESS_VERSION = 7;
     // Put transverse arrivals beyond the entire megastructure graveyard and
     // on the far side of the Gate from the parked Ivory Ordo. At this bearing
     // the nearest authored ruin is still several thousand units away, while
     // the guardian has room to make a visible approach rather than opening an
     // interaction on top of the arriving fleet.
     private static final float ARRIVAL_ANGLE = 210f;
-    private static final float ARRIVAL_DISTANCE = 9000f;
+    private static final float ARRIVAL_DISTANCE = 14000f;
     private static final String DAMAGED_HYPERSHUNT_TYPE =
             "ship_trophy_damaged_coronal_hypershunt";
     private static final String DAMAGED_GATE_HAULER_TYPE =

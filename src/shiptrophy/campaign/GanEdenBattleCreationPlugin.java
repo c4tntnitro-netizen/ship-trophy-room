@@ -82,7 +82,9 @@ public final class GanEdenBattleCreationPlugin extends BaseCampaignPlugin {
         boolean goldenOmega = opponent.getMemoryWithoutUpdate().getBoolean(
                 GanEdenAmbushScript.FLEET_KEY);
         boolean ivoryCustodians = opponent.getMemoryWithoutUpdate().getBoolean(
-                GanEdenTransitAmbushManager.FLEET_KEY);
+                GanEdenTransitAmbushManager.FLEET_KEY)
+                || opponent.getMemoryWithoutUpdate().getBoolean(
+                        GanEdenTransitAmbushManager.REPLAY_FLEET_KEY);
         // Battle setup may temporarily detach the opposing fleet from its
         // containing system. The authored Golden encounter is always in Gan
         // Eden, and the player fleet remains a reliable location fallback for

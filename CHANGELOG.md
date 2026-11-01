@@ -2,6 +2,12 @@
 
 ## 2.5.2 Beta Hotfix - 2026-10-26
 
+- Attempts to move Power Transit Gate transverse arrivals to 14,000 units from the gate and holds the Custodians near the gate until the player approaches within 6,000 units. Known issue: the Transverse Jump arrival problem still persists in-game; players can still arrive on top of the gate and Ivory Ordo. The spacing changes have not resolved the reported behavior.
+- Sends Pather and pirate fight choices directly to vanilla battle preparation, removing the duplicate Engage and Continue steps.
+
+- Adds `SpawnIvoryOrdo` to spawn a fresh Custodian fight near the player without resetting Gan Eden quest progress.
+- Builds the Ivory Custodian Ordo directly from dedicated ivory variants instead of generating ordinary Remnants and swapping their hull specs. Migrates surviving legacy Custodians once without refilling losses or replaying defeated encounters.
+
 - Disables the Ship Gallery by default and adds a LunaLib Gallery toggle labeled "Ship Gallery (Unstable)", with a warning about background and ship-display issues.
 - Fixes LunaLib settings being ignored under Starsector's script restrictions, including the Ship Gallery opt-in toggle.
 - Returns the unfinished Isa masterwork's Back option to the Hall ledgers.
