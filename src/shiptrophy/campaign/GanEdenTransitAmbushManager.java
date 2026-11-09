@@ -328,7 +328,7 @@ public final class GanEdenTransitAmbushManager {
         }
         for (FleetMemberAPI old : fleet.getFleetData().getMembersListCopy()) {
             String base = old.getHullSpec().getBaseHullId();
-            String variantId = legacyIvoryVariant(base);
+            String variantId = IvoryRemnantFleetSupport.getNativeVariantId(base);
             if (variantId == null) {
                 removeMemberAndOfficer(fleet, old);
                 continue;
@@ -352,18 +352,6 @@ public final class GanEdenTransitAmbushManager {
         // Existing encounters retain their surviving roster rather than refilling losses.
         sectorMemory.set(FULL_ORDO_KEY, true);
         return true;
-    }
-
-    private static String legacyIvoryVariant(String base) {
-        if ("radiant".equals(base)) return "ship_trophy_ivory_radiant_Assault";
-        if ("nova".equals(base)) return "ship_trophy_ivory_nova_Attack";
-        if ("apex".equals(base)) return "ship_trophy_ivory_apex_Assault";
-        if ("brilliant".equals(base)) return "ship_trophy_ivory_brilliant_Standard";
-        if ("fulgent".equals(base)) return "ship_trophy_ivory_fulgent_Assault";
-        if ("glimmer".equals(base)) return "ship_trophy_ivory_glimmer_Assault";
-        if ("lumen".equals(base)) return "ship_trophy_ivory_lumen_Standard";
-        if ("scintilla".equals(base)) return "ship_trophy_ivory_scintilla_Strike";
-        return null;
     }
 
     private static void clearStrengthMigration(MemoryAPI memory) {

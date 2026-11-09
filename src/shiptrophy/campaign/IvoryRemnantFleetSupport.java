@@ -91,6 +91,23 @@ public final class IvoryRemnantFleetSupport {
     }
 
     public static boolean refitMember(FleetMemberAPI member) {
+        return refitMember(member, null);
+    }
+
+    static boolean refitEscortMember(FleetMemberAPI member) {
+        String variantId = getNativeVariantId(
+                member.getHullSpec().getBaseHullId());
+        return variantId != null && refitMember(member, variantId);
+    }
+
+    static boolean isIvoryEscortComplete(FleetMemberAPI member) {
+        return isIvoryMemberComplete(member)
+                && getNativeVariantId(member.getHullSpec().getBaseHullId())
+                        .equals(member.getVariant().getHullVariantId());
+    }
+
+    private static boolean refitMember(
+            FleetMemberAPI member, String nativeVariantId) {
         if (member == null || member.getVariant() == null) return false;
         ShipVariantAPI current = member.getVariant();
         String whiteHullId = getWhiteHullId(
@@ -99,7 +116,11 @@ public final class IvoryRemnantFleetSupport {
                 || Global.getSettings().getHullSpec(whiteHullId) == null) {
             return false;
         }
-        if (isIvoryMemberComplete(member)) return false;
+        if (isIvoryMemberComplete(member)
+                && (nativeVariantId == null
+                        || nativeVariantId.equals(current.getHullVariantId()))) {
+            return false;
+        }
 
         // FleetFactoryV3 commonly returns shared stock variants. Clone before
         // replacing the hull spec so unrelated Remnant fleets stay untouched.
@@ -139,6 +160,13 @@ public final class IvoryRemnantFleetSupport {
         variant.removePermaMod(LEGACY_HULLMOD_ID);
         variant.removeMod(LEGACY_HULLMOD_ID);
         variant.removeSuppressedMod(LEGACY_HULLMOD_ID);
+        if (nativeVariantId != null) {
+            // Starsector can reload an NPC member by its variant id alone.
+            // Keep its generated refit, with a native Ivory variant as the
+            // stock fallback instead of the original Remnant variant.
+            variant.setHullVariantId(nativeVariantId);
+            variant.setOriginalVariant(nativeVariantId);
+        }
         member.setVariant(variant, false, false);
         return true;
     }
@@ -224,6 +252,18 @@ public final class IvoryRemnantFleetSupport {
                 || "radiant".equals(baseHullId)) {
             return "ship_trophy_white_" + baseHullId;
         }
+        return null;
+    }
+
+    static String getNativeVariantId(String baseHullId) {
+        if ("radiant".equals(baseHullId)) return "ship_trophy_ivory_radiant_Assault";
+        if ("nova".equals(baseHullId)) return "ship_trophy_ivory_nova_Attack";
+        if ("apex".equals(baseHullId)) return "ship_trophy_ivory_apex_Assault";
+        if ("brilliant".equals(baseHullId)) return "ship_trophy_ivory_brilliant_Standard";
+        if ("fulgent".equals(baseHullId)) return "ship_trophy_ivory_fulgent_Assault";
+        if ("glimmer".equals(baseHullId)) return "ship_trophy_ivory_glimmer_Assault";
+        if ("lumen".equals(baseHullId)) return "ship_trophy_ivory_lumen_Standard";
+        if ("scintilla".equals(baseHullId)) return "ship_trophy_ivory_scintilla_Strike";
         return null;
     }
 

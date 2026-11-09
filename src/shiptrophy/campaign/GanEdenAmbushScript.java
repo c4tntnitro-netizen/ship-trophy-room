@@ -58,8 +58,6 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             "$shipTrophyGanEdenGoldenEscortWave";
     private static final String GUARD_ANCHOR_KEY =
             "$shipTrophyGanEdenGoldenGuardAnchorV1";
-    private static final String WHITE_ESCORT_MIGRATED_KEY =
-            "$shipTrophyGanEdenWhiteEscortMigrationV4";
     private static final String SINISTRAL_VARIANT =
             "ship_trophy_golden_shard_left_Attack";
     private static final String DEXTRAL_VARIANT =
@@ -368,8 +366,8 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             // The global Remnant pool may contain mod-added ships for which
             // no pregenerated Ivory skin exists. Never leak those into this
             // authored escort group under an Ivory fleet identity.
-            IvoryRemnantFleetSupport.refitMember(member);
-            if (!IvoryRemnantFleetSupport.isIvoryMemberComplete(member)) {
+            IvoryRemnantFleetSupport.refitEscortMember(member);
+            if (!IvoryRemnantFleetSupport.isIvoryEscortComplete(member)) {
                 continue;
             }
             readyMember(member);
@@ -470,8 +468,6 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             CampaignFleetAPI fleet,
             SectorEntityToken anchor) {
         ensureGuardianNames(fleet);
-        ensureWhiteEscortSkins(fleet);
-
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         memory.set(FLEET_KEY, true);
         fleet.removeTag(Tags.NON_CLICKABLE);
@@ -549,41 +545,6 @@ public final class GanEdenAmbushScript implements EveryFrameScript {
             GanEdenBattleCreationPlugin.restoreGoldenOmegaMusic();
             if (fleet != null) fleet.removeEventListener(this);
         }
-    }
-
-    /** Migrates escorts spawned by builds which only applied a runtime tint. */
-    private static boolean ensureWhiteEscortSkins(CampaignFleetAPI fleet) {
-        if (fleet == null) return false;
-        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
-        if (memory.getBoolean(WHITE_ESCORT_MIGRATED_KEY)) return false;
-        boolean changed = false;
-        for (FleetMemberAPI member
-                : fleet.getFleetData().getMembersListCopy()) {
-            if (member == null
-                    || member.getVariant() == null) {
-                continue;
-            }
-            String variantId = member.getVariant().getHullVariantId();
-            if (SINISTRAL_VARIANT.equals(variantId)
-                    || DEXTRAL_VARIANT.equals(variantId)) {
-                continue;
-            }
-            if (IvoryRemnantFleetSupport.getWhiteHullId(
-                    member.getHullSpec().getBaseHullId()) == null) {
-                if (member.getCaptain() != null
-                        && fleet.getFleetData().getOfficerData(
-                                member.getCaptain()) != null) {
-                    fleet.getFleetData().removeOfficer(member.getCaptain());
-                }
-                fleet.getFleetData().removeFleetMember(member);
-                changed = true;
-                continue;
-            }
-            changed |= IvoryRemnantFleetSupport.refitMember(member);
-        }
-        if (changed) fleet.forceSync();
-        memory.set(WHITE_ESCORT_MIGRATED_KEY, true);
-        return changed;
     }
 
     private static boolean ensureGuardianLocation(
