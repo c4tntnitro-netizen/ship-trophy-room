@@ -2625,22 +2625,6 @@ shipTrophyDModVendorNext,DialogOptionSelected,$option == ship_trophy_dmod_vendor
 shipTrophyDModVendorInstall,DialogOptionSelected,ShatteredRingDModVendorCMD isInstallOption,ShatteredRingDModVendorCMD installSelected,,,Installs the selected D-mod through Starsector's special-option handling.
 shipTrophyDModVendorLeave,DialogOptionSelected,$option == ship_trophy_dmod_vendor_leave,EndConversation,You leave the engineer to the wreck-farms.,,Closes the Shattered Ring D-mod vendor conversation.
 shipTrophyGanEdenEpitaphLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_leave,DismissDialog,,,Ordinary leave; does not commit the final scene.
-shipTrophyIsaPeerlessAward,ShipTrophyIsaPeerlessAward,"GanEdenQuestCMD questCompleted
+shipTrophyIsaPeerlessAward,ShipTrophyIsaPeerlessAward,"IsaContactRulesCMD peerlessEnabled
+GanEdenQuestCMD questCompleted
 !$global.ship_trophy_room_peerless_isa_v1",PeerlessSkillsCMD award ship_trophy_room_peerless_isa_v1,Gained 1 Peerless point.,,
-shipTrophyIsaPeerlessOption,ShipTrophyIsaMainOptions,PeerlessSkillsCMD hasPoint,SetOptionColor ship_trophy_isa_peerless highlight,,65:ship_trophy_isa_peerless:Peerless training.,
-shipTrophyIsaPeerlessSpent,ShipTrophyIsaMainOptions,"PeerlessSkillsCMD unlocked
-!PeerlessSkillsCMD hasPoint",SetEnabled ship_trophy_isa_peerless false,,65:ship_trophy_isa_peerless:Peerless training.,
-shipTrophyIsaPeerlessOpen,DialogOptionSelected,$option == ship_trophy_isa_peerless,FireAll ShipTrophyIsaPeerlessView,,,
-shipTrophyIsaPeerlessReady,ShipTrophyIsaPeerlessView,PeerlessSkillsCMD canTrain,SetShortcut ship_trophy_isa_open ESCAPE,"""One point will take your Elite Helmsmanship from +10 to +30 su/second.""","0:ship_trophy_isa_peerless_install:Train Helmsmanship.
-100:ship_trophy_isa_open:Back to the Hall ledgers.",
-shipTrophyIsaPeerlessNeedElite,ShipTrophyIsaPeerlessView,"PeerlessSkillsCMD hasPoint
-!PeerlessSkillsCMD trained
-!PeerlessSkillsCMD canTrain",SetShortcut ship_trophy_isa_open ESCAPE,Learn Elite Helmsmanship first.,100:ship_trophy_isa_open:Back to the Hall ledgers.,
-shipTrophyIsaPeerlessTrained,ShipTrophyIsaPeerlessView,PeerlessSkillsCMD trained,SetShortcut ship_trophy_isa_open ESCAPE,Peerless Helmsmanship: +30 su/second to top speed (total).,100:ship_trophy_isa_open:Back to the Hall ledgers.,
-shipTrophyIsaPeerlessEmpty,ShipTrophyIsaPeerlessView,"!PeerlessSkillsCMD trained
-!PeerlessSkillsCMD hasPoint",SetShortcut ship_trophy_isa_open ESCAPE,You need a Peerless point first.,100:ship_trophy_isa_open:Back to the Hall ledgers.,
-shipTrophyIsaPeerlessTrain,DialogOptionSelected,"$option == ship_trophy_isa_peerless_install
-PeerlessSkillsCMD canTrain","PeerlessSkillsCMD train
-FireAll ShipTrophyIsaPeerlessView",,,
-shipTrophyIsaPeerlessStale,DialogOptionSelected,"$option == ship_trophy_isa_peerless_install
-!PeerlessSkillsCMD canTrain",FireAll ShipTrophyIsaPeerlessView,,,

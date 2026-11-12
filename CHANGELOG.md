@@ -1,5 +1,10 @@
 # Hall of Triumph changelog
 
+## 2.5.4 Beta refresh - 2026-11-12
+
+- Makes Peerless Skills optional. Its completion-point award runs only when that mod is enabled and retains the existing one-time receipt key.
+- Removes Peerless training from Isa's Hall menu. Completing A Borrowed Name still awards one Peerless point when Peerless Skills is enabled.
+
 ## 2.5.4 Beta - 2026-11-11
 
 - Targets Starsector 0.98.5a-RC4 and credits caccus as the mod author in the launcher.

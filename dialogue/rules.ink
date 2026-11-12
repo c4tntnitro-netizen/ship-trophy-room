@@ -403,15 +403,6 @@ Hall of Triumph dialogue catalog
 + [shipTrophyDModVendorLeave] -> rule_shipTrophyDModVendorLeave
 + [shipTrophyGanEdenEpitaphLeave] -> rule_shipTrophyGanEdenEpitaphLeave
 + [shipTrophyIsaPeerlessAward] -> rule_shipTrophyIsaPeerlessAward
-+ [shipTrophyIsaPeerlessOption] -> rule_shipTrophyIsaPeerlessOption
-+ [shipTrophyIsaPeerlessSpent] -> rule_shipTrophyIsaPeerlessSpent
-+ [shipTrophyIsaPeerlessOpen] -> rule_shipTrophyIsaPeerlessOpen
-+ [shipTrophyIsaPeerlessReady] -> rule_shipTrophyIsaPeerlessReady
-+ [shipTrophyIsaPeerlessNeedElite] -> rule_shipTrophyIsaPeerlessNeedElite
-+ [shipTrophyIsaPeerlessTrained] -> rule_shipTrophyIsaPeerlessTrained
-+ [shipTrophyIsaPeerlessEmpty] -> rule_shipTrophyIsaPeerlessEmpty
-+ [shipTrophyIsaPeerlessTrain] -> rule_shipTrophyIsaPeerlessTrain
-+ [shipTrophyIsaPeerlessStale] -> rule_shipTrophyIsaPeerlessStale
 + [End preview.] -> END
 
 // ============================================================
@@ -8646,152 +8637,13 @@ You leave the engineer to the wreck-farms.
 // Trigger:
 // ShipTrophyIsaPeerlessAward
 // Conditions:
+// IsaContactRulesCMD peerlessEnabled
 // GanEdenQuestCMD questCompleted
 // !$global.ship_trophy_room_peerless_isa_v1
 // Runtime script:
 // PeerlessSkillsCMD award ship_trophy_room_peerless_isa_v1
 
 Gained 1 Peerless point.
-
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessOption ===
-// rules.csv id: shipTrophyIsaPeerlessOption
-// Trigger:
-// ShipTrophyIsaMainOptions
-// Conditions:
-// PeerlessSkillsCMD hasPoint
-// Runtime script:
-// SetOptionColor ship_trophy_isa_peerless highlight
-
-// No literal text; the runtime script supplies this beat.
-
-+ [Peerless training.] -> rule_shipTrophyIsaPeerlessOpen
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessSpent ===
-// rules.csv id: shipTrophyIsaPeerlessSpent
-// Trigger:
-// ShipTrophyIsaMainOptions
-// Conditions:
-// PeerlessSkillsCMD unlocked
-// !PeerlessSkillsCMD hasPoint
-// Runtime script:
-// SetEnabled ship_trophy_isa_peerless false
-
-// No literal text; the runtime script supplies this beat.
-
-+ [Peerless training.] -> rule_shipTrophyIsaPeerlessOpen
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessOpen ===
-// rules.csv id: shipTrophyIsaPeerlessOpen
-// Trigger:
-// DialogOptionSelected
-// Conditions:
-// $option == ship_trophy_isa_peerless
-// Runtime script:
-// FireAll ShipTrophyIsaPeerlessView
-
-// No literal text; the runtime script supplies this beat.
-
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessReady ===
-// rules.csv id: shipTrophyIsaPeerlessReady
-// Trigger:
-// ShipTrophyIsaPeerlessView
-// Conditions:
-// PeerlessSkillsCMD canTrain
-// Runtime script:
-// SetShortcut ship_trophy_isa_open ESCAPE
-
-"One point will take your Elite Helmsmanship from +10 to +30 su/second."
-
-+ [Train Helmsmanship.] -> rule_shipTrophyIsaPeerlessTrain
-+ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessNeedElite ===
-// rules.csv id: shipTrophyIsaPeerlessNeedElite
-// Trigger:
-// ShipTrophyIsaPeerlessView
-// Conditions:
-// PeerlessSkillsCMD hasPoint
-// !PeerlessSkillsCMD trained
-// !PeerlessSkillsCMD canTrain
-// Runtime script:
-// SetShortcut ship_trophy_isa_open ESCAPE
-
-Learn Elite Helmsmanship first.
-
-+ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessTrained ===
-// rules.csv id: shipTrophyIsaPeerlessTrained
-// Trigger:
-// ShipTrophyIsaPeerlessView
-// Conditions:
-// PeerlessSkillsCMD trained
-// Runtime script:
-// SetShortcut ship_trophy_isa_open ESCAPE
-
-Peerless Helmsmanship: +30 su/second to top speed (total).
-
-+ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessEmpty ===
-// rules.csv id: shipTrophyIsaPeerlessEmpty
-// Trigger:
-// ShipTrophyIsaPeerlessView
-// Conditions:
-// !PeerlessSkillsCMD trained
-// !PeerlessSkillsCMD hasPoint
-// Runtime script:
-// SetShortcut ship_trophy_isa_open ESCAPE
-
-You need a Peerless point first.
-
-+ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessTrain ===
-// rules.csv id: shipTrophyIsaPeerlessTrain
-// Trigger:
-// DialogOptionSelected
-// Conditions:
-// $option == ship_trophy_isa_peerless_install
-// PeerlessSkillsCMD canTrain
-// Runtime script:
-// PeerlessSkillsCMD train
-// FireAll ShipTrophyIsaPeerlessView
-
-// No literal text; the runtime script supplies this beat.
-
-+ [Return to index.] -> rule_index
-
-// ============================================================
-=== rule_shipTrophyIsaPeerlessStale ===
-// rules.csv id: shipTrophyIsaPeerlessStale
-// Trigger:
-// DialogOptionSelected
-// Conditions:
-// $option == ship_trophy_isa_peerless_install
-// !PeerlessSkillsCMD canTrain
-// Runtime script:
-// FireAll ShipTrophyIsaPeerlessView
-
-// No literal text; the runtime script supplies this beat.
 
 + [Return to index.] -> rule_index
 

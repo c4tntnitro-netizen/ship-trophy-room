@@ -1,5 +1,7 @@
 # Project instructions
 
+- Isa must not offer Peerless training. Preserve the independent, idempotent A Borrowed Name completion-point award and its existing receipt key; do not restore the removed training menu or spending rules.
+
 - `AddIsa` sets the durable `$ship_trophy_room_isa_officer_granted` recruitment flag after a successful addition or when Isa is already in the player roster. Rerunning it repairs the flag without adding a duplicate officer. Invalid syntax, wrong context and unavailable fleets must not set it; no other quest-completion flags are advanced.
 
 ## Starsector rules

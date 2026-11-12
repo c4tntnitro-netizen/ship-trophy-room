@@ -43,6 +43,11 @@ public class IsaContactRulesCMD implements CommandPlugin {
 
         String command = value(params, 0, memoryMap);
 
+        if ("peerlessEnabled".equals(command)) {
+            return Global.getSettings() != null
+                    && Global.getSettings().getModManager() != null
+                    && Global.getSettings().getModManager().isModEnabled("peerless_skills");
+        }
         if ("showBodyguards".equals(command)) {
             showBodyguards(dialog);
             return true;
