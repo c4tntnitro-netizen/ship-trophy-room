@@ -313,7 +313,7 @@ Hall of Triumph dialogue catalog
 + [shipTrophyGanEdenEpitaphFive] -> rule_shipTrophyGanEdenEpitaphFive
 + [shipTrophyGanEdenEpitaphStay] -> rule_shipTrophyGanEdenEpitaphStay
 + [shipTrophyGanEdenEpitaphTalk] -> rule_shipTrophyGanEdenEpitaphTalk
-+ [shipTrophyGanEdenEpitaphLeave] -> rule_shipTrophyGanEdenEpitaphLeave
++ [shipTrophyGanEdenEpitaphFinish] -> rule_shipTrophyGanEdenEpitaphFinish
 + [shipTrophyGanEdenEpitaphNeedsIsa] -> rule_shipTrophyGanEdenEpitaphNeedsIsa
 + [shipTrophyGanEdenEpitaphInspected] -> rule_shipTrophyGanEdenEpitaphInspected
 + [shipTrophyGanEdenLureOption] -> rule_shipTrophyGanEdenLureOption
@@ -401,6 +401,17 @@ Hall of Triumph dialogue catalog
 + [shipTrophyDModVendorNext] -> rule_shipTrophyDModVendorNext
 + [shipTrophyDModVendorInstall] -> rule_shipTrophyDModVendorInstall
 + [shipTrophyDModVendorLeave] -> rule_shipTrophyDModVendorLeave
++ [shipTrophyGanEdenEpitaphLeave] -> rule_shipTrophyGanEdenEpitaphLeave
++ [shipTrophyIsaPeerlessAward] -> rule_shipTrophyIsaPeerlessAward
++ [shipTrophyIsaPeerlessOption] -> rule_shipTrophyIsaPeerlessOption
++ [shipTrophyIsaPeerlessSpent] -> rule_shipTrophyIsaPeerlessSpent
++ [shipTrophyIsaPeerlessOpen] -> rule_shipTrophyIsaPeerlessOpen
++ [shipTrophyIsaPeerlessReady] -> rule_shipTrophyIsaPeerlessReady
++ [shipTrophyIsaPeerlessNeedElite] -> rule_shipTrophyIsaPeerlessNeedElite
++ [shipTrophyIsaPeerlessTrained] -> rule_shipTrophyIsaPeerlessTrained
++ [shipTrophyIsaPeerlessEmpty] -> rule_shipTrophyIsaPeerlessEmpty
++ [shipTrophyIsaPeerlessTrain] -> rule_shipTrophyIsaPeerlessTrain
++ [shipTrophyIsaPeerlessStale] -> rule_shipTrophyIsaPeerlessStale
 + [End preview.] -> END
 
 // ============================================================
@@ -413,6 +424,7 @@ Hall of Triumph dialogue catalog
 // $shipTrophyIsaIntelDialog = true
 // IsaContactRulesCMD showContactPortrait
 // IsaContactRulesCMD prepareMain
+// FireAll ShipTrophyIsaPeerlessAward
 // FireAll ShipTrophyIsaMainText
 // FireAll ShipTrophyIsaMainOptions
 // Notes:
@@ -551,6 +563,7 @@ She glances off-screen. "Well? You wanted something?"
 // $option == ship_trophy_isa_open
 // Runtime script:
 // IsaContactRulesCMD prepareMain
+// FireAll ShipTrophyIsaPeerlessAward
 // FireAll ShipTrophyIsaMainText
 // FireAll ShipTrophyIsaMainOptions
 // Notes:
@@ -4816,11 +4829,11 @@ The Pather fleet begins clearing the approach corridor.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_pather_fight
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 // SetTextHighlightColors bad
 // SetTextHighlights "[The Luddic Path fleet moves to engage.]"
+// GanEdenQuestCMD beginHypershuntBattle
 // Notes:
-// The Pather commander prepares for battle.
+// The fight choice proceeds directly to vanilla battle preparation after the commander closes the channel.
 
 The commander’s expression hardens.
 
@@ -4830,8 +4843,6 @@ The channel closes.
 
 [The Luddic Path fleet moves to engage.]
 
-+ [Engage.] -> rule_shipTrophyGanEdenHypershuntEngage
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 + [Return to index.] -> rule_index
 
 // ============================================================
@@ -4968,11 +4979,11 @@ The pirate fleet clears the approach corridor.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_pirate_fight
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_hypershunt_disengage "ESCAPE"
 // SetTextHighlightColors bad
 // SetTextHighlights "[The pirate fleet moves to engage.]"
+// GanEdenQuestCMD beginHypershuntBattle
 // Notes:
-// The pirate commander prepares for battle.
+// The fight choice proceeds directly to vanilla battle preparation after the commander closes the channel.
 
 The commander takes their boots off the console.
 
@@ -4982,8 +4993,6 @@ The channel closes.
 
 [The pirate fleet moves to engage.]
 
-+ [Engage.] -> rule_shipTrophyGanEdenHypershuntEngage
-+ [Withdraw.] -> rule_shipTrophyGanEdenHypershuntDisengage
 + [Return to index.] -> rule_index
 
 // ============================================================
@@ -4994,12 +5003,9 @@ The channel closes.
 // Conditions:
 // $option == ship_trophy_gan_eden_hypershunt_engage
 // Runtime script:
-// GanEdenQuestCMD engageHypershuntGuard
-// MakeOtherFleetHostile shipTrophyGanEden true
-// MakeOtherFleetAggressiveOnce shipTrophyGanEden true
-// EndConversation
+// GanEdenQuestCMD beginHypershuntBattle
 // Notes:
-// Returns control to the vanilla fleet-interaction flow after making the blockade hostile.
+// Starts vanilla battle preparation directly from Isa's engagement choice without another Continue or Engage menu.
 
 // No literal text; the runtime script supplies this beat.
 
@@ -6709,7 +6715,7 @@ No answer comes from the empty world. This time, she does not seem to need one.
 // Conditions:
 // $option == ship_trophy_gan_eden_epitaph_talk
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_epitaph_finish "ESCAPE"
 // SetTextHighlightColors story
 // SetTextHighlights "[You can speak with Isa about Isaac Leicester through her contact menu.]"
 // Notes:
@@ -6729,18 +6735,19 @@ Below, the Tree of Life turns slowly beneath the inward sun.
 
 [You can speak with Isa about Isaac Leicester through her contact menu.]
 
-+ [Return to the fleet.] -> rule_shipTrophyGanEdenEpitaphLeave
++ [Return to the fleet.] -> rule_shipTrophyGanEdenEpitaphFinish
 + [Return to index.] -> rule_index
 
 // ============================================================
-=== rule_shipTrophyGanEdenEpitaphLeave ===
-// rules.csv id: shipTrophyGanEdenEpitaphLeave
+=== rule_shipTrophyGanEdenEpitaphFinish ===
+// rules.csv id: shipTrophyGanEdenEpitaphFinish
 // Trigger:
 // DialogOptionSelected
 // Conditions:
-// $option == ship_trophy_gan_eden_epitaph_leave
+// $option == ship_trophy_gan_eden_epitaph_finish
 // Runtime script:
 // GanEdenQuestCMD markEpitaph
+// FireAll ShipTrophyIsaPeerlessAward
 // DismissDialog
 // Notes:
 // Completes A Borrowed Name after Isa's closing scene, then returns to the campaign; final-log music continues until the fleet leaves Gan Eden.
@@ -8614,6 +8621,177 @@ Although Gan Eden is sealed from hyperspace, this fixed shell site is connected 
 // Closes the Shattered Ring D-mod vendor conversation.
 
 You leave the engineer to the wreck-farms.
+
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyGanEdenEpitaphLeave ===
+// rules.csv id: shipTrophyGanEdenEpitaphLeave
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_gan_eden_epitaph_leave
+// Runtime script:
+// DismissDialog
+// Notes:
+// Ordinary leave; does not commit the final scene.
+
+// No literal text; the runtime script supplies this beat.
+
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessAward ===
+// rules.csv id: shipTrophyIsaPeerlessAward
+// Trigger:
+// ShipTrophyIsaPeerlessAward
+// Conditions:
+// GanEdenQuestCMD questCompleted
+// !$global.ship_trophy_room_peerless_isa_v1
+// Runtime script:
+// PeerlessSkillsCMD award ship_trophy_room_peerless_isa_v1
+
+Gained 1 Peerless point.
+
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessOption ===
+// rules.csv id: shipTrophyIsaPeerlessOption
+// Trigger:
+// ShipTrophyIsaMainOptions
+// Conditions:
+// PeerlessSkillsCMD hasPoint
+// Runtime script:
+// SetOptionColor ship_trophy_isa_peerless highlight
+
+// No literal text; the runtime script supplies this beat.
+
++ [Peerless training.] -> rule_shipTrophyIsaPeerlessOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessSpent ===
+// rules.csv id: shipTrophyIsaPeerlessSpent
+// Trigger:
+// ShipTrophyIsaMainOptions
+// Conditions:
+// PeerlessSkillsCMD unlocked
+// !PeerlessSkillsCMD hasPoint
+// Runtime script:
+// SetEnabled ship_trophy_isa_peerless false
+
+// No literal text; the runtime script supplies this beat.
+
++ [Peerless training.] -> rule_shipTrophyIsaPeerlessOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessOpen ===
+// rules.csv id: shipTrophyIsaPeerlessOpen
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_peerless
+// Runtime script:
+// FireAll ShipTrophyIsaPeerlessView
+
+// No literal text; the runtime script supplies this beat.
+
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessReady ===
+// rules.csv id: shipTrophyIsaPeerlessReady
+// Trigger:
+// ShipTrophyIsaPeerlessView
+// Conditions:
+// PeerlessSkillsCMD canTrain
+// Runtime script:
+// SetShortcut ship_trophy_isa_open ESCAPE
+
+"One point will take your Elite Helmsmanship from +10 to +30 su/second."
+
++ [Train Helmsmanship.] -> rule_shipTrophyIsaPeerlessTrain
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessNeedElite ===
+// rules.csv id: shipTrophyIsaPeerlessNeedElite
+// Trigger:
+// ShipTrophyIsaPeerlessView
+// Conditions:
+// PeerlessSkillsCMD hasPoint
+// !PeerlessSkillsCMD trained
+// !PeerlessSkillsCMD canTrain
+// Runtime script:
+// SetShortcut ship_trophy_isa_open ESCAPE
+
+Learn Elite Helmsmanship first.
+
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessTrained ===
+// rules.csv id: shipTrophyIsaPeerlessTrained
+// Trigger:
+// ShipTrophyIsaPeerlessView
+// Conditions:
+// PeerlessSkillsCMD trained
+// Runtime script:
+// SetShortcut ship_trophy_isa_open ESCAPE
+
+Peerless Helmsmanship: +30 su/second to top speed (total).
+
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessEmpty ===
+// rules.csv id: shipTrophyIsaPeerlessEmpty
+// Trigger:
+// ShipTrophyIsaPeerlessView
+// Conditions:
+// !PeerlessSkillsCMD trained
+// !PeerlessSkillsCMD hasPoint
+// Runtime script:
+// SetShortcut ship_trophy_isa_open ESCAPE
+
+You need a Peerless point first.
+
++ [Back to the Hall ledgers.] -> rule_shipTrophyIsaContactOpen
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessTrain ===
+// rules.csv id: shipTrophyIsaPeerlessTrain
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_peerless_install
+// PeerlessSkillsCMD canTrain
+// Runtime script:
+// PeerlessSkillsCMD train
+// FireAll ShipTrophyIsaPeerlessView
+
+// No literal text; the runtime script supplies this beat.
+
++ [Return to index.] -> rule_index
+
+// ============================================================
+=== rule_shipTrophyIsaPeerlessStale ===
+// rules.csv id: shipTrophyIsaPeerlessStale
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_isa_peerless_install
+// !PeerlessSkillsCMD canTrain
+// Runtime script:
+// FireAll ShipTrophyIsaPeerlessView
+
+// No literal text; the runtime script supplies this beat.
 
 + [Return to index.] -> rule_index
 

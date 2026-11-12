@@ -3,6 +3,7 @@ package shiptrophy;
 import java.util.Collection;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.ModManagerAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
@@ -67,10 +68,14 @@ public class TrophySubtypeSpec {
     }
 
     public boolean isActive() {
-        if (requiredModId.length() <= 0) return true;
-        return Global.getSettings() != null
-                && Global.getSettings().getModManager() != null
-                && Global.getSettings().getModManager().isModEnabled(requiredModId);
+        if (!isModIntegration()) return true;
+        if (Global.getSettings() == null) return false;
+        ModManagerAPI mods = Global.getSettings().getModManager();
+        if (mods == null) return false;
+        for (String modId : requiredModId.split("\\|")) {
+            if (mods.isModEnabled(modId.trim())) return true;
+        }
+        return false;
     }
 
     public boolean hasHullModUnlock() {

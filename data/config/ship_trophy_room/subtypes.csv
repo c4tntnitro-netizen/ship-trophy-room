@@ -5,6 +5,6 @@ lg,Lion's Guard,Lion's Guard,ship_trophy_lg_pageantry,,40,midline,_lg|lg_|execut
 tt,Tri-Tachyon,Tri-Tachyon,ship_trophy_tt_optimization,,40,high-tech,tritachyon|_tt|tt_,,"tri-tachyon|tritachyon|high tech|high-tech",(tt)|tri-tachyon,,
 knights_of_ludd,Knights of Ludd,Knights of Ludd,ship_trophy_kol_benediction,knights_of_ludd,40,low-tech,kol_,,knights of ludd,,,
 uaf,United Aurora Federation,Auroran,ship_trophy_uaf_resonance,uaf,40,any,uaf_,,auroran,,,
-iron_shell,Iron Shell,Iron Shell,ship_trophy_iron_shell_drill,timid_xiv,40,any,eis_,,iron shell,,,
+iron_shell,Iron Shell,Iron Shell,ship_trophy_iron_shell_drill,timid_xiv|selkie_eis,40,any,eis_,,iron shell,,,
 remnant,Remnant,Remnant,ship_trophy_humanity,,40,any,,,remnant,,,
 domain_derelict,Domain Derelicts,Explorarium,ship_trophy_memory,,20,any,,,explorarium|derelict,,,

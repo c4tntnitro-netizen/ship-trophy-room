@@ -1,5 +1,13 @@
 # Hall of Triumph changelog
 
+## 2.5.4 Beta - 2026-11-11
+
+- Requires Peerless Skills 0.1.0 or later. Completing A Borrowed Name awards one Peerless point; existing completed quests can claim it by opening Isa's Hall menu.
+- Adds Peerless Helmsmanship training to Isa's Hall menu, spending one Peerless point to raise Elite Helmsmanship's top-speed bonus from +10 to +30 su/second total.
+- Separates ordinary Space Elevator leave options from the final scene's completion action so leaving without completing Isa's closing scene does not complete the quest.
+- Supports Eternal Iron Shell (`selkie_eis`) alongside Iron Shell (`timid_xiv`) for the Discipline doctrine and its eligible ships.
+- Retains the known Transverse Jump arrival issue and the default-off, unstable Ship Gallery from 2.5.3 Beta.
+
 ## 2.5.3 Beta - 2026-10-31
 
 - Attempts to move Power Transit Gate transverse arrivals to 14,000 units from the gate and holds the Custodians near the gate until the player approaches within 6,000 units. Known issue: the Transverse Jump arrival problem still persists in-game; players can still arrive on top of the gate and Ivory Ordo. The spacing changes have not resolved the reported behavior.

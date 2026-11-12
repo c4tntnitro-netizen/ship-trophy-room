@@ -81,7 +81,13 @@ public final class ShipGalleryFilteredRegression {
 
         Fixture(String modJar, String lunaJar, boolean includeLuna) throws Exception {
             // Match ScriptStore's parent chain. The harness stays outside the filter.
-            ClassLoader filter = (ClassLoader) Class.forName("com.fs.starfarer.loading.scripts.B")
+            Class<?> filterClass;
+            try {
+                filterClass = Class.forName("com.fs.starfarer.loading.scripts.ScriptClassLoader");
+            } catch (ClassNotFoundException olderEngine) {
+                filterClass = Class.forName("com.fs.starfarer.loading.scripts.B");
+            }
+            ClassLoader filter = (ClassLoader) filterClass
                     .getConstructor(ClassLoader.class).newInstance(getClass().getClassLoader());
             URL[] urls = includeLuna
                     ? new URL[] {Paths.get(modJar).toUri().toURL(), Paths.get(lunaJar).toUri().toURL()}

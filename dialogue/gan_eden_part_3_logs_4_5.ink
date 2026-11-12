@@ -964,7 +964,7 @@ No answer comes from the empty world. This time, she does not seem to need one.
 // Conditions:
 // $option == ship_trophy_gan_eden_epitaph_talk
 // Runtime script:
-// SetShortcut ship_trophy_gan_eden_epitaph_leave "ESCAPE"
+// SetShortcut ship_trophy_gan_eden_epitaph_finish "ESCAPE"
 // SetTextHighlightColors story
 // SetTextHighlights "[You can speak with Isa about Isaac Leicester through her contact menu.]"
 
@@ -982,17 +982,18 @@ Below, the Tree of Life turns slowly beneath the inward sun.
 
 [You can speak with Isa about Isaac Leicester through her contact menu.]
 
-+ [Return to the fleet.] -> rule_shipTrophyGanEdenEpitaphLeave
++ [Return to the fleet.] -> rule_shipTrophyGanEdenEpitaphFinish
 
 // ============================================================
-=== rule_shipTrophyGanEdenEpitaphLeave ===
-// rules.csv id: shipTrophyGanEdenEpitaphLeave
+=== rule_shipTrophyGanEdenEpitaphFinish ===
+// rules.csv id: shipTrophyGanEdenEpitaphFinish
 // Trigger:
 // DialogOptionSelected
 // Conditions:
-// $option == ship_trophy_gan_eden_epitaph_leave
+// $option == ship_trophy_gan_eden_epitaph_finish
 // Runtime script:
 // GanEdenQuestCMD markEpitaph
+// FireAll ShipTrophyIsaPeerlessAward
 // DismissDialog
 
 // No literal text in rules.csv; the runtime script supplies this beat.
@@ -1094,6 +1095,20 @@ Although Gan Eden is sealed from hyperspace, this fixed shell site is connected 
 // PrintNearbySurveyHostilesTextIfSo
 // Conditions:
 // $market.shipTrophyGanEdenSurfaceSite score:100000
+
+// No literal text in rules.csv; the runtime script supplies this beat.
+
++ [Continue.] -> rule_shipTrophyGanEdenEpitaphLeave
+
+// ============================================================
+=== rule_shipTrophyGanEdenEpitaphLeave ===
+// rules.csv id: shipTrophyGanEdenEpitaphLeave
+// Trigger:
+// DialogOptionSelected
+// Conditions:
+// $option == ship_trophy_gan_eden_epitaph_leave
+// Runtime script:
+// DismissDialog
 
 // No literal text in rules.csv; the runtime script supplies this beat.
 

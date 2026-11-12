@@ -2,6 +2,8 @@
 
 > **Beta notice:** Everything in this repository should be considered a beta change. Features, balance, dialogue, assets, and save compatibility may change before a formal release.
 
+Current version: **2.5.4 Beta**, published November 11, 2026, for Starsector 0.98a. Requires **Peerless Skills 0.1.0 or later** to be installed and enabled.
+
 Adds a player-colony structure called **Hall of Triumph**.
 
 - Unlocks a dedicated **Hall of Triumph** storage tab on the colony.
@@ -95,7 +97,7 @@ Important columns:
 - `id`: stable subtype id.
 - `displayName` / `showcaseName`: UI text.
 - `hullModId`: optional hullmod to teach the player.
-- `requiredModId`: optional mod id gate; the row is inactive unless that mod is enabled.
+- `requiredModId`: optional mod id gate; pipe-separated alternatives are supported, and the row is active when any listed mod is enabled.
 - `unlockDp`: DP needed to unlock the hullmod.
 - `installStyle`: `low-tech`, `midline`, `high-tech`, or `any`.
 - `hullIdContains`, `baseHullIdContains`, `manufacturerContains`, `hullNameContains`: pipe-separated case-insensitive match text.
@@ -105,7 +107,7 @@ Optional example integrations are included:
 
 - **Honor**: active only with `knights_of_ludd`; low-tech only, hull and armor damage taken -5%, hull integrity +10%, shield damage taken -10%.
 - **Resonance**: active only with `uaf`; increases guided missile maximum speed by 33%. Torpedo and multi-rocket volleys launch two forward decoy flares at 110% of the parent munition's speed, while Semibreve launchers deploy five. Decoys remain active for 2/4/10 seconds when fired by small/medium/large launchers. Missile-based point defense, fighter weapons, and submunitions are excluded. Incompatible with ECCM Package.
-- **Discipline**: active only with `timid_xiv` and installable only on Iron Shell ships. Replaces the ship's system with **Iaido**, a high-speed armored charge that leaves torpedo launchers operational. Torpedoes fired during the draw gain 200% maximum and launch speed and deal 50%/35%/25%/15% additional kinetic damage on frigates/destroyers/cruisers/capital ships without a cap.
+- **Discipline**: active with Iron Shell (`timid_xiv`) or Eternal Iron Shell (`selkie_eis`) and installable only on their Iron Shell ships. Replaces the ship's system with **Iaido**, a high-speed armored charge that leaves torpedo launchers operational. Torpedoes fired during the draw gain 200% maximum and launch speed and deal 50%/35%/25%/15% additional kinetic damage on frigates/destroyers/cruisers/capital ships without a cap.
 
 For a plain-language walkthrough of adding your own subtype and special trophy hullmod, see `docs/creating_trophy_hullmods.md`.
 

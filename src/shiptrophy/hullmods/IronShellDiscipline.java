@@ -32,6 +32,7 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
     public static final String HANDLER_HULLMOD_ID = "ship_trophy_iaido_system_handler";
     public static final String IAIDO_SYSTEM_ID = "ship_trophy_iaido";
     public static final String IRON_SHELL_MOD_ID = "timid_xiv";
+    private static final String ETERNAL_IRON_SHELL_MOD_ID = "selkie_eis";
 
     public static final float TORPEDO_SPEED_MULT = 3f;
     public static final float KINETIC_DAMAGE_FRACTION_FRIGATE = 0.50f;
@@ -123,7 +124,8 @@ public class IronShellDiscipline extends BaseTrophyDoctrineHullMod {
         if (spec == null) return false;
 
         ModSpecAPI source = spec.getSourceMod();
-        if (source != null && IRON_SHELL_MOD_ID.equalsIgnoreCase(source.getId())) return true;
+        if (source != null && (IRON_SHELL_MOD_ID.equalsIgnoreCase(source.getId())
+                || ETERNAL_IRON_SHELL_MOD_ID.equalsIgnoreCase(source.getId()))) return true;
 
         String hullId = lower(spec.getHullId());
         String baseHullId = lower(spec.getBaseHullId());
