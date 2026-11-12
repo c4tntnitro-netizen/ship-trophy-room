@@ -2,7 +2,7 @@
 
 > **Beta notice:** Everything in this repository should be considered a beta change. Features, balance, dialogue, assets, and save compatibility may change before a formal release.
 
-Current version: **2.5.4 Beta**, published November 11, 2026, for Starsector 0.98a. Requires **Peerless Skills 0.1.0 or later** to be installed and enabled.
+Current version: **2.5.4 Beta** by **caccus**, published November 11, 2026, for Starsector **0.98.5a-RC4**. Requires **Peerless Skills 0.1.0 or later** to be installed and enabled.
 
 Adds a player-colony structure called **Hall of Triumph**.
 

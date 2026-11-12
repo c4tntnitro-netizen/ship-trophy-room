@@ -2,6 +2,7 @@
 
 ## 2.5.4 Beta - 2026-11-11
 
+- Targets Starsector 0.98.5a-RC4 and credits caccus as the mod author in the launcher.
 - Requires Peerless Skills 0.1.0 or later. Completing A Borrowed Name awards one Peerless point; existing completed quests can claim it by opening Isa's Hall menu.
 - Adds Peerless Helmsmanship training to Isa's Hall menu, spending one Peerless point to raise Elite Helmsmanship's top-speed bonus from +10 to +30 su/second total.
 - Separates ordinary Space Elevator leave options from the final scene's completion action so leaving without completing Isa's closing scene does not complete the quest.

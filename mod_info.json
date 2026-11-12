@@ -1,11 +1,11 @@
 {
   "id": "ship_trophy_room",
   "name": "Hall of Triumph",
-  "author": "Codex",
+  "author": "caccus",
   "utility": "false",
   "version": "2.5.4",
   "description": "Adds the Hall of Triumph colony structure, Isa Leicester and her trophy doctrines, the Shattered Ring free port, and the sealed Gan Eden prototype system.",
-  "gameVersion": "0.98a",
+  "gameVersion": "0.98.5a-RC4",
   "jars": ["jars/HallOfTriumph.jar"],
   "dependencies": [{"id": "peerless_skills", "name": "Peerless Skills", "version": "0.1.0"}],
   "modPlugin": "shiptrophy.ShipTrophyRoomModPlugin"
