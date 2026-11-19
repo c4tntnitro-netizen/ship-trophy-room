@@ -20,6 +20,7 @@ New-Item -ItemType Directory -Force -Path $jarDir | Out-Null
 $sources = Get-ChildItem -Recurse -Path (Join-Path $PSScriptRoot "src") -Filter "*.java" | ForEach-Object { $_.FullName }
 $classpath = @(
     (Join-Path $core "starfarer.api.jar"),
+    (Join-Path $core "log4j-1.2.9.jar"),
     (Join-Path $core "json.jar"),
     (Join-Path $core "lwjgl.jar"),
     (Join-Path $core "lwjgl_util.jar"),
@@ -27,7 +28,7 @@ $classpath = @(
     (Join-Path $starsector "mods\LunaLib\jars\LunaLib.jar"),
     (Join-Path $starsector "mods\MagicLib\jars\MagicLib.jar")
 ) -join [System.IO.Path]::PathSeparator
-& $javac --release 8 -classpath $classpath -d $classes @sources
+& $javac --release 8 -sourcepath (Join-Path $PSScriptRoot "src") -classpath $classpath -d $classes @sources
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $jar cf $jarPath -C $classes .
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

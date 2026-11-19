@@ -2627,4 +2627,4 @@ shipTrophyDModVendorLeave,DialogOptionSelected,$option == ship_trophy_dmod_vendo
 shipTrophyGanEdenEpitaphLeave,DialogOptionSelected,$option == ship_trophy_gan_eden_epitaph_leave,DismissDialog,,,Ordinary leave; does not commit the final scene.
 shipTrophyIsaPeerlessAward,ShipTrophyIsaPeerlessAward,"IsaContactRulesCMD peerlessEnabled
 GanEdenQuestCMD questCompleted
-!$global.ship_trophy_room_peerless_isa_v1",PeerlessSkillsCMD award ship_trophy_room_peerless_isa_v1,Gained 1 Peerless point.,,
+!$global.ship_trophy_room_peerless_isa_v1",HallPeerlessAwardCMD award ship_trophy_room_peerless_isa_v1,Gained 1 Peerless point.,,

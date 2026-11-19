@@ -1,5 +1,9 @@
 # Hall of Triumph changelog
 
+## 2.5.5 Beta - 2026-11-19
+
+- Fixes startup without Peerless Skills by routing the optional A Borrowed Name completion-point award through Hall's local bridge. The completion checks and existing one-time receipt key are unchanged.
+
 ## 2.5.4 Beta refresh - 2026-11-12
 
 - Makes Peerless Skills optional. Its completion-point award runs only when that mod is enabled and retains the existing one-time receipt key.

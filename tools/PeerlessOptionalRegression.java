@@ -61,7 +61,10 @@ public final class PeerlessOptionalRegression {
             }
             CommandPlugin command = (CommandPlugin) Class.forName("shiptrophy.IsaContactRulesCMD", true, loader)
                     .getDeclaredConstructor().newInstance();
+            CommandPlugin award = (CommandPlugin) Class.forName("shiptrophy.HallPeerlessAwardCMD", true, loader)
+                    .getDeclaredConstructor().newInstance();
             Global.setSettings(mock(SettingsAPI.class, (name, values) -> name.equals("getModManager") ? mods : null));
+            java.util.List<Misc.Token> awardParams = Misc.tokenize("award ship_trophy_room_peerless_isa_v1");
             java.util.List<Misc.Token> params = Misc.tokenize("peerlessEnabled");
             Global.setSettings(null);
             check(!command.execute("optional-peerless", dialog, params, memory),
@@ -72,9 +75,18 @@ public final class PeerlessOptionalRegression {
             Global.setSettings(mock(SettingsAPI.class, (name, values) -> name.equals("getModManager") ? mods : null));
             check(!command.execute("optional-peerless", dialog, params, memory),
                     "An absent or disabled Peerless mod must skip the optional award");
+            check(!award.execute("optional-peerless", dialog, awardParams, memory),
+                    "The award command must load and skip safely without Peerless");
             enabled[0] = true;
             check(command.execute("optional-peerless", dialog, params, memory),
                     "An enabled Peerless mod must allow the quest and receipt checks to proceed");
+            Global.setSettings(mock(SettingsAPI.class, (name, values) -> {
+                if (name.equals("getModManager")) return mods;
+                if (name.equals("getScriptClassLoader")) return loader;
+                return null;
+            }));
+            check(!award.execute("optional-peerless", dialog, awardParams, memory),
+                    "An unavailable optional command must not crash or consume the receipt");
             check(writes[0] == 0, "Checking availability must not consume an award receipt or alter quest state");
         } finally {
             Global.setSettings(previous);

@@ -14,10 +14,11 @@ $conditions = @($award[0].conditions -split "`r?`n")
 if ($conditions.Count -ne 3 -or $conditions[0] -cne 'IsaContactRulesCMD peerlessEnabled' -or
         $conditions[1] -cne 'GanEdenQuestCMD questCompleted' -or
         $conditions[2] -cne '!$global.ship_trophy_room_peerless_isa_v1' -or
-        $award[0].script -cne 'PeerlessSkillsCMD award ship_trophy_room_peerless_isa_v1') {
+        $award[0].script -cne 'HallPeerlessAwardCMD award ship_trophy_room_peerless_isa_v1') {
     throw 'The award must first check availability, then quest completion and the unchanged receipt key'
 }
 foreach ($row in $rows) {
+    if ($row.script -match '(?<!Hall)PeerlessSkillsCMD' -or $row.conditions -match '(?<!Hall)PeerlessSkillsCMD') { throw ('Direct optional-mod command prevents startup: ' + $row.id) }
     if ($row.id -ne 'shipTrophyIsaPeerlessAward' -and ($row.script -match 'PeerlessSkillsCMD' -or $row.conditions -match 'PeerlessSkillsCMD')) { throw ('Unexpected optional command outside guarded reward: ' + $row.id) }
     if ($row.options -match 'ship_trophy_isa_peerless') { throw 'Isa must not offer Peerless training' }
 }
