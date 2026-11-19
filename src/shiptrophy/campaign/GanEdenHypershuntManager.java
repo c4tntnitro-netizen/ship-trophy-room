@@ -259,7 +259,13 @@ public final class GanEdenHypershuntManager {
         // drained to 0 CR while orbiting the hypershunt.
         fleet.addTag(Tags.FLEET_IGNORES_CORONA);
         fleet.addTag(Tags.STORY_CRITICAL);
-        fleet.addTag(Tags.HAS_INTERACTION_DIALOG);
+        // The blockade dialogue is routed through BeginFleetEncounter and
+        // OpenCommLink, which only fire inside the vanilla fleet dialog.
+        // HAS_INTERACTION_DIALOG makes the core plugin open a plain
+        // rule-based dialog instead (OpenInteractionDialog), which matches
+        // nothing and leaves an empty failsafe "Leave" box. Strip it so
+        // guards saved by older builds are repaired on the next refresh.
+        fleet.removeTag(Tags.HAS_INTERACTION_DIALOG);
         ensureBattleListener(fleet);
 
         memory.set(GUARD_KEY, true);

@@ -1,5 +1,9 @@
 # Hall of Triumph changelog
 
+## 2.5.6 Beta - 2026-11-19
+
+- Fixes the A Borrowed Name hypershunt blockades (the Pather Order of Sanguinius and the Tiger Shark Raiders) opening an empty dialog with only "Leave". The guard fleets no longer carry `has_interaction_dialog`, so hailing them opens the fleet encounter and their quest dialogue again. Existing blockades in current saves are repaired automatically.
+
 ## 2.5.5 Beta - 2026-11-19
 
 - Fixes startup without Peerless Skills by routing the optional A Borrowed Name completion-point award through Hall's local bridge. The completion checks and existing one-time receipt key are unchanged.

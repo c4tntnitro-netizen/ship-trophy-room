@@ -2,7 +2,7 @@
 
 > **Beta notice:** Everything in this repository should be considered a beta change. Features, balance, dialogue, assets, and save compatibility may change before a formal release.
 
-Current version: **2.5.5 Beta** by **caccus**, refreshed November 19, 2026, for Starsector **0.98.5a-RC4**. **Peerless Skills is optional**: when enabled, completing A Borrowed Name awards one Peerless point. Isa does not offer Peerless training.
+Current version: **2.5.6 Beta** by **caccus**, refreshed November 19, 2026, for Starsector **0.98.5a-RC4**. **Peerless Skills is optional**: when enabled, completing A Borrowed Name awards one Peerless point. Isa does not offer Peerless training.
 
 Adds a player-colony structure called **Hall of Triumph**.
 

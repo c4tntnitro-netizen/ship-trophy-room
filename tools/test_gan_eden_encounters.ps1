@@ -13,6 +13,16 @@ foreach ($ruleId in @('shipTrophyGanEdenHypershuntPatherFight', 'shipTrophyGanEd
     }
 }
 Write-Host 'PASS: Pather, pirate and crisis fight branches reach the direct battle handoff.'
+foreach ($ruleId in @('shipTrophyGanEdenHypershuntPatherGuardEncounter', 'shipTrophyGanEdenHypershuntPirateGuardEncounter')) {
+    if ($rules[$ruleId].trigger -ne 'BeginFleetEncounter') {
+        throw "Guard dialogue must open from the vanilla fleet encounter: $ruleId"
+    }
+}
+$hypershuntManager = Get-Content -Raw -LiteralPath (Join-Path $projectPath 'src\shiptrophy\campaign\GanEdenHypershuntManager.java')
+if ($hypershuntManager -match 'addTag\(Tags\.HAS_INTERACTION_DIALOG\)') {
+    throw 'Hypershunt guards must not carry HAS_INTERACTION_DIALOG; it replaces the fleet dialog with an empty rule-based one.'
+}
+Write-Host 'PASS: Hypershunt guards open the fleet encounter dialog that hosts their dialogue.'
 & (Join-Path $gamePath 'jdk-23+7\bin\javac.exe') --release 8 -classpath $testClasspath -d $testOutputPath (Join-Path $PSScriptRoot 'GanEdenEncounterRegression.java')
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & (Join-Path $gamePath 'jdk-23+7\bin\java.exe') -classpath ($testOutputPath + ';' + $testClasspath) shiptrophy.GanEdenEncounterRegression
